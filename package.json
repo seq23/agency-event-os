@@ -18,7 +18,8 @@
     "validate:backend-foundation": "npm run test -- --run tests/unit/env.test.ts tests/unit/email.test.ts tests/unit/audit.test.ts",
     "validate:testing-console": "npm run test -- --run tests/unit/testingConsole.test.ts",
     "validate:auth": "npm run test -- --run tests/unit/authSession.test.ts tests/unit/accessResolver.test.ts tests/unit/authActions.test.ts",
-    "validate:phase2d2e2f": "npm run test -- --run tests/unit/speakerOps.test.ts tests/unit/sponsorOps.test.ts tests/unit/approvalOps.test.ts tests/unit/eventIntake.test.ts tests/unit/changeControl.test.ts tests/unit/networkingOps.test.ts"
+    "validate:phase2d2e2f": "npm run test -- --run tests/unit/speakerOps.test.ts tests/unit/sponsorOps.test.ts tests/unit/approvalOps.test.ts tests/unit/eventIntake.test.ts tests/unit/changeControl.test.ts tests/unit/networkingOps.test.ts",
+    "validate:persistence": "npm run test -- --run tests/unit/persistenceMapping.test.ts tests/unit/clientEventSchemas.test.ts tests/unit/coreReadModel.test.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "3.9.0",

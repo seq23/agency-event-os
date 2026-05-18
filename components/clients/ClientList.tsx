@@ -1,11 +1,14 @@
 import { getMockData } from "@/lib/mock/getMockData";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { SectionCard } from "@/components/shared/SectionCard";
+import { ClientPersistencePanel } from "@/components/persistence/ClientPersistencePanel";
 
 export function ClientList() {
   const data = getMockData();
 
   return (
+    <div className="space-y-6">
+    <ClientPersistencePanel agencyId={data.agencies[0]?.id ?? "00000000-0000-0000-0000-000000000001"} />
     <SectionCard title="Clients" eyebrow="Agency portfolio">
       <div className="grid gap-4 md:grid-cols-3">
         {data.clients.map((client) => {
@@ -28,5 +31,6 @@ export function ClientList() {
         })}
       </div>
     </SectionCard>
+    </div>
   );
 }

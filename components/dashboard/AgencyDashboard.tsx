@@ -5,6 +5,7 @@ import { MetricCard } from "@/components/shared/MetricCard";
 import { SectionCard } from "@/components/shared/SectionCard";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { formatEventDate } from "@/lib/utils/format";
+import { getPersistenceModeLabel } from "@/services/persistence/coreReadModel";
 
 export function AgencyDashboard() {
   const data = getMockData();
@@ -13,6 +14,7 @@ export function AgencyDashboard() {
   const reportsDue = data.events.filter((event) => event.status === "ended" && event.reportingEnabled);
   const mainEvent = data.events.find((event) => event.id === "event-summit") ?? data.events[0];
   const readiness = calculateEventReadiness(data, mainEvent.id);
+  const persistenceMode = getPersistenceModeLabel();
 
   return (
     <div className="space-y-6">
@@ -22,6 +24,7 @@ export function AgencyDashboard() {
         <p className="mt-2 max-w-3xl text-slate-300">
           Track client approvals, speaker readiness, sponsor deliverables, crew confirmations, run-of-show blockers, and post-event reports before they become fires.
         </p>
+        <p className="mt-4 inline-flex rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-slate-200">{persistenceMode}</p>
       </div>
 
       <div className="grid gap-4 md:grid-cols-4">

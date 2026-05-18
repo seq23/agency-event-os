@@ -20,3 +20,6 @@
 | Validation | No full build run here | Environment/time bounded | Run locally through updater/Codex |
 
 | Testing Console | Testing console uses mock diagnostics | Lets operators see the intended cockpit now | Add real browser media tests and provider API checks |
+
+
+| Batch 3B persistence shells | Client/event forms define UX placement but do not submit from the browser yet | Avoids premature CRUD UX before route-specific create/edit screens | Wire form actions into dedicated create/edit pages after service layer is committed |

@@ -917,3 +917,8 @@ The first baseline must prove that an agency owner can manage multiple client ev
 ## Batch 3A — Supabase Auth + Real Current User
 
 Real Supabase Auth session resolution, profile lookup, role-access normalization, route protection, and auth forms. CRUD/uploads/email/video remain deferred.
+
+
+## Batch 3B — Real Agency / Client / Event Persistence Foundation
+
+Adds Supabase-ready service boundaries and validation/server actions for agencies, clients, and events. Asset, approval, speaker/sponsor, email, video, and billing persistence remain deferred.

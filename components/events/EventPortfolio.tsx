@@ -4,11 +4,14 @@ import { StatusBadge } from "@/components/shared/StatusBadge";
 import { ReadinessScore } from "@/components/shared/ReadinessScore";
 import { SectionCard } from "@/components/shared/SectionCard";
 import { formatEventDate, titleize } from "@/lib/utils/format";
+import { EventPersistencePanel } from "@/components/persistence/EventPersistencePanel";
 
 export function EventPortfolio() {
   const data = getMockData();
 
   return (
+    <div className="space-y-6">
+    <EventPersistencePanel agencyId={data.agencies[0]?.id ?? "00000000-0000-0000-0000-000000000001"} clientId={data.clients[0]?.id ?? "00000000-0000-0000-0000-000000000101"} />
     <SectionCard title="Events" eyebrow="Production portfolio">
       <div className="grid gap-4 lg:grid-cols-2">
         {data.events.map((event) => {
@@ -32,5 +35,6 @@ export function EventPortfolio() {
         })}
       </div>
     </SectionCard>
+    </div>
   );
 }

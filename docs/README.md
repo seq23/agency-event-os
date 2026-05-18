@@ -43,3 +43,5 @@ This folder contains the documentation baseline and implementation references fo
 - `LAST_MINUTE_CHANGE_CONTROL.md`
 - `BREAKOUT_AND_NETWORKING_MODEL.md`
 - `RUN_OF_SHOW_LIVE_PROGRESS.md`
+
+- `PERSISTENCE_BATCH_3B.md`

@@ -5,6 +5,7 @@ import { SectionCard } from "@/components/shared/SectionCard";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { MetricCard } from "@/components/shared/MetricCard";
 import { formatEventDate, titleize } from "@/lib/utils/format";
+import { LiveRunOfShowDashboard } from "@/components/run-of-show/LiveRunOfShowDashboard";
 
 export function EventOverview({ eventId }: { eventId: string }) {
   const data = getMockData();
@@ -40,6 +41,8 @@ export function EventOverview({ eventId }: { eventId: string }) {
           <StatusBadge status={event.status} />
         </div>
       </div>
+
+      <LiveRunOfShowDashboard eventId={event.id} viewer="agency" />
 
       <div className="grid gap-4 md:grid-cols-4">
         <MetricCard label="Open tasks" value={tasks.filter((t) => t.status !== "complete").length} />

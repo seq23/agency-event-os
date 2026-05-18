@@ -66,3 +66,28 @@
 - `EventAnalyticsDashboard`
 - `ClientReportBuilderShell`
 - `SponsorReportBuilderShell`
+
+
+## Run of Show Live Progress
+
+- `LiveRunOfShowDashboard`
+- `RunOfShowProgressRail`
+- `CurrentSegmentCard`
+- `NextCueStack`
+- `LiveRunOfShowControls`
+
+These components make the run of show visible as the live event operating spine across event overview, producer cockpit, crew portal, client portal, and testing console.
+
+
+## Talent, Sponsor, Approval, Intake, Change, Breakout, and Networking Ops
+
+- `SpeakerGreenRoom`
+- `SpeakerTeleprompterPanel`
+- `SponsorSetupWizard`
+- `SponsorReadyRoom`
+- `EventApprovalQueue`
+- `LastMinuteChangeQueue`
+- `ProductionInbox`
+- `TalentReadinessDashboard`
+- `BreakoutRoomDirectory`
+- `SpeedNetworkingRoom`

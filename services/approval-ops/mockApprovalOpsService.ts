@@ -1,0 +1,66 @@
+import type { AssetApprovalRule, EventApprovalItem } from "@/types/approvalOps";
+
+export const assetApprovalMatrix: AssetApprovalRule[] = [
+  { assetType: "speaker_headshot", agencyApprovesTechnicalFit: true, clientApprovesBrandFit: true, submitterApprovesOwnPublicInfo: true, producerLocksFinalUse: true },
+  { assetType: "speaker_bio", agencyApprovesTechnicalFit: false, clientApprovesBrandFit: true, submitterApprovesOwnPublicInfo: true, producerLocksFinalUse: true },
+  { assetType: "speaker_deck", agencyApprovesTechnicalFit: true, clientApprovesBrandFit: true, submitterApprovesOwnPublicInfo: false, producerLocksFinalUse: true },
+  { assetType: "speaker_script", agencyApprovesTechnicalFit: false, clientApprovesBrandFit: true, submitterApprovesOwnPublicInfo: true, producerLocksFinalUse: true },
+  { assetType: "sponsor_logo", agencyApprovesTechnicalFit: true, clientApprovesBrandFit: true, submitterApprovesOwnPublicInfo: false, producerLocksFinalUse: true },
+  { assetType: "sponsor_booth_copy", agencyApprovesTechnicalFit: false, clientApprovesBrandFit: true, submitterApprovesOwnPublicInfo: false, producerLocksFinalUse: true },
+  { assetType: "sponsor_cta", agencyApprovesTechnicalFit: true, clientApprovesBrandFit: false, submitterApprovesOwnPublicInfo: false, producerLocksFinalUse: true },
+];
+
+export const mockApprovalItems: EventApprovalItem[] = [
+  {
+    id: "approval-speaker-script-v3",
+    agencyId: "agency-wpp",
+    clientId: "client-nova",
+    eventId: "event-summit",
+    itemType: "speaker_script",
+    title: "Drake Speaker show-day script v3",
+    submittedByName: "Drake Speaker",
+    relatedSpeakerId: "speaker-drake",
+    relatedRunOfShowSegmentId: "ros-summit-keynote",
+    status: "needs_agency_review",
+    dueAt: "2026-06-12T14:50:00.000Z",
+    currentOwner: "agency",
+    clientApprovalRequired: false,
+    producerApprovalRequired: true,
+    blockingScope: "run_of_show",
+    lastComment: "Speaker wants shorter opener. Producer must approve before teleprompter goes live.",
+    nextAction: "Approve as live version or keep v2 locked.",
+  },
+  {
+    id: "approval-sponsor-booth-copy",
+    agencyId: "agency-wpp",
+    clientId: "client-nova",
+    eventId: "event-summit",
+    itemType: "sponsor_booth_copy",
+    title: "Clarity AI booth copy",
+    submittedByName: "Riley Sponsor",
+    relatedSponsorId: "sponsor-clarity",
+    status: "needs_client_review",
+    dueAt: "2026-06-05T17:00:00.000Z",
+    currentOwner: "client",
+    clientApprovalRequired: true,
+    producerApprovalRequired: true,
+    blockingScope: "sponsor",
+    lastComment: "Client needs to approve claim language before expo opens.",
+    nextAction: "Send client reminder.",
+  },
+];
+
+export function getEventApprovalQueue(eventId: string) {
+  return mockApprovalItems.filter((item) => item.eventId === eventId);
+}
+
+export function getApprovalSummary(eventId: string) {
+  const items = getEventApprovalQueue(eventId);
+  return {
+    eventId,
+    total: items.length,
+    needsAgencyReview: items.filter((item) => item.status === "needs_agency_review").length,
+    needsClientReview: items.filter((item) => item.status === "needs_client_review").length,
+    blocking: items.filter((item) => item.blockingScope !== "none" && !["approved", "locked", "used_live"].includes(item.status)).length,
+  };
+}

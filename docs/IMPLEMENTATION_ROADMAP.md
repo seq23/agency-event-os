@@ -912,3 +912,25 @@ Stop and repair if:
 Build the operating system first. Build the venue around it.
 
 The first baseline must prove that an agency owner can manage multiple client events without rebuilding the same production machine every time.
+
+
+## Inserted Phase — Run of Show Live Progress
+
+Before full Supabase persistence, the run of show must be treated as the central live operating spine.
+
+Required outputs:
+
+- live status model
+- current segment view
+- next cue stack
+- progress rail
+- producer controls shell
+- client-safe visibility
+- crew-safe visibility
+- testing-console integration
+- audit-log requirements for future persistence
+
+
+## Phase 2D/2E/2F — Talent, Sponsor, Approval, Intake, Last-Minute Change, Breakout, and Networking Ops
+
+This phase models speaker green room, speaker teleprompter, sponsor self-serve, sponsor packages, production inbox, approval queue, last-minute change control, breakout rooms, and 3-minute speed networking before Supabase/Auth/persistence hardens the schema.

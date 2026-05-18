@@ -2,6 +2,7 @@ import { getMockData, getContractorAssignmentsForEvent, getEvent } from "@/lib/m
 import { SectionCard } from "@/components/shared/SectionCard";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { formatEventDate } from "@/lib/utils/format";
+import { LiveRunOfShowDashboard } from "@/components/run-of-show/LiveRunOfShowDashboard";
 
 export function ContractorBench() {
   const data = getMockData();
@@ -68,6 +69,8 @@ export function ContractorPortalDashboard() {
         <h1 className="mt-2 text-3xl font-semibold">{event?.name}</h1>
         <p className="mt-2 text-slate-300">You only see assigned tasks, call time, and relevant production notes.</p>
       </div>
+      {event ? <LiveRunOfShowDashboard eventId={event.id} viewer="crew" /> : null}
+
       <SectionCard title="Your call sheet">
         <p className="text-sm text-slate-600">Role: {assignment.role}</p>
         <p className="text-sm text-slate-600">Call time: {formatEventDate(assignment.callTimeAt)}</p>

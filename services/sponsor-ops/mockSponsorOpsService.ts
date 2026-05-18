@@ -1,0 +1,57 @@
+import type { SponsorPackage, SponsorReadyRoomSnapshot } from "@/types/sponsorOps";
+
+export const mockSponsorPackages: SponsorPackage[] = [
+  {
+    id: "sponsor-package-clarity-gold",
+    agencyId: "agency-wpp",
+    clientId: "client-nova",
+    eventId: "event-summit",
+    sponsorId: "sponsor-clarity",
+    tier: "gold",
+    tierName: "Gold Sponsor",
+    price: 15000,
+    status: "in_review",
+    boothEnabled: true,
+    sessionEnabled: true,
+    rosMentionsAllowed: 2,
+    leadAccessLevel: "qualified_leads",
+    reportingLevel: "premium",
+    deliverables: [
+      { id: "logo", label: "Logo", status: "approved", dueAt: "2026-06-01T17:00:00.000Z", clientApprovalRequired: true },
+      { id: "booth-copy", label: "Booth copy", status: "needs_review", dueAt: "2026-06-03T17:00:00.000Z", clientApprovalRequired: true },
+      { id: "cta", label: "CTA URL", status: "submitted", dueAt: "2026-06-03T17:00:00.000Z", clientApprovalRequired: false },
+      { id: "rep", label: "Representative details", status: "approved", dueAt: "2026-06-05T17:00:00.000Z", clientApprovalRequired: false },
+      { id: "mention", label: "Sponsor mention copy", status: "needs_review", dueAt: "2026-06-06T17:00:00.000Z", clientApprovalRequired: true },
+    ],
+  },
+];
+
+export function getSponsorPackage(eventId: string, sponsorId = "sponsor-clarity") {
+  return mockSponsorPackages.find((pkg) => pkg.eventId === eventId && pkg.sponsorId === sponsorId) ?? mockSponsorPackages[0];
+}
+
+export function getSponsorReadyRoomSnapshot(eventId: string, sponsorId = "sponsor-clarity"): SponsorReadyRoomSnapshot {
+  return {
+    sponsorId,
+    eventId,
+    sponsorName: "Clarity AI",
+    boothStatus: "in_review",
+    representativeStatus: "confirmed",
+    ctaTestStatus: "passed",
+    leadRoutingTestStatus: "not_tested",
+    sessionStartsAt: "2026-06-12T17:00:00.000Z",
+    producerMessage: "Lead routing still needs final test before booth opens.",
+  };
+}
+
+export function getSponsorFulfillmentSummary(eventId: string) {
+  const packages = mockSponsorPackages.filter((pkg) => pkg.eventId === eventId);
+  const deliverables = packages.flatMap((pkg) => pkg.deliverables);
+  return {
+    eventId,
+    totalPackages: packages.length,
+    totalDeliverables: deliverables.length,
+    approvedDeliverables: deliverables.filter((item) => ["approved", "locked"].includes(item.status)).length,
+    openClientReviewItems: deliverables.filter((item) => item.clientApprovalRequired && item.status === "needs_review").length,
+  };
+}

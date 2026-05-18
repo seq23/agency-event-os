@@ -18,3 +18,8 @@
 | Vendors | Vendor portal is shallow | MVP boundary | Add scoped vendor portal |
 | Testing | Minimal unit tests only | Structural baseline | Add route smoke/E2E tests |
 | Validation | No full build run here | Environment/time bounded | Run locally through updater/Codex |
+
+| Testing Console | Testing console uses mock diagnostics | Lets operators see the intended cockpit now | Add real browser media tests and provider API checks |
+
+
+| Phase 2D/2E/2F mock-only ops layer | Speaker/sponsor/intake/networking features are mocked | Validates production workflows before persistence | Wire to Supabase, Storage, Resend, and video provider after Auth |

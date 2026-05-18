@@ -49,3 +49,28 @@ This starter baseline includes:
 STRUCTURALLY CHECKED — LOCAL VALIDATION REQUIRED
 
 Full npm validation has not been run in this environment.
+
+
+## Backend Foundation Added
+
+This baseline now includes Supabase/Auth/Resend foundation scaffolding:
+
+- Environment validation
+- Supabase browser/server/admin clients
+- Mock-backed auth helpers
+- Permission-required helper
+- Resend-compatible email provider abstraction
+- Mock email provider
+- Audit log service abstraction
+- Initial SQL migration draft
+- Seed SQL draft
+- Backend setup docs
+- Unit tests for env/email/audit helpers
+
+## Still Deferred
+
+- Live Supabase CRUD wiring
+- Supabase Auth session resolution
+- RLS policy implementation
+- Real email sending in app flows
+- Production deployment

@@ -1,2 +1,5 @@
-import { NetworkingPage } from "@/components/venue/VenuePages";
-export default function Networking({ params }: { params: { eventId: string } }) { return <NetworkingPage eventId={params.eventId} />; }
+import { SpeedNetworkingRoom } from "@/components/venue/SpeedNetworkingRoom";
+
+export default function VenueNetworkingPage({ params }: { params: { eventId: string } }) {
+  return <SpeedNetworkingRoom eventId={params.eventId} />;
+}

@@ -12,3 +12,5 @@ playwright-report
 test-results
 
 tsconfig.tsbuildinfo
+
+.vitest-cache

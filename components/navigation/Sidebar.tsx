@@ -8,6 +8,7 @@ const nav = [
   ["Assets", "/app/assets"],
   ["Reports", "/app/reports"],
   ["Settings", "/app/settings"],
+  ["Testing Console", "/admin/testing"],
 ];
 
 export function Sidebar() {

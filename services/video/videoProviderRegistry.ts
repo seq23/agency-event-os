@@ -1,5 +1,6 @@
 import type { VideoProvider } from "./VideoProvider";
 import { MockVideoProvider } from "./MockVideoProvider";
+import { createLiveKitProviderFromEnv } from "./LiveKitVideoProvider";
 
 const providers = new Map<string, VideoProvider>();
 
@@ -20,3 +21,9 @@ export function listVideoProviders() {
 }
 
 registerVideoProvider(new MockVideoProvider());
+
+const liveKitProvider = createLiveKitProviderFromEnv();
+if (liveKitProvider) {
+  registerVideoProvider(liveKitProvider);
+}
+

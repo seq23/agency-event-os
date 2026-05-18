@@ -45,3 +45,17 @@ export function isResendConfigured(env: AppEnv = getEnv()) {
 export function getAuthCookieName(env: AppEnv = getEnv()) {
   return env.AUTH_SESSION_COOKIE_NAME;
 }
+
+
+export function getLiveKitEnv() {
+  return {
+    livekitUrl: process.env.LIVEKIT_URL,
+    livekitApiKey: process.env.LIVEKIT_API_KEY,
+    livekitApiSecret: process.env.LIVEKIT_API_SECRET,
+  };
+}
+
+export function hasLiveKitEnv() {
+  const env = getLiveKitEnv();
+  return Boolean(env.livekitUrl && env.livekitApiKey && env.livekitApiSecret);
+}

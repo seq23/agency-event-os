@@ -5,3 +5,5 @@ export * from "./videoRoomService";
 export * from "./videoTokenService";
 export * from "./videoRecordingHooks";
 export * from "./videoTestingHooks";
+export * from "./LiveKitVideoProvider";
+export * from "./livekitToken";

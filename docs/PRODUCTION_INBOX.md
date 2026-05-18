@@ -1,27 +1,3 @@
 # Production Inbox
 
-## Purpose
-
-The Production Inbox turns messy inbound material into structured production work.
-
-## Sources
-
-- portal uploads
-- emailed attachments
-- cloud links
-- client comments
-- speaker comments
-- sponsor comments
-- producer manual uploads
-- late submissions
-
-## Actions
-
-- match to speaker
-- match to sponsor
-- match to client
-- match to run-of-show segment
-- create asset
-- create approval request
-- request changes
-- archive
+Phase 2D/2E/2F product model for Agency Event OS. This document defines mock UX behavior, future persistence requirements, visibility boundaries, and producer workflow rules.

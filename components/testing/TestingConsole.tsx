@@ -4,13 +4,11 @@ import { MetricCard } from "@/components/shared/MetricCard";
 import { VideoPlaceholder } from "@/components/venue/VideoPlaceholder";
 import { getTestingConsoleSnapshot, requiresProducerRecovery } from "@/services/testing";
 import { DiagnosticStatusBadge } from "./DiagnosticStatusBadge";
-import { getRunOfShowProgressSnapshot } from "@/services/run-of-show";
 
 export function TestingConsole({ eventId = "event-summit" }: { eventId?: string }) {
   const event = getEvent(eventId);
   const snapshot = getTestingConsoleSnapshot(event.id);
   const recoveryRequired = requiresProducerRecovery(snapshot);
-  const runOfShow = getRunOfShowProgressSnapshot(event.id);
 
   return (
     <div className="min-h-screen bg-slate-50 p-6 text-slate-950">
@@ -34,20 +32,6 @@ export function TestingConsole({ eventId = "event-summit" }: { eventId?: string 
               <p className="text-xs uppercase tracking-wide text-slate-400">Overall</p>
               <p className="text-xl font-semibold">{snapshot.overallStatus.toUpperCase()}</p>
             </div>
-          </div>
-        </div>
-
-        <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
-          <p className="text-sm font-medium text-slate-500">Run of Show testing context</p>
-          <h2 className="mt-1 text-xl font-semibold">Currently live: {runOfShow.currentSegment?.publicTitle ?? "No segment live"}</h2>
-          <p className="mt-2 text-sm text-slate-600">Upcoming room checks should prioritize the current segment and next three cues.</p>
-          <div className="mt-4 grid gap-3 md:grid-cols-3">
-            {runOfShow.upcomingSegments.map((segment) => (
-              <div key={segment.id} className="rounded-2xl bg-slate-50 p-3 text-sm">
-                <p className="font-semibold text-slate-950">{segment.publicTitle}</p>
-                <p className="text-slate-500">{segment.room} · {segment.liveStatus}</p>
-              </div>
-            ))}
           </div>
         </div>
 

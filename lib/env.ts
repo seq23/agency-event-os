@@ -7,6 +7,8 @@ const envSchema = z.object({
   NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().optional().or(z.literal("")),
   SUPABASE_SERVICE_ROLE_KEY: z.string().optional().or(z.literal("")),
 
+  AUTH_SESSION_COOKIE_NAME: z.string().min(1).default("agency_event_os_session"),
+
   RESEND_API_KEY: z.string().optional().or(z.literal("")),
   EMAIL_FROM: z.string().email().optional().or(z.literal("")),
 
@@ -21,6 +23,7 @@ export function getEnv(): AppEnv {
     NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL || "",
     NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "",
     SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY || "",
+    AUTH_SESSION_COOKIE_NAME: process.env.AUTH_SESSION_COOKIE_NAME || "agency_event_os_session",
     RESEND_API_KEY: process.env.RESEND_API_KEY || "",
     EMAIL_FROM: process.env.EMAIL_FROM || "",
     VIDEO_PROVIDER: process.env.VIDEO_PROVIDER || "mock",
@@ -37,4 +40,8 @@ export function isSupabaseAdminConfigured(env: AppEnv = getEnv()) {
 
 export function isResendConfigured(env: AppEnv = getEnv()) {
   return Boolean(env.RESEND_API_KEY && env.EMAIL_FROM);
+}
+
+export function getAuthCookieName(env: AppEnv = getEnv()) {
+  return env.AUTH_SESSION_COOKIE_NAME;
 }

@@ -2,7 +2,6 @@ import { getEvent, getRunOfShowForEvent, getSpeakersForEvent, getSponsorsForEven
 import { SectionCard } from "@/components/shared/SectionCard";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { formatEventDate } from "@/lib/utils/format";
-import { LiveRunOfShowDashboard } from "@/components/run-of-show/LiveRunOfShowDashboard";
 
 export function RunOfShowPage({ eventId }: { eventId: string }) {
   const event = getEvent(eventId);
@@ -17,8 +16,6 @@ export function RunOfShowPage({ eventId }: { eventId: string }) {
         <h1 className="mt-2 text-3xl font-semibold">{event.name}</h1>
         <p className="mt-2 text-slate-600">Structured production timeline connected to speakers, sponsors, cues, assets, approvals, and crew.</p>
       </div>
-
-      <LiveRunOfShowDashboard eventId={event.id} viewer="agency" showControls />
 
       <div className="grid gap-6 xl:grid-cols-[1fr_320px]">
         <SectionCard title="Production timeline">

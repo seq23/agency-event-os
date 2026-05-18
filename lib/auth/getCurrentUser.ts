@@ -1,14 +1,18 @@
-import { getCurrentUser as getMockCurrentUser } from "@/lib/mock/getMockData";
+import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { isSupabaseConfigured } from "@/lib/env";
 import type { PermissionUser } from "@/types/permissions";
+import { getAuthCookiePayload } from "./sessionCookie";
+import { resolvePermissionUserForSupabaseUser } from "./authService";
 
-/**
- * Current implementation intentionally returns the mock agency owner.
- *
- * Future Supabase implementation should:
- * 1. Read the current Supabase auth session.
- * 2. Resolve role assignments.
- * 3. Return the normalized PermissionUser shape.
- */
 export async function getCurrentUser(): Promise<PermissionUser | null> {
-  return getMockCurrentUser();
+  if (!isSupabaseConfigured()) return null;
+
+  const session = getAuthCookiePayload();
+  if (!session?.accessToken) return null;
+
+  const supabase = createServerSupabaseClient();
+  const { data, error } = await supabase.auth.getUser(session.accessToken);
+
+  if (error || !data.user) return null;
+  return resolvePermissionUserForSupabaseUser(data.user.id);
 }

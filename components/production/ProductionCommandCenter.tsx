@@ -3,12 +3,6 @@ import { SectionCard } from "@/components/shared/SectionCard";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { MetricCard } from "@/components/shared/MetricCard";
 import { formatEventDate } from "@/lib/utils/format";
-import { getRunOfShowProgressSnapshot } from "@/services/run-of-show";
-import { RunOfShowProgressRail } from "@/components/run-of-show/RunOfShowProgressRail";
-import { CurrentSegmentCard } from "@/components/run-of-show/CurrentSegmentCard";
-import { NextCueStack } from "@/components/run-of-show/NextCueStack";
-import { LiveRunOfShowControls } from "@/components/run-of-show/LiveRunOfShowControls";
-import { RUN_OF_SHOW_VISIBILITY } from "@/types/runOfShowLive";
 
 export function ProductionCommandCenter({ eventId }: { eventId: string }) {
   const event = getEvent(eventId);
@@ -18,8 +12,6 @@ export function ProductionCommandCenter({ eventId }: { eventId: string }) {
   const speakers = getSpeakersForEvent(event.id);
   const crew = getContractorAssignmentsForEvent(event.id);
   const vendors = getVendorAssignmentsForEvent(event.id);
-  const liveRos = getRunOfShowProgressSnapshot(event.id);
-  const agencyVisibility = RUN_OF_SHOW_VISIBILITY.agency;
 
   return (
     <div className="space-y-6">
@@ -31,21 +23,12 @@ export function ProductionCommandCenter({ eventId }: { eventId: string }) {
         </p>
       </div>
 
-      <RunOfShowProgressRail snapshot={liveRos} />
-
       <div className="grid gap-4 md:grid-cols-4">
         <MetricCard label="Current segment" value={current?.publicTitle ?? "None"} note={current ? formatEventDate(current.startAt) : undefined} />
         <MetricCard label="Speakers" value={`${speakers.filter((s) => s.readinessStatus === "ready").length}/${speakers.length}`} note="ready" />
         <MetricCard label="Crew confirmed" value={`${crew.filter((c) => c.status === "confirmed").length}/${crew.length}`} />
         <MetricCard label="Vendors" value={`${vendors.filter((v) => ["confirmed", "complete"].includes(v.status)).length}/${vendors.length}`} />
       </div>
-
-      <div className="grid gap-6 xl:grid-cols-[1fr_380px]">
-        <CurrentSegmentCard segment={liveRos.currentSegment} visibility={agencyVisibility} />
-        <NextCueStack segments={liveRos.upcomingSegments} visibility={agencyVisibility} />
-      </div>
-
-      <LiveRunOfShowControls />
 
       <div className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
         <SectionCard title="Live segment">

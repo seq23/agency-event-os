@@ -11,6 +11,7 @@ describe("env helpers", () => {
         SUPABASE_SERVICE_ROLE_KEY: "",
         RESEND_API_KEY: "",
         EMAIL_FROM: "",
+        AUTH_SESSION_COOKIE_NAME: "agency_event_os_session",
         VIDEO_PROVIDER: "mock",
       }),
     ).toBe(false);
@@ -25,6 +26,7 @@ describe("env helpers", () => {
         SUPABASE_SERVICE_ROLE_KEY: "",
         RESEND_API_KEY: "",
         EMAIL_FROM: "",
+        AUTH_SESSION_COOKIE_NAME: "agency_event_os_session",
         VIDEO_PROVIDER: "mock",
       }),
     ).toBe(true);
@@ -38,6 +40,7 @@ describe("env helpers", () => {
       SUPABASE_SERVICE_ROLE_KEY: "service",
       RESEND_API_KEY: "re_test",
       EMAIL_FROM: "events@example.com",
+      AUTH_SESSION_COOKIE_NAME: "agency_event_os_session",
       VIDEO_PROVIDER: "mock" as const,
     };
 

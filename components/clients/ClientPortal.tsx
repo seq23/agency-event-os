@@ -4,7 +4,6 @@ import { AssetLibrary } from "@/components/assets/AssetLibrary";
 import { SectionCard } from "@/components/shared/SectionCard";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { formatEventDate } from "@/lib/utils/format";
-import { LiveRunOfShowDashboard } from "@/components/run-of-show/LiveRunOfShowDashboard";
 
 export function ClientPortalDashboard({ clientSlug, eventId }: { clientSlug: string; eventId?: string }) {
   const data = getMockData();
@@ -34,13 +33,10 @@ export function ClientPortalDashboard({ clientSlug, eventId }: { clientSlug: str
         </SectionCard>
 
         {selectedEvent ? (
-          <>
-            <LiveRunOfShowDashboard eventId={selectedEvent.id} viewer="client" />
-            <div className="grid gap-6 lg:grid-cols-2">
+          <div className="grid gap-6 lg:grid-cols-2">
             <ApprovalQueue eventId={selectedEvent.id} clientFacing />
             <AssetLibrary eventId={selectedEvent.id} clientFacing />
-            </div>
-          </>
+          </div>
         ) : null}
       </div>
     </main>

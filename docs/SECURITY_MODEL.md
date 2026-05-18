@@ -23,3 +23,8 @@ This baseline is a mock-data shell. It does not include production authenticatio
 - Storage policies
 - Video token generation server-side only
 - Audit log persistence
+
+
+## Batch 3A Auth Boundary
+
+Supabase Auth is now the session source. The app stores a server-readable HTTP-only session cookie after login/callback and normalizes profile + role records into `PermissionUser`. Middleware protects signed-in route families, while `requireUser` and `requirePermission` remain the server-side enforcement points.

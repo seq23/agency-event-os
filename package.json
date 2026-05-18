@@ -24,7 +24,8 @@
     "validate:assets": "npm run test -- --run tests/unit/assetRules.test.ts",
     "validate:speaker-sponsor-persistence": "npm run test -- --run tests/unit/speakerSponsorPersistence.test.ts",
     "validate:email-workflows": "npm run test -- --run tests/unit/emailWorkflows.test.ts",
-    "validate:production-workflow": "npm run test -- --run tests/unit/productionWorkflowPersistence.test.ts tests/unit/productionWorkflowActions.test.ts"
+    "validate:production-workflow": "npm run test -- --run tests/unit/productionWorkflowPersistence.test.ts tests/unit/productionWorkflowActions.test.ts",
+    "validate:browser-diagnostics": "npm run test -- --run tests/unit/browserDiagnostics.test.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "3.9.0",

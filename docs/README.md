@@ -51,3 +51,4 @@ This folder contains the documentation baseline and implementation references fo
 - `SPEAKER_SPONSOR_PERSISTENCE_3E.md`
 - `EMAIL_WORKFLOWS_3F.md`
 - `PRODUCTION_WORKFLOW_PERSISTENCE_5.md`
+- `REAL_TESTING_CONSOLE_DIAGNOSTICS_6.md`

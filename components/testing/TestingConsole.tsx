@@ -4,6 +4,7 @@ import { MetricCard } from "@/components/shared/MetricCard";
 import { VideoPlaceholder } from "@/components/venue/VideoPlaceholder";
 import { getTestingConsoleSnapshot, requiresProducerRecovery } from "@/services/testing";
 import { DiagnosticStatusBadge } from "./DiagnosticStatusBadge";
+import { BrowserDiagnosticsPanel } from "./BrowserDiagnosticsPanel";
 
 export function TestingConsole({ eventId = "event-summit" }: { eventId?: string }) {
   const event = getEvent(eventId);
@@ -41,6 +42,10 @@ export function TestingConsole({ eventId = "event-summit" }: { eventId?: string 
           <MetricCard label="Critical failures" value={snapshot.incidents.filter((incident) => incident.severity === "critical" && incident.status === "open").length} />
           <MetricCard label="Recovery provider" value={snapshot.whiteLabelBackupEnabled ? `${snapshot.whiteLabelBackupProvider.replace(/_/g, " ").toUpperCase()}` : "None"} />
         </div>
+
+
+
+        <BrowserDiagnosticsPanel eventId={event.id} />
 
         <div className="grid gap-6 xl:grid-cols-[1fr_380px]">
           <SectionCard title="Operator video/audio preflight" eyebrow="Manual + provider checks">

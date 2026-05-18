@@ -922,3 +922,15 @@ Real Supabase Auth session resolution, profile lookup, role-access normalization
 ## Batch 3B — Real Agency / Client / Event Persistence Foundation
 
 Adds Supabase-ready service boundaries and validation/server actions for agencies, clients, and events. Asset, approval, speaker/sponsor, email, video, and billing persistence remain deferred.
+
+
+## Batch 3C — Production Ops Persistence
+
+Adds Supabase-ready persistence for approvals, production inbox, last-minute change control, asset metadata, and audit hooks. Storage/email/video remain deferred.
+
+
+## Batch 3C–5 cumulative foundation
+
+This cumulative batch includes approval/inbox/change-control persistence, storage and asset metadata foundation, speaker/sponsor persistence models, email workflow foundations, real data read-model completion, and production workflow persistence foundations.
+
+Still deferred: real video provider, production Resend sending, Stripe, deployment, and full attendee venue engine.

@@ -19,7 +19,22 @@ export type AuditAction =
   | "incident_logged"
   | "report_exported"
   | "video_room_created"
-  | "networking_report_submitted";
+  | "networking_report_submitted"
+  | "approval_approve"
+  | "approval_request_changes"
+  | "approval_lock"
+  | "approval_archive"
+  | "inbox_matched"
+  | "inbox_needs_review"
+  | "inbox_converted_to_asset"
+  | "inbox_converted_to_approval"
+  | "inbox_ignored"
+  | "inbox_archived"
+  | "last_minute_change_approve"
+  | "last_minute_change_approve_with_conditions"
+  | "last_minute_change_reject"
+  | "last_minute_change_push_to_live"
+  | "last_minute_change_rollback";
 
 export interface CreateAuditLogInput {
   agencyId: string;

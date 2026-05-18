@@ -23,3 +23,8 @@
 
 
 | Batch 3B persistence shells | Client/event forms define UX placement but do not submit from the browser yet | Avoids premature CRUD UX before route-specific create/edit screens | Wire form actions into dedicated create/edit pages after service layer is committed |
+
+
+## Batch 3C — Production Ops Persistence
+
+Adds Supabase-ready persistence for approvals, production inbox, last-minute change control, asset metadata, and audit hooks. Storage/email/video remain deferred.

@@ -19,7 +19,12 @@
     "validate:testing-console": "npm run test -- --run tests/unit/testingConsole.test.ts",
     "validate:auth": "npm run test -- --run tests/unit/authSession.test.ts tests/unit/accessResolver.test.ts tests/unit/authActions.test.ts",
     "validate:phase2d2e2f": "npm run test -- --run tests/unit/speakerOps.test.ts tests/unit/sponsorOps.test.ts tests/unit/approvalOps.test.ts tests/unit/eventIntake.test.ts tests/unit/changeControl.test.ts tests/unit/networkingOps.test.ts",
-    "validate:persistence": "npm run test -- --run tests/unit/persistenceMapping.test.ts tests/unit/clientEventSchemas.test.ts tests/unit/coreReadModel.test.ts"
+    "validate:persistence": "npm run test -- --run tests/unit/persistenceMapping.test.ts tests/unit/clientEventSchemas.test.ts tests/unit/coreReadModel.test.ts",
+    "validate:production-ops-persistence": "npm run test -- --run tests/unit/productionOpsSchemas.test.ts tests/unit/operationalMapping.test.ts tests/unit/productionOpsActions.test.ts",
+    "validate:assets": "npm run test -- --run tests/unit/assetRules.test.ts",
+    "validate:speaker-sponsor-persistence": "npm run test -- --run tests/unit/speakerSponsorPersistence.test.ts",
+    "validate:email-workflows": "npm run test -- --run tests/unit/emailWorkflows.test.ts",
+    "validate:production-workflow": "npm run test -- --run tests/unit/productionWorkflowPersistence.test.ts tests/unit/productionWorkflowActions.test.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "3.9.0",

@@ -45,3 +45,9 @@ This folder contains the documentation baseline and implementation references fo
 - `RUN_OF_SHOW_LIVE_PROGRESS.md`
 
 - `PERSISTENCE_BATCH_3B.md`
+- `PRODUCTION_OPS_PERSISTENCE_BATCH_3C.md`
+
+- `STORAGE_AND_ASSET_UPLOADS_3D.md`
+- `SPEAKER_SPONSOR_PERSISTENCE_3E.md`
+- `EMAIL_WORKFLOWS_3F.md`
+- `PRODUCTION_WORKFLOW_PERSISTENCE_5.md`

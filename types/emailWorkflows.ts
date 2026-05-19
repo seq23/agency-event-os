@@ -12,6 +12,9 @@ export type EmailWorkflowType =
   | "report_ready";
 
 export interface EmailWorkflowPayload {
+  agencyId?: string;
+  clientId?: string;
+  eventId?: string;
   workflowType: EmailWorkflowType;
   to: string;
   subject: string;

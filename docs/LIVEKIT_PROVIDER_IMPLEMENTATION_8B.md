@@ -12,9 +12,9 @@
 Required server-side environment variables:
 
 ```txt
-LIVEKIT_URL=wss://...
-LIVEKIT_API_KEY=...
-LIVEKIT_API_SECRET=...
+`LIVEKIT_URL` — set locally; never commit
+`LIVEKIT_API_KEY` — set locally; never commit
+`LIVEKIT_API_SECRET` — set locally; never commit
 ```
 
 ## What This Phase Adds

@@ -10,7 +10,8 @@ export interface EmailMessage {
 export interface EmailSendResult {
   id: string;
   provider: "mock" | "resend";
-  status: "queued" | "sent" | "skipped";
+  status: "queued" | "sent" | "skipped" | "failed";
+  failureReason?: string;
 }
 
 export interface EmailProvider {

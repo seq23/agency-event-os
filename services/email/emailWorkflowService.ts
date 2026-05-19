@@ -1,18 +1,20 @@
 import type { EmailWorkflowPayload } from "@/types/emailWorkflows";
+import { buildEmailSubject } from "./emailWorkflowTemplates";
 
 export function buildEmailWorkflowPayload(input: EmailWorkflowPayload) {
   return {
     ...input,
-    subject: input.subject.trim(),
+    subject: buildEmailSubject(input),
     summary: input.summary ?? `${input.workflowType.replace(/_/g, " ")} for ${input.eventName ?? "event"}`,
   };
 }
 
 export function renderEmailWorkflowText(payload: EmailWorkflowPayload) {
-  const greeting = payload.recipientName ? `Hi ${payload.recipientName},` : "Hi,";
-  const due = payload.dueAt ? `\nDue: ${payload.dueAt}` : "";
-  const action = payload.actionUrl ? `\nOpen: ${payload.actionUrl}` : "";
-  return `${greeting}\n\n${payload.summary ?? payload.subject}${due}${action}\n\nAgency Event OS`;
+  const normalized = buildEmailWorkflowPayload(payload);
+  const greeting = normalized.recipientName ? `Hi ${normalized.recipientName},` : "Hi,";
+  const due = normalized.dueAt ? `\nDue: ${normalized.dueAt}` : "";
+  const action = normalized.actionUrl ? `\nOpen: ${normalized.actionUrl}` : "";
+  return `${greeting}\n\n${normalized.summary}${due}${action}\n\nAgency Event OS`;
 }
 
 export const requiredEmailWorkflows: EmailWorkflowPayload["workflowType"][] = [

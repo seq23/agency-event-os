@@ -36,7 +36,8 @@
     "validate:phase13": "npm run test -- --run tests/unit/virtualVenueCompletion.test.ts",
     "validate:phase14": "npm run test -- --run tests/unit/supabaseQueryIntegration.test.ts",
     "validate:phase15": "npm run test -- --run tests/unit/liveProductionOperations.test.ts",
-    "validate:phase16": "npm run test -- --run tests/unit/livekitEgress.test.ts"
+    "validate:phase16": "npm run test -- --run tests/unit/livekitEgress.test.ts",
+    "validate:phase17": "npm run test -- --run tests/unit/emailProduction.test.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "3.9.0",

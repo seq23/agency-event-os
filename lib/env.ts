@@ -1,5 +1,10 @@
 import { z } from "zod";
 
+const emailIdentitySchema = z.string().min(3).refine((value) => {
+  if (!value) return true;
+  return /^[^<\n]+<[^@\s<>]+@[^@\s<>]+\.[^@\s<>]+>$/.test(value.trim()) || /^[^@\s<>]+@[^@\s<>]+\.[^@\s<>]+$/.test(value.trim());
+}, "EMAIL_FROM must be either email@example.com or Name <email@example.com>");
+
 const envSchema = z.object({
   NEXT_PUBLIC_APP_URL: z.string().url().default("http://localhost:3000"),
 
@@ -10,7 +15,8 @@ const envSchema = z.object({
   AUTH_SESSION_COOKIE_NAME: z.string().min(1).default("agency_event_os_session"),
 
   RESEND_API_KEY: z.string().optional().or(z.literal("")),
-  EMAIL_FROM: z.string().email().optional().or(z.literal("")),
+  EMAIL_FROM: emailIdentitySchema.optional().or(z.literal("")),
+  EMAIL_REPLY_TO: z.string().email().optional().or(z.literal("")),
 
   VIDEO_PROVIDER: z.enum(["mock", "livekit", "daily", "agora", "mux", "twilio", "other"]).default("mock"),
 });
@@ -26,6 +32,7 @@ export function getEnv(): AppEnv {
     AUTH_SESSION_COOKIE_NAME: process.env.AUTH_SESSION_COOKIE_NAME || "agency_event_os_session",
     RESEND_API_KEY: process.env.RESEND_API_KEY || "",
     EMAIL_FROM: process.env.EMAIL_FROM || "",
+    EMAIL_REPLY_TO: process.env.EMAIL_REPLY_TO || "",
     VIDEO_PROVIDER: process.env.VIDEO_PROVIDER || "mock",
   });
 }
@@ -42,10 +49,13 @@ export function isResendConfigured(env: AppEnv = getEnv()) {
   return Boolean(env.RESEND_API_KEY && env.EMAIL_FROM);
 }
 
+export function getEmailReplyTo(env: AppEnv = getEnv()) {
+  return env.EMAIL_REPLY_TO || undefined;
+}
+
 export function getAuthCookieName(env: AppEnv = getEnv()) {
   return env.AUTH_SESSION_COOKIE_NAME;
 }
-
 
 export function getLiveKitEnv() {
   return {

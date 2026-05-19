@@ -1,11 +1,11 @@
 import type { EmailMessage, EmailProvider, EmailSendResult } from "./EmailProvider";
-import { getEnv, isResendConfigured } from "@/lib/env";
+import { getEmailReplyTo, getEnv, isResendConfigured } from "@/lib/env";
 
 /**
- * Minimal Resend-compatible provider.
+ * Production Resend provider.
  *
- * The implementation uses fetch instead of importing the Resend SDK so this
- * starter can validate without adding another runtime dependency.
+ * Uses fetch directly to avoid adding a runtime SDK dependency. API keys are
+ * read only from server-side environment variables.
  */
 export class ResendEmailProvider implements EmailProvider {
   async send(message: EmailMessage): Promise<EmailSendResult> {
@@ -27,7 +27,7 @@ export class ResendEmailProvider implements EmailProvider {
         subject: message.subject,
         html: message.html,
         text: message.text,
-        reply_to: message.replyTo,
+        reply_to: message.replyTo || getEmailReplyTo(env),
       }),
     });
 

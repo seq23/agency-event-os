@@ -12,7 +12,7 @@
     "test": "vitest run --pool=threads --poolOptions.threads.singleThread=true",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
-    "validate": "npm run typecheck && npm run lint && npm run test && npm run validate:structure",
+    "validate": "npm run typecheck && npm run lint && npm run test && npm run validate:structure && npm run validate:brand",
     "structure": "node scripts/validate_structure.js",
     "validate:structure": "node scripts/validate_structure.js",
     "validate:backend-foundation": "npm run test -- --run tests/unit/env.test.ts tests/unit/email.test.ts tests/unit/audit.test.ts",

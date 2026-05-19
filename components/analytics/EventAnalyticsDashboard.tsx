@@ -71,7 +71,7 @@ export function EventAnalyticsDashboard({ eventId }: { eventId: string }) {
 
       <div className="grid gap-4 sm:gap-6 lg:grid-cols-3">
         <SectionCard title="Networking metrics">
-          <p className="text-sm text-slate-600">Mock networking matches: 64 queued, 42 matched, 29 mutual connections.</p>
+          <p className="text-sm text-slate-600">Demo networking matches: 64 queued, 42 matched, 29 mutual connections.</p>
         </SectionCard>
         <SectionCard title="Replay metrics">
           <p className="text-sm text-slate-600">Replay shell: views, completion rate, and top replay sessions will persist later.</p>

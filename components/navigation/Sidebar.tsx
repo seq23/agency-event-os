@@ -43,7 +43,7 @@ export function Sidebar() {
       <div className="hidden p-5 lg:block">
         <div className="rounded-3xl border border-white/10 bg-white/[0.06] p-4 text-sm text-white/70">
           <p className="font-bold text-white">Live production mode</p>
-          <p className="mt-1">Resend, LiveKit, venue surfaces, replay, reports, and Supabase persistence are wired for validation.</p>
+          <p className="mt-1">Resend, LiveKit, venue surfaces, replay, reports, and Supabase persistence are wired for production readiness checks.</p>
         </div>
       </div>
     </aside>

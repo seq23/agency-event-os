@@ -1,0 +1,11 @@
+{
+  "eventId": "event-webinar",
+  "sessions": [
+    {
+      "id": "session-leadership-reset-webinar",
+      "title": "Leadership Reset Webinar",
+      "room": "main_stage",
+      "startsAt": "2026-06-12T15:00:00.000Z"
+    }
+  ]
+}

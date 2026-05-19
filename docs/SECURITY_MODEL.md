@@ -28,3 +28,11 @@ This baseline is a seeded-data shell. It does not include production authenticat
 ## Batch 3A Auth Boundary
 
 Supabase Auth is now the session source. The app stores a server-readable HTTP-only session cookie after login/callback and normalizes profile + role records into `PermissionUser`. Middleware protects signed-in route families, while `requireUser` and `requirePermission` remain the server-side enforcement points.
+
+## Master Plan v4
+
+V4 security: no raw secrets in repo, signed httpOnly cookies, generic failure messages, route guards, audit attempts, PR-only publishing boundary, secret scanners.
+
+
+## V5 access correction
+Access cookies use HMAC SHA-256, are httpOnly, sameSite=lax, secure in production, and are checked by role + event scoped middleware. Raw role codes are environment values only. Access attempts must be audited without logging raw submitted codes.

@@ -1,0 +1,13 @@
+{
+  "eventId": "event-workshop",
+  "providerLadder": [
+    "livekit",
+    "daily",
+    "zoom",
+    "google_meet"
+  ],
+  "dailyAutomatic": true,
+  "zoomRequiresCrewConfirmation": true,
+  "googleMeetManualOnly": true,
+  "roomLevelOverrides": true
+}

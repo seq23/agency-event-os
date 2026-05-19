@@ -1,0 +1,10 @@
+{
+  "eventId": "event-webinar",
+  "speakers": [
+    {
+      "id": "speaker-leadership-reset-webinar",
+      "name": "Assigned Speaker",
+      "roleCodeEnvKey": "EVENT_LEADERSHIP_RESET_WEBINAR_SPEAKER_CODE"
+    }
+  ]
+}

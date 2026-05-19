@@ -1,0 +1,11 @@
+{
+  "eventId": "event-demo-day",
+  "segments": [
+    {
+      "id": "ros-seed-demo-day",
+      "title": "Seed Demo Day",
+      "room": "main_stage",
+      "backupPlan": "Daily room ready; Zoom manual fallback requires crew confirmation."
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "events": [
+    {
+      "slug": "demo",
+      "eventId": "event-summit",
+      "publicCode": "demo",
+      "status": "published",
+      "configPath": "data/events/demo/event.json"
+    },
+    {
+      "slug": "leadership-reset-webinar",
+      "eventId": "event-webinar",
+      "publicCode": "leadership-reset-webinar",
+      "status": "registration_open",
+      "configPath": "data/events/leadership-reset-webinar/event.json"
+    },
+    {
+      "slug": "seed-demo-day",
+      "eventId": "event-demo-day",
+      "publicCode": "seed-demo-day",
+      "status": "draft",
+      "configPath": "data/events/seed-demo-day/event.json"
+    },
+    {
+      "slug": "provider-innovation-expo",
+      "eventId": "event-expo",
+      "publicCode": "provider-innovation-expo",
+      "status": "published",
+      "configPath": "data/events/provider-innovation-expo/event.json"
+    },
+    {
+      "slug": "premium-workshop-intensive",
+      "eventId": "event-workshop",
+      "publicCode": "premium-workshop-intensive",
+      "status": "ended",
+      "configPath": "data/events/premium-workshop-intensive/event.json"
+    }
+  ]
+}

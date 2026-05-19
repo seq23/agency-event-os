@@ -16,7 +16,7 @@ export default function ReplayPage({ params }: { params: { eventId: string } }) 
   return (
     <VenuePageShell model={model}>
       <div className="space-y-6">
-        <ReplayCenter replays={model.replays} />
+        <ReplayCenter eventId={model.eventId} replays={model.replays} />
         <ReplayRecordingStatusPanel jobs={[recordingJob]} />
       </div>
     </VenuePageShell>

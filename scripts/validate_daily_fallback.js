@@ -51,8 +51,11 @@ if (/DAILY_API_KEY[^\n]+NEXT_PUBLIC/.test(dailyProvider)) {
 
 
 const postDeploySmoke = read("scripts/post_deploy_smoke_test.js");
-for (const phrase of ["/api/video/daily-token", "Daily fallback route returned", "x-opennext", "visible404", "fallbackProvider === \"daily\""]) {
-  if (!postDeploySmoke.includes(phrase)) failures.push(`Post-deploy smoke test missing phrase: ${phrase}`);
+for (const phrase of ["/api/video/daily-token", "api-safe-failure", "expected safe auth/config failure", "mustContain", "protected"]) {
+  if (!postDeploySmoke.includes(phrase)) failures.push(`Post-deploy smoke test missing strict smoke invariant: ${phrase}`);
+}
+for (const staleSmokePattern of ["visible404", "response.status < 500", "Daily fallback route returned"]) {
+  if (postDeploySmoke.includes(staleSmokePattern)) failures.push(`Post-deploy smoke test still contains stale permissive invariant: ${staleSmokePattern}`);
 }
 
 const testingConsole = read("components/testing/TestingConsole.tsx");

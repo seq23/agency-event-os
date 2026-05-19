@@ -1,0 +1,11 @@
+{
+  "eventId": "event-expo",
+  "sessions": [
+    {
+      "id": "session-provider-innovation-expo",
+      "title": "Provider Innovation Expo",
+      "room": "main_stage",
+      "startsAt": "2026-06-12T15:00:00.000Z"
+    }
+  ]
+}

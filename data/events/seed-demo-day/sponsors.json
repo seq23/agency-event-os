@@ -1,0 +1,10 @@
+{
+  "eventId": "event-demo-day",
+  "sponsors": [
+    {
+      "id": "sponsor-seed-demo-day",
+      "name": "Event Partner",
+      "roleCodeEnvKey": "EVENT_SEED_DEMO_DAY_SPONSOR_CODE"
+    }
+  ]
+}

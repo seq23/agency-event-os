@@ -11,7 +11,7 @@ export interface VideoFallbackPolicy {
   producerPermissionRequiredForManagedFallback: boolean;
 }
 
-export function getVideoFallbackPolicy(env?: AppEnv): VideoFallbackPolicy {
+export function getVideoFallbackPolicy(env?: Partial<AppEnv>): VideoFallbackPolicy {
   const dailyEnabled = env ? isDailyFallbackEnabled(env) : isDailyFallbackEnabled();
   const order: VideoFallbackProviderKey[] = dailyEnabled
     ? ["livekit", "daily", "zoom_sdk", "google_meet"]
@@ -26,7 +26,7 @@ export function getVideoFallbackPolicy(env?: AppEnv): VideoFallbackPolicy {
   };
 }
 
-export function getNextVideoFallbackProvider(failedProvider: VideoFallbackProviderKey, env?: AppEnv) {
+export function getNextVideoFallbackProvider(failedProvider: VideoFallbackProviderKey, env?: Partial<AppEnv>) {
   const policy = getVideoFallbackPolicy(env);
   const index = policy.order.indexOf(failedProvider);
   return index >= 0 ? policy.order[index + 1] : undefined;

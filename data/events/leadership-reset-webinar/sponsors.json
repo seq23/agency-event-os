@@ -1,0 +1,10 @@
+{
+  "eventId": "event-webinar",
+  "sponsors": [
+    {
+      "id": "sponsor-leadership-reset-webinar",
+      "name": "Event Partner",
+      "roleCodeEnvKey": "EVENT_LEADERSHIP_RESET_WEBINAR_SPONSOR_CODE"
+    }
+  ]
+}

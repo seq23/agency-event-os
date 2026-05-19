@@ -1,0 +1,10 @@
+{
+  "eventId": "event-expo",
+  "sponsors": [
+    {
+      "id": "sponsor-provider-innovation-expo",
+      "name": "Event Partner",
+      "roleCodeEnvKey": "EVENT_PROVIDER_INNOVATION_EXPO_SPONSOR_CODE"
+    }
+  ]
+}

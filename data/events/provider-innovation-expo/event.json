@@ -1,0 +1,12 @@
+{
+  "id": "event-expo",
+  "slug": "provider-innovation-expo",
+  "name": "Provider Innovation Expo",
+  "client": "Aurora Health Collective",
+  "timezone": "America/Chicago",
+  "state": "published",
+  "publishLifecycle": "published",
+  "publicCode": "provider-innovation-expo",
+  "runtimeStateBoundary": "live operational state must be stored in runtime store, not repo config only",
+  "clientSlug": "aurora-health"
+}

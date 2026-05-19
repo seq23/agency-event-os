@@ -9,7 +9,14 @@ export function registerVideoProvider(provider: VideoProvider) {
   providers.set(provider.key, provider);
 }
 
-export function getVideoProvider(key = "mock"): VideoProvider {
+function isProductionRuntime() {
+  return process.env.NODE_ENV === "production" && process.env.NEXT_PHASE !== "phase-production-build" && process.env.npm_lifecycle_event !== "build";
+}
+
+export function getVideoProvider(key = process.env.VIDEO_PROVIDER || "mock"): VideoProvider {
+  if (isProductionRuntime() && key === "mock" && process.env.ALLOW_MOCK_VIDEO_PROVIDER_IN_PRODUCTION !== "true") {
+    throw new Error("VIDEO_PROVIDER=mock is not allowed in production runtime unless ALLOW_MOCK_VIDEO_PROVIDER_IN_PRODUCTION=true is explicitly set.");
+  }
   const provider = providers.get(key);
   if (!provider) {
     throw new Error(`Video provider not registered: ${key}`);

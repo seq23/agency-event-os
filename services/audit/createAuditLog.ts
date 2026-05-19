@@ -1,14 +1,10 @@
+import { getRuntimeStore } from "@/services/runtime/runtimeStoreFactory";
 import type { AuditLog } from "@/types/core";
 import type { CreateAuditLogInput } from "./auditTypes";
 
-/**
- * Mock audit log creator.
- *
- * Future Supabase implementation should insert into audit_logs from a server-only service.
- */
 export async function createAuditLog(input: CreateAuditLogInput): Promise<AuditLog> {
-  return {
-    id: `audit-${Date.now()}`,
+  const log: AuditLog = {
+    id: `audit-${Date.now()}-${Math.random().toString(36).slice(2)}`,
     agencyId: input.agencyId,
     clientId: input.clientId,
     eventId: input.eventId,
@@ -20,4 +16,7 @@ export async function createAuditLog(input: CreateAuditLogInput): Promise<AuditL
     createdAt: new Date().toISOString(),
     visibility: input.visibility || "internal_agency",
   };
+
+  await getRuntimeStore().appendAuditLog(log);
+  return log;
 }

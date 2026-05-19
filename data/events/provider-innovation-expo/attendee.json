@@ -1,0 +1,16 @@
+{
+  "eventId": "event-expo",
+  "joinStates": [
+    "invalid_code",
+    "not_open",
+    "registration_required",
+    "registration_closed",
+    "live",
+    "ended",
+    "replay_available",
+    "fallback_active",
+    "support_needed"
+  ],
+  "defaultDestination": "/venue/event-expo/lobby",
+  "supportEnabled": true
+}

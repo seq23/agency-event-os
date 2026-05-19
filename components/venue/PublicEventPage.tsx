@@ -1,35 +1,47 @@
-import { getEventBySlug, getClient, getSpeakersForEvent, getSponsorBoothsForEvent } from "@/lib/runtime/getRuntimeData";
+import { submitEventRegistration } from "@/lib/actions/registrationActions";
 import { SectionCard } from "@/components/shared/SectionCard";
 import { StatusBadge } from "@/components/shared/StatusBadge";
-import { formatEventDate } from "@/lib/utils/format";
+import { EventEndedState } from "@/components/venue/EventEndedState";
+import { EventNotOpenState } from "@/components/venue/EventNotOpenState";
+import { RegistrationClosedState } from "@/components/venue/RegistrationClosedState";
+import { RegistrationRequiredState } from "@/components/venue/RegistrationRequiredState";
+import { getEventConfigPackage } from "@/services/events/eventConfigRepository";
+import { mapEventStatusToPublicState } from "@/services/events/eventStateResolver";
 
 export function PublicEventPage({ slug }: { slug: string }) {
-  const event = getEventBySlug(slug);
-  const client = getClient(event.clientId);
-  const speakers = getSpeakersForEvent(event.id);
-  const booths = getSponsorBoothsForEvent(event.id);
+  const config = getEventConfigPackage(slug);
+  const publicState = mapEventStatusToPublicState(config.event.state as any);
+
+  if (publicState === "draft" || publicState === "archived") {
+    return <EventNotOpenState title={config.event.name} message="This event is not publicly open. Use your event code again later or contact the production team." />;
+  }
 
   return (
     <main className="min-h-screen bg-slate-50 p-6">
       <div className="mx-auto max-w-6xl space-y-6">
         <section className="rounded-3xl bg-slate-950 p-8 text-white">
-          <p className="text-sm text-slate-300">{client.name}</p>
-          <h1 className="mt-3 text-4xl font-semibold">{event.name}</h1>
-          <p className="mt-3 max-w-3xl text-slate-300">{event.description}</p>
-          <p className="mt-4 text-slate-300">{formatEventDate(event.startAt)} · {event.timezone}</p>
+          <p className="text-sm text-slate-300">{config.event.client}</p>
+          <h1 className="mt-3 text-4xl font-semibold">{config.event.name}</h1>
+          <p className="mt-3 max-w-3xl text-slate-300">A branded virtual venue with lobby, main stage, sessions, sponsors, replay, networking, and production support.</p>
+          <p className="mt-4 text-slate-300">{config.event.timezone} · Status: {publicState}</p>
           <div className="mt-6 flex flex-wrap gap-3">
-            <a href={`/events/${event.slug}/register`} className="rounded-xl bg-white px-5 py-3 text-sm font-semibold text-slate-950">Register</a>
-            <a href={`/venue/${event.id}/lobby`} className="rounded-xl border border-white/20 px-5 py-3 text-sm font-semibold text-white">Preview venue</a>
+            {publicState === "ended" ? <a href={`/venue/${config.event.id}/replay`} className="rounded-xl bg-white px-5 py-3 text-sm font-semibold text-slate-950">Open replay</a> : null}
+            {publicState === "open" || publicState === "upcoming" ? <a href={`/events/${config.event.slug}/register`} className="rounded-xl bg-white px-5 py-3 text-sm font-semibold text-slate-950">Register</a> : null}
+            {publicState === "live" ? <a href={`/venue/${config.event.id}/lobby`} className="rounded-xl bg-white px-5 py-3 text-sm font-semibold text-slate-950">Enter venue</a> : null}
+            <a href={`/venue/${config.event.id}/lobby`} className="rounded-xl border border-white/20 px-5 py-3 text-sm font-semibold text-white">Preview venue</a>
           </div>
         </section>
+
+        {publicState === "ended" ? <EventEndedState replayHref={`/venue/${config.event.id}/replay`} /> : null}
+        {publicState === "upcoming" ? <RegistrationRequiredState registerHref={`/events/${config.event.slug}/register`} /> : null}
 
         <div className="grid gap-4 sm:gap-6 lg:grid-cols-2">
           <SectionCard title="Agenda preview">
             <div className="space-y-3">
-              {["Welcome and Orientation", "Investor Panel", "Sponsor Spotlight", "Breakouts", "Networking"].map((item, index) => (
-                <div key={item} className="rounded-xl bg-slate-50 p-3">
-                  <p className="font-medium">{item}</p>
-                  <p className="text-sm text-slate-500">Segment {index + 1}</p>
+              {config.agenda.sessions.map((session, index) => (
+                <div key={session.id || String(index)} className="rounded-xl bg-slate-50 p-3">
+                  <p className="font-medium">{session.title}</p>
+                  <p className="text-sm text-slate-500">{session.room} · {session.startsAt}</p>
                 </div>
               ))}
             </div>
@@ -37,10 +49,10 @@ export function PublicEventPage({ slug }: { slug: string }) {
 
           <SectionCard title="Speakers">
             <div className="space-y-3">
-              {speakers.map((speaker) => (
+              {config.speakers.speakers.map((speaker) => (
                 <div key={speaker.id} className="rounded-xl bg-slate-50 p-3">
                   <p className="font-medium">{speaker.name}</p>
-                  <p className="text-sm text-slate-500">{speaker.title}, {speaker.company}</p>
+                  <p className="text-sm text-slate-500">Role access configured through {speaker.roleCodeEnvKey}</p>
                 </div>
               ))}
             </div>
@@ -49,11 +61,11 @@ export function PublicEventPage({ slug }: { slug: string }) {
 
         <SectionCard title="Sponsors">
           <div className="grid gap-3 md:grid-cols-2">
-            {booths.map((booth) => (
-              <div key={booth.id} className="rounded-xl bg-slate-50 p-4">
-                <p className="font-semibold">{booth.name}</p>
-                <p className="mt-1 text-sm text-slate-600">{booth.description}</p>
-                <StatusBadge status={booth.status} />
+            {config.sponsors.sponsors.map((sponsor) => (
+              <div key={sponsor.id} className="rounded-xl bg-slate-50 p-4">
+                <p className="font-semibold">{sponsor.name}</p>
+                <p className="mt-1 text-sm text-slate-600">Sponsor booth, CTA, and report access are configured.</p>
+                <StatusBadge status="configured" />
               </div>
             ))}
           </div>
@@ -64,23 +76,39 @@ export function PublicEventPage({ slug }: { slug: string }) {
 }
 
 export function EventRegistration({ slug }: { slug: string }) {
-  const event = getEventBySlug(slug);
+  const config = getEventConfigPackage(slug);
+  const publicState = mapEventStatusToPublicState(config.event.state as any);
+
+  if (publicState === "draft" || publicState === "archived") {
+    return <EventNotOpenState title={config.event.name} message="Registration is not open for this event." />;
+  }
+
+  if (publicState === "ended") {
+    return (
+      <main className="min-h-screen bg-slate-50 p-6">
+        <div className="mx-auto max-w-2xl"><RegistrationClosedState /></div>
+      </main>
+    );
+  }
+
   return (
     <main className="min-h-screen bg-slate-50 p-6">
-      <div className="mx-auto max-w-2xl rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+      <form action={submitEventRegistration} className="mx-auto max-w-2xl rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+        <input type="hidden" name="eventId" value={config.event.id} />
+        <input type="hidden" name="slug" value={config.event.slug} />
         <p className="text-sm text-slate-500">Registration</p>
-        <h1 className="mt-2 text-3xl font-semibold">{event.name}</h1>
-        <p className="mt-2 text-slate-600">Registration captures attendee intent and routes records into the venue model.</p>
+        <h1 className="mt-2 text-3xl font-semibold">{config.event.name}</h1>
+        <p className="mt-2 text-slate-600">Registration writes a runtime registration event and routes you into the venue.</p>
         <div className="mt-6 space-y-3">
-          {["Name", "Email", "Company", "Title"].map((field) => (
+          {["name", "email", "company", "title"].map((field) => (
             <div key={field}>
-              <label className="text-sm font-medium text-slate-700">{field}</label>
-              <div className="mt-1 h-11 rounded-xl border border-slate-200 bg-slate-50" />
+              <label htmlFor={field} className="text-sm font-medium capitalize text-slate-700">{field}</label>
+              <input id={field} name={field} required={field === "email"} type={field === "email" ? "email" : "text"} className="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-3 text-sm outline-none focus:border-brand-orange" />
             </div>
           ))}
-          <button className="w-full rounded-xl bg-slate-950 px-4 py-3 font-semibold text-white">Submit registration</button>
+          <button type="submit" className="w-full rounded-xl bg-slate-950 px-4 py-3 font-semibold text-white">Submit registration</button>
         </div>
-      </div>
+      </form>
     </main>
   );
 }

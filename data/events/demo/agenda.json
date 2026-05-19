@@ -1,0 +1,11 @@
+{
+  "eventId": "event-summit",
+  "sessions": [
+    {
+      "id": "session-main",
+      "title": "Founder Lessons Main Stage",
+      "room": "main_stage",
+      "startsAt": "2026-06-12T15:00:00.000Z"
+    }
+  ]
+}

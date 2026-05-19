@@ -1,0 +1,11 @@
+{
+  "eventId": "event-workshop",
+  "segments": [
+    {
+      "id": "ros-premium-workshop-intensive",
+      "title": "Premium Workshop Intensive",
+      "room": "main_stage",
+      "backupPlan": "Daily room ready; Zoom manual fallback requires crew confirmation."
+    }
+  ]
+}

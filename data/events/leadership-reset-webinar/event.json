@@ -1,0 +1,12 @@
+{
+  "id": "event-webinar",
+  "slug": "leadership-reset-webinar",
+  "name": "Leadership Reset Webinar",
+  "client": "Lumen Coaching Group",
+  "timezone": "America/Chicago",
+  "state": "registration_open",
+  "publishLifecycle": "published",
+  "publicCode": "leadership-reset-webinar",
+  "runtimeStateBoundary": "live operational state must be stored in runtime store, not repo config only",
+  "clientSlug": "lumen-coaching"
+}

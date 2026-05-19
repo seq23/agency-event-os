@@ -1,0 +1,12 @@
+{
+  "id": "event-summit",
+  "slug": "demo",
+  "name": "Nova Founder Summit",
+  "client": "Nova Capital Partners",
+  "timezone": "America/Chicago",
+  "state": "published",
+  "publishLifecycle": "published",
+  "publicCode": "demo",
+  "runtimeStateBoundary": "live operational state must be stored in runtime store, not repo config only",
+  "clientSlug": "nova-capital"
+}

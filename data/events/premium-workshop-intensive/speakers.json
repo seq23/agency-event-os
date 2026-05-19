@@ -1,0 +1,10 @@
+{
+  "eventId": "event-workshop",
+  "speakers": [
+    {
+      "id": "speaker-premium-workshop-intensive",
+      "name": "Assigned Speaker",
+      "roleCodeEnvKey": "EVENT_PREMIUM_WORKSHOP_INTENSIVE_SPEAKER_CODE"
+    }
+  ]
+}

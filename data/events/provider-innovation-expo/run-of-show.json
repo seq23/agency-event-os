@@ -1,0 +1,11 @@
+{
+  "eventId": "event-expo",
+  "segments": [
+    {
+      "id": "ros-provider-innovation-expo",
+      "title": "Provider Innovation Expo",
+      "room": "main_stage",
+      "backupPlan": "Daily room ready; Zoom manual fallback requires crew confirmation."
+    }
+  ]
+}

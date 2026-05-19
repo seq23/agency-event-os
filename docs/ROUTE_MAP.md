@@ -1097,3 +1097,11 @@ The route map fails if:
 - Attendees can access admin routes.
 - Venue routes become the whole product.
 - Agency dashboard is not the primary operational home.
+
+## Master Plan v4
+
+V4 required routes: /join, /production-access, /production-access/crew, /production-access/special-guest, /app/events/[eventId]/setup, /publish, /video-health, /incidents.
+
+
+## V5 gated routes
+/app is crew/session only. /client, /speaker, /sponsor, /crew event portals require event-scoped role cookies. /venue remains public or VIP depending on event state.

@@ -1,0 +1,11 @@
+{
+  "eventId": "event-summit",
+  "segments": [
+    {
+      "id": "ros-main",
+      "title": "Opening + Founder Lessons",
+      "room": "main_stage",
+      "backupPlan": "Daily room ready; Zoom manual fallback requires crew confirmation."
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "eventId": "event-webinar",
+  "templates": [
+    "attendee_confirmation",
+    "speaker_invite",
+    "sponsor_invite",
+    "client_review",
+    "crew_call_sheet",
+    "replay_available",
+    "post_event_report"
+  ]
+}

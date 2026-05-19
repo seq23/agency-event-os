@@ -1,0 +1,51 @@
+name: Publish Event Config
+
+on:
+  workflow_dispatch:
+    inputs:
+      event_config_package:
+        description: "Checked-in directory under event-config-packages/<slug>. No secrets. No absolute paths."
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  import-validate-and-open-pr:
+    runs-on: ubuntu-latest
+    env:
+      EVENT_CONFIG_PACKAGE: ${{ inputs.event_config_package }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Import event config package
+        run: node scripts/import_event_config_package.js "$EVENT_CONFIG_PACKAGE"
+
+      - name: Validate event config
+        run: npm run validate:v5-event-config-schema
+
+      - name: Validate publish boundary
+        run: npm run validate:v5-publishing
+
+      - name: Refuse empty publish diff
+        run: git diff --quiet -- data/events data/access public/events && { echo "No imported event config diff found. Refusing to create an empty publishing PR."; exit 1; } || true
+
+      - name: Create pull request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          branch: event-config/publish-${{ github.run_id }}
+          title: "Publish event config package"
+          commit-message: "Publish event config package"
+          body: "Validated event config publish PR. No direct commit to main. Package path was supplied through EVENT_CONFIG_PACKAGE and validated by scripts/import_event_config_package.js."

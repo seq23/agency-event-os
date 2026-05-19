@@ -1,0 +1,11 @@
+{
+  "eventId": "event-webinar",
+  "segments": [
+    {
+      "id": "ros-leadership-reset-webinar",
+      "title": "Leadership Reset Webinar",
+      "room": "main_stage",
+      "backupPlan": "Daily room ready; Zoom manual fallback requires crew confirmation."
+    }
+  ]
+}

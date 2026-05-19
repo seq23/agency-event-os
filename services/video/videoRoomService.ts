@@ -2,7 +2,7 @@ import type { CreateVideoRoomInput, VideoRoom } from "@/types/video";
 import { getVideoProvider } from "./videoProviderRegistry";
 
 export async function createVideoRoom(input: CreateVideoRoomInput): Promise<VideoRoom> {
-  const provider = getVideoProvider(input.provider ?? "mock");
+  const provider = getVideoProvider(input.provider);
   return provider.createRoom(input);
 }
 

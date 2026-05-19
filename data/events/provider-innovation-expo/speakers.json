@@ -1,0 +1,10 @@
+{
+  "eventId": "event-expo",
+  "speakers": [
+    {
+      "id": "speaker-provider-innovation-expo",
+      "name": "Assigned Speaker",
+      "roleCodeEnvKey": "EVENT_PROVIDER_INNOVATION_EXPO_SPEAKER_CODE"
+    }
+  ]
+}

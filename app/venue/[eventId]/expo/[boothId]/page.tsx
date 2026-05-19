@@ -7,7 +7,7 @@ export default function BoothPage({ params }: { params: { eventId: string; booth
   const booth = findBooth(model.booths, params.boothId);
   return (
     <VenuePageShell model={model}>
-      <SponsorBoothExperience booth={booth} />
+      <SponsorBoothExperience eventId={model.eventId} booth={booth} />
     </VenuePageShell>
   );
 }

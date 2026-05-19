@@ -160,3 +160,6 @@ Operational rules:
 - If `DAILY_FALLBACK_ENABLED=false`, the resolver skips Daily and falls through to Zoom, then Google Meet.
 - Testing Console must show LiveKit, Daily, Zoom, Google Meet, Resend, Supabase, route, OpenNext, and browser-console smoke status before production events.
 
+## Master Plan v4
+
+V4 Testing Console should show Route Health, Access Gate, Event Config, Publishing, Video Providers, Email/Resend, Supabase Runtime, Run of Show, Attendee Experience, Security, Smoke Tests.

@@ -72,3 +72,6 @@ This folder contains the documentation baseline and implementation references fo
 - Canonical deployment authority: app domain `westpeek.live`; email sending domain `events.westpeek.live`.
 - Daily automatic fallback is documented across deployment, video architecture, testing console, and post-deployment smoke docs.
 
+## Master Plan v4
+
+Master Plan v4 adds public join, production access, event setup, publishing, room-level fallback, analytics, and QA/security validators.

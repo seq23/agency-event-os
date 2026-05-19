@@ -16,3 +16,4 @@ tsconfig.tsbuildinfo
 .vitest-cache
 .open-next
 .wrangler
+.runtime-data

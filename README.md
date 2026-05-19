@@ -74,3 +74,32 @@ This baseline now includes Supabase/Auth/Resend foundation scaffolding:
 - RLS policy implementation
 - Real email sending in app flows
 - Production deployment
+
+## Master Plan v4
+
+V4 product model: Public Experience Plane, Access Plane, Event Operations Plane, Governance + Deployment Plane.
+
+## V6 End-to-End Operationalization
+
+This baseline includes the V6 operational layer for Master Plan v4/v5 completion:
+
+- named setup subroutes under `/app/events/[eventId]` for branding, attendee flow, venue, agenda, access, communications, and preview
+- repo-config-driven event code resolution
+- HMAC signed production access cookies
+- role/event-scoped special guest access
+- crew action capability helpers
+- config package builder/importer and PR-only publishing workflow
+- runtime persistence for access, audit, analytics, fallback, support, email, registrations, incidents, and run-of-show events
+- room-level video fallback controls with rollback
+- operational communications dashboard with honest Resend availability
+- runtime-backed analytics dashboard
+- v6 completion/audit validators
+
+Run fast structural checks with:
+
+```bash
+npm run validate:v5-hard
+npm run validate:v6-audit
+```
+
+Full validation remains local-updater owned unless dependencies are installed and `npm run validate` passes in the execution environment.

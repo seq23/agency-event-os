@@ -1,0 +1,10 @@
+{
+  "eventId": "event-demo-day",
+  "speakers": [
+    {
+      "id": "speaker-seed-demo-day",
+      "name": "Assigned Speaker",
+      "roleCodeEnvKey": "EVENT_SEED_DEMO_DAY_SPEAKER_CODE"
+    }
+  ]
+}

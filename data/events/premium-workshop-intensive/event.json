@@ -1,0 +1,12 @@
+{
+  "id": "event-workshop",
+  "slug": "premium-workshop-intensive",
+  "name": "Premium Workshop Intensive",
+  "client": "Lumen Coaching Group",
+  "timezone": "America/Chicago",
+  "state": "ended",
+  "publishLifecycle": "ended",
+  "publicCode": "premium-workshop-intensive",
+  "runtimeStateBoundary": "live operational state must be stored in runtime store, not repo config only",
+  "clientSlug": "lumen-coaching"
+}

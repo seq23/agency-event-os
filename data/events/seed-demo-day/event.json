@@ -1,0 +1,12 @@
+{
+  "id": "event-demo-day",
+  "slug": "seed-demo-day",
+  "name": "Seed Demo Day",
+  "client": "Nova Capital Partners",
+  "timezone": "America/Chicago",
+  "state": "draft",
+  "publishLifecycle": "draft",
+  "publicCode": "seed-demo-day",
+  "runtimeStateBoundary": "live operational state must be stored in runtime store, not repo config only",
+  "clientSlug": "nova-capital"
+}

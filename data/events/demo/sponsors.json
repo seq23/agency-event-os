@@ -1,0 +1,10 @@
+{
+  "eventId": "event-summit",
+  "sponsors": [
+    {
+      "id": "sponsor-clarity",
+      "name": "Clarity Labs",
+      "roleCodeEnvKey": "EVENT_DEMO_SPONSOR_CLARITY_CODE"
+    }
+  ]
+}

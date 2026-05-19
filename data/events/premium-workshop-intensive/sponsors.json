@@ -1,0 +1,10 @@
+{
+  "eventId": "event-workshop",
+  "sponsors": [
+    {
+      "id": "sponsor-premium-workshop-intensive",
+      "name": "Event Partner",
+      "roleCodeEnvKey": "EVENT_PREMIUM_WORKSHOP_INTENSIVE_SPONSOR_CODE"
+    }
+  ]
+}

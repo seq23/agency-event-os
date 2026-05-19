@@ -1,0 +1,10 @@
+{
+  "eventId": "event-summit",
+  "speakers": [
+    {
+      "id": "speaker-drake",
+      "name": "Drake Speaker",
+      "roleCodeEnvKey": "EVENT_DEMO_SPEAKER_DRAKE_CODE"
+    }
+  ]
+}

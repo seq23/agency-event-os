@@ -1,0 +1,13 @@
+{
+  "eventId": "event-summit",
+  "joinStates": [
+    "invalid_code",
+    "not_open",
+    "registration_required",
+    "live",
+    "ended",
+    "replay_available"
+  ],
+  "defaultDestination": "/venue/event-summit/lobby",
+  "supportEnabled": true
+}

@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Move the Testing Console from mock-only status cards to real browser-side diagnostics.
+Move the Testing Console from seeded-only status cards to real browser-side diagnostics.
 
 ## Included
 

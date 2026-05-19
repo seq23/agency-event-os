@@ -1,10 +1,10 @@
-import { getClient, getMockData } from "@/lib/mock/getMockData";
+import { getClient, getRuntimeData } from "@/lib/runtime/getRuntimeData";
 import { SectionCard } from "@/components/shared/SectionCard";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { formatEventDate } from "@/lib/utils/format";
 
 export function ClientDetail({ clientId }: { clientId: string }) {
-  const data = getMockData();
+  const data = getRuntimeData();
   const client = getClient(clientId);
   const events = data.events.filter((event) => event.clientId === client.id);
   const approvals = data.approvals.filter((approval) => approval.clientId === client.id);

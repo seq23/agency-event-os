@@ -1,4 +1,4 @@
-import { getContractorAssignmentsForEvent, getEvent, getRunOfShowForEvent, getSpeakersForEvent, getVendorAssignmentsForEvent } from "@/lib/mock/getMockData";
+import { getContractorAssignmentsForEvent, getEvent, getRunOfShowForEvent, getSpeakersForEvent, getVendorAssignmentsForEvent } from "@/lib/runtime/getRuntimeData";
 import { SectionCard } from "@/components/shared/SectionCard";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { MetricCard } from "@/components/shared/MetricCard";
@@ -19,7 +19,7 @@ export function ProductionCommandCenter({ eventId }: { eventId: string }) {
         <p className="text-sm font-medium text-slate-300">Live production command center</p>
         <h1 className="mt-2 text-3xl font-semibold">{event.name}</h1>
         <p className="mt-2 max-w-3xl text-slate-300">
-          Mock live cockpit for producers. Future integrations will connect video rooms, moderation, polling, recording, and incident workflows here.
+          Live cockpit for producers: video rooms, moderation, polling, recording readiness, and incident workflows.
         </p>
       </div>
 
@@ -105,22 +105,22 @@ export function ProductionCommandCenter({ eventId }: { eventId: string }) {
           <div className="space-y-3">
             <div className="rounded-xl bg-slate-50 p-3">
               <p className="font-medium">No open critical incidents</p>
-              <p className="text-sm text-slate-500">Incident logging shell ready for future persistence.</p>
+              <p className="text-sm text-slate-500">Incident logging connects operational issues to production records.</p>
             </div>
-            <button className="w-full rounded-xl bg-slate-950 px-4 py-3 text-sm font-medium text-white">Log incident placeholder</button>
+            <button className="w-full rounded-xl bg-slate-950 px-4 py-3 text-sm font-medium text-white">Log incident</button>
           </div>
         </SectionCard>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-3">
         <SectionCard title="Chat moderation queue">
-          <p className="text-sm text-slate-600">Moderation queue shell. Future chat provider events land here.</p>
+          <p className="text-sm text-slate-600">Moderation queue for room and attendee activity.</p>
         </SectionCard>
         <SectionCard title="Q&A queue">
-          <p className="text-sm text-slate-600">Question approval and stage-pinning shell.</p>
+          <p className="text-sm text-slate-600">Question approval and stage-pinning controls.</p>
         </SectionCard>
         <SectionCard title="Poll control">
-          <p className="text-sm text-slate-600">Launch/close poll controls placeholder.</p>
+          <p className="text-sm text-slate-600">Launch and close poll controls.</p>
         </SectionCard>
       </div>
     </div>

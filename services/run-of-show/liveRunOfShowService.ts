@@ -1,4 +1,4 @@
-import { getRunOfShowForEvent } from "@/lib/mock/getMockData";
+import { getRunOfShowForEvent } from "@/lib/runtime/getRuntimeData";
 import type { RunOfShowSegment } from "@/types/core";
 import type { LiveRunOfShowSegment, RunOfShowLiveStatus, RunOfShowProgressSnapshot } from "@/types/runOfShowLive";
 function toLiveStatus(index:number,total:number):RunOfShowLiveStatus{ if(index<1)return"completed"; if(index===1)return"current"; if(index===total-1)return"delayed"; return"scheduled"; }

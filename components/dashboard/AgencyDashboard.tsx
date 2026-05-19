@@ -1,4 +1,4 @@
-import { getMockData } from "@/lib/mock/getMockData";
+import { getRuntimeData } from "@/lib/runtime/getRuntimeData";
 import { calculateEventReadiness } from "@/lib/readiness/calculateEventReadiness";
 import { ReadinessScore } from "@/components/shared/ReadinessScore";
 import { MetricCard } from "@/components/shared/MetricCard";
@@ -8,7 +8,7 @@ import { formatEventDate } from "@/lib/utils/format";
 import { getPersistenceModeLabel } from "@/services/persistence/coreReadModel";
 
 export function AgencyDashboard() {
-  const data = getMockData();
+  const data = getRuntimeData();
   const upcoming = data.events.filter((event) => !["ended", "archived"].includes(event.status)).slice(0, 4);
   const pendingApprovals = data.approvals.filter((approval) => !["approved", "locked"].includes(approval.status));
   const reportsDue = data.events.filter((event) => event.status === "ended" && event.reportingEnabled);
@@ -96,7 +96,7 @@ export function AgencyDashboard() {
             {reportsDue.map((event) => (
               <a key={event.id} href={`/app/events/${event.id}/report`} className="block rounded-xl bg-slate-50 p-3 text-sm">
                 <p className="font-medium">{event.name}</p>
-                <p className="text-slate-500">Client report shell ready</p>
+                <p className="text-slate-500">Client report ready</p>
               </a>
             ))}
           </div>

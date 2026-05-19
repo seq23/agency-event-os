@@ -276,10 +276,10 @@ MVP must demonstrate:
 - Venue shell
 - Reporting shell
 - Permissions
-- Mock data
+- Seeded data
 - Documentation
 
-## 10. Deferred Scope
+## 10. Post-MVP Scope
 
 - Real video provider integration
 - Raw WebRTC
@@ -307,7 +307,7 @@ MVP must demonstrate:
 - Every event has readiness scoring.
 - Every admin action is audit-loggable.
 - Video provider logic stays abstracted.
-- Mock data is clearly separated from production data.
+- Seeded data is clearly separated from production data.
 - Every shortcut goes into the technical debt register.
 
 ## 12. Final Product Principle

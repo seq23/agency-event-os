@@ -18,7 +18,7 @@ This phase intentionally does not wire full production workflow persistence yet.
 - Zod schemas for client/event payloads.
 - Server actions for create/update flows.
 - Audit hooks for create/update events.
-- Mock-backed UI form shells that show where create/edit UX will live.
+- Seeded-backed UI form shells that show where create/edit UX will live.
 - Mapping utilities between Supabase snake_case rows and app camelCase domain types.
 
 ## Scope Boundary

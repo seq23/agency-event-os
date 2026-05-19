@@ -1,5 +1,5 @@
 import type { DiagnosticStatus, TestingConsoleSnapshot } from "@/types/testing";
-import { mockTestingConsoleSnapshot } from "./mockTestingData";
+import { baselineTestingConsoleSnapshot } from "./mockTestingData";
 
 function rankStatus(status: DiagnosticStatus) {
   const ranks: Record<DiagnosticStatus, number> = {
@@ -15,11 +15,11 @@ function rankStatus(status: DiagnosticStatus) {
 
 export function getTestingConsoleSnapshot(eventId: string): TestingConsoleSnapshot {
   const snapshot = {
-    ...mockTestingConsoleSnapshot,
+    ...baselineTestingConsoleSnapshot,
     eventId,
     generatedAt: new Date().toISOString(),
-    rooms: mockTestingConsoleSnapshot.rooms.map((room) => ({ ...room, eventId })),
-    incidents: mockTestingConsoleSnapshot.incidents.map((incident) => ({ ...incident, eventId })),
+    rooms: baselineTestingConsoleSnapshot.rooms.map((room) => ({ ...room, eventId })),
+    incidents: baselineTestingConsoleSnapshot.incidents.map((incident) => ({ ...incident, eventId })),
   };
 
   const allStatuses = [

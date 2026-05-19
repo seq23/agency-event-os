@@ -1,9 +1,9 @@
-import { getMockData } from "@/lib/mock/getMockData";
+import { getRuntimeData } from "@/lib/runtime/getRuntimeData";
 import { SectionCard } from "@/components/shared/SectionCard";
 import { titleize } from "@/lib/utils/format";
 
 export function EventTemplateLibrary() {
-  const data = getMockData();
+  const data = getRuntimeData();
 
   return (
     <SectionCard title="Event templates" eyebrow="Reusable systems">

@@ -2,7 +2,7 @@
 
 ## Current State
 
-The venue networking page includes a mock queue and match shell.
+The venue networking page includes a seeded queue and match shell.
 
 ## Future States
 

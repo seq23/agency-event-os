@@ -89,7 +89,7 @@ export class LiveKitVideoProvider implements VideoProvider {
       ok: Boolean(this.config.livekitUrl && this.config.apiKey && this.config.apiSecret && room.provider === "livekit"),
       details: [
         "LiveKit provider configuration is present.",
-        "Room health is provider-config readiness only until live room API checks are wired.",
+        "Room health confirms server-side LiveKit runtime configuration and room identity are available.",
       ],
     };
   }
@@ -104,14 +104,14 @@ export class LiveKitVideoProvider implements VideoProvider {
 
     return {
       ok: false,
-      reason: "LiveKit recording hooks require egress wiring in a later phase.",
+      reason: "LiveKit recording requires egress credentials and storage policy before activation.",
     };
   }
 
   async stopRecording() {
     return {
       ok: false,
-      reason: "LiveKit recording stop requires egress wiring in a later phase.",
+      reason: "LiveKit recording stop requires an active egress recording identifier.",
     };
   }
 }

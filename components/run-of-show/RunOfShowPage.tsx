@@ -1,4 +1,4 @@
-import { getEvent, getRunOfShowForEvent, getSpeakersForEvent, getSponsorsForEvent } from "@/lib/mock/getMockData";
+import { getEvent, getRunOfShowForEvent, getSpeakersForEvent, getSponsorsForEvent } from "@/lib/runtime/getRuntimeData";
 import { SectionCard } from "@/components/shared/SectionCard";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { formatEventDate } from "@/lib/utils/format";

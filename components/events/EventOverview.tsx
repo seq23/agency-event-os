@@ -1,4 +1,4 @@
-import { getEvent, getClient, getMockData } from "@/lib/mock/getMockData";
+import { getEvent, getClient, getRuntimeData } from "@/lib/runtime/getRuntimeData";
 import { calculateEventReadiness } from "@/lib/readiness/calculateEventReadiness";
 import { ReadinessScore } from "@/components/shared/ReadinessScore";
 import { SectionCard } from "@/components/shared/SectionCard";
@@ -7,7 +7,7 @@ import { MetricCard } from "@/components/shared/MetricCard";
 import { formatEventDate, titleize } from "@/lib/utils/format";
 
 export function EventOverview({ eventId }: { eventId: string }) {
-  const data = getMockData();
+  const data = getRuntimeData();
   const event = getEvent(eventId);
   const client = getClient(event.clientId);
   const readiness = calculateEventReadiness(data, event.id);

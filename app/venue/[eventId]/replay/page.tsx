@@ -1,2 +1,24 @@
-import { ReplayLibrary } from "@/components/venue/VenuePages";
-export default function Replay({ params }: { params: { eventId: string } }) { return <ReplayLibrary eventId={params.eventId} />; }
+import { buildVirtualVenueModel } from "@/services/venue";
+import { ReplayCenter } from "@/components/venue/ReplayCenter";
+import { ReplayRecordingStatusPanel } from "@/components/venue/ReplayRecordingStatusPanel";
+import { buildLiveKitEgressRequest } from "@/services/video";
+import { VenuePageShell } from "@/components/venue/VenuePageShell";
+
+export default function ReplayPage({ params }: { params: { eventId: string } }) {
+  const model = buildVirtualVenueModel(params.eventId);
+  const recordingJob = buildLiveKitEgressRequest({
+    agencyId: "runtime-agency",
+    eventId: model.eventId,
+    storageBucket: "replay-assets",
+    storagePath: `${model.eventId}/main-stage.mp4`,
+  });
+
+  return (
+    <VenuePageShell model={model}>
+      <div className="space-y-6">
+        <ReplayCenter replays={model.replays} />
+        <ReplayRecordingStatusPanel jobs={[recordingJob]} />
+      </div>
+    </VenuePageShell>
+  );
+}

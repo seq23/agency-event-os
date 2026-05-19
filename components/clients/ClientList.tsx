@@ -1,10 +1,10 @@
-import { getMockData } from "@/lib/mock/getMockData";
+import { getRuntimeData } from "@/lib/runtime/getRuntimeData";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { SectionCard } from "@/components/shared/SectionCard";
 import { ClientPersistencePanel } from "@/components/persistence/ClientPersistencePanel";
 
 export function ClientList() {
-  const data = getMockData();
+  const data = getRuntimeData();
 
   return (
     <div className="space-y-6">

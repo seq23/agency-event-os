@@ -603,7 +603,7 @@ Fields:
 
 ### run_of_show_versions
 
-Deferred table for version snapshots.
+Post-MVP Scope table for version snapshots.
 
 ## 9. Contractor and Vendor Tables
 
@@ -1042,7 +1042,7 @@ Fields:
 
 ### ticket_types
 
-Deferred paid ticketing-ready table.
+Post-MVP Scope paid ticketing-ready table.
 
 ### registrations
 
@@ -1209,7 +1209,7 @@ Room types:
 
 Providers:
 
-- `mock`
+- `seeded`
 - `livekit`
 - `daily`
 - `agora`
@@ -1363,9 +1363,9 @@ Internal system events not necessarily caused by a user.
 - Sponsors access own sponsor/booth/leads/reporting only.
 - Attendees access registered venue records only.
 
-## 20. MVP Mock Data Mapping
+## 20. MVP Seeded Data Mapping
 
-Mock data should represent:
+Seeded data should represent:
 
 - agencies
 - users

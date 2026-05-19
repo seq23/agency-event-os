@@ -1,10 +1,10 @@
-import { getMockData, getContractorAssignmentsForEvent, getEvent } from "@/lib/mock/getMockData";
+import { getRuntimeData, getContractorAssignmentsForEvent, getEvent } from "@/lib/runtime/getRuntimeData";
 import { SectionCard } from "@/components/shared/SectionCard";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { formatEventDate } from "@/lib/utils/format";
 
 export function ContractorBench() {
-  const data = getMockData();
+  const data = getRuntimeData();
 
   return (
     <SectionCard title="Contractor bench" eyebrow="External crew">
@@ -28,7 +28,7 @@ export function ContractorBench() {
 }
 
 export function EventCrewBoard({ eventId }: { eventId: string }) {
-  const data = getMockData();
+  const data = getRuntimeData();
   const event = getEvent(eventId);
   const assignments = getContractorAssignmentsForEvent(event.id);
 
@@ -56,7 +56,7 @@ export function EventCrewBoard({ eventId }: { eventId: string }) {
 }
 
 export function ContractorPortalDashboard() {
-  const data = getMockData();
+  const data = getRuntimeData();
   const assignment = data.contractorAssignments[0];
   const event = data.events.find((item) => item.id === assignment.eventId);
   const tasks = data.tasks.filter((task) => assignment.assignedTaskIds.includes(task.id));

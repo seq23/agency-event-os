@@ -10,7 +10,7 @@ The MVP is the smallest coherent product foundation that proves the core thesis:
 
 ## 2. MVP Strategy
 
-The MVP should be a mock-data-powered clickable SaaS shell with production-grade architecture foundations.
+The MVP should be a seeded-data-powered clickable SaaS shell with production-grade architecture foundations.
 
 It should show an agency owner how to:
 
@@ -42,7 +42,7 @@ The MVP does not need real video, payments, database persistence, or production 
 - Virtual venue shell
 - Post-event report shell
 - Centralized permissions
-- Mock data separated from production data
+- Seeded data separated from production data
 - Documentation and technical debt register
 
 ## 4. Primary User
@@ -61,13 +61,13 @@ The first screen should answer:
 
 ## 5. In Scope
 
-- Mock-data SaaS app shell
+- Seeded-data SaaS app shell
 - Core routes
 - Core layout/navigation
 - Shared status components
 - Role definitions
 - Permission helper
-- Mock data layer
+- Seeded data layer
 - Agency dashboard
 - Client pages
 - Event pages
@@ -281,7 +281,7 @@ Must show:
 - CTA
 - Resources
 - Representatives
-- Lead report placeholder
+- Lead report operational surface
 
 ### Client Approval Portal
 
@@ -318,7 +318,7 @@ Must show:
 - Room status
 - Crew status
 - Incident log
-- Chat/Q&A/poll placeholders
+- Chat/Q&A/poll operational surfaces
 - Recording status
 - Client observer notes
 
@@ -368,9 +368,9 @@ Venue routes:
 - RiskBadge
 - LinkedRecordBadge
 
-## 9. Required Mock Data
+## 9. Required Seeded Data
 
-Mock data must include:
+Seeded data must include:
 
 - One agency: West Peek Productions
 - At least three clients
@@ -393,7 +393,7 @@ Mock data must include:
 
 The MVP is acceptable when:
 
-- Agency dashboard is usable with mock data.
+- Agency dashboard is usable with seeded data.
 - Clients and events are visible.
 - Event overview shows readiness and blockers.
 - Run-of-show exists as structured UI.
@@ -405,7 +405,7 @@ The MVP is acceptable when:
 - Venue shell exists.
 - Reporting shell exists.
 - Permissions are centralized.
-- Mock data is separated.
+- Seeded data is separated.
 - Core docs exist.
 - Known shortcuts are listed.
 

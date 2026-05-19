@@ -18,7 +18,7 @@ The agency production operating system is the priority. The virtual venue is req
 2. Build architecture before UI sprawl.
 3. Build types before components.
 4. Build permissions before protected routes.
-5. Build mock data before persistence.
+5. Build seeded data before persistence.
 6. Build agency workflows before attendee venue polish.
 7. Build video abstraction before real video integration.
 8. Build shell workflows before real integrations.
@@ -43,7 +43,7 @@ This document is Step 6.
 |---|---|---|
 | Phase 0 | Documentation Baseline | Source-of-truth docs |
 | Phase 1 | Repo Skeleton | Empty structured app repo |
-| Phase 2 | Core Types + Permissions + Mock Data | Domain layer |
+| Phase 2 | Core Types + Permissions + Seeded Data | Domain layer |
 | Phase 3 | App Shell + Navigation | Base UI shell |
 | Phase 4 | Agency Dashboard | Owner command surface |
 | Phase 5 | Client + Event Management | Agency operations core |
@@ -173,7 +173,7 @@ lib/
   permissions/
   readiness/
   audit/
-  mock/
+  seeded/
   supabase/
   validation/
   utils/
@@ -203,7 +203,7 @@ services/
 - No app logic is required yet.
 - No real Supabase/video integration is required yet.
 
-## 7. Phase 2 — Core Types, Permissions, and Mock Data
+## 7. Phase 2 — Core Types, Permissions, and Seeded Data
 
 ### Goal
 
@@ -220,8 +220,8 @@ lib/permissions/roles.ts
 lib/permissions/capabilities.ts
 lib/permissions/can.ts
 lib/permissions/index.ts
-lib/mock/mockData.ts
-lib/mock/getMockData.ts
+lib/seeded/seededData.ts
+lib/seeded/getSeededData.ts
 ```
 
 ### Core Type Coverage
@@ -261,7 +261,7 @@ Must include:
 - Client-facing visibility checks.
 - Internal-only data restrictions.
 
-### Mock Data Requirements
+### Seeded Data Requirements
 
 Must include:
 
@@ -285,7 +285,7 @@ Must include:
 ### Completion Criteria
 
 - Types compile.
-- Mock data uses realistic relationships.
+- Seeded data uses realistic relationships.
 - Permissions are centralized.
 - No component should invent its own domain model later.
 
@@ -365,7 +365,7 @@ ReadinessOverviewPanel
 
 ### Completion Criteria
 
-- Dashboard renders from mock data.
+- Dashboard renders from seeded data.
 - Agency-owner workflow is clearly central.
 - Venue is not the main app framing.
 - Readiness and blockers are visible.
@@ -412,7 +412,7 @@ EventTemplateCard
 - Agency can see event portfolio.
 - Event overview shows readiness and blockers.
 - Template shell exists.
-- Mock data relationships are coherent.
+- Seeded data relationships are coherent.
 
 ## 11. Phase 6 — Readiness, Run-of-Show, and Tasks
 
@@ -457,10 +457,10 @@ components/tasks/TaskCard.tsx
 
 ### Completion Criteria
 
-- Readiness score calculates from mock data.
+- Readiness score calculates from seeded data.
 - Run-of-show is structured, not a plain note.
 - Tasks connect to production resources.
-- Client-visible flags exist in task/run-of-show mock data.
+- Client-visible flags exist in task/run-of-show seeded data.
 
 ## 12. Phase 7 — Contractors, Vendors, Speakers, and Sponsors
 
@@ -581,8 +581,8 @@ ClientObserverNotesPanel
 
 ### MVP Behavior
 
-- Uses mock state.
-- Buttons are non-functional placeholders.
+- Uses seeded state.
+- Buttons are non-functional operational surfaces.
 - Shows live production layout.
 - Uses current/next run-of-show segments.
 - Displays speaker/room/crew readiness.
@@ -590,7 +590,7 @@ ClientObserverNotesPanel
 ### Completion Criteria
 
 - The page feels like a real show-control cockpit.
-- Production users can see what is live now and what comes next.
+- Production users can see what is live now and what is tracked in the roadmap.
 - Incident log exists.
 - Future video/chat/recording hooks are obvious.
 
@@ -650,10 +650,10 @@ PollPanelShell
 ### Completion Criteria
 
 - Venue shell is coherent.
-- Main stage exists with video placeholder.
+- Main stage exists with video operational surface.
 - Sessions exist.
 - Networking shell exists.
-- Expo booths connect to sponsor mock data.
+- Expo booths connect to sponsor seeded data.
 - Chat/Q&A/polls are shells.
 - Venue does not replace agency operating layer.
 
@@ -687,7 +687,7 @@ SponsorReportBuilderShell
 ExportReportButton
 ```
 
-### Mock Metrics
+### Seeded Metrics
 
 - Registrations
 - Attendance
@@ -712,7 +712,7 @@ ExportReportButton
 - Agency can show value after event.
 - Client report shell exists.
 - Sponsor report shell exists.
-- Metrics are sourced from mock analytics events.
+- Metrics are sourced from seeded analytics events.
 
 ## 17. Phase 12 — Documentation, Tests, and Debt Register
 
@@ -752,13 +752,13 @@ Initial tests may be minimal but should include:
 
 - Permission helper tests.
 - Readiness scoring tests.
-- Mock data integrity test.
+- Seeded data integrity test.
 - Route map smoke test if practical.
 - Build/lint/typecheck scripts.
 
 ### Required Tech Debt Register Entries
 
-- Mock data only.
+- Seeded data only.
 - No production auth.
 - No Supabase persistence.
 - No real uploads.
@@ -818,7 +818,7 @@ Before delivery:
 - Docs exist.
 - App directories exist.
 - Package scripts exist.
-- Mock data exists.
+- Seeded data exists.
 - Expected files exist.
 
 ### Status Label
@@ -833,7 +833,7 @@ STRUCTURALLY CHECKED — LOCAL VALIDATION REQUIRED
 
 ### Goal
 
-Use Codex to harden and implement beyond the mock shell.
+Use Codex to harden and implement beyond the seeded shell.
 
 ### Codex First Prompt
 
@@ -851,7 +851,7 @@ Evaluate:
 - Whether types match /docs/DATABASE_SCHEMA.md
 - Whether the agency-owner workflow is central
 - Whether the virtual venue is implemented as one layer of the product, not the entire product
-- Whether mock data is clearly separated from future production data
+- Whether seeded data is clearly separated from future production data
 - Whether video provider logic is properly abstracted
 - Whether technical debt is documented
 
@@ -875,7 +875,7 @@ Do not write code yet.
 3. Permission tests.
 4. Readiness scoring tests.
 5. Route consistency cleanup.
-6. Mock data normalization.
+6. Seeded data normalization.
 7. Supabase schema generation.
 8. Auth integration.
 9. Agency/client/event persistence.
@@ -903,7 +903,7 @@ Stop and repair if:
 - Run-of-show becomes unstructured notes.
 - Production command center is missing.
 - Video provider logic is hard-coded too early.
-- Mock data does not map to schema.
+- Seeded data does not map to schema.
 - Route map and app routes diverge.
 - Tech debt is hidden instead of recorded.
 
@@ -916,21 +916,21 @@ The first baseline must prove that an agency owner can manage multiple client ev
 
 ## Batch 3A — Supabase Auth + Real Current User
 
-Real Supabase Auth session resolution, profile lookup, role-access normalization, route protection, and auth forms. CRUD/uploads/email/video remain deferred.
+Real Supabase Auth session resolution, profile lookup, role-access normalization, route protection, and auth forms. CRUD/uploads/email/video remain scheduled for later scope.
 
 
 ## Batch 3B — Real Agency / Client / Event Persistence Foundation
 
-Adds Supabase-ready service boundaries and validation/server actions for agencies, clients, and events. Asset, approval, speaker/sponsor, email, video, and billing persistence remain deferred.
+Adds Supabase-ready service boundaries and validation/server actions for agencies, clients, and events. Asset, approval, speaker/sponsor, email, video, and billing persistence remain scheduled for later scope.
 
 
 ## Batch 3C — Production Ops Persistence
 
-Adds Supabase-ready persistence for approvals, production inbox, last-minute change control, asset metadata, and audit hooks. Storage/email/video remain deferred.
+Adds Supabase-ready persistence for approvals, production inbox, last-minute change control, asset metadata, and audit hooks. Storage/email/video remain scheduled for later scope.
 
 
 ## Batch 3C–5 cumulative foundation
 
 This cumulative batch includes approval/inbox/change-control persistence, storage and asset metadata foundation, speaker/sponsor persistence models, email workflow foundations, real data read-model completion, and production workflow persistence foundations.
 
-Still deferred: real video provider, production Resend sending, Stripe, deployment, and full attendee venue engine.
+Still scheduled for later scope: real video provider, production Resend sending, Stripe, deployment, and full attendee venue engine.

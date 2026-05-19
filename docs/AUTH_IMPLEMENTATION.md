@@ -2,7 +2,7 @@
 
 ## Current Status
 
-Auth is scaffolded but mock-backed.
+Auth is scaffolded but seeded-backed.
 
 Current files:
 
@@ -13,7 +13,7 @@ Current files:
 
 ## Current Behavior
 
-`getCurrentUser()` returns the mock agency owner.
+`getCurrentUser()` returns the seeded agency owner.
 
 ## Future Supabase Behavior
 

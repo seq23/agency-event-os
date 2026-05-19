@@ -1,4 +1,4 @@
-import { getMockData } from "@/lib/mock/getMockData";
+import { getRuntimeData } from "@/lib/runtime/getRuntimeData";
 import { calculateEventReadiness } from "@/lib/readiness/calculateEventReadiness";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { ReadinessScore } from "@/components/shared/ReadinessScore";
@@ -7,7 +7,7 @@ import { formatEventDate, titleize } from "@/lib/utils/format";
 import { EventPersistencePanel } from "@/components/persistence/EventPersistencePanel";
 
 export function EventPortfolio() {
-  const data = getMockData();
+  const data = getRuntimeData();
 
   return (
     <div className="space-y-6">

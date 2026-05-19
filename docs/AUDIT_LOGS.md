@@ -2,7 +2,7 @@
 
 ## Current Status
 
-Audit logging is scaffolded with a mock service.
+Audit logging is scaffolded with a seeded service.
 
 Files:
 

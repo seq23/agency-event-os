@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Move speaker and sponsor operations from mock UX toward Supabase-backed records.
+Move speaker and sponsor operations from seeded UX toward Supabase-backed records.
 
 ## Speaker Records
 
@@ -20,6 +20,6 @@ Move speaker and sponsor operations from mock UX toward Supabase-backed records.
 - sponsor_representatives
 - asset_records
 
-## Deferred
+## Post-MVP Scope
 
-Full UI writeback, real file uploads, and real email invites are deferred to later implementation passes.
+Full UI writeback, real file uploads, and real email invites are scheduled for later scope to later implementation passes.

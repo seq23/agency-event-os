@@ -47,9 +47,9 @@ export function calculateEventReadiness(data: MockData, eventId: string): EventR
     category("contractors", "Contractors/crew", contractors.every((c) => c.status === "confirmed") ? 90 : 62, contractors.filter((c) => c.status !== "confirmed").map((c) => c.role), ["Confirm crew call times."]),
     category("vendors", "Vendors", vendors.every((v) => v.status === "confirmed" || v.status === "complete") ? 88 : 60, vendors.filter((v) => !["confirmed", "complete"].includes(v.status)).map((v) => v.serviceCategory), ["Confirm vendor deliverables."]),
     category("assets", "Assets", Math.max(30, 100 - pendingAssets.length * 15), pendingAssets.map((a) => a.name), ["Review and approve submitted assets."]),
-    category("venue_configuration", "Venue configuration", videoRooms.length > 0 ? 78 : 25, videoRooms.length > 0 ? [] : ["Video rooms not configured"], ["Confirm stage/session/expo room placeholders."]),
+    category("venue_configuration", "Venue configuration", videoRooms.length > 0 ? 78 : 25, videoRooms.length > 0 ? [] : ["Video rooms not configured"], ["Confirm stage/session/expo LiveKit room surfaces."]),
     category("rehearsal", "Rehearsal readiness", speakers.every((s) => s.techCheckStatus === "completed") ? 90 : 55, speakers.filter((s) => s.techCheckStatus !== "completed").map((s) => s.name), ["Complete speaker tech checks."]),
-    category("reporting", "Reporting setup", event?.reportingEnabled ? 82 : 30, event?.reportingEnabled ? [] : ["Reporting disabled"], ["Confirm report shell and sponsor metrics."]),
+    category("reporting", "Reporting setup", event?.reportingEnabled ? 82 : 30, event?.reportingEnabled ? [] : ["Reporting disabled"], ["Confirm report exports and sponsor metrics."]),
   ];
 
   const overallScore = Math.round(categories.reduce((sum, item) => sum + item.score, 0) / categories.length);

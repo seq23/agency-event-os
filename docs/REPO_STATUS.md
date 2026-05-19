@@ -10,7 +10,7 @@ Starter baseline through Phase 12.
 - Repo skeleton
 - Types
 - Permission helper
-- Mock data
+- Seeded data
 - Readiness scoring
 - Agency dashboard
 - Client/event management

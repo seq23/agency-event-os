@@ -2,7 +2,7 @@
 
 ## Current State
 
-Analytics and reporting use mock analytics events.
+Analytics and reporting use seeded analytics events.
 
 ## Report Types
 
@@ -22,7 +22,7 @@ Analytics and reporting use mock analytics events.
 - Networking matches
 - Replay views
 
-## Deferred
+## Post-MVP Scope
 
 - Real analytics ingestion
 - Report export

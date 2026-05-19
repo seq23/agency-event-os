@@ -1,4 +1,4 @@
-import { getApprovalsForEvent } from "@/lib/mock/getMockData";
+import { getApprovalsForEvent } from "@/lib/runtime/getRuntimeData";
 import { SectionCard } from "@/components/shared/SectionCard";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 

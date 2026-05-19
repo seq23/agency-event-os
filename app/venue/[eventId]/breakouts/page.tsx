@@ -1,2 +1,16 @@
-import { BreakoutRoomDirectory } from "@/components/venue/BreakoutRoomDirectory";
-export default function VenueBreakoutsPage({ params }: { params: { eventId: string } }) { return <main className="min-h-screen bg-slate-50 p-6"><div className="mx-auto max-w-6xl"><BreakoutRoomDirectory eventId={params.eventId} /></div></main>; }
+import { buildVirtualVenueModel, sortBreakouts } from "@/services/venue";
+import { BreakoutRoomCard } from "@/components/venue/BreakoutRoomCard";
+import { VenuePageShell } from "@/components/venue/VenuePageShell";
+
+export default function BreakoutsPage({ params }: { params: { eventId: string } }) {
+  const model = buildVirtualVenueModel(params.eventId);
+  const rooms = sortBreakouts(model.breakouts);
+  return (
+    <VenuePageShell model={model}>
+      <section>
+        <h2 className="mb-4 text-2xl font-semibold">Breakout rooms</h2>
+        <div className="grid gap-4 md:grid-cols-3">{rooms.map((room) => <BreakoutRoomCard key={room.id} room={room} />)}</div>
+      </section>
+    </VenuePageShell>
+  );
+}

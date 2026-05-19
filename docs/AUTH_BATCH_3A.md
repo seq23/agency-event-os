@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Batch 3A replaces mock current-user assumptions with real Supabase Auth session awareness.
+Batch 3A replaces seeded current-user assumptions with real Supabase Auth session awareness.
 
 The app can now:
 
@@ -64,7 +64,7 @@ The result is normalized into the existing `PermissionUser` shape used by `can()
 
 Middleware enforces presence of a session cookie. Server utilities enforce actual permission resolution.
 
-## Deferred
+## Post-MVP Scope
 
 - invite token persistence
 - Resend invite/reminder emails

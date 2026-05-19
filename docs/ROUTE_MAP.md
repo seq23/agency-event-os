@@ -947,7 +947,7 @@ Purpose: main stage.
 Components:
 
 - MainStagePage
-- VideoPlaceholder
+- LiveKitVideoSurface
 - ChatPanelShell
 - QAPanelShell
 - PollPanelShell
@@ -977,7 +977,7 @@ Purpose: session room.
 Components:
 
 - SessionRoomPage
-- VideoPlaceholder
+- LiveKitVideoSurface
 - SessionChatPanelShell
 - QAPanelShell
 
@@ -1022,7 +1022,7 @@ Purpose: sponsor booth page.
 Components:
 
 - ExpoBoothPage
-- BoothVideoPlaceholder
+- BoothLiveKitVideoSurface
 - BoothResourceList
 - SponsorCTA
 - LeadCaptureShell

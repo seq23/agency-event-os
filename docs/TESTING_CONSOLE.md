@@ -36,7 +36,7 @@ It exists because a virtual event production agency cannot afford surprise video
 
 ## MVP Behavior
 
-The current console is mock-backed and operator-facing. It does not yet run real browser media tests or provider API checks.
+The current console is seeded-backed and operator-facing. It does not yet run real browser media tests or provider API checks.
 
 It provides:
 
@@ -44,7 +44,7 @@ It provides:
 - Recovery recommendation.
 - Device diagnostic cards.
 - Room diagnostic cards.
-- Provider status placeholders.
+- Provider status operational surfaces.
 - Incident/debug panel.
 - Fast debug protocol.
 - in-platform recovery decision support.
@@ -66,7 +66,7 @@ The next implementation should add real browser-side checks:
 - recording hook test
 - websocket/realtime status check
 
-## Future Provider Checks
+## Provider Checks
 
 When real video provider integration begins, the console should check:
 

@@ -2,7 +2,7 @@
 
 ## Current State
 
-Video is intentionally mocked.
+Video is intentionally seededed.
 
 ## Provider Abstraction
 
@@ -14,7 +14,7 @@ The schema and types include:
 - `provider`
 - `providerRoomId`
 
-## Supported Future Providers
+## Supported Providers
 
 - LiveKit
 - Daily

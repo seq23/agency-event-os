@@ -1,7 +1,7 @@
-import { getEvent } from "@/lib/mock/getMockData";
+import { getEvent } from "@/lib/runtime/getRuntimeData";
 import { SectionCard } from "@/components/shared/SectionCard";
 import { MetricCard } from "@/components/shared/MetricCard";
-import { VideoPlaceholder } from "@/components/venue/VideoPlaceholder";
+import { LiveKitVideoSurface } from "@/components/venue/LiveKitVideoSurface";
 import { getTestingConsoleSnapshot, requiresProducerRecovery } from "@/services/testing";
 import { DiagnosticStatusBadge } from "./DiagnosticStatusBadge";
 import { BrowserDiagnosticsPanel } from "./BrowserDiagnosticsPanel";
@@ -50,7 +50,7 @@ export function TestingConsole({ eventId = "event-summit" }: { eventId?: string 
         <div className="grid gap-6 xl:grid-cols-[1fr_380px]">
           <SectionCard title="Operator video/audio preflight" eyebrow="Manual + provider checks">
             <div className="space-y-5">
-              <VideoPlaceholder label="Camera preview and stage join test" />
+              <LiveKitVideoSurface label="Camera preview and stage join test" />
               <div className="grid gap-3 md:grid-cols-2">
                 {snapshot.devices.map((device) => (
                   <div key={device.id} className="rounded-2xl border border-slate-200 bg-white p-4">
@@ -75,7 +75,7 @@ export function TestingConsole({ eventId = "event-summit" }: { eventId?: string 
                 <p className="mt-1">
                   {recoveryRequired
                     ? "Recover inside Agency Event OS first: isolate the failing room, switch device/network, and open a controlled white-label backup room only if the producer approves."
-                    : "Current mock diagnostics do not require recovery intervention."}
+                    : "Current diagnostics do not require recovery intervention."}
                 </p>
               </div>
               <div className="rounded-2xl bg-slate-50 p-4">

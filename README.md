@@ -16,7 +16,7 @@ This starter baseline includes:
 - TypeScript domain types
 - Centralized permission helper
 - Readiness scoring helper
-- WPP-style mock data
+- WPP-style seeded data
 - Agency dashboard
 - Client and event management
 - Run-of-show and task planning
@@ -31,7 +31,7 @@ This starter baseline includes:
 - Auth shell pages
 - Technical debt register
 
-## Deliberately Deferred
+## Planned Post-MVP Scope
 
 - Production auth
 - Supabase persistence
@@ -57,17 +57,17 @@ This baseline now includes Supabase/Auth/Resend foundation scaffolding:
 
 - Environment validation
 - Supabase browser/server/admin clients
-- Mock-backed auth helpers
+- Seeded-backed auth helpers
 - Permission-required helper
 - Resend-compatible email provider abstraction
-- Mock email provider
+- Seeded email provider
 - Audit log service abstraction
 - Initial SQL migration draft
 - Seed SQL draft
 - Backend setup docs
 - Unit tests for env/email/audit helpers
 
-## Still Deferred
+## Remaining Post-MVP Scope
 
 - Live Supabase CRUD wiring
 - Supabase Auth session resolution

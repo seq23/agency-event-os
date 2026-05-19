@@ -1,10 +1,10 @@
-import { getEvent, getMockData, getTasksForEvent } from "@/lib/mock/getMockData";
+import { getEvent, getRuntimeData, getTasksForEvent } from "@/lib/runtime/getRuntimeData";
 import { SectionCard } from "@/components/shared/SectionCard";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 
 export function TaskBoard({ eventId }: { eventId: string }) {
   const event = getEvent(eventId);
-  const data = getMockData();
+  const data = getRuntimeData();
   const tasks = getTasksForEvent(event.id);
   const milestones = data.milestones.filter((milestone) => milestone.eventId === event.id);
 

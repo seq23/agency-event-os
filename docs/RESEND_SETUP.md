@@ -7,7 +7,7 @@ Email is scaffolded behind an abstraction.
 Files:
 
 - `services/email/EmailProvider.ts`
-- `services/email/MockEmailProvider.ts`
+- `services/email/SeededEmailProvider.ts`
 - `services/email/ResendEmailProvider.ts`
 - `services/email/emailService.ts`
 
@@ -22,7 +22,7 @@ EMAIL_FROM=
 
 If Resend is configured, the app can use `ResendEmailProvider`.
 
-If Resend is not configured, the app uses `MockEmailProvider`.
+If Resend is not configured, the app uses `SeededEmailProvider`.
 
 ## First Email Use Cases
 

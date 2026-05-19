@@ -1,9 +1,9 @@
-import { getMockData, getEvent, getVendorAssignmentsForEvent } from "@/lib/mock/getMockData";
+import { getRuntimeData, getEvent, getVendorAssignmentsForEvent } from "@/lib/runtime/getRuntimeData";
 import { SectionCard } from "@/components/shared/SectionCard";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 
 export function VendorDirectory() {
-  const data = getMockData();
+  const data = getRuntimeData();
 
   return (
     <SectionCard title="Vendor directory" eyebrow="External services">
@@ -26,7 +26,7 @@ export function VendorDirectory() {
 }
 
 export function EventVendorBoard({ eventId }: { eventId: string }) {
-  const data = getMockData();
+  const data = getRuntimeData();
   const event = getEvent(eventId);
   const assignments = getVendorAssignmentsForEvent(event.id);
 

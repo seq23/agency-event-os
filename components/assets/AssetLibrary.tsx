@@ -1,4 +1,4 @@
-import { getAssetsForEvent } from "@/lib/mock/getMockData";
+import { getAssetsForEvent } from "@/lib/runtime/getRuntimeData";
 import { SectionCard } from "@/components/shared/SectionCard";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 

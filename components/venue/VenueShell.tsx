@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { getEvent } from "@/lib/mock/getMockData";
+import { getEvent } from "@/lib/runtime/getRuntimeData";
 
 const venueNav = [
   ["Lobby", "lobby"],

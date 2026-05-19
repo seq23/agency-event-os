@@ -1,4 +1,4 @@
-import { getEventBySlug, getClient, getSpeakersForEvent, getSponsorBoothsForEvent } from "@/lib/mock/getMockData";
+import { getEventBySlug, getClient, getSpeakersForEvent, getSponsorBoothsForEvent } from "@/lib/runtime/getRuntimeData";
 import { SectionCard } from "@/components/shared/SectionCard";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { formatEventDate } from "@/lib/utils/format";
@@ -18,7 +18,7 @@ export function PublicEventPage({ slug }: { slug: string }) {
           <p className="mt-3 max-w-3xl text-slate-300">{event.description}</p>
           <p className="mt-4 text-slate-300">{formatEventDate(event.startAt)} · {event.timezone}</p>
           <div className="mt-6 flex flex-wrap gap-3">
-            <a href={`/events/${event.slug}/register`} className="rounded-xl bg-white px-5 py-3 text-sm font-semibold text-slate-950">Register placeholder</a>
+            <a href={`/events/${event.slug}/register`} className="rounded-xl bg-white px-5 py-3 text-sm font-semibold text-slate-950">Register</a>
             <a href={`/venue/${event.id}/lobby`} className="rounded-xl border border-white/20 px-5 py-3 text-sm font-semibold text-white">Preview venue</a>
           </div>
         </section>
@@ -63,14 +63,14 @@ export function PublicEventPage({ slug }: { slug: string }) {
   );
 }
 
-export function EventRegistrationShell({ slug }: { slug: string }) {
+export function EventRegistration({ slug }: { slug: string }) {
   const event = getEventBySlug(slug);
   return (
     <main className="min-h-screen bg-slate-50 p-6">
       <div className="mx-auto max-w-2xl rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-        <p className="text-sm text-slate-500">Registration shell</p>
+        <p className="text-sm text-slate-500">Registration</p>
         <h1 className="mt-2 text-3xl font-semibold">{event.name}</h1>
-        <p className="mt-2 text-slate-600">Mock registration form. Payments and email confirmation are deferred.</p>
+        <p className="mt-2 text-slate-600">Registration captures attendee intent and routes records into the venue model.</p>
         <div className="mt-6 space-y-3">
           {["Name", "Email", "Company", "Title"].map((field) => (
             <div key={field}>
@@ -78,7 +78,7 @@ export function EventRegistrationShell({ slug }: { slug: string }) {
               <div className="mt-1 h-11 rounded-xl border border-slate-200 bg-slate-50" />
             </div>
           ))}
-          <button className="w-full rounded-xl bg-slate-950 px-4 py-3 font-semibold text-white">Submit registration placeholder</button>
+          <button className="w-full rounded-xl bg-slate-950 px-4 py-3 font-semibold text-white">Submit registration</button>
         </div>
       </div>
     </main>

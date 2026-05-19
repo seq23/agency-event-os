@@ -7,3 +7,4 @@ export * from "./videoRecordingHooks";
 export * from "./videoTestingHooks";
 export * from "./LiveKitVideoProvider";
 export * from "./livekitToken";
+export * from "./livekitEgressService";

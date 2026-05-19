@@ -1,6 +1,6 @@
 import type { TestingConsoleSnapshot } from "@/types/testing";
 
-export const mockTestingConsoleSnapshot: TestingConsoleSnapshot = {
+export const baselineTestingConsoleSnapshot: TestingConsoleSnapshot = {
   eventId: "event-summit",
   overallStatus: "warn",
   goNoGo: "monitor",
@@ -64,7 +64,7 @@ export const mockTestingConsoleSnapshot: TestingConsoleSnapshot = {
       description: "Confirms recording hook/status for rooms that require replay.",
       status: "skipped",
       severity: "medium",
-      recommendedAction: "Recording is mock-only until real provider integration.",
+      recommendedAction: "Recording requires LiveKit egress activation before production use.",
     },
   ],
   devices: [
@@ -73,7 +73,7 @@ export const mockTestingConsoleSnapshot: TestingConsoleSnapshot = {
       kind: "camera",
       label: "Camera preview",
       status: "pass",
-      details: "Camera permission granted. Preview placeholder active.",
+      details: "Camera permission granted. Browser preview stream is available.",
       recommendedAction: "Confirm framing and lighting with speaker.",
     },
     {
@@ -107,7 +107,7 @@ export const mockTestingConsoleSnapshot: TestingConsoleSnapshot = {
       eventId: "event-summit",
       roomName: "Main Stage",
       roomType: "main_stage",
-      provider: "mock",
+      provider: "livekit",
       status: "warn",
       joinTestStatus: "pass",
       audioStatus: "warn",
@@ -122,7 +122,7 @@ export const mockTestingConsoleSnapshot: TestingConsoleSnapshot = {
       eventId: "event-summit",
       roomName: "Backstage",
       roomType: "backstage",
-      provider: "mock",
+      provider: "livekit",
       status: "pass",
       joinTestStatus: "pass",
       audioStatus: "pass",
@@ -137,7 +137,7 @@ export const mockTestingConsoleSnapshot: TestingConsoleSnapshot = {
       eventId: "event-summit",
       roomName: "Breakout A",
       roomType: "breakout_session",
-      provider: "mock",
+      provider: "livekit",
       status: "pending",
       joinTestStatus: "pending",
       audioStatus: "pending",
@@ -150,7 +150,7 @@ export const mockTestingConsoleSnapshot: TestingConsoleSnapshot = {
       eventId: "event-summit",
       roomName: "Clarity Booth",
       roomType: "sponsor_booth",
-      provider: "mock",
+      provider: "livekit",
       status: "pass",
       joinTestStatus: "pass",
       audioStatus: "pass",

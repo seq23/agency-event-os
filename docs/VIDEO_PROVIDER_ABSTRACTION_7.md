@@ -31,7 +31,7 @@ Supported room types:
 
 ## Current Provider
 
-The only implemented provider is `MockVideoProvider`.
+The only implemented provider is `SeededVideoProvider`.
 
 This is intentional. Real provider setup belongs in Phase 8.
 

@@ -2,7 +2,7 @@
 
 ## Current State
 
-This baseline is a mock-data shell. It does not include production authentication, authorization middleware, Supabase RLS, or real secrets.
+This baseline is a seeded-data shell. It does not include production authentication, authorization middleware, Supabase RLS, or real secrets.
 
 ## Security Principles
 

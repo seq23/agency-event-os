@@ -31,5 +31,5 @@ SUPABASE_SERVICE_ROLE_KEY=
 1. Create Supabase project.
 2. Run/review migration in a dev database.
 3. Apply seed data.
-4. Replace mock reads module-by-module.
+4. Replace seeded reads module-by-module.
 5. Add RLS policies before exposing external users.

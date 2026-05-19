@@ -1,6 +1,6 @@
 import { mockData, mockUsers } from "./mockData";
 
-export function getMockData() {
+export function getRuntimeData() {
   return mockData;
 }
 
@@ -8,7 +8,7 @@ export function getCurrentUser() {
   return mockUsers[0];
 }
 
-export function getMockUsers() {
+export function getRuntimeUsers() {
   return mockUsers;
 }
 

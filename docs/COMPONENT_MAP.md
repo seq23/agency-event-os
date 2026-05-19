@@ -47,7 +47,7 @@
 ## Venue
 
 - `VenueShell`
-- `VideoPlaceholder`
+- `LiveKitVideoSurface`
 - `PublicEventPage`
 - `EventRegistrationShell`
 - `EventLobby`

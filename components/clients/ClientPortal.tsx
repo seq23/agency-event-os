@@ -1,4 +1,4 @@
-import { getClientBySlug, getEvent, getMockData } from "@/lib/mock/getMockData";
+import { getClientBySlug, getEvent, getRuntimeData } from "@/lib/runtime/getRuntimeData";
 import { ApprovalQueue } from "@/components/approvals/ApprovalQueue";
 import { AssetLibrary } from "@/components/assets/AssetLibrary";
 import { SectionCard } from "@/components/shared/SectionCard";
@@ -6,7 +6,7 @@ import { StatusBadge } from "@/components/shared/StatusBadge";
 import { formatEventDate } from "@/lib/utils/format";
 
 export function ClientPortalDashboard({ clientSlug, eventId }: { clientSlug: string; eventId?: string }) {
-  const data = getMockData();
+  const data = getRuntimeData();
   const client = getClientBySlug(clientSlug);
   const events = data.events.filter((event) => event.clientId === client.id);
   const selectedEvent = eventId ? getEvent(eventId) : events[0];

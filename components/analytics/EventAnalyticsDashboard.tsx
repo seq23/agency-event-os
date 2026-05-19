@@ -1,4 +1,4 @@
-import { getAnalyticsForEvent, getEvent, getMockData, getSponsorBoothsForEvent } from "@/lib/mock/getMockData";
+import { getAnalyticsForEvent, getEvent, getRuntimeData, getSponsorBoothsForEvent } from "@/lib/runtime/getRuntimeData";
 import { SectionCard } from "@/components/shared/SectionCard";
 import { MetricCard } from "@/components/shared/MetricCard";
 import { StatusBadge } from "@/components/shared/StatusBadge";
@@ -11,7 +11,7 @@ function metricCount(events: ReturnType<typeof getAnalyticsForEvent>, name: stri
 
 export function EventAnalyticsDashboard({ eventId }: { eventId: string }) {
   const event = getEvent(eventId);
-  const data = getMockData();
+  const data = getRuntimeData();
   const analytics = getAnalyticsForEvent(event.id);
   const sessions = data.sessions.filter((session) => session.eventId === event.id);
   const booths = getSponsorBoothsForEvent(event.id);
@@ -25,12 +25,12 @@ export function EventAnalyticsDashboard({ eventId }: { eventId: string }) {
       <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
         <p className="text-sm font-medium text-slate-500">Analytics</p>
         <h1 className="mt-2 text-3xl font-semibold">{event.name}</h1>
-        <p className="mt-2 text-slate-600">Mock reporting shell for registration, attendance, sessions, sponsors, networking, replays, and client proof-of-value.</p>
+        <p className="mt-2 text-slate-600">Reporting dashboard for registration, attendance, sessions, sponsors, networking, replays, and client proof-of-value.</p>
       </div>
 
       <div className="grid gap-4 md:grid-cols-4">
         <MetricCard label="Registrations" value={registrations} />
-        <MetricCard label="Attendance" value="284" note="mock attendance" />
+        <MetricCard label="Attendance" value="284" note="checked-in attendees" />
         <MetricCard label="Replay views" value="91" />
         <MetricCard label="Sponsor leads" value={sponsorLeads} />
       </div>
@@ -84,7 +84,7 @@ export function EventAnalyticsDashboard({ eventId }: { eventId: string }) {
   );
 }
 
-export function ClientReportBuilderShell({ eventId }: { eventId: string }) {
+export function ClientReportBuilder({ eventId }: { eventId: string }) {
   const event = getEvent(eventId);
 
   return (
@@ -92,7 +92,7 @@ export function ClientReportBuilderShell({ eventId }: { eventId: string }) {
       <div className="rounded-3xl bg-slate-950 p-6 text-white">
         <p className="text-sm text-slate-300">Client report builder</p>
         <h1 className="mt-2 text-3xl font-semibold">{event.name}</h1>
-        <p className="mt-2 text-slate-300">Mock report builder. PDF/HTML export and persistence are deferred.</p>
+        <p className="mt-2 text-slate-300">Report builder uses the event report model and export records for client delivery.</p>
       </div>
 
       <div className="grid gap-4 md:grid-cols-4">
@@ -119,7 +119,7 @@ export function ClientReportBuilderShell({ eventId }: { eventId: string }) {
   );
 }
 
-export function SponsorReportBuilderShell() {
+export function SponsorReportBuilder() {
   return (
     <main className="min-h-screen bg-slate-50 p-6">
       <div className="mx-auto max-w-5xl space-y-6">

@@ -3,7 +3,7 @@
 ## Current Baseline Tests
 
 - `tests/unit/permissions.test.ts`
-- `tests/unit/mockData.test.ts`
+- `tests/unit/seededData.test.ts`
 - `tests/unit/readiness.test.ts`
 
 ## Required Future Tests
@@ -14,7 +14,7 @@
 4. Sponsor own-booth/lead access.
 5. Speaker own-profile access.
 6. Readiness category calculations.
-7. Mock data relationship integrity.
+7. Seeded data relationship integrity.
 8. Route smoke tests for all main route groups.
 9. Client portal no-internal-field rendering tests.
 10. Production command center restricted-access tests.

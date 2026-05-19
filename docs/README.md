@@ -52,3 +52,8 @@ This folder contains the documentation baseline and implementation references fo
 - `EMAIL_WORKFLOWS_3F.md`
 - `PRODUCTION_WORKFLOW_PERSISTENCE_5.md`
 - `REAL_TESTING_CONSOLE_DIAGNOSTICS_6.md`
+
+- `LIVEKIT_ROOM_UI_8C.md`
+- `VENUE_PERSISTENCE_9.md`
+- `SPEED_NETWORKING_ENGINE_10.md`
+- `REPORTS_AND_EXPORTS_11.md`

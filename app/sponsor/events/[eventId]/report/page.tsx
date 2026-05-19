@@ -1,5 +1,5 @@
-import { SponsorReportBuilderShell } from "@/components/analytics/EventAnalyticsDashboard";
+import { SponsorReportBuilder } from "@/components/analytics/EventAnalyticsDashboard";
 
 export default function SponsorReportPage() {
-  return <SponsorReportBuilderShell />;
+  return <SponsorReportBuilder />;
 }

@@ -1,10 +1,10 @@
-import { createClientFromFormAction } from "@/lib/actions/clientEventActions";
+import { createClientFromFormSubmitAction } from "@/lib/actions/clientEventActions";
 import { SectionCard } from "@/components/shared/SectionCard";
 
 export function ClientPersistencePanel({ agencyId }: { agencyId: string }) {
   return (
     <SectionCard title="Create client" eyebrow="Supabase persistence">
-      <form className="grid gap-3 md:grid-cols-2" action={async (formData: FormData) => { await createClientFromFormAction(formData); }}>
+      <form className="grid gap-3 md:grid-cols-2" action={createClientFromFormSubmitAction}>
         <input type="hidden" name="agencyId" value={agencyId} />
         <input type="hidden" name="status" value="active" />
         <label className="text-sm font-medium text-slate-700">

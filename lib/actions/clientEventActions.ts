@@ -68,8 +68,16 @@ export async function createClientFromFormAction(formData: FormData): Promise<Ac
   return createClientAction(formDataToObject(formData));
 }
 
+export async function createClientFromFormSubmitAction(formData: FormData): Promise<void> {
+  await createClientFromFormAction(formData);
+}
+
 export async function createEventFromFormAction(formData: FormData): Promise<ActionState> {
   return createEventAction(formDataToObject(formData));
+}
+
+export async function createEventFromFormSubmitAction(formData: FormData): Promise<void> {
+  await createEventFromFormAction(formData);
 }
 
 async function runValidated<T>(schema: z.ZodSchema<T>, input: unknown, handler: (parsed: T) => Promise<ActionState>): Promise<ActionState> {

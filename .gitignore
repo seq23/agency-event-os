@@ -14,3 +14,4 @@ test-results
 tsconfig.tsbuildinfo
 
 .vitest-cache
+.open-next

@@ -1,4 +1,4 @@
-import { sendTestEmailAction } from "@/lib/actions/emailActions";
+import { sendTestEmailSubmitAction } from "@/lib/actions/emailActions";
 import { requiredEmailWorkflows } from "@/services/email";
 
 export function TestEmailPanel() {
@@ -6,7 +6,7 @@ export function TestEmailPanel() {
     <section className="rounded-3xl border border-brand-line bg-white p-4 shadow-sm sm:p-6">
       <p className="text-xs font-semibold uppercase tracking-[0.25em] text-slate-500">Safe test send</p>
       <h2 className="mt-2 text-2xl font-semibold text-slate-950">Send a Resend test email</h2>
-      <form className="mt-5 grid gap-3 md:grid-cols-2" action={async (formData: FormData) => { await sendTestEmailAction(formData); }}>
+      <form className="mt-5 grid gap-3 md:grid-cols-2" action={sendTestEmailSubmitAction}>
         <label className="text-sm font-medium text-slate-700">
           Recipient
           <input className="mt-1 w-full rounded-xl border border-slate-200 p-3" name="to" type="email" required aria-label="Recipient email" />

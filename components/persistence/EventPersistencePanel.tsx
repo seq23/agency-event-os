@@ -1,10 +1,10 @@
-import { createEventFromFormAction } from "@/lib/actions/clientEventActions";
+import { createEventFromFormSubmitAction } from "@/lib/actions/clientEventActions";
 import { SectionCard } from "@/components/shared/SectionCard";
 
 export function EventPersistencePanel({ agencyId, clientId }: { agencyId: string; clientId: string }) {
   return (
     <SectionCard title="Create event" eyebrow="Supabase persistence">
-      <form className="grid gap-3 md:grid-cols-2" action={async (formData: FormData) => { await createEventFromFormAction(formData); }}>
+      <form className="grid gap-3 md:grid-cols-2" action={createEventFromFormSubmitAction}>
         <input type="hidden" name="agencyId" value={agencyId} />
         <input type="hidden" name="clientId" value={clientId} />
         <input type="hidden" name="status" value="draft" />

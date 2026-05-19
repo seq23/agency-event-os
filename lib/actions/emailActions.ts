@@ -33,3 +33,7 @@ export async function sendTestEmailAction(formData: FormData) {
     log,
   };
 }
+
+export async function sendTestEmailSubmitAction(formData: FormData): Promise<void> {
+  await sendTestEmailAction(formData);
+}

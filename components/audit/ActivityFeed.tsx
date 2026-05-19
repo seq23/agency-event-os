@@ -2,7 +2,7 @@ import type { ActivityFeedItem } from "@/types/preVenueHardening";
 
 export function ActivityFeed({ items }: { items: ActivityFeedItem[] }) {
   return (
-    <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+    <section className="rounded-3xl border border-brand-line bg-white p-4 shadow-sm sm:p-6">
       <p className="text-xs font-semibold uppercase tracking-[0.25em] text-slate-500">Activity</p>
       <h2 className="mt-2 text-2xl font-semibold text-slate-950">Audit feed</h2>
       <div className="mt-4 space-y-3">

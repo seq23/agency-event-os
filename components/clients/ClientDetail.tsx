@@ -11,7 +11,7 @@ export function ClientDetail({ clientId }: { clientId: string }) {
 
   return (
     <div className="space-y-6">
-      <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+      <div className="rounded-3xl border border-brand-line bg-white p-4 shadow-sm sm:p-6">
         <div className="flex items-start justify-between">
           <div>
             <p className="text-sm font-medium text-slate-500">Client workspace</p>
@@ -22,7 +22,7 @@ export function ClientDetail({ clientId }: { clientId: string }) {
         </div>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="grid gap-4 sm:gap-6 lg:grid-cols-2">
         <SectionCard title="Client events">
           <div className="space-y-3">
             {events.map((event) => (

@@ -23,7 +23,7 @@ export function PublicEventPage({ slug }: { slug: string }) {
           </div>
         </section>
 
-        <div className="grid gap-6 lg:grid-cols-2">
+        <div className="grid gap-4 sm:gap-6 lg:grid-cols-2">
           <SectionCard title="Agenda preview">
             <div className="space-y-3">
               {["Welcome and Orientation", "Investor Panel", "Sponsor Spotlight", "Breakouts", "Networking"].map((item, index) => (

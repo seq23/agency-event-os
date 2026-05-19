@@ -1,8 +1,8 @@
-# Agency Event OS — Database Schema
+# West Peek Live! — Database Schema
 
 ## 1. Purpose
 
-This document defines the production-intent database schema for Agency Event OS.
+This document defines the production-intent database schema for West Peek Live!.
 
 The schema is designed for a multi-tenant SaaS application where agencies produce virtual events for multiple clients.
 
@@ -1425,4 +1425,4 @@ Schema supports:
 
 ## 22. Final Schema Principle
 
-Agency Event OS is not an event app with clients bolted on later. It is an agency-first production system where every event belongs to a client, every client belongs to an agency, every production surface has ownership, and every external user sees only the slice required to do their job.
+West Peek Live! is not an event app with clients bolted on later. It is an agency-first production system where every event belongs to a client, every client belongs to an agency, every production surface has ownership, and every external user sees only the slice required to do their job.

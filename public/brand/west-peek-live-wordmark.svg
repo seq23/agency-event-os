@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="180" viewBox="0 0 720 180" role="img" aria-labelledby="title desc">
+  <title id="title">West Peek Live!</title>
+  <desc id="desc">West Peek in black bold sans-serif with Live in orange skewed script style.</desc>
+  <rect width="720" height="180" fill="#ffffff"/>
+  <text x="36" y="108" font-family="Inter, Arial, sans-serif" font-size="72" font-weight="900" letter-spacing="-5" fill="#050505">West Peek</text>
+  <g transform="translate(414 110) rotate(-8)">
+    <text x="0" y="0" font-family="Brush Script MT, Segoe Script, cursive" font-size="74" font-weight="700" fill="#ff6a00">Live!</text>
+  </g>
+</svg>

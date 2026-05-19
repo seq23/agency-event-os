@@ -70,7 +70,7 @@ export function AgencyDashboard() {
         </div>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-3">
+      <div className="grid gap-4 sm:gap-6 lg:grid-cols-3">
         <SectionCard title="Pending approvals">
           <div className="space-y-2">
             {pendingApprovals.map((approval) => (

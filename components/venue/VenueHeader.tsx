@@ -1,13 +1,15 @@
 import type { VirtualVenueModel } from "@/types/virtualVenue";
 import { VenueNav } from "./VenueNav";
 import { VenueStatusBar } from "./VenueStatusBar";
+import { WestPeekLiveWordmark } from "@/components/brand/WestPeekLiveWordmark";
 
 export function VenueHeader({ model }: { model: VirtualVenueModel }) {
   return (
-    <header className="rounded-3xl bg-slate-950 p-6 text-white shadow-sm">
-      <p className="text-xs font-semibold uppercase tracking-[0.3em] text-cyan-200">Virtual venue</p>
-      <h1 className="mt-2 text-3xl font-semibold">{model.eventName}</h1>
-      <p className="mt-2 max-w-3xl text-slate-300">Lobby, stage, sessions, breakouts, expo, networking, people, replay, and support in one event venue.</p>
+    <header className="rounded-[2rem] bg-brand-black p-5 text-white shadow-brand sm:p-6 lg:p-8">
+      <WestPeekLiveWordmark size="sm" inverse />
+      <p className="mt-4 text-xs font-black uppercase tracking-[0.32em] text-brand-orange">Virtual venue</p>
+      <h1 className="mt-2 text-3xl font-black tracking-[-0.05em] sm:text-4xl">{model.eventName}</h1>
+      <p className="mt-3 max-w-3xl text-sm leading-6 text-white/70 sm:text-base">Lobby, stage, sessions, breakouts, expo, networking, people, replay, and support in one event venue.</p>
       <div className="mt-5"><VenueStatusBar model={model} /></div>
       <div className="mt-5"><VenueNav items={model.nav} /></div>
     </header>

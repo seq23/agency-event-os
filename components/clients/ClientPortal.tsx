@@ -33,7 +33,7 @@ export function ClientPortalDashboard({ clientSlug, eventId }: { clientSlug: str
         </SectionCard>
 
         {selectedEvent ? (
-          <div className="grid gap-6 lg:grid-cols-2">
+          <div className="grid gap-4 sm:gap-6 lg:grid-cols-2">
             <ApprovalQueue eventId={selectedEvent.id} clientFacing />
             <AssetLibrary eventId={selectedEvent.id} clientFacing />
           </div>

@@ -1,4 +1,5 @@
 import type { EmailWorkflowPayload, EmailWorkflowType } from "@/types/emailWorkflows";
+import { PRODUCT_NAME } from "@/lib/brand";
 
 const labels: Record<EmailWorkflowType, string> = {
   client_invite: "Client invite",
@@ -25,16 +26,19 @@ export function renderEmailWorkflowHtml(payload: EmailWorkflowPayload) {
   const summary = payload.summary ?? `${labels[payload.workflowType]} for ${payload.eventName ?? "your event"}`;
   const due = payload.dueAt ? `<p><strong>Due:</strong> ${payload.dueAt}</p>` : "";
   const action = payload.actionUrl
-    ? `<p><a href="${payload.actionUrl}" style="display:inline-block;background:#020617;color:#ffffff;padding:12px 16px;border-radius:10px;text-decoration:none;">Open task</a></p>`
+    ? `<p><a href="${payload.actionUrl}" style="display:inline-block;background:#050505;color:#ffffff;padding:12px 16px;border-radius:999px;text-decoration:none;font-weight:700;">Open task</a></p>`
     : "";
 
   return `
-    <div style="font-family:Arial,sans-serif;line-height:1.5;color:#0f172a;">
-      <p>${greeting}</p>
-      <p>${summary}</p>
-      ${due}
-      ${action}
-      <p style="color:#64748b;font-size:12px;">Agency Event OS</p>
+    <div style="font-family:Arial,sans-serif;line-height:1.55;color:#050505;background:#ffffff;">
+      <div style="border:1px solid #e7e3dc;border-radius:24px;padding:24px;max-width:640px;">
+        <p style="font-size:12px;letter-spacing:0.22em;text-transform:uppercase;color:#ff6a00;font-weight:800;margin:0 0 12px;">West Peek Live!</p>
+        <p>${greeting}</p>
+        <p>${summary}</p>
+        ${due}
+        ${action}
+        <p style="color:#73706a;font-size:12px;margin-top:24px;">Sent by ${PRODUCT_NAME}. Replies go to the event production team.</p>
+      </div>
     </div>
   `;
 }

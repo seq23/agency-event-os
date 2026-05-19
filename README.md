@@ -1,6 +1,6 @@
-# Agency Event OS
+# West Peek Live!
 
-Agency Event OS is a multi-client virtual event production platform for agencies.
+West Peek Live! is a multi-client virtual event production platform for agencies.
 
 It combines:
 

@@ -14,7 +14,7 @@ export function renderEmailWorkflowText(payload: EmailWorkflowPayload) {
   const greeting = normalized.recipientName ? `Hi ${normalized.recipientName},` : "Hi,";
   const due = normalized.dueAt ? `\nDue: ${normalized.dueAt}` : "";
   const action = normalized.actionUrl ? `\nOpen: ${normalized.actionUrl}` : "";
-  return `${greeting}\n\n${normalized.summary}${due}${action}\n\nAgency Event OS`;
+  return `${greeting}\n\n${normalized.summary}${due}${action}\n\nWest Peek Live!`;
 }
 
 export const requiredEmailWorkflows: EmailWorkflowPayload["workflowType"][] = [

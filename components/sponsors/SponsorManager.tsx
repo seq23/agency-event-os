@@ -37,7 +37,7 @@ export function SponsorManager({ eventId }: { eventId: string }) {
 export function SponsorPortalDashboard() {
   return (
     <div className="space-y-6">
-      <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+      <div className="rounded-3xl border border-brand-line bg-white p-4 shadow-sm sm:p-6">
         <p className="text-sm text-slate-500">Sponsor portal</p>
         <h1 className="mt-2 text-3xl font-semibold">Booth setup and lead report</h1>
         <p className="mt-2 text-slate-600">Manage booth copy, CTA, resources, representatives, and sponsor reporting.</p>

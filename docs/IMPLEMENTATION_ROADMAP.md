@@ -1,14 +1,14 @@
-# Agency Event OS — Implementation Roadmap
+# West Peek Live! — Implementation Roadmap
 
 ## 1. Purpose
 
-This document defines the step-by-step build roadmap for Agency Event OS.
+This document defines the step-by-step build roadmap for West Peek Live!.
 
 It exists so ChatGPT, Codex, future contributors, and the project owner can build the product in a controlled sequence without turning the app into a fragile demo or an overbuilt enterprise platform too early.
 
 The roadmap follows the current product lock:
 
-**Agency Event OS = Hopin-style virtual event venue + agency production operating system.**
+**West Peek Live! = Hopin-style virtual event venue + agency production operating system.**
 
 The agency production operating system is the priority. The virtual venue is required, but it is one layer of the product, not the whole product.
 
@@ -838,7 +838,7 @@ Use Codex to harden and implement beyond the seeded shell.
 ### Codex First Prompt
 
 ```txt
-Audit this repository for Agency Event OS.
+Audit this repository for West Peek Live!.
 
 The source of truth is the /docs folder.
 

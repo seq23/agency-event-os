@@ -1,12 +1,12 @@
-# Agency Event OS — MVP Scope
+# West Peek Live! — MVP Scope
 
 ## 1. Purpose
 
-This document defines the first build scope for Agency Event OS.
+This document defines the first build scope for West Peek Live!.
 
 The MVP is the smallest coherent product foundation that proves the core thesis:
 
-**Agency Event OS helps agencies plan, produce, run, and report on virtual events for multiple clients from one production command center.**
+**West Peek Live! helps agencies plan, produce, run, and report on virtual events for multiple clients from one production command center.**
 
 ## 2. MVP Strategy
 

@@ -1,9 +1,10 @@
 import "./globals.css";
 import type { ReactNode } from "react";
+import { PRODUCT_NAME, BRAND_TAGLINE } from "@/lib/brand";
 
 export const metadata = {
-  title: "Agency Event OS",
-  description: "A multi-client virtual event production platform for agencies.",
+  title: PRODUCT_NAME,
+  description: BRAND_TAGLINE,
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {

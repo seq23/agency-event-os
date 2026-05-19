@@ -1,8 +1,8 @@
-# Agency Event OS — Route Map
+# West Peek Live! — Route Map
 
 ## 1. Purpose
 
-This document defines the first route map for Agency Event OS.
+This document defines the first route map for West Peek Live!.
 
 The route map is designed to support:
 
@@ -34,7 +34,7 @@ Routes are organized by audience and permission boundary.
 
 ### `/`
 
-Purpose: marketing homepage for Agency Event OS or demo landing.
+Purpose: marketing homepage for West Peek Live! or demo landing.
 
 Primary user: public visitor / buyer.
 

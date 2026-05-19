@@ -1,8 +1,8 @@
-# Agency Event OS — User Roles and Permissions
+# West Peek Live! — User Roles and Permissions
 
 ## 1. Purpose
 
-This document defines the role and permission model for Agency Event OS.
+This document defines the role and permission model for West Peek Live!.
 
 The permission system protects:
 
@@ -16,7 +16,7 @@ The permission system protects:
 
 ## 2. Permission Philosophy
 
-Agency Event OS is multi-tenant and multi-role. The system must allow collaboration without leaking data.
+West Peek Live! is multi-tenant and multi-role. The system must allow collaboration without leaking data.
 
 Rules:
 

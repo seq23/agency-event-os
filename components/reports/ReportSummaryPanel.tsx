@@ -2,7 +2,7 @@ import type { EventReport } from "@/types/reports";
 
 export function ReportSummaryPanel({ report }: { report: EventReport }) {
   return (
-    <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+    <section className="rounded-3xl border border-brand-line bg-white p-4 shadow-sm sm:p-6">
       <p className="text-xs font-semibold uppercase tracking-[0.25em] text-slate-500">Report</p>
       <h2 className="mt-2 text-2xl font-semibold text-slate-950">{report.title}</h2>
       <div className="mt-5 space-y-3">

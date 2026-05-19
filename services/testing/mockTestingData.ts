@@ -6,7 +6,7 @@ export const baselineTestingConsoleSnapshot: TestingConsoleSnapshot = {
   goNoGo: "monitor",
   recoveryMode: "producer_intervention",
   whiteLabelBackupProvider: "zoom",
-  whiteLabelBackupLabel: "Agency Event OS Backup Room",
+  whiteLabelBackupLabel: "West Peek Live! Backup Room",
   whiteLabelBackupUrl: "https://backup.example.com/client-safe-room",
   whiteLabelBackupEnabled: true,
   generatedAt: "2026-05-18T16:15:00.000Z",

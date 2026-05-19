@@ -34,7 +34,7 @@ export async function LiveKitRoomShell({ eventId, roomId, roomType, role, title,
     <main className="min-h-screen bg-slate-950 text-white">
       <section className="mx-auto flex max-w-6xl flex-col gap-6 px-6 py-10">
         <div className="rounded-3xl border border-white/10 bg-white/10 p-6 shadow-2xl">
-          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-cyan-200">LiveKit room</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-brand-orange">LiveKit room</p>
           <h1 className="mt-3 text-3xl font-semibold">{title}</h1>
           <p className="mt-3 max-w-3xl text-sm leading-6 text-slate-300">{description}</p>
         </div>

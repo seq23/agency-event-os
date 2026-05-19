@@ -1,15 +1,15 @@
-# Agency Event OS — Product Spec
+# West Peek Live! — Product Spec
 
 ## 1. Product Identity
 
-**Working name:** Agency Event OS  
+**Working name:** West Peek Live!  
 **Category:** Multi-client virtual event production platform for agencies.
 
-Agency Event OS combines a Hopin-style virtual event venue with an agency production operating system. It is not just where attendees watch sessions. It is the system an agency owner uses to plan, sell, coordinate, produce, run, report on, and repeat virtual events for multiple clients.
+West Peek Live! combines a Hopin-style virtual event venue with an agency production operating system. It is not just where attendees watch sessions. It is the system an agency owner uses to plan, sell, coordinate, produce, run, report on, and repeat virtual events for multiple clients.
 
 ## 2. Positioning
 
-**Positioning statement:** Agency Event OS helps agencies plan, produce, run, and report on virtual events for multiple clients from one production command center.
+**Positioning statement:** West Peek Live! helps agencies plan, produce, run, and report on virtual events for multiple clients from one production command center.
 
 The platform gives agencies one place to manage clients, event packages, speakers, sponsors, contractors, vendors, assets, approvals, run-of-show, live show control, attendee experience, and post-event reporting.
 
@@ -51,7 +51,7 @@ They may produce:
 
 ## 5. Core Product Promise
 
-Agency Event OS helps the agency owner:
+West Peek Live! helps the agency owner:
 
 1. Create repeatable client event systems.
 2. Keep clients calm and informed.
@@ -312,4 +312,4 @@ MVP must demonstrate:
 
 ## 12. Final Product Principle
 
-Agency Event OS should make an agency owner feel like every client event has a cockpit, a checklist, a venue, a crew plan, a client portal, and a report — all connected.
+West Peek Live! should make an agency owner feel like every client event has a cockpit, a checklist, a venue, a crew plan, a client portal, and a report — all connected.

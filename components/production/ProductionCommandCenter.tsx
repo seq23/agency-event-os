@@ -73,7 +73,7 @@ export function ProductionCommandCenter({ eventId }: { eventId: string }) {
         </SectionCard>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-3">
+      <div className="grid gap-4 sm:gap-6 lg:grid-cols-3">
         <SectionCard title="Speaker readiness">
           <div className="space-y-3">
             {speakers.map((speaker) => (
@@ -112,7 +112,7 @@ export function ProductionCommandCenter({ eventId }: { eventId: string }) {
         </SectionCard>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-3">
+      <div className="grid gap-4 sm:gap-6 lg:grid-cols-3">
         <SectionCard title="Chat moderation queue">
           <p className="text-sm text-slate-600">Moderation queue for room and attendee activity.</p>
         </SectionCard>

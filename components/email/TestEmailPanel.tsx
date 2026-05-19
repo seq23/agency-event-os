@@ -3,7 +3,7 @@ import { requiredEmailWorkflows } from "@/services/email";
 
 export function TestEmailPanel() {
   return (
-    <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+    <section className="rounded-3xl border border-brand-line bg-white p-4 shadow-sm sm:p-6">
       <p className="text-xs font-semibold uppercase tracking-[0.25em] text-slate-500">Safe test send</p>
       <h2 className="mt-2 text-2xl font-semibold text-slate-950">Send a Resend test email</h2>
       <form className="mt-5 grid gap-3 md:grid-cols-2" action={async (formData: FormData) => { await sendTestEmailAction(formData); }}>
@@ -21,7 +21,7 @@ export function TestEmailPanel() {
         </label>
         <label className="text-sm font-medium text-slate-700 md:col-span-2">
           Event name
-          <input className="mt-1 w-full rounded-xl border border-slate-200 p-3" name="eventName" defaultValue="Agency Event OS" aria-label="Event name" />
+          <input className="mt-1 w-full rounded-xl border border-slate-200 p-3" name="eventName" defaultValue="West Peek Live!" aria-label="Event name" />
         </label>
         <button className="rounded-xl bg-slate-950 px-5 py-3 text-sm font-semibold text-white md:col-span-2" type="submit">
           Send test email

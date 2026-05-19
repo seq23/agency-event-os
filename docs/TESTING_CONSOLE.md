@@ -2,7 +2,7 @@
 
 ## Purpose
 
-The Testing Console is the operator-facing debug and preflight center for Agency Event OS.
+The Testing Console is the operator-facing debug and preflight center for West Peek Live!.
 
 It exists because a virtual event production agency cannot afford surprise video/audio failures during client events. If main stage, backstage, breakout, networking, or sponsor booth video fails, the production team needs a fast way to diagnose the issue and decide whether to continue in-platform or avoid any off-platform recovery.
 

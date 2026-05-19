@@ -10,7 +10,7 @@ export function TaskBoard({ eventId }: { eventId: string }) {
 
   return (
     <div className="space-y-6">
-      <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+      <div className="rounded-3xl border border-brand-line bg-white p-4 shadow-sm sm:p-6">
         <p className="text-sm font-medium text-slate-500">Tasks and milestones</p>
         <h1 className="mt-2 text-3xl font-semibold">{event.name}</h1>
       </div>

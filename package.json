@@ -2,7 +2,7 @@
   "name": "agency-event-os",
   "version": "0.1.0",
   "private": true,
-  "description": "Agency Event OS \u2014 multi-client virtual event production platform for agencies.",
+  "description": "West Peek Live! virtual event production platform.",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -37,7 +37,8 @@
     "validate:phase14": "npm run test -- --run tests/unit/supabaseQueryIntegration.test.ts",
     "validate:phase15": "npm run test -- --run tests/unit/liveProductionOperations.test.ts",
     "validate:phase16": "npm run test -- --run tests/unit/livekitEgress.test.ts",
-    "validate:phase17": "npm run test -- --run tests/unit/emailProduction.test.ts"
+    "validate:phase17": "npm run test -- --run tests/unit/emailProduction.test.ts",
+    "validate:brand": "node scripts/validate_branding.js"
   },
   "dependencies": {
     "@hookform/resolvers": "3.9.0",

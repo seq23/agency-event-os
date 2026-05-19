@@ -26,7 +26,7 @@ describe("production email sending", () => {
     expect(request.workflowType).toBe("client_invite");
     expect(request.recipient.email).toBe("client@example.com");
     expect(request.html).toContain("Open task");
-    expect(request.text).toContain("Agency Event OS");
+    expect(request.text).toContain("West Peek Live!");
   });
 
   it("builds workflow-specific production requests", () => {

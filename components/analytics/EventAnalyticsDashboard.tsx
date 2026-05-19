@@ -22,7 +22,7 @@ export function EventAnalyticsDashboard({ eventId }: { eventId: string }) {
 
   return (
     <div className="space-y-6">
-      <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+      <div className="rounded-3xl border border-brand-line bg-white p-4 shadow-sm sm:p-6">
         <p className="text-sm font-medium text-slate-500">Analytics</p>
         <h1 className="mt-2 text-3xl font-semibold">{event.name}</h1>
         <p className="mt-2 text-slate-600">Reporting dashboard for registration, attendance, sessions, sponsors, networking, replays, and client proof-of-value.</p>
@@ -35,7 +35,7 @@ export function EventAnalyticsDashboard({ eventId }: { eventId: string }) {
         <MetricCard label="Sponsor leads" value={sponsorLeads} />
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="grid gap-4 sm:gap-6 lg:grid-cols-2">
         <SectionCard title="Session engagement">
           <div className="space-y-3">
             {sessions.map((session, index) => (
@@ -69,7 +69,7 @@ export function EventAnalyticsDashboard({ eventId }: { eventId: string }) {
         </SectionCard>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-3">
+      <div className="grid gap-4 sm:gap-6 lg:grid-cols-3">
         <SectionCard title="Networking metrics">
           <p className="text-sm text-slate-600">Mock networking matches: 64 queued, 42 matched, 29 mutual connections.</p>
         </SectionCard>
@@ -123,7 +123,7 @@ export function SponsorReportBuilder() {
   return (
     <main className="min-h-screen bg-slate-50 p-6">
       <div className="mx-auto max-w-5xl space-y-6">
-        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="rounded-3xl border border-brand-line bg-white p-4 shadow-sm sm:p-6">
           <p className="text-sm text-slate-500">Sponsor report</p>
           <h1 className="mt-2 text-3xl font-semibold">Clarity Systems</h1>
           <p className="mt-2 text-slate-600">Sponsor-facing report shell with booth visits, CTA clicks, resource downloads, and leads.</p>

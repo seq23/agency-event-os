@@ -10,7 +10,7 @@ The user-facing framing should remain:
 
 - Backup Room
 - Client Event Backup Room
-- Agency Event OS Backup Room
+- West Peek Live! Backup Room
 - [Client Name] Continuity Room
 
 ## Supported Provider Options

@@ -1,6 +1,6 @@
-# Agency Event OS Docs
+# West Peek Live! Docs
 
-This folder contains the documentation baseline and implementation references for Agency Event OS.
+This folder contains the documentation baseline and implementation references for West Peek Live!.
 
 ## Primary Source Docs
 
@@ -58,3 +58,6 @@ This folder contains the documentation baseline and implementation references fo
 - `SPEED_NETWORKING_ENGINE_10.md`
 - `REPORTS_AND_EXPORTS_11.md`
 - `EMAIL_PRODUCTION_SENDING_17.md`
+- `BRAND_SYSTEM_WEST_PEEK_LIVE.md`
+- `BRANDING_ROLLOUT_CHECKLIST.md`
+- `MOBILE_TABLET_QA_WEST_PEEK_LIVE.md`

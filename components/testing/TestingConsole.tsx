@@ -74,7 +74,7 @@ export function TestingConsole({ eventId = "event-summit" }: { eventId?: string 
                 <p className="font-semibold">{recoveryRequired ? "Producer recovery required" : "No recovery required"}</p>
                 <p className="mt-1">
                   {recoveryRequired
-                    ? "Recover inside Agency Event OS first: isolate the failing room, switch device/network, and open a controlled white-label backup room only if the producer approves."
+                    ? "Recover inside West Peek Live! first: isolate the failing room, switch device/network, and open a controlled white-label backup room only if the producer approves."
                     : "Current diagnostics do not require recovery intervention."}
                 </p>
               </div>
@@ -116,7 +116,7 @@ export function TestingConsole({ eventId = "event-summit" }: { eventId?: string 
           </div>
         </SectionCard>
 
-        <div className="grid gap-6 lg:grid-cols-2">
+        <div className="grid gap-4 sm:gap-6 lg:grid-cols-2">
           <SectionCard title="Diagnostic checks">
             <div className="space-y-3">
               {snapshot.checks.map((check) => (

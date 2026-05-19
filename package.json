@@ -12,7 +12,7 @@
     "test": "vitest run --pool=threads --poolOptions.threads.singleThread=true",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
-    "validate": "npm run typecheck && npm run lint && npm run test && npm run validate:structure && npm run validate:brand",
+    "validate": "npm run typecheck && npm run lint && npm run test && npm run validate:structure && npm run validate:brand && npm run validate:whitelabel-video",
     "structure": "node scripts/validate_structure.js",
     "validate:structure": "node scripts/validate_structure.js",
     "validate:backend-foundation": "npm run test -- --run tests/unit/env.test.ts tests/unit/email.test.ts tests/unit/audit.test.ts",
@@ -38,7 +38,8 @@
     "validate:phase15": "npm run test -- --run tests/unit/liveProductionOperations.test.ts",
     "validate:phase16": "npm run test -- --run tests/unit/livekitEgress.test.ts",
     "validate:phase17": "npm run test -- --run tests/unit/emailProduction.test.ts",
-    "validate:brand": "node scripts/validate_branding.js"
+    "validate:brand": "node scripts/validate_branding.js",
+    "validate:whitelabel-video": "node scripts/validate_whitelabel_video.js"
   },
   "dependencies": {
     "@hookform/resolvers": "3.9.0",

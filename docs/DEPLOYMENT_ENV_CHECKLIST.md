@@ -61,3 +61,20 @@ print("missing:", missing)
 print("env_check:", "OK" if not missing else "NEEDS_FIX")
 PY
 ```
+
+
+## Optional white-label fallback video env vars
+
+Required only if embedded Zoom fallback is enabled:
+
+```txt
+ZOOM_MEETING_SDK_KEY=
+ZOOM_MEETING_SDK_SECRET=
+NEXT_PUBLIC_ENABLE_ZOOM_EMBEDDED_FALLBACK=true
+```
+
+Emergency managed fallback only:
+
+```txt
+GOOGLE_MEET_MANAGED_FALLBACK_URL=
+```

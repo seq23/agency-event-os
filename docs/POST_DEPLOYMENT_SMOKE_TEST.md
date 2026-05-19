@@ -72,3 +72,11 @@ Confirm:
 - forms are tappable
 - cards stack cleanly
 - primary live-event actions remain visible
+
+
+## White-label fallback video
+
+- Confirm LiveKit room still loads as the primary room engine.
+- Confirm embedded Zoom room can open inside the West Peek Live! wrapper when enabled.
+- Confirm attendee copy does not expose provider failure language.
+- Confirm emergency alternate room link is clearly branded and operator-controlled.

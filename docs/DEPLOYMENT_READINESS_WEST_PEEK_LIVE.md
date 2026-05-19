@@ -6,6 +6,12 @@ Required before public deployment.
 
 ## Deployment gates
 
+- White-label fallback video gate is complete.
+- `npm run validate:whitelabel-video` passes.
+- Zoom embedded fallback env vars are configured if enabled.
+- Google Meet is treated only as a managed emergency alternate room unless later approved.
+
+
 - `npm run validate` passes locally.
 - `npm run validate:brand` is included in default validation.
 - Supabase migrations `0001` through `0017` are applied.

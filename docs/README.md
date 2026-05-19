@@ -66,3 +66,5 @@ This folder contains the documentation baseline and implementation references fo
 - `DEPLOYMENT_ENV_CHECKLIST.md`
 - `POST_DEPLOYMENT_SMOKE_TEST.md`
 - `SUPABASE_RLS_DEPLOYMENT_REVIEW.md`
+
+- `WHITE_LABEL_FALLBACK_VIDEO_19A.md`

@@ -68,3 +68,5 @@ This folder contains the documentation baseline and implementation references fo
 - `SUPABASE_RLS_DEPLOYMENT_REVIEW.md`
 
 - `WHITE_LABEL_FALLBACK_VIDEO_19A.md`
+
+- Canonical deployment authority: app domain `westpeek.live`; email sending domain `events.westpeek.live`.

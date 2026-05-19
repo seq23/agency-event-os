@@ -56,3 +56,23 @@ Configured reply-to:
 - venue navigation is broken on mobile
 - stale deprecated product-name text appears
 - RLS review has not been performed
+
+## Canonical Deployment Authority
+
+- GitHub repo: `agency-event-os`
+- Framework: `Next.js`
+- Adapter: `OpenNext for Cloudflare`
+- Host: `Cloudflare Workers / Cloudflare platform`
+- App domain: `westpeek.live`
+- Email sending domain: `events.westpeek.live`
+- Outbound sender: `notifications@events.westpeek.live`
+- Reply-to: `hello@westpeek.live`
+
+### Domain Separation Rule
+
+`westpeek.live` is the West Peek Live! app and public product domain.
+
+`events.westpeek.live` is reserved for Resend email sending infrastructure only.
+
+Do not deploy the app to `events.westpeek.live` unless this deployment authority document is explicitly changed.
+

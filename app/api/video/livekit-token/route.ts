@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { buildLiveKitJoinResult } from "@/services/video/livekitRoomUiService";
+import { buildResilientVideoJoinResult } from "@/services/video/livekitRoomUiService";
 import type { LiveKitJoinRequest } from "@/types/livekitRoomUi";
 
 export async function POST(request: Request) {
@@ -15,7 +15,7 @@ export async function POST(request: Request) {
     );
   }
 
-  const result = await buildLiveKitJoinResult({
+  const result = await buildResilientVideoJoinResult({
     eventId: body.eventId,
     roomId: body.roomId,
     roomType: body.roomType,

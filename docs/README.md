@@ -70,3 +70,5 @@ This folder contains the documentation baseline and implementation references fo
 - `WHITE_LABEL_FALLBACK_VIDEO_19A.md`
 
 - Canonical deployment authority: app domain `westpeek.live`; email sending domain `events.westpeek.live`.
+- Daily automatic fallback is documented across deployment, video architecture, testing console, and post-deployment smoke docs.
+

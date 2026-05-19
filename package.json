@@ -12,7 +12,7 @@
     "test": "vitest run --pool=threads --poolOptions.threads.singleThread=true",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
-    "validate": "npm run typecheck && npm run lint && npm run test && npm run validate:structure && npm run validate:brand && npm run validate:whitelabel-video",
+    "validate": "npm run typecheck && npm run lint && npm run test && npm run validate:structure && npm run validate:brand && npm run validate:whitelabel-video && npm run validate:daily-static",
     "structure": "node scripts/validate_structure.js",
     "validate:structure": "node scripts/validate_structure.js",
     "validate:backend-foundation": "npm run test -- --run tests/unit/env.test.ts tests/unit/email.test.ts tests/unit/audit.test.ts",
@@ -43,7 +43,10 @@
     "cf:build": "opennextjs-cloudflare build",
     "cf:preview": "opennextjs-cloudflare preview",
     "cf:deploy": "opennextjs-cloudflare deploy",
-    "cf:upload": "opennextjs-cloudflare upload"
+    "cf:upload": "opennextjs-cloudflare upload",
+    "validate:daily-fallback": "node scripts/validate_daily_fallback.js && npm run test -- --run tests/unit/dailyProvider.test.ts tests/unit/videoFallbackPolicy.test.ts tests/unit/testingConsole.test.ts",
+    "smoke:post-deploy": "node scripts/post_deploy_smoke_test.js",
+    "validate:daily-static": "node scripts/validate_daily_fallback.js"
   },
   "dependencies": {
     "@hookform/resolvers": "3.9.0",

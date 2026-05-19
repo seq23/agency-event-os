@@ -13,6 +13,8 @@ describe("auth action prerequisites", () => {
         RESEND_API_KEY: "",
         EMAIL_FROM: "",
         VIDEO_PROVIDER: "mock",
+        DAILY_API_BASE_URL: "https://api.daily.co/v1",
+        DAILY_FALLBACK_ENABLED: "false",
       }),
     ).toBe(true);
   });

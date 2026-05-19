@@ -1,6 +1,7 @@
 import type { VideoProvider } from "./VideoProvider";
 import { MockVideoProvider } from "./MockVideoProvider";
 import { createLiveKitProviderFromEnv } from "./LiveKitVideoProvider";
+import { createDailyProviderFromEnv } from "./DailyVideoProvider";
 
 const providers = new Map<string, VideoProvider>();
 
@@ -27,3 +28,8 @@ if (liveKitProvider) {
   registerVideoProvider(liveKitProvider);
 }
 
+
+const dailyProvider = createDailyProviderFromEnv();
+if (dailyProvider) {
+  registerVideoProvider(dailyProvider);
+}

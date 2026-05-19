@@ -1,5 +1,6 @@
 import { LiveKitRoomClient } from "@/components/video/LiveKitRoomClient";
-import { buildLiveKitJoinResult } from "@/services/video/livekitRoomUiService";
+import { DailyVideoRoom } from "@/components/video/DailyVideoRoom";
+import { buildResilientVideoJoinResult } from "@/services/video/livekitRoomUiService";
 import { buildDefaultTokenPermissions } from "@/services/video";
 import type { LiveKitRoomSurface } from "@/types/livekitRoomUi";
 import type { VideoParticipantRole } from "@/types/video";
@@ -15,11 +16,11 @@ interface LiveKitRoomShellProps {
 
 export async function LiveKitRoomShell({ eventId, roomId, roomType, role, title, description }: LiveKitRoomShellProps) {
   const permissions = buildDefaultTokenPermissions(role);
-  let joinResult: Awaited<ReturnType<typeof buildLiveKitJoinResult>> | null = null;
+  let joinResult: Awaited<ReturnType<typeof buildResilientVideoJoinResult>> | null = null;
   let setupError: string | null = null;
 
   try {
-    joinResult = await buildLiveKitJoinResult({
+    joinResult = await buildResilientVideoJoinResult({
       eventId,
       roomId,
       roomType,
@@ -40,7 +41,13 @@ export async function LiveKitRoomShell({ eventId, roomId, roomType, role, title,
         </div>
 
         <div className="grid gap-4 lg:grid-cols-[1.5fr_0.8fr]">
-          {joinResult?.livekitUrl ? (
+          {joinResult?.room.provider === "daily" ? (
+            <DailyVideoRoom
+              roomUrl={joinResult.dailyUrl}
+              title={title}
+              description="Automatic in-platform backup room is active."
+            />
+          ) : joinResult?.livekitUrl ? (
             <LiveKitRoomClient
               serverUrl={joinResult.livekitUrl}
               token={joinResult.token.token}
@@ -50,9 +57,9 @@ export async function LiveKitRoomShell({ eventId, roomId, roomType, role, title,
             />
           ) : (
             <div className="rounded-3xl border border-amber-300/30 bg-amber-950/30 p-6">
-              <p className="text-lg font-semibold text-amber-100">LiveKit is not ready for this room.</p>
+              <p className="text-lg font-semibold text-amber-100">Video room is not ready.</p>
               <p className="mt-2 text-sm text-amber-50/80">
-                {setupError ?? "Missing LiveKit server URL or token. Check LIVEKIT_URL, LIVEKIT_API_KEY, and LIVEKIT_API_SECRET."}
+                {setupError ?? "Missing provider URL or token. Check LiveKit and Daily fallback configuration."}
               </p>
             </div>
           )}
@@ -67,6 +74,10 @@ export async function LiveKitRoomShell({ eventId, roomId, roomType, role, title,
               <div className="flex justify-between gap-3">
                 <dt className="text-slate-400">Room</dt>
                 <dd className="font-medium">{joinResult?.room.providerRoomId ?? roomId}</dd>
+              </div>
+              <div className="flex justify-between gap-3">
+                <dt className="text-slate-400">Provider</dt>
+                <dd className="font-medium">{joinResult?.room.provider ?? "pending"}</dd>
               </div>
               <div className="flex justify-between gap-3">
                 <dt className="text-slate-400">Surface</dt>

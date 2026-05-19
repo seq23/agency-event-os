@@ -39,7 +39,7 @@ This is intentional. Real provider setup belongs in Phase 8.
 
 Recommended primary provider: LiveKit.
 
-White-label backup rooms should remain Zoom or Google Meet links unless a client specifically requires another provider.
+White-label backup order is LiveKit primary, Daily automatic in-platform fallback, then Zoom and Google Meet managed emergency fallbacks. Daily does not require producer approval when DAILY_FALLBACK_ENABLED=true; Zoom and Google Meet remain producer-controlled escalation paths.
 
 ## Not Included
 

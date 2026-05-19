@@ -115,7 +115,7 @@ The product should prioritize:
 - clear incident logging
 - client-safe communication
 
-The console should never casually recommend a generic Zoom/Google Meet fallback. It may surface a configured white-label backup room only after app-side recovery steps are exhausted or producer approval is required.
+The console should never casually recommend a generic Zoom/Google Meet fallback. It should surface Daily as the automatic in-platform fallback when enabled, then reserve Zoom or Google Meet for managed escalation after app-side recovery steps are exhausted or producer approval is required.
 
 
 ## White-Label Backup Provider
@@ -139,3 +139,24 @@ Rules:
 6. The incident log should record why the backup room was opened.
 7. The report should capture whether recovery happened in-platform or through the white-label backup room.
 8. Generic unmanaged external fallback remains a last-resort failure state, not normal operations.
+
+## Daily Automatic Fallback Layer
+
+Fallback order is now `LiveKit → Daily → Zoom → Google Meet`. Daily is the first automatic in-platform backup and does not require producer permission when `DAILY_FALLBACK_ENABLED=true`. Zoom and Google Meet remain managed emergency fallbacks after Daily.
+
+Required backend-only environment/secrets:
+
+```txt
+DAILY_API_KEY=
+DAILY_API_BASE_URL=https://api.daily.co/v1
+DAILY_DOMAIN=westpeeklive.daily.co
+DAILY_FALLBACK_ENABLED=true
+```
+
+Operational rules:
+
+- Never expose `DAILY_API_KEY` in browser code.
+- Daily room creation and meeting-token generation run server-side only.
+- If `DAILY_FALLBACK_ENABLED=false`, the resolver skips Daily and falls through to Zoom, then Google Meet.
+- Testing Console must show LiveKit, Daily, Zoom, Google Meet, Resend, Supabase, route, OpenNext, and browser-console smoke status before production events.
+

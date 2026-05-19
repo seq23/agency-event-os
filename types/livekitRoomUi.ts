@@ -33,6 +33,10 @@ export interface LiveKitJoinResult {
   room: VideoRoom;
   token: VideoRoomToken;
   livekitUrl?: string;
+  dailyUrl?: string;
+  fallbackApplied?: boolean;
+  fallbackProvider?: "daily";
+  fallbackReason?: string;
   connectionState: LiveKitConnectionState;
 }
 

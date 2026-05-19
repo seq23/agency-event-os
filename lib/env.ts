@@ -19,6 +19,11 @@ const envSchema = z.object({
   EMAIL_REPLY_TO: z.string().email().optional().or(z.literal("")),
 
   VIDEO_PROVIDER: z.enum(["mock", "livekit", "daily", "agora", "mux", "twilio", "other"]).default("mock"),
+
+  DAILY_API_KEY: z.string().optional().or(z.literal("")),
+  DAILY_API_BASE_URL: z.string().url().default("https://api.daily.co/v1"),
+  DAILY_DOMAIN: z.string().optional().or(z.literal("")),
+  DAILY_FALLBACK_ENABLED: z.enum(["true", "false"]).default("false"),
 });
 
 export type AppEnv = z.infer<typeof envSchema>;
@@ -34,6 +39,10 @@ export function getEnv(): AppEnv {
     EMAIL_FROM: process.env.EMAIL_FROM || "",
     EMAIL_REPLY_TO: process.env.EMAIL_REPLY_TO || "",
     VIDEO_PROVIDER: process.env.VIDEO_PROVIDER || "mock",
+    DAILY_API_KEY: process.env.DAILY_API_KEY || "",
+    DAILY_API_BASE_URL: process.env.DAILY_API_BASE_URL || "https://api.daily.co/v1",
+    DAILY_DOMAIN: process.env.DAILY_DOMAIN || "",
+    DAILY_FALLBACK_ENABLED: process.env.DAILY_FALLBACK_ENABLED === "true" ? "true" : "false",
   });
 }
 
@@ -68,4 +77,23 @@ export function getLiveKitEnv() {
 export function hasLiveKitEnv() {
   const env = getLiveKitEnv();
   return Boolean(env.livekitUrl && env.livekitApiKey && env.livekitApiSecret);
+}
+
+
+export function getDailyEnv(env: AppEnv = getEnv()) {
+  return {
+    dailyApiKey: env.DAILY_API_KEY,
+    dailyApiBaseUrl: env.DAILY_API_BASE_URL,
+    dailyDomain: env.DAILY_DOMAIN,
+    dailyFallbackEnabled: env.DAILY_FALLBACK_ENABLED === "true",
+  };
+}
+
+export function isDailyConfigured(env: AppEnv = getEnv()) {
+  const daily = getDailyEnv(env);
+  return Boolean(daily.dailyApiKey && daily.dailyApiBaseUrl && daily.dailyDomain);
+}
+
+export function isDailyFallbackEnabled(env: AppEnv = getEnv()) {
+  return env.DAILY_FALLBACK_ENABLED === "true" && isDailyConfigured(env);
 }

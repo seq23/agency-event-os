@@ -1,6 +1,6 @@
 import type { LiveKitJoinRequest, LiveKitJoinResult, LiveKitRoomUiState } from "@/types/livekitRoomUi";
 import type { VideoRoomType } from "@/types/video";
-import { buildDefaultTokenPermissions, createVideoRoom, createVideoRoomToken } from "@/services/video";
+import { buildDefaultTokenPermissions, createVideoRoom, createVideoRoomToken, getVideoFallbackPolicy } from "@/services/video";
 
 export function mapRoomSurfaceToVideoRoomType(surface: LiveKitJoinRequest["roomType"]): VideoRoomType {
   if (surface === "main_stage") return "main_stage";
@@ -43,6 +43,54 @@ export async function buildLiveKitJoinResult(input: LiveKitJoinRequest): Promise
     livekitUrl: typeof room.metadata.livekitUrl === "string" ? room.metadata.livekitUrl : undefined,
     connectionState: "token_ready",
   };
+}
+
+
+export async function buildResilientVideoJoinResult(input: LiveKitJoinRequest): Promise<LiveKitJoinResult> {
+  try {
+    return await buildLiveKitJoinResult(input);
+  } catch (error) {
+    const policy = getVideoFallbackPolicy();
+    if (!policy.dailyAutomaticFallbackEnabled) {
+      throw error;
+    }
+
+    const permissions = buildDefaultTokenPermissions(input.role);
+    const room = await createVideoRoom({
+      agencyId: input.agencyId ?? `event-${input.eventId}-agency`,
+      eventId: input.eventId,
+      provider: "daily",
+      roomType: mapRoomSurfaceToVideoRoomType(input.roomType),
+      label: buildLiveKitRoomLabel(input),
+      recordingEnabled: false,
+      metadata: {
+        fallbackFrom: "livekit",
+        fallbackReason: error instanceof Error ? error.message : "LiveKit join setup failed.",
+        automaticFallback: true,
+      },
+    });
+
+    const token = await createVideoRoomToken("daily", {
+      roomId: room.providerRoomId ?? room.id,
+      eventId: input.eventId,
+      displayName: input.displayName,
+      profileId: input.profileId,
+      role: input.role,
+      expiresInSeconds: 60 * 60,
+      ...permissions,
+    });
+
+    return {
+      room,
+      token,
+      livekitUrl: undefined,
+      dailyUrl: room.joinUrl ? `${room.joinUrl}${room.joinUrl.includes("?") ? "&" : "?"}t=${encodeURIComponent(token.token)}` : undefined,
+      fallbackApplied: true,
+      fallbackProvider: "daily",
+      fallbackReason: error instanceof Error ? error.message : "LiveKit join setup failed.",
+      connectionState: "token_ready",
+    };
+  }
 }
 
 export function buildLiveKitRoomUiState(input: {

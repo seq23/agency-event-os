@@ -27,7 +27,7 @@ Each event may eventually define:
 - backup provider
 - backup label
 - backup URL
-- producer approval required
+- Daily automatic fallback does not require producer approval when DAILY_FALLBACK_ENABLED=true; Zoom and Google Meet managed fallback activation requires producer approval
 - rooms covered
 - access instructions
 - client-visible language
@@ -42,7 +42,7 @@ App-side recovery always happens first:
 3. Switch camera/microphone.
 4. Switch network.
 5. Move to backup in-platform room.
-6. Open white-label backup provider only after producer approval.
+6. Allow automatic Daily fallback first when enabled. Open Zoom or Google Meet managed fallback only after producer approval.
 
 ## Product Rule
 

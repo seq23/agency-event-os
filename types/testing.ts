@@ -2,7 +2,7 @@ export type DiagnosticStatus = "pass" | "warn" | "fail" | "pending" | "skipped";
 
 export type DiagnosticSeverity = "low" | "medium" | "high" | "critical";
 
-export type WhiteLabelBackupProvider = "none" | "zoom" | "google_meet" | "custom_embed" | "phone_bridge";
+export type WhiteLabelBackupProvider = "none" | "daily" | "zoom" | "google_meet" | "custom_embed" | "phone_bridge";
 
 export interface DiagnosticCheck {
   id: string;
@@ -29,7 +29,7 @@ export interface RoomDiagnostic {
   eventId: string;
   roomName: string;
   roomType: "main_stage" | "backstage" | "breakout_session" | "networking_match" | "sponsor_booth" | "rehearsal_room";
-  provider: "mock" | "livekit" | "daily" | "agora" | "mux" | "twilio" | "other";
+  provider: "mock" | "livekit" | "daily" | "zoom_sdk" | "google_meet" | "agora" | "mux" | "twilio" | "other";
   status: DiagnosticStatus;
   joinTestStatus: DiagnosticStatus;
   audioStatus: DiagnosticStatus;
@@ -64,5 +64,8 @@ export interface TestingConsoleSnapshot {
   devices: DeviceDiagnostic[];
   rooms: RoomDiagnostic[];
   incidents: TestingIncident[];
+  smokeChecks: DiagnosticCheck[];
+  fallbackOrder: string[];
+  dailyAutomaticFallbackEnabled: boolean;
   generatedAt: string;
 }

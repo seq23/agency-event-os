@@ -47,6 +47,29 @@ export function TestingConsole({ eventId = "event-summit" }: { eventId?: string 
 
         <BrowserDiagnosticsPanel eventId={event.id} />
 
+
+        <SectionCard title="Live deployment smoke diagnostics" eyebrow="Cloudflare, providers, email, database">
+          <div className="mb-4 rounded-2xl bg-slate-50 p-4 text-sm text-slate-700">
+            <p className="font-semibold text-slate-950">Fallback order</p>
+            <p className="mt-1">{snapshot.fallbackOrder.map((provider) => provider.replace(/_/g, " ").toUpperCase()).join(" → ")}</p>
+            <p className="mt-1 text-slate-600">Daily automatic fallback: {snapshot.dailyAutomaticFallbackEnabled ? "ON" : "OFF"}. Daily does not require producer permission before Zoom or Google Meet escalation.</p>
+          </div>
+          <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+            {snapshot.smokeChecks.map((check) => (
+              <div key={check.id} className="rounded-2xl border border-slate-200 p-4">
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <p className="font-semibold">{check.label}</p>
+                    <p className="mt-1 text-sm text-slate-600">{check.description}</p>
+                  </div>
+                  <DiagnosticStatusBadge status={check.status} />
+                </div>
+                <p className="mt-3 rounded-xl bg-slate-50 p-3 text-sm text-slate-600">{check.recommendedAction}</p>
+              </div>
+            ))}
+          </div>
+        </SectionCard>
+
         <div className="grid gap-6 xl:grid-cols-[1fr_380px]">
           <SectionCard title="Operator video/audio preflight" eyebrow="Manual + provider checks">
             <div className="space-y-5">
@@ -74,7 +97,7 @@ export function TestingConsole({ eventId = "event-summit" }: { eventId?: string 
                 <p className="font-semibold">{recoveryRequired ? "Producer recovery required" : "No recovery required"}</p>
                 <p className="mt-1">
                   {recoveryRequired
-                    ? "Recover inside West Peek Live! first: isolate the failing room, switch device/network, and open a controlled white-label backup room only if the producer approves."
+                    ? "Recover inside West Peek Live! first: isolate the failing room, switch device/network, and allow automatic Daily fallback when enabled. Escalate to Zoom or Google Meet only after producer intervention."
                     : "Current diagnostics do not require recovery intervention."}
                 </p>
               </div>
@@ -86,7 +109,7 @@ export function TestingConsole({ eventId = "event-summit" }: { eventId?: string 
                   <li>Confirm speaker can hear tone.</li>
                   <li>Confirm room join test.</li>
                   <li>Check latency and packet loss.</li>
-                  <li>Escalate to producer intervention and open the white-label backup room only if app-side recovery fails.</li>
+                  <li>Allow automatic Daily fallback when enabled; escalate to producer intervention before Zoom or Google Meet only if app-side recovery fails.</li>
                 </ol>
               </div>
             </div>

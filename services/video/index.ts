@@ -8,3 +8,5 @@ export * from "./videoTestingHooks";
 export * from "./LiveKitVideoProvider";
 export * from "./livekitToken";
 export * from "./livekitEgressService";
+export * from "./DailyVideoProvider";
+export * from "./videoFallbackPolicy";

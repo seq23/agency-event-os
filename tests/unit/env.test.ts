@@ -13,6 +13,10 @@ describe("env helpers", () => {
         EMAIL_FROM: "",
         AUTH_SESSION_COOKIE_NAME: "agency_event_os_session",
         VIDEO_PROVIDER: "mock",
+        DAILY_API_KEY: "",
+        DAILY_API_BASE_URL: "https://api.daily.co/v1",
+        DAILY_DOMAIN: "",
+        DAILY_FALLBACK_ENABLED: "false",
       }),
     ).toBe(false);
   });
@@ -28,6 +32,10 @@ describe("env helpers", () => {
         EMAIL_FROM: "",
         AUTH_SESSION_COOKIE_NAME: "agency_event_os_session",
         VIDEO_PROVIDER: "mock",
+        DAILY_API_KEY: "",
+        DAILY_API_BASE_URL: "https://api.daily.co/v1",
+        DAILY_DOMAIN: "",
+        DAILY_FALLBACK_ENABLED: "false",
       }),
     ).toBe(true);
   });
@@ -42,6 +50,10 @@ describe("env helpers", () => {
       EMAIL_FROM: "events@example.com",
       AUTH_SESSION_COOKIE_NAME: "agency_event_os_session",
       VIDEO_PROVIDER: "mock" as const,
+      DAILY_API_KEY: "",
+      DAILY_API_BASE_URL: "https://api.daily.co/v1",
+      DAILY_DOMAIN: "",
+      DAILY_FALLBACK_ENABLED: "false" as const,
     };
 
     expect(isSupabaseAdminConfigured(env)).toBe(true);

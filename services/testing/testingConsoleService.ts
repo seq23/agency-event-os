@@ -1,5 +1,49 @@
-import type { DiagnosticStatus, TestingConsoleSnapshot } from "@/types/testing";
+import type { DiagnosticCheck, DiagnosticStatus, TestingConsoleSnapshot } from "@/types/testing";
 import { baselineTestingConsoleSnapshot } from "./mockTestingData";
+import { getVideoFallbackPolicy } from "@/services/video";
+import { isDailyConfigured, isDailyFallbackEnabled, isResendConfigured, isSupabaseAdminConfigured } from "@/lib/env";
+
+
+function buildRuntimeSmokeChecks(): DiagnosticCheck[] {
+  const dailyReady = isDailyConfigured();
+  const dailyEnabled = isDailyFallbackEnabled();
+  const resendReady = isResendConfigured();
+  const supabaseReady = isSupabaseAdminConfigured();
+
+  return [
+    {
+      id: "runtime-daily-config",
+      label: "Daily automatic fallback setting",
+      description: "Checks Daily server-side API key, domain, base URL, and backend fallback toggle.",
+      status: dailyReady && dailyEnabled ? "pass" : dailyReady ? "warn" : "fail",
+      severity: "critical",
+      recommendedAction: dailyReady && dailyEnabled
+        ? "Daily automatic fallback is ready and does not require producer approval."
+        : dailyReady
+          ? "Set DAILY_FALLBACK_ENABLED=true to activate automatic Daily fallback."
+          : "Set DAILY_API_KEY, DAILY_API_BASE_URL, DAILY_DOMAIN, and DAILY_FALLBACK_ENABLED=true.",
+      metadata: { dailyReady, dailyEnabled },
+    },
+    {
+      id: "runtime-resend-config",
+      label: "Resend sender readiness",
+      description: "Checks production email credentials and sender identity are configured.",
+      status: resendReady ? "pass" : "fail",
+      severity: "critical",
+      recommendedAction: resendReady ? "Run send smoke after deploy." : "Set RESEND_API_KEY and EMAIL_FROM.",
+      metadata: { resendReady },
+    },
+    {
+      id: "runtime-supabase-admin-config",
+      label: "Supabase write/read readiness",
+      description: "Checks service-role configuration needed for server-side read/write smoke tests.",
+      status: supabaseReady ? "pass" : "fail",
+      severity: "critical",
+      recommendedAction: supabaseReady ? "Run write/read smoke after deploy." : "Set NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY.",
+      metadata: { supabaseReady },
+    },
+  ];
+}
 
 function rankStatus(status: DiagnosticStatus) {
   const ranks: Record<DiagnosticStatus, number> = {
@@ -14,10 +58,15 @@ function rankStatus(status: DiagnosticStatus) {
 }
 
 export function getTestingConsoleSnapshot(eventId: string): TestingConsoleSnapshot {
+  const policy = getVideoFallbackPolicy();
+  const runtimeSmokeChecks = buildRuntimeSmokeChecks();
   const snapshot = {
     ...baselineTestingConsoleSnapshot,
     eventId,
     generatedAt: new Date().toISOString(),
+    fallbackOrder: policy.order,
+    dailyAutomaticFallbackEnabled: policy.dailyAutomaticFallbackEnabled,
+    smokeChecks: [...baselineTestingConsoleSnapshot.smokeChecks, ...runtimeSmokeChecks],
     rooms: baselineTestingConsoleSnapshot.rooms.map((room) => ({ ...room, eventId })),
     incidents: baselineTestingConsoleSnapshot.incidents.map((incident) => ({ ...incident, eventId })),
   };
@@ -26,6 +75,7 @@ export function getTestingConsoleSnapshot(eventId: string): TestingConsoleSnapsh
     ...snapshot.checks.map((check) => check.status),
     ...snapshot.devices.map((device) => device.status),
     ...snapshot.rooms.map((room) => room.status),
+    ...snapshot.smokeChecks.map((check) => check.status),
   ];
 
   const worst = allStatuses.sort((a, b) => rankStatus(b) - rankStatus(a))[0] || "pending";
@@ -41,6 +91,9 @@ export function getTestingConsoleSnapshot(eventId: string): TestingConsoleSnapsh
     whiteLabelBackupProvider: snapshot.whiteLabelBackupProvider,
     whiteLabelBackupLabel: snapshot.whiteLabelBackupLabel,
     whiteLabelBackupUrl: snapshot.whiteLabelBackupUrl,
+    fallbackOrder: snapshot.fallbackOrder,
+    dailyAutomaticFallbackEnabled: snapshot.dailyAutomaticFallbackEnabled,
+    smokeChecks: snapshot.smokeChecks,
   };
 }
 

@@ -12,7 +12,7 @@
     "test": "vitest run --pool=threads --poolOptions.threads.singleThread=true",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
-    "validate": "npm run typecheck && npm run lint && npm run test && npm run validate:v5-hard",
+    "validate": "npm run typecheck && npm run lint && npm run test && npm run validate:v5-hard && npm run validate:v7",
     "structure": "node scripts/validate_structure.js",
     "validate:structure": "node scripts/validate_structure.js",
     "validate:backend-foundation": "npm run test -- --run tests/unit/env.test.ts tests/unit/email.test.ts tests/unit/audit.test.ts",
@@ -67,7 +67,13 @@
     "validate:v6-strong-warnings": "node scripts/validate_v6_strong_warnings.js",
     "validate:v6-warnings": "node scripts/validate_v6_warnings.js",
     "validate:v6-audit": "node scripts/validate_v6_audit_all.js",
-    "validate:v6": "npm run validate:v6-hard && npm run validate:v6-strong-warnings && npm run validate:v6-warnings"
+    "validate:v6": "npm run validate:v6-hard && npm run validate:v6-strong-warnings && npm run validate:v6-warnings",
+    "validate:v7-route-safety": "node scripts/validate_v7_route_safety.js",
+    "validate:v7-ux-brand-demo": "node scripts/validate_v7_ux_brand_demo.js",
+    "validate:v7-operator-launchpad": "node scripts/validate_v7_operator_launchpad.js",
+    "validate:v7-frontdoor-labels": "node scripts/validate_v7_frontdoor_labels.js",
+    "validate:v7-day1-packet": "node scripts/validate_v7_day1_packet.js",
+    "validate:v7": "npm run validate:v7-route-safety && npm run validate:v7-ux-brand-demo && npm run validate:v7-operator-launchpad && npm run validate:v7-frontdoor-labels && npm run validate:v7-day1-packet"
   },
   "dependencies": {
     "@hookform/resolvers": "3.9.0",

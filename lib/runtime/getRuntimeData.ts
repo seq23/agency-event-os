@@ -13,7 +13,8 @@ export function getRuntimeUsers() {
 }
 
 export function getEvent(eventId: string) {
-  return runtimeSeedData.events.find((event) => event.id === eventId) ?? runtimeSeedData.events[0];
+  const normalizedEventId = eventId === "demo" ? "event-summit" : eventId;
+  return runtimeSeedData.events.find((event) => event.id === normalizedEventId || event.slug === normalizedEventId) ?? runtimeSeedData.events[0];
 }
 
 export function getClient(clientId: string) {

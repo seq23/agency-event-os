@@ -5,22 +5,31 @@ import { readV5AccessCookie } from "@/lib/auth/productionAccess";
 import { canCrewAccessPath, canSpecialGuestAccessPath, specialGuestEntryPathFor } from "@/lib/auth/v5RouteAuthorization";
 
 async function readCrewAccess(request: NextRequest) {
-  const env = getEnv();
-  const { crewCookieName } = getV5AccessCookieNames(env);
-  return readV5AccessCookie(request.cookies.get(crewCookieName)?.value, getV5AccessCookieSecret(env));
+  try {
+    const env = getEnv();
+    const { crewCookieName } = getV5AccessCookieNames(env);
+    return readV5AccessCookie(request.cookies.get(crewCookieName)?.value, getV5AccessCookieSecret(env));
+  } catch {
+    return undefined;
+  }
 }
 
 async function readSpecialGuestAccess(request: NextRequest) {
-  const env = getEnv();
-  const { specialGuestCookieName } = getV5AccessCookieNames(env);
-  return readV5AccessCookie(request.cookies.get(specialGuestCookieName)?.value, getV5AccessCookieSecret(env));
+  try {
+    const env = getEnv();
+    const { specialGuestCookieName } = getV5AccessCookieNames(env);
+    return readV5AccessCookie(request.cookies.get(specialGuestCookieName)?.value, getV5AccessCookieSecret(env));
+  } catch {
+    return undefined;
+  }
 }
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   if (!isProtectedPath(pathname)) return NextResponse.next();
 
-  const sessionCookie = request.cookies.get(getAuthCookieName())?.value;
+  let sessionCookie: string | undefined;
+  try { sessionCookie = request.cookies.get(getAuthCookieName())?.value; } catch { sessionCookie = undefined; }
   if (sessionCookie && pathname.startsWith("/app")) return NextResponse.next();
 
   const crewAccess = await readCrewAccess(request);

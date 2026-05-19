@@ -6,6 +6,7 @@ import { SectionCard } from "@/components/shared/SectionCard";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { formatEventDate } from "@/lib/utils/format";
 import { getPersistenceModeLabel } from "@/services/persistence/coreReadModel";
+import { WestPeekProductionsLogo } from "@/components/brand/WestPeekProductionsLogo";
 
 export function AgencyDashboard() {
   const data = getRuntimeData();
@@ -19,12 +20,34 @@ export function AgencyDashboard() {
   return (
     <div className="space-y-6">
       <div className="rounded-3xl bg-slate-950 p-6 text-white shadow-sm">
-        <p className="text-sm font-medium text-slate-300">Agency command center</p>
+        <WestPeekProductionsLogo size="sm" />
+        <p className="mt-4 text-sm font-medium text-slate-300">Agency command center</p>
         <h1 className="mt-2 text-3xl font-semibold">Run every client event from one cockpit.</h1>
         <p className="mt-2 max-w-3xl text-slate-300">
           Track client approvals, speaker readiness, sponsor deliverables, crew confirmations, run-of-show blockers, and post-event reports before they become fires.
         </p>
         <p className="mt-4 inline-flex rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-slate-200">{persistenceMode}</p>
+      </div>
+
+      <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+        <p className="text-xs font-black uppercase tracking-[0.25em] text-brand-orange">Recommended Day 1 path</p>
+        <h2 className="mt-2 text-2xl font-black tracking-tight text-slate-950">Production Console</h2>
+        <p className="mt-2 text-sm leading-6 text-slate-600">If no real client conference is configured yet, start here. The app is not pretending there is a real client event; the demo venue is intentional training and sales theatre powered by the same venue components as real events.</p>
+        <div className="mt-5 flex flex-wrap gap-3">
+          <a href="/app/events/new" className="rounded-full bg-slate-950 px-5 py-3 text-sm font-bold text-white">Create First Event</a>
+          <a href="/venue/demo/lobby" className="rounded-full border border-slate-300 px-5 py-3 text-sm font-bold">Preview Demo Venue</a>
+          <a href="/operator-packet" className="rounded-full border border-slate-300 px-5 py-3 text-sm font-bold">Open Operator Packet</a>
+          <a href="/production-access/crew" className="rounded-full border border-slate-300 px-5 py-3 text-sm font-bold">Test Crew Login</a>
+          <a href="/production-access/special-guest" className="rounded-full border border-slate-300 px-5 py-3 text-sm font-bold">Test Speaker/Sponsor Login</a>
+        </div>
+        <div className="mt-5 rounded-2xl bg-slate-50 p-4 text-sm text-slate-600">
+          <p className="font-bold text-slate-950">Demo event available: Leadership Reset Webinar</p>
+          <div className="mt-3 flex flex-wrap gap-3">
+            <a href="/app/events/event-summit/setup" className="font-bold underline">Open setup preview</a>
+            <a href="/venue/demo/lobby" className="font-bold underline">Open guest venue</a>
+            <a href="/app/events/event-summit/crew" className="font-bold underline">Open crew console</a>
+          </div>
+        </div>
       </div>
 
       <div className="grid gap-4 md:grid-cols-4">

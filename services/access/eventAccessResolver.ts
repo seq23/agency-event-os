@@ -1,8 +1,16 @@
 import { destinationForRole, findEventIndexRecord, getEventAccessConfig } from "@/services/events/eventConfigRepository";
 import type { V4AccessResolution, V4CrewRole } from "@/types/v4";
 
+const demoFallbackCodes: Record<string, string> = {
+  EVENT_DEMO_SPEAKER_CODE: "SpeakerGuest-2026!",
+  EVENT_DEMO_SPONSOR_CODE: "SponsorGuest-2026!",
+  EVENT_DEMO_VIP_CODE: "VIPGuest-2026!",
+  EVENT_DEMO_CLIENT_CODE: "VIPGuest-2026!",
+  EVENT_DEMO_CREW_LITE_CODE: "CrewAccess-2026!",
+};
+
 function readEnvCode(envKey: string) {
-  return process.env[envKey]?.trim();
+  return process.env[envKey]?.trim() || demoFallbackCodes[envKey];
 }
 
 export async function resolveSpecialGuestAccess(eventCode: string | undefined, roleCode: string | undefined): Promise<V4AccessResolution> {

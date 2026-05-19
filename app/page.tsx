@@ -1,10 +1,12 @@
 import { WestPeekLiveWordmark } from "@/components/brand/WestPeekLiveWordmark";
+import { WestPeekProductionsLogo } from "@/components/brand/WestPeekProductionsLogo";
 
 export default function HomePage() {
   return (
     <main className="min-h-screen bg-brand-ash px-5 py-10 text-brand-black sm:px-8 lg:px-12">
       <section className="mx-auto flex min-h-[80vh] max-w-6xl flex-col justify-center rounded-[2rem] border border-brand-line bg-white p-6 shadow-brand sm:p-10 lg:p-14">
-        <p className="text-xs font-black uppercase tracking-[0.35em] text-brand-orange">West Peek Live</p>
+        <WestPeekProductionsLogo size="lg" />
+        <p className="mt-6 text-xs font-black uppercase tracking-[0.35em] text-brand-orange">West Peek Live</p>
         <h1 className="mt-5"><WestPeekLiveWordmark size="lg" /></h1>
         <p className="mt-6 max-w-2xl text-lg leading-8 text-brand-muted">
           A virtual event production operating system for agencies and production teams running branded online events, combining attendee venues, production command centers, guest portals, run-of-show control, video fallback, access gates, and post-event reporting.

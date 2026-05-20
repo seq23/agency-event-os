@@ -1,0 +1,98 @@
+# Chat Handoff Deployment Parity Rules
+
+These rules are mandatory for West Peek Live work.
+
+## Core rule
+
+Repo validation is not enough.
+
+The deployed product includes Cloudflare Worker runtime behavior, OpenNext output, secrets, runtime persistence, role gates, and front-door demo routes. Any chat working on this repo must validate deployment parity before delivery.
+
+## ZIP delivery rules
+
+Do not deliver a repo ZIP unless the exact snapshot passes:
+
+1. clean extraction from ZIP
+2. npm ci
+3. npm run validate
+4. npm run build
+5. npm run cf:build
+6. deploy-parity validators
+7. smoke-test freshness checks
+
+## Deploy completion rules
+
+Do not call Cloudflare deploy complete until the live Worker passes:
+
+```bash
+SMOKE_BASE_URL=https://west-peek-live.seq-taylor.workers.dev node scripts/post_deploy_smoke_test.js
+```
+
+## Front-door route rule
+
+These routes must never render generic server errors:
+
+- /
+- /join
+- /production-access
+- /production-access/crew
+- /production-access/special-guest
+- /production-access/launchpad
+- /venue/demo/lobby
+- /admin/testing
+- /app
+- /app/events/new
+
+If configuration is missing, render a branded setup state naming the missing variable and where to set it.
+
+## Smoke-test freshness rule
+
+The smoke test must use current product routes and current visible labels.
+
+Canonical demo venue route:
+
+```text
+/venue/demo/lobby
+```
+
+Forbidden stale smoke route:
+
+```text
+/venue/event-summit/lobby
+```
+
+Canonical special guest label:
+
+```text
+Special guest password
+```
+
+Forbidden stale marker:
+
+```text
+role access code
+```
+
+## Env contract rule
+
+Every runtime env key used by code, event access config, docs, and smoke tests must be represented in:
+
+- deployment/cloudflare-required-secrets.json
+- .env.example
+- docs/DEPLOYMENT_ENV_CHECKLIST.md or docs/DEPLOYMENT_PARITY_CHECKLIST.md
+
+## Runtime persistence rule
+
+Front-door demo, venue, and admin/testing routes must not hard-crash if runtime persistence is unavailable or misconfigured. They must degrade safely or be protected before rendering.
+
+
+## Runtime store deploy keys
+
+For the Day 1 Cloudflare demo deployment, these runtime-store keys must be represented in the Cloudflare secret manifest and deployment docs:
+
+```text
+AGENCY_EVENT_OS_RUNTIME_STORE=file
+ALLOW_FILE_RUNTIME_STORE_IN_PRODUCTION=true
+```
+
+These are intentional for the current demo Worker so front-door venue/admin smoke routes do not hard-depend on Supabase runtime writes while the production database path is still being stabilized.

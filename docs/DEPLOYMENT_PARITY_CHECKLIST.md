@@ -1,0 +1,88 @@
+# Deployment Parity Checklist
+
+Use this before delivering a ZIP, pushing to GitHub, or deploying to Cloudflare.
+
+## Pre-delivery from a fresh ZIP
+
+Run from a clean extraction of the exact ZIP to be delivered:
+
+```bash
+npm ci
+npm run validate
+npm run build
+npm run cf:build
+```
+
+## Deploy parity validators
+
+```bash
+npm run validate:deploy-parity
+```
+
+This runs:
+
+- scripts/validate_deploy_env_contract.js
+- scripts/validate_smoke_test_freshness.js
+- scripts/validate_frontdoor_runtime_graceful_degradation.js
+- scripts/validate_cloudflare_required_secrets_manifest.js
+
+## Local generated artifact cleanup before validation/commit
+
+Before local validation and commit, remove generated deploy/build artifacts and move .env.local out of the repo:
+
+```bash
+/bin/mv /Users/sequoiataylor/Documents/GitHub/agency-event-os/.env.local /Users/sequoiataylor/agency-event-os.env.local.active
+/bin/rm -rf .open-next .next .wrangler tsconfig.tsbuildinfo
+```
+
+Restore .env.local only after validation, commit, push, deploy, and smoke:
+
+```bash
+/bin/mv /Users/sequoiataylor/agency-event-os.env.local.active /Users/sequoiataylor/Documents/GitHub/agency-event-os/.env.local
+```
+
+## Cloudflare deploy
+
+```bash
+npm run cf:build
+npm run cf:deploy
+```
+
+## Required live smoke test
+
+```bash
+SMOKE_BASE_URL=https://west-peek-live.seq-taylor.workers.dev node scripts/post_deploy_smoke_test.js
+```
+
+If live smoke fails, deployment is not complete.
+
+## Required Cloudflare secrets for current demo/runtime mode
+
+See:
+
+```text
+deployment/cloudflare-required-secrets.json
+```
+
+Current Day 1 access values:
+
+```text
+CREW_ACCESS_PASSWORD=CrewAccess-2026!
+EVENT_DEMO_SPEAKER_CODE=SpeakerGuest-2026!
+EVENT_DEMO_SPONSOR_CODE=SponsorGuest-2026!
+EVENT_DEMO_VIP_CODE=VIPGuest-2026!
+```
+
+V5_ACCESS_COOKIE_SECRET must be a generated 32+ character secret.
+
+
+## Runtime store deploy keys
+
+For the Day 1 Cloudflare demo deployment, these runtime-store keys must be represented in the Cloudflare secret manifest and deployment docs:
+
+```text
+AGENCY_EVENT_OS_RUNTIME_STORE=file
+ALLOW_FILE_RUNTIME_STORE_IN_PRODUCTION=true
+```
+
+These are intentional for the current demo Worker so front-door venue/admin smoke routes do not hard-depend on Supabase runtime writes while the production database path is still being stabilized.

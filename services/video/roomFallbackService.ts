@@ -9,7 +9,7 @@ function fallbackKey(eventId: string, roomType: V4RoomType) {
   return `${eventId}:${roomType}`;
 }
 
-function createInitialRoomFallbackState(eventId: string, roomType: V4RoomType): V4RoomFallbackState {
+export function createInitialRoomFallbackState(eventId: string, roomType: V4RoomType): V4RoomFallbackState {
   return {
     eventId,
     roomId: `${eventId}-${roomType}`,

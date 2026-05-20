@@ -30,7 +30,7 @@ export async function middleware(request: NextRequest) {
 
   let sessionCookie: string | undefined;
   try { sessionCookie = request.cookies.get(getAuthCookieName())?.value; } catch { sessionCookie = undefined; }
-  if (sessionCookie && pathname.startsWith("/app")) return NextResponse.next();
+  if (sessionCookie && (pathname.startsWith("/app") || pathname.startsWith("/admin"))) return NextResponse.next();
 
   const crewAccess = await readCrewAccess(request);
   if (canCrewAccessPath(pathname, crewAccess)) return NextResponse.next();
@@ -44,5 +44,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/app/:path*", "/client/:path*", "/crew/:path*", "/speaker/:path*", "/sponsor/:path*"],
+  matcher: ["/app/:path*", "/admin/:path*", "/client/:path*", "/crew/:path*", "/speaker/:path*", "/sponsor/:path*"],
 };

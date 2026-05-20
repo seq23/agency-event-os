@@ -1,6 +1,6 @@
 import type { VirtualVenueModel } from "@/types/virtualVenue";
 import { buildVenueLobbySections } from "@/services/venue";
-import { getRoomFallbackState } from "@/services/video/roomFallbackService";
+import { createInitialRoomFallbackState, getRoomFallbackState } from "@/services/video/roomFallbackService";
 import { AnalyticsBeacon } from "@/components/analytics/AnalyticsBeacon";
 import { FallbackActiveBanner } from "@/components/venue/FallbackActiveBanner";
 import { MobileExperienceWarning } from "@/components/venue/MobileExperienceWarning";
@@ -12,7 +12,7 @@ import { SponsorBoothCard } from "./SponsorBoothCard";
 
 export async function VenueLobbyDashboard({ model }: { model: VirtualVenueModel }) {
   const sections = buildVenueLobbySections(model);
-  const fallbackState = await getRoomFallbackState(model.eventId, "main_stage");
+  const fallbackState = await getRoomFallbackState(model.eventId, "main_stage").catch(() => createInitialRoomFallbackState(model.eventId, "main_stage"));
 
   return (
     <div className="space-y-6">

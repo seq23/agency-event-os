@@ -93,7 +93,8 @@ function hasGenericServerError(body) {
 }
 
 function isProtectedPath(pathname) {
-  return pathname === "/app" ||
+  return pathname === "/production-access/launchpad" ||
+    pathname === "/app" ||
     pathname.startsWith("/app/") ||
     pathname === "/admin/testing" ||
     pathname.startsWith("/admin/") ||

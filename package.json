@@ -74,8 +74,13 @@
     "validate:v7-frontdoor-labels": "node scripts/validate_v7_frontdoor_labels.js",
     "validate:v7-day1-packet": "node scripts/validate_v7_day1_packet.js",
     "validate:v7": "npm run validate:v7-route-safety && npm run validate:v7-ux-brand-demo && npm run validate:v7-operator-launchpad && npm run validate:v7-frontdoor-labels && npm run validate:v7-day1-packet",
-    "validate:deploy-parity": "node scripts/validate_deploy_env_contract.js && node scripts/validate_smoke_test_freshness.js && node scripts/validate_frontdoor_runtime_graceful_degradation.js && node scripts/validate_cloudflare_required_secrets_manifest.js",
-    "prezip:agency-event-os": "npm ci && npm run validate && npm run build && npm run cf:build"
+    "validate:deploy-parity": "node scripts/validate_deploy_env_contract.js && node scripts/validate_smoke_test_freshness.js && node scripts/validate_frontdoor_runtime_graceful_degradation.js && node scripts/validate_cloudflare_required_secrets_manifest.js && node scripts/validate_click_audit_contract.js && node scripts/validate_speed_networking_e2e_contract.js",
+    "prezip:agency-event-os": "npm ci && npm run validate && npm run build && npm run cf:build",
+    "postdeploy:smoke": "node scripts/post_deploy_smoke_test.js",
+    "postdeploy:click-audit": "node scripts/post_deploy_click_audit.js",
+    "postdeploy:role-flow": "node scripts/post_deploy_role_flow_audit.js",
+    "postdeploy:video-provider": "node scripts/post_deploy_video_provider_audit.js",
+    "postdeploy:full": "npm run postdeploy:smoke && npm run postdeploy:click-audit && npm run postdeploy:role-flow && npm run postdeploy:video-provider"
   },
   "dependencies": {
     "@hookform/resolvers": "3.9.0",

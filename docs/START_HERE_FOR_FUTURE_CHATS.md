@@ -71,3 +71,27 @@ ALLOW_FILE_RUNTIME_STORE_IN_PRODUCTION=true
 ```
 
 These are intentional for the current demo Worker so front-door venue/admin smoke routes do not hard-depend on Supabase runtime writes while the production database path is still being stabilized.
+
+
+## Live click audit requirement
+
+Live smoke is not enough.
+
+A Cloudflare deploy is not COMPLETE until the deployed click audit also passes:
+
+\`\`\`bash
+SMOKE_BASE_URL=https://west-peek-live.seq-taylor.workers.dev npm run postdeploy:full
+\`\`\`
+
+Required final status ladder:
+
+\`\`\`text
+LOCAL VALIDATION PASS
+CLOUDFLARE BUILD PASS
+CLOUDFLARE DEPLOY PASS
+LIVE SMOKE PASS
+LIVE CLICK AUDIT PASS
+COMPLETE
+\`\`\`
+
+If the deployed click audit fails, status is BLOCKED.

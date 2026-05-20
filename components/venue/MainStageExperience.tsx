@@ -3,10 +3,10 @@ import { AnalyticsBeacon } from "@/components/analytics/AnalyticsBeacon";
 import { FallbackActiveBanner } from "@/components/venue/FallbackActiveBanner";
 import { SessionFullState } from "@/components/venue/SessionFullState";
 import { SupportEscalationPanel } from "@/components/venue/SupportEscalationPanel";
-import { getRoomFallbackState } from "@/services/video/roomFallbackService";
+import { createInitialRoomFallbackState, getRoomFallbackState } from "@/services/video/roomFallbackService";
 
 export async function MainStageExperience({ model }: { model: VirtualVenueModel }) {
-  const fallbackState = await getRoomFallbackState(model.eventId, "main_stage");
+  const fallbackState = await getRoomFallbackState(model.eventId, "main_stage").catch(() => createInitialRoomFallbackState(model.eventId, "main_stage"));
   const liveSession = model.liveNow[0] || model.sessions[0];
   return (
     <div className="space-y-6">

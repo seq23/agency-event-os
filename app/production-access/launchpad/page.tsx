@@ -11,10 +11,14 @@ export const dynamic = "force-dynamic";
 async function hasCrewLaunchpadAccess() {
   const missing = missingAccessEnv();
   if (missing.length) return { ok: false as const, missing };
-  const env = getEnv();
-  const { crewCookieName } = safeAccessCookieNames();
-  const payload = await readV5AccessCookie(cookies().get(crewCookieName)?.value, getV5AccessCookieSecret(env));
-  return { ok: Boolean(payload && payload.kind === "crew"), missing: [] as string[] };
+  try {
+    const env = getEnv();
+    const { crewCookieName } = safeAccessCookieNames();
+    const payload = await readV5AccessCookie(cookies().get(crewCookieName)?.value, getV5AccessCookieSecret(env));
+    return { ok: Boolean(payload && payload.kind === "crew"), missing: [] as string[] };
+  } catch {
+    return { ok: false as const, missing: [] as string[] };
+  }
 }
 
 export default async function ProductionLaunchpadPage() {

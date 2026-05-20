@@ -44,10 +44,7 @@ const envSchema = z.object({
 export type AppEnv = z.infer<typeof envSchema>;
 
 export function getEnv(): AppEnv {
-  const videoProvider = process.env.VIDEO_PROVIDER || "mock";
-  if (isProduction && !isProductionBuild && videoProvider === "mock" && process.env.ALLOW_MOCK_VIDEO_PROVIDER_IN_PRODUCTION !== "true") {
-    throw new Error("VIDEO_PROVIDER=mock is not allowed in production unless ALLOW_MOCK_VIDEO_PROVIDER_IN_PRODUCTION=true is explicitly set.");
-  }
+  const videoProvider = process.env.VIDEO_PROVIDER || (isProduction ? "livekit" : "mock");
   return envSchema.parse({
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
     NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL || "",

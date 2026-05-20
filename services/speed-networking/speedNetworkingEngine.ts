@@ -1,28 +1,56 @@
-import type { SpeedNetworkingEntry, SpeedNetworkingMatch, SpeedNetworkingProducerSummary } from "@/types/speedNetworkingEngine";
+import type { SpeedNetworkingEntry, SpeedNetworkingMatch, SpeedNetworkingPairHistory, SpeedNetworkingProducerSummary } from "@/types/speedNetworkingEngine";
 import { createVideoRoom } from "@/services/video";
+
+function participantKey(entry: SpeedNetworkingEntry) {
+  return entry.attendeeId || entry.id;
+}
+
+export function normalizedSpeedNetworkingPairKey(eventId: string, first: SpeedNetworkingEntry | string, second: SpeedNetworkingEntry | string) {
+  const firstId = typeof first === "string" ? first : participantKey(first);
+  const secondId = typeof second === "string" ? second : participantKey(second);
+  return [firstId, secondId].sort().join("::").replace(/^/, `${eventId}::`);
+}
+
+export function hasPairAlreadyMet(input: { eventId: string; first: SpeedNetworkingEntry; second: SpeedNetworkingEntry; pairHistory?: SpeedNetworkingPairHistory[]; recentPairs?: Array<[string, string]>; }) {
+  const key = normalizedSpeedNetworkingPairKey(input.eventId, input.first, input.second);
+  if ((input.pairHistory || []).some((item) => item.eventId === input.eventId && item.normalizedPairKey === key)) return true;
+  return (input.recentPairs ?? []).some((pair) => normalizedSpeedNetworkingPairKey(input.eventId, pair[0], pair[1]) === key);
+}
 
 export function canMatchEntries(input: {
   first: SpeedNetworkingEntry;
   second: SpeedNetworkingEntry;
   recentPairs?: Array<[string, string]>;
+  pairHistory?: SpeedNetworkingPairHistory[];
 }) {
-  if (input.first.id === input.second.id) return false;
+  if (participantKey(input.first) === participantKey(input.second)) return false;
+  if (input.first.eventId !== input.second.eventId) return false;
   if (input.first.status !== "waiting" || input.second.status !== "waiting") return false;
-
-  const pairKey = [input.first.id, input.second.id].sort().join(":");
-  return !(input.recentPairs ?? []).some((pair) => pair.sort().join(":") === pairKey);
+  return !hasPairAlreadyMet({ eventId: input.first.eventId, first: input.first, second: input.second, recentPairs: input.recentPairs, pairHistory: input.pairHistory });
 }
 
-export function selectNextSpeedNetworkingPair(entries: SpeedNetworkingEntry[], recentPairs: Array<[string, string]> = []) {
-  const waiting = entries.filter((entry) => entry.status === "waiting");
+export function selectNextSpeedNetworkingPair(entries: SpeedNetworkingEntry[], recentPairs: Array<[string, string]> = [], pairHistory: SpeedNetworkingPairHistory[] = []) {
+  const waiting = entries.filter((entry) => entry.status === "waiting").sort((a, b) => a.joinedQueueAt.localeCompare(b.joinedQueueAt));
   for (let i = 0; i < waiting.length; i += 1) {
     for (let j = i + 1; j < waiting.length; j += 1) {
-      if (canMatchEntries({ first: waiting[i], second: waiting[j], recentPairs })) {
+      if (canMatchEntries({ first: waiting[i], second: waiting[j], recentPairs, pairHistory })) {
         return [waiting[i], waiting[j]] as const;
       }
     }
   }
   return null;
+}
+
+export function createPairHistoryRecord(match: SpeedNetworkingMatch, participantA: SpeedNetworkingEntry, participantB: SpeedNetworkingEntry): SpeedNetworkingPairHistory {
+  const [attendeeAId, attendeeBId] = [participantKey(participantA), participantKey(participantB)].sort();
+  return {
+    eventId: match.eventId,
+    normalizedPairKey: match.normalizedPairKey,
+    attendeeAId,
+    attendeeBId,
+    firstMatchedAt: match.startsAt,
+    matchId: match.id,
+  };
 }
 
 export async function createSpeedNetworkingMatch(input: {
@@ -33,6 +61,7 @@ export async function createSpeedNetworkingMatch(input: {
   participantB: SpeedNetworkingEntry;
   matchDurationSeconds?: number;
 }): Promise<SpeedNetworkingMatch> {
+  const normalizedPairKey = normalizedSpeedNetworkingPairKey(input.eventId, input.participantA, input.participantB);
   const room = await createVideoRoom({
     agencyId: input.agencyId,
     eventId: input.eventId,
@@ -46,12 +75,13 @@ export async function createSpeedNetworkingMatch(input: {
   const expires = new Date(now.getTime() + (input.matchDurationSeconds ?? 180) * 1000);
 
   return {
-    id: `match-${input.participantA.id}-${input.participantB.id}`,
+    id: `match-${participantKey(input.participantA)}-${participantKey(input.participantB)}-${now.getTime()}`,
     agencyId: input.agencyId,
     eventId: input.eventId,
     queueId: input.queueId,
     participantAEntryId: input.participantA.id,
     participantBEntryId: input.participantB.id,
+    normalizedPairKey,
     videoRoomId: room.id,
     status: "created",
     startsAt: now.toISOString(),

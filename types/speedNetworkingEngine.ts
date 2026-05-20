@@ -14,6 +14,15 @@ export interface SpeedNetworkingEntry {
   lastMatchedAt?: string;
 }
 
+export interface SpeedNetworkingPairHistory {
+  eventId: string;
+  normalizedPairKey: string;
+  attendeeAId: string;
+  attendeeBId: string;
+  firstMatchedAt: string;
+  matchId: string;
+}
+
 export interface SpeedNetworkingMatch {
   id: string;
   agencyId: string;
@@ -21,6 +30,7 @@ export interface SpeedNetworkingMatch {
   queueId: string;
   participantAEntryId: string;
   participantBEntryId: string;
+  normalizedPairKey: string;
   videoRoomId?: string;
   status: SpeedNetworkingMatchStatus;
   startsAt: string;

@@ -395,6 +395,10 @@ export interface Attendee {
   email: string;
   company: string;
   title: string;
+  website?: string;
+  socialLinks?: string[];
+  reasonForAttending?: string;
+  interestingFact?: string;
   networkingEnabled: boolean;
   status: "registered" | "checked_in" | "active" | "blocked" | "removed";
 }

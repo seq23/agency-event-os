@@ -20,6 +20,7 @@ function nav(eventId: string): VenueNavItem[] {
     ["networking", "Networking", `${base}/networking`, "available"],
     ["people", "People", `${base}/people`, "available"],
     ["replay", "Replay", `${base}/replay`, "processing"],
+    ["run-of-show", "Run of Show", `${base}/run-of-show`, "live"],
     ["help", "Help", `${base}/help`, "available"],
   ].map(([surface, label, href, status]) => ({ surface, label, href, status })) as VenueNavItem[];
 }
@@ -47,15 +48,54 @@ export function buildVirtualVenueModel(eventId: string): VirtualVenueModel {
     ctaLabel: "Visit booth",
   }));
 
-  const people: VirtualVenuePerson[] = data.speakers
+  const speakerPeople: VirtualVenuePerson[] = data.speakers
     .filter((speaker) => speaker.eventId === event.id)
-    .map((speaker) => ({
+    .map((speaker, index) => ({
       id: speaker.id,
       displayName: speaker.name,
       company: speaker.company,
       title: speaker.title,
+      personalWebsite: `https://example.com/${speaker.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}`,
+      socialLinks: [`https://linkedin.com/in/${speaker.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}`],
+      reasonForAttending: "Sharing practical lessons with operators building better event systems.",
+      interestingFact: index === 0 ? "I once rebuilt a conference run-of-show overnight after a venue outage." : "I always bring one unconventional question to every networking room.",
+      attendeeType: "speaker",
       networkingOptIn: true,
     }));
+
+  const sponsorPeople: VirtualVenuePerson[] = data.sponsors
+    .filter((sponsor) => sponsor.eventId === event.id)
+    .slice(0, 3)
+    .map((sponsor, index) => ({
+      id: `person-${sponsor.id}`,
+      displayName: `${sponsor.name} Lead`,
+      company: sponsor.name,
+      title: index === 0 ? "Partnerships Lead" : "Community Lead",
+      personalWebsite: sponsor.websiteUrl,
+      socialLinks: sponsor.websiteUrl ? [sponsor.websiteUrl] : [],
+      reasonForAttending: "Meeting teams that care about high-trust virtual event experiences.",
+      interestingFact: "I can usually tell how healthy an event is by watching the help queue for five minutes.",
+      attendeeType: "sponsor",
+      networkingOptIn: true,
+    }));
+
+  const registeredPeople: VirtualVenuePerson[] = data.attendees
+    .filter((attendee) => attendee.eventId === event.id)
+    .slice(0, 6)
+    .map((attendee, index) => ({
+      id: attendee.id,
+      displayName: attendee.name,
+      company: attendee.company,
+      title: attendee.title,
+      personalWebsite: attendee.website,
+      socialLinks: attendee.socialLinks,
+      reasonForAttending: attendee.reasonForAttending || "Learning from operators and meeting peers.",
+      interestingFact: attendee.interestingFact || (index % 2 === 0 ? "I keep a handwritten conference notebook." : "I prefer small-group conversations over giant panels."),
+      attendeeType: "attendee",
+      networkingOptIn: true,
+    }));
+
+  const people: VirtualVenuePerson[] = [...speakerPeople, ...sponsorPeople, ...registeredPeople];
 
   const breakouts: VirtualVenueBreakout[] = sessions.slice(0, 3).map((session, index) => ({
     id: `breakout-${session.id}`,

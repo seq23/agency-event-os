@@ -7,6 +7,7 @@ export type VenueSurface =
   | "networking"
   | "people"
   | "replay"
+  | "run-of-show"
   | "help";
 
 export type VenueSurfaceStatus = "live" | "open" | "upcoming" | "available" | "closed" | "processing";
@@ -54,6 +55,11 @@ export interface VirtualVenuePerson {
   displayName: string;
   company?: string;
   title?: string;
+  personalWebsite?: string;
+  socialLinks?: string[];
+  reasonForAttending?: string;
+  interestingFact?: string;
+  attendeeType?: "speaker" | "sponsor" | "attendee" | "vip" | "client" | "crew";
   networkingOptIn: boolean;
 }
 

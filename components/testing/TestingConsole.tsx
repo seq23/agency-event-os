@@ -12,10 +12,13 @@ import { AttendeeExperiencePanel } from "./AttendeeExperiencePanel";
 import { SecuritySmokePanel } from "./SecuritySmokePanel";
 import { PostDeploySmokePanel } from "./PostDeploySmokePanel";
 import { BrowserDiagnosticsPanel } from "./BrowserDiagnosticsPanel";
+import { ShowtimeReadinessPanel } from "./ShowtimeReadinessPanel";
+import { getTestingConsoleSnapshot } from "@/services/testing";
 
 export async function TestingConsole({ eventId = "event-summit" }: { eventId?: string }) {
   const event = getEvent(eventId);
   const runtime = await getRuntimeStore().readSnapshot();
+  const testingSnapshot = getTestingConsoleSnapshot(event.id);
   const smokeDiagnosticsTerms = ["Live deployment smoke diagnostics", "snapshot.smokeChecks", "dailyAutomaticFallbackEnabled", "Daily automatic fallback", "Zoom or Google Meet"];
   const panels = [
     RouteHealthPanel,
@@ -45,6 +48,7 @@ export async function TestingConsole({ eventId = "event-summit" }: { eventId?: s
             <div className="rounded-2xl bg-white/10 p-4"><p className="text-xs uppercase text-slate-400">Email events</p><p className="text-2xl font-black">{runtime.emailEvents.length}</p></div>
           </div>
         </div>
+        <ShowtimeReadinessPanel snapshot={testingSnapshot} />
         <BrowserDiagnosticsPanel eventId={event.id} />
         <section className="rounded-3xl border border-slate-200 bg-white p-5 text-sm text-slate-600 shadow-sm"><strong>Live deployment smoke diagnostics</strong><span className="sr-only"> {smokeDiagnosticsTerms.join(" ")}</span></section>
         <div className="grid gap-4 lg:grid-cols-2 xl:grid-cols-3">

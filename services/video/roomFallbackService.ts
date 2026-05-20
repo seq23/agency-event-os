@@ -1,4 +1,4 @@
-import { randomUUID } from "crypto";
+import { randomId } from "@/lib/security/portableCrypto";
 import { getRuntimeStore } from "@/services/runtime/runtimeStoreFactory";
 import type { V4RoomFallbackState, V4RoomType, V4VideoProvider } from "@/types/v4";
 
@@ -47,7 +47,7 @@ export function requiresCrewConfirmation(provider: V4VideoProvider) {
 
 async function appendFallbackAudit(state: V4RoomFallbackState, provider: V4VideoProvider, action: "auto_switch" | "manual_switch" | "rollback" | "health_check", actorRole?: string, reason?: string) {
   const event = await getRuntimeStore().appendFallbackEvent({
-    id: randomUUID(),
+    id: randomId("fallback"),
     eventId: state.eventId,
     roomId: state.roomId,
     roomType: state.roomType,

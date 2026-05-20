@@ -120,3 +120,17 @@ COMPLETE
 \`\`\`
 
 If the deployed click audit fails, status is BLOCKED.
+
+## Production config hard-fail policy
+
+Missing production config is never a success state. Branded setup errors exist only as a user-facing blast shield to prevent generic Next digest pages; they do not make a deployment complete.
+
+Required production env/secret names are derived from `deployment/env-var-registry.json` plus `data/access/event-access-config.json`. When a new `process.env.*` key is added, `validate_required_env_registry.js` forces it to be classified, and `sync_required_secrets_manifest.js` derives the Cloudflare required-secret manifest and `.env.example` from that registry.
+
+Before any trusted deploy, run:
+
+```bash
+npm run predeploy:hard
+```
+
+This blocks deploys when required production config is missing, when `VIDEO_PROVIDER=mock`, when mock video override is enabled, when Daily fallback is not enabled, or when the Cloudflare secret manifest is out of sync.

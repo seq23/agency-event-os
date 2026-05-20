@@ -88,3 +88,12 @@ exception when duplicate_object then null; end $$;
 do $$ begin
   create policy v6_run_of_show_runtime_events_service_role_all on public.v6_run_of_show_runtime_events for all to service_role using (true) with check (true);
 exception when duplicate_object then null; end $$;
+
+-- Registration profile enrichment used by attendee directory/profile UX.
+alter table if exists v6_registration_events add column if not exists display_name text;
+alter table if exists v6_registration_events add column if not exists company text;
+alter table if exists v6_registration_events add column if not exists title text;
+alter table if exists v6_registration_events add column if not exists personal_website text;
+alter table if exists v6_registration_events add column if not exists social_links jsonb not null default '[]'::jsonb;
+alter table if exists v6_registration_events add column if not exists reason_for_attending text;
+alter table if exists v6_registration_events add column if not exists interesting_fact text;

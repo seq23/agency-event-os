@@ -17,6 +17,10 @@ export async function createAuditLog(input: CreateAuditLogInput): Promise<AuditL
     visibility: input.visibility || "internal_agency",
   };
 
-  await getRuntimeStore().appendAuditLog(log);
+  try {
+    await getRuntimeStore().appendAuditLog(log);
+  } catch {
+    // Audit logging must never take down public or gated runtime pages.
+  }
   return log;
 }

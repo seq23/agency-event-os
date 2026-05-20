@@ -1,6 +1,9 @@
 import "./globals.css";
 import type { ReactNode } from "react";
 import { PRODUCT_NAME, BRAND_TAGLINE } from "@/lib/brand";
+import { GlobalWestPeekLogoLink } from "@/components/brand/GlobalWestPeekLogoLink";
+
+export const dynamic = "force-dynamic";
 
 export const metadata = {
   title: PRODUCT_NAME,
@@ -10,7 +13,7 @@ export const metadata = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body><GlobalWestPeekLogoLink />{children}</body>
     </html>
   );
 }

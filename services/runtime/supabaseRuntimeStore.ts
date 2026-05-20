@@ -151,6 +151,13 @@ export class SupabaseRuntimeStore implements RuntimeStore {
       event_id: event.eventId,
       attendee_email_hash: event.attendeeEmailHash,
       status: event.status,
+      display_name: event.displayName,
+      company: event.company,
+      title: event.title,
+      personal_website: event.personalWebsite,
+      social_links: event.socialLinks || [],
+      reason_for_attending: event.reasonForAttending,
+      interesting_fact: event.interestingFact,
       created_at: event.createdAt,
     }, event);
   }
@@ -259,6 +266,13 @@ export class SupabaseRuntimeStore implements RuntimeStore {
       eventId: String(row.event_id || ""),
       attendeeEmailHash: String(row.attendee_email_hash || ""),
       status: row.status as V6RegistrationRuntimeEvent["status"],
+      displayName: row.display_name ? String(row.display_name) : undefined,
+      company: row.company ? String(row.company) : undefined,
+      title: row.title ? String(row.title) : undefined,
+      personalWebsite: row.personal_website ? String(row.personal_website) : undefined,
+      socialLinks: Array.isArray(row.social_links) ? row.social_links.map(String) : [],
+      reasonForAttending: row.reason_for_attending ? String(row.reason_for_attending) : undefined,
+      interestingFact: row.interesting_fact ? String(row.interesting_fact) : undefined,
       createdAt: String(row.created_at || ""),
     }));
     snapshot.runOfShowEvents = runOfShowEvents.map((row) => ({

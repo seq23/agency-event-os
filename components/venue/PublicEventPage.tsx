@@ -99,13 +99,31 @@ export function EventRegistration({ slug }: { slug: string }) {
         <p className="text-sm text-slate-500">Registration</p>
         <h1 className="mt-2 text-3xl font-semibold">{config.event.name}</h1>
         <p className="mt-2 text-slate-600">Registration writes a runtime registration event and routes you into the venue.</p>
-        <div className="mt-6 space-y-3">
-          {["name", "email", "company", "title"].map((field) => (
-            <div key={field}>
-              <label htmlFor={field} className="text-sm font-medium capitalize text-slate-700">{field}</label>
-              <input id={field} name={field} required={field === "email"} type={field === "email" ? "email" : "text"} className="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-3 text-sm outline-none focus:border-brand-orange" />
+        <div className="mt-6 space-y-4">
+          {[
+            ["name", "Name", "text", true],
+            ["email", "Email", "email", true],
+            ["company", "Company", "text", false],
+            ["title", "Job title", "text", false],
+            ["personalWebsite", "Personal website", "url", false],
+          ].map(([field, label, type, required]) => (
+            <div key={String(field)}>
+              <label htmlFor={String(field)} className="text-sm font-medium text-slate-700">{label}</label>
+              <input id={String(field)} name={String(field)} required={Boolean(required)} type={String(type)} className="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-3 text-sm outline-none focus:border-brand-orange" />
             </div>
           ))}
+          <div>
+            <label htmlFor="socialLinks" className="text-sm font-medium text-slate-700">Social media links</label>
+            <textarea id="socialLinks" name="socialLinks" rows={3} placeholder="LinkedIn, X, Instagram, or other profile links — one per line or comma-separated" className="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-3 text-sm outline-none focus:border-brand-orange" />
+          </div>
+          <div>
+            <label htmlFor="reasonForAttending" className="text-sm font-medium text-slate-700">What brings you to the conference?</label>
+            <textarea id="reasonForAttending" name="reasonForAttending" rows={3} className="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-3 text-sm outline-none focus:border-brand-orange" />
+          </div>
+          <div>
+            <label htmlFor="interestingFact" className="text-sm font-medium text-slate-700">One interesting fact you want everyone to know</label>
+            <textarea id="interestingFact" name="interestingFact" rows={3} className="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-3 text-sm outline-none focus:border-brand-orange" />
+          </div>
           <button type="submit" className="w-full rounded-xl bg-slate-950 px-4 py-3 font-semibold text-white">Submit registration</button>
         </div>
       </form>

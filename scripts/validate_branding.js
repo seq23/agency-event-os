@@ -38,7 +38,8 @@ for (const file of walk(root)) {
   const rel = path.relative(root, file);
   if (!/\.(ts|tsx|md|json|css|svg|example)$/.test(file)) continue;
   const text = fs.readFileSync(file, "utf8");
-  if (text.includes("Agency Event OS") && !allowedOldNameFiles.has(rel)) {
+  const isInternalDoc = rel.startsWith("docs/");
+  if (!isInternalDoc && text.includes("Agency Event OS") && !allowedOldNameFiles.has(rel)) {
     failures.push(`Deprecated user-facing name found in ${rel}`);
   }
 }

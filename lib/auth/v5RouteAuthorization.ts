@@ -29,6 +29,7 @@ export function eventIdFromPath(pathname: string): string | undefined {
   const eventsIndex = parts.indexOf("events");
   if (eventsIndex >= 0 && parts[eventsIndex + 1]) return parts[eventsIndex + 1];
   if (parts[0] === "venue" && parts[1]) return parts[1];
+  if (parts[0] === "admin" && parts[1] === "testing" && parts[2]) return parts[2];
   return undefined;
 }
 
@@ -38,7 +39,7 @@ export function pathIncludesEvent(pathname: string, eventId: string) {
 
 export function canCrewAccessPath(pathname: string, payload?: V5AccessCookiePayload) {
   if (!payload || payload.kind !== "crew") return false;
-  if (!pathname.startsWith("/app") && !pathname.startsWith("/crew")) return false;
+  if (!pathname.startsWith("/app") && !pathname.startsWith("/crew") && !pathname.startsWith("/admin/testing")) return false;
   const pathEventId = eventIdFromPath(pathname);
   if (payload.eventId) return pathEventId === payload.eventId;
   return true;

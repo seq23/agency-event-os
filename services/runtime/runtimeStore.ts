@@ -62,6 +62,13 @@ export interface V6RegistrationRuntimeEvent {
   eventId: string;
   attendeeEmailHash: string;
   status: "submitted" | "confirmed" | "cancelled";
+  displayName?: string;
+  company?: string;
+  title?: string;
+  personalWebsite?: string;
+  socialLinks?: string[];
+  reasonForAttending?: string;
+  interestingFact?: string;
   createdAt: string;
 }
 

@@ -118,6 +118,18 @@ const attendeeConfigs: Record<string, AttendeeConfigRecord> = {
   "premium-workshop-intensive": workshopAttendee as AttendeeConfigRecord,
 };
 
+
+const eventLookupAliases: Record<string, string> = {
+  "nova-summit": "demo",
+  "nova-founder-summit": "demo",
+};
+
+function normalizeEventLookupKey(rawCode: string | undefined) {
+  const code = rawCode?.trim().toLowerCase();
+  if (!code) return undefined;
+  return eventLookupAliases[code] || code;
+}
+
 const eventConfigPackages: Record<string, Omit<EventConfigPackage, "event" | "attendee">> = {
   demo: {
     branding: demoBranding,
@@ -171,21 +183,23 @@ export function getEventIndex(): EventIndexRecord[] {
 }
 
 export function findEventIndexRecord(rawCode: string | undefined) {
-  const code = rawCode?.trim().toLowerCase();
+  const code = normalizeEventLookupKey(rawCode);
   if (!code) return undefined;
   return getEventIndex().find((event) => event.slug === code || event.publicCode.toLowerCase() === code || event.eventId.toLowerCase() === code);
 }
 
 export function getEventConfig(slugOrEventId: string | undefined): EventConfigRecord | undefined {
-  if (!slugOrEventId) return undefined;
-  const record = getEventIndex().find((item) => item.slug === slugOrEventId || item.eventId === slugOrEventId);
-  return record ? eventConfigs[record.slug] : eventConfigs[slugOrEventId];
+  const code = normalizeEventLookupKey(slugOrEventId);
+  if (!code) return undefined;
+  const record = getEventIndex().find((item) => item.slug === code || item.eventId === code || item.publicCode.toLowerCase() === code);
+  return record ? eventConfigs[record.slug] : eventConfigs[code];
 }
 
 export function getAttendeeConfig(slugOrEventId: string | undefined): AttendeeConfigRecord | undefined {
-  if (!slugOrEventId) return undefined;
-  const record = getEventIndex().find((item) => item.slug === slugOrEventId || item.eventId === slugOrEventId);
-  return record ? attendeeConfigs[record.slug] : attendeeConfigs[slugOrEventId];
+  const code = normalizeEventLookupKey(slugOrEventId);
+  if (!code) return undefined;
+  const record = getEventIndex().find((item) => item.slug === code || item.eventId === code || item.publicCode.toLowerCase() === code);
+  return record ? attendeeConfigs[record.slug] : attendeeConfigs[code];
 }
 
 export function getEventAccessConfig(slug: string): EventAccessConfigRecord | undefined {

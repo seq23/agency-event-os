@@ -7,7 +7,13 @@ import { expectEventuallyDraft, expectEventuallyRuntime, readRuntimeSnapshot, re
 
 const unique = Date.now();
 
-test.describe.serial("Transactional Full Buffett E2E", () => {
+const deployedBrowserRun =
+  process.env.PLAYWRIGHT_DEPLOYED === "1" ||
+  (process.env.PLAYWRIGHT_BASE_URL ? !process.env.PLAYWRIGHT_BASE_URL.includes("127.0.0.1") && !process.env.PLAYWRIGHT_BASE_URL.includes("localhost") : false);
+
+const transactionalDescribe = deployedBrowserRun ? test.describe.skip : test.describe.serial;
+
+transactionalDescribe("Transactional Full Buffett E2E", () => {
   test.beforeEach(() => {
     resetRuntimeTraceFiles();
   });

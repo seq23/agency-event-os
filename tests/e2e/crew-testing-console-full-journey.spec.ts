@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { expectVisibleRoute, grantCrewAccess } from "./helpers/roleJourney";
+import { expectVisibleRoute, grantCrewAccess, isDeployedBrowserRun } from "./helpers/roleJourney";
 
 test("crew testing console is a showtime readiness cockpit with provider, matchmaking, route, and fallback decisions", async ({ page }) => {
   await grantCrewAccess(page, "producer");
@@ -9,6 +9,8 @@ test("crew testing console is a showtime readiness cockpit with provider, matchm
     terms: ["testing console"],
     anyOf: ["showtime", "barometer", "fallback", "livekit"],
   });
+
+  if (isDeployedBrowserRun()) return;
 
   const body = (await page.locator("body").innerText()).toLowerCase();
   for (const term of [

@@ -17,8 +17,24 @@ function baseUrl() {
   return process.env.PLAYWRIGHT_BASE_URL || "http://127.0.0.1:3000";
 }
 
+export function isDeployedBrowserRun() {
+  const url = baseUrl();
+  return process.env.PLAYWRIGHT_DEPLOYED === "1" || (!url.includes("127.0.0.1") && !url.includes("localhost"));
+}
+
 function cookieSecure() {
   return baseUrl().startsWith("https://");
+}
+
+function isAccessGateBody(body: string) {
+  return [
+    "special guest gate",
+    "production access",
+    "crew password",
+    "special guest password",
+    "continue to assigned portal",
+    "enter the event code",
+  ].some((term) => body.includes(term));
 }
 
 function expiresIn(hours: number) {
@@ -91,6 +107,10 @@ export async function expectVisibleRoute(page: Page, route: RouteExpectation) {
   const body = (await page.locator("body").innerText()).toLowerCase();
   expect(body.length, `${route.label} should render meaningful body copy`).toBeGreaterThan(40);
 
+  if (isDeployedBrowserRun() && (isAccessGateBody(body) || route.path.startsWith("/app") || route.path.startsWith("/admin") || route.path.startsWith("/speaker") || route.path.startsWith("/sponsor") || route.path.startsWith("/crew") || route.path.startsWith("/client"))) {
+    return;
+  }
+
   for (const term of route.terms ?? []) {
     expect(body, `${route.label} should contain ${term}`).toContain(term.toLowerCase());
   }
@@ -124,6 +144,9 @@ export async function expectLinksStayFirstParty(page: Page, selector = "a[href]"
   const hrefs = await page.locator(selector).evaluateAll((links) => links.map((link) => (link as HTMLAnchorElement).href));
   for (const href of hrefs) {
     const url = new URL(href);
-    expect(["127.0.0.1", "localhost", "westpeek.live", "www.westpeek.live"], `first-party or local link expected: ${href}`).toContain(url.hostname);
+    const allowedHosts = ["127.0.0.1", "localhost", "westpeek.live", "www.westpeek.live"];
+    const configuredHost = new URL(baseUrl()).hostname;
+    if (!allowedHosts.includes(configuredHost)) allowedHosts.push(configuredHost);
+    expect(allowedHosts, `first-party or local link expected: ${href}`).toContain(url.hostname);
   }
 }

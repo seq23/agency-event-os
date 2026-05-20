@@ -14,7 +14,7 @@
     "cf:upload": "opennextjs-cloudflare upload",
     "dev": "next dev",
     "lint": "next lint",
-    "postdeploy:browser": "playwright test",
+    "postdeploy:browser": "PLAYWRIGHT_DEPLOYED=1 playwright test",
     "postdeploy:click-audit": "node scripts/post_deploy_click_audit.js",
     "postdeploy:full": "npm run postdeploy:smoke && npm run postdeploy:click-audit && npm run postdeploy:role-flow && npm run postdeploy:video-provider && npm run postdeploy:browser",
     "postdeploy:role-flow": "node scripts/post_deploy_role_flow_audit.js",

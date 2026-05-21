@@ -6,9 +6,22 @@ if (!baseUrl) {
 }
 
 const checks = [
-  { path: "/production-access/crew", mustContain: ["Crew password", "CrewAccess-2026!"] },
-  { path: "/production-access/special-guest", mustContain: ["Special guest password", "SpeakerGuest-2026!", "SponsorGuest-2026!", "VIPGuest-2026!"] },
-  { path: "/production-access", mustContain: ["Production Access", "Crew / Production Team", "Conference Special Guest"] },
+  {
+    path: "/production-access/crew",
+    mustContain: ["Crew password", "secure production vault", "never displays the password"],
+    mustNotContain: ["CrewAccess-2026!"],
+  },
+  {
+    path: "/production-access/special-guest",
+    mustContain: ["Special guest password", "secure production vault", "never displays speaker, sponsor, VIP, or client passwords"],
+    mustNotContain: ["SpeakerGuest-2026!", "SponsorGuest-2026!", "VIPGuest-2026!"],
+  },
+  {
+    path: "/production-access/operator",
+    mustContain: ["Operator launchpad password", "secure production vault", "never displays the password"],
+    mustNotContain: ["OperatorLaunchpad-2026!"],
+  },
+  { path: "/production-access", mustContain: ["Production Access", "Crew / Production Team", "Conference Special Guest"], mustNotContain: [] },
 ];
 
 function toUrl(pathname) {
@@ -23,6 +36,9 @@ async function run() {
     if (response.status !== 200) failures.push(check.path + " expected 200 got " + response.status);
     for (const marker of check.mustContain) {
       if (!body.includes(marker)) failures.push(check.path + " missing marker " + marker);
+    }
+    for (const marker of check.mustNotContain || []) {
+      if (body.includes(marker)) failures.push(check.path + " exposed forbidden marker " + marker);
     }
     if (body.includes("__next_error__") || body.includes("Internal Server Error") || body.includes("Application error")) {
       failures.push(check.path + " contains generic server error marker");

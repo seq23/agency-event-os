@@ -1,0 +1,37 @@
+import { expect, test } from "@playwright/test";
+import { gotoAndAssert } from "./helpers/assertNoAppError";
+
+const day1Passwords = [
+  "OperatorLaunchpad-2026!",
+  "CrewAccess-2026!",
+  "SpeakerGuest-2026!",
+  "SponsorGuest-2026!",
+  "VIPGuest-2026!",
+];
+
+test("operator Day 1 password unlocks create-event flow without a second auth wall", async ({ page }) => {
+  await gotoAndAssert(page, "/production-access/operator");
+
+  await page.getByLabel(/operator launchpad password/i).fill(process.env.E2E_OPERATOR_PASSWORD || "OperatorLaunchpad-2026!");
+  await page.getByRole("button", { name: /enter operator launchpad/i }).click();
+
+  await expect(page).toHaveURL(/\/production-access\/launchpad/);
+  await expect(page.getByRole("heading", { name: /everything internal starts here/i })).toBeVisible();
+
+  await page.getByRole("link", { name: /create event in admin workspace/i }).first().click();
+
+  await expect(page).toHaveURL(/\/app\/events\/new/);
+  await expect(page.getByRole("heading", { name: /start a guided event setup/i })).toBeVisible();
+  await expect(page.getByRole("button", { name: /create setup draft and continue/i })).toBeVisible();
+  await expect(page.locator("body")).not.toContainText(/supabase auth|required admin account|login\?next|operator gate/i);
+});
+
+test("public production access gates do not reveal Day 1 passwords", async ({ page }) => {
+  for (const route of ["/production-access/operator", "/production-access/crew", "/production-access/special-guest"]) {
+    await gotoAndAssert(page, route);
+    const body = await page.locator("body").innerText();
+    for (const password of day1Passwords) {
+      expect(body, `${route} must not expose ${password}`).not.toContain(password);
+    }
+  }
+});

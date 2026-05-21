@@ -20,7 +20,7 @@ describe("crew/operator access flow", () => {
     expect(canOperatorAccessPath("/production-access/launchpad", payload)).toBe(true);
     expect(canOperatorAccessPath("/admin/testing/event-summit", payload)).toBe(true);
     expect(canOperatorAccessPath("/app/events/event-summit/run-of-show", payload)).toBe(true);
-    expect(canOperatorAccessPath("/app/events/new", payload)).toBe(false);
+    expect(canOperatorAccessPath("/app/events/new", payload)).toBe(true);
   });
 
   it("requires explicit role capability for fallback switching", () => {

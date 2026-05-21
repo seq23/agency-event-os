@@ -130,7 +130,8 @@
     "validate:no-generated-artifacts": "node scripts/validate_no_generated_artifacts.js",
     "validate:supabase-schema": "node scripts/validate_supabase_schema_parity.js",
     "deploy:doctor": "npm run validate:no-generated-artifacts && npm run validate && npm run audit:cloudflare-secrets && npm run validate:supabase-schema",
-    "deploy:production:safe": "npm run deploy:doctor && npm run cf:build && npm run cf:deploy && npm run postdeploy:full"
+    "deploy:production:safe": "npm run deploy:doctor && npm run cf:build && npm run cf:deploy && npm run postdeploy:full",
+    "test:e2e:day1-operator": "OPERATOR_LAUNCHPAD_PASSWORD='OperatorLaunchpad-2026!' CREW_ACCESS_PASSWORD='CrewAccess-2026!' V5_ACCESS_COOKIE_SECRET='local-playwright-gauntlet-cookie-secret-1234567890' playwright test tests/e2e/day1-operator-common-sense.spec.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "3.9.0",

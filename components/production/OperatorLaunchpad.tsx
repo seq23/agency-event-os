@@ -42,7 +42,7 @@ export function OperatorLaunchpad() {
 
         <LaunchpadSection eyebrow="Core production" title="Run the agency cockpit">
           <LaunchpadCard title="Open Admin Workspace" href="/app">Supabase-authenticated dashboard, event portfolio, and admin onboarding.</LaunchpadCard>
-          <LaunchpadCard title="Create Event in Admin Workspace" href="/app/events/new">Requires admin account login; starts guided production setup only after Supabase Auth.</LaunchpadCard>
+          <LaunchpadCard title="Create Event in Admin Workspace" href="/app/events/new">Available after operator access; starts the guided Day 1 production setup spine.</LaunchpadCard>
           <LaunchpadCard title="Manage Events" href="/app/events">View existing events and choose the active event to operate.</LaunchpadCard>
           <LaunchpadCard title="Preview Demo Venue" href="/venue/demo/lobby" badge="1:1 mirror">Open the attendee-facing demo venue powered by real venue components and demo data.</LaunchpadCard>
         </LaunchpadSection>

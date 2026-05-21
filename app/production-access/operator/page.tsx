@@ -4,7 +4,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { WestPeekProductionsLogo } from "@/components/brand/WestPeekProductionsLogo";
 import { BrandedSetupError } from "@/components/system/BrandedSetupError";
-import { DAY1_OPERATOR_PASSWORD, accessDefaultLines, missingAccessEnv } from "@/lib/env/safeEnv";
+import { accessDefaultLines, missingAccessEnv } from "@/lib/env/safeEnv";
 import { assertSeparatedProductionPasswords, getEnv, getOperatorLaunchpadPassword, getV5AccessCookieNames, getV5AccessCookieSecret } from "@/lib/env";
 import { createV5AccessCookie, getV5CookieOptions } from "@/lib/auth/productionAccess";
 import { logAccessAttempt } from "@/services/access/accessAuditService";
@@ -35,7 +35,7 @@ export default function OperatorAccessPage({ searchParams }: { searchParams?: { 
         <WestPeekProductionsLogo size="md" />
         <p className="mt-6 text-xs font-black uppercase tracking-[0.35em] text-brand-orange">Operator gate</p>
         <h1 className="mt-3 text-4xl font-black tracking-tight">Operator Launchpad access</h1>
-        <p className="mt-4 text-sm leading-6 text-brand-muted">Use the separate operator launchpad password for show-control diagnostics, testing console, fallback decisions, and admin-adjacent production tools. Day 1 default: <span className="font-mono font-bold text-brand-black">{DAY1_OPERATOR_PASSWORD}</span></p>
+        <p className="mt-4 text-sm leading-6 text-brand-muted">Use the separate operator launchpad password from the Day 1 Operator Packet or your secure production vault. This public gate never displays the password.</p>
         <form action={enterOperator} className="mt-6 space-y-5">
           <div>
             <label htmlFor="operator-password" className="text-sm font-black">Operator launchpad password <span className="text-brand-orange">*</span></label>

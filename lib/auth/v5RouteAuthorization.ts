@@ -48,6 +48,9 @@ export function canCrewAccessPath(pathname: string, payload?: V5AccessCookiePayl
 const operatorExactPaths = new Set([
   "/production-access/launchpad",
   "/operator-packet",
+  "/app",
+  "/app/events",
+  "/app/events/new",
   "/admin/testing",
   "/admin/testing/demo",
   "/admin/testing/event-summit",

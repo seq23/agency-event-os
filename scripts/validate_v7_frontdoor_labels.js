@@ -1,8 +1,8 @@
 const fs = require('fs');
 const checks = {
-  'app/production-access/crew/page.tsx': ['htmlFor="crew-password"','htmlFor="crew-event-code"','htmlFor="crew-role"','CrewAccess-2026!'],
-  'app/production-access/operator/page.tsx': ['htmlFor="operator-password"','DAY1_OPERATOR_PASSWORD','OPERATOR_LAUNCHPAD_PASSWORD'],
-  'app/production-access/special-guest/page.tsx': ['htmlFor="special-event-code"','htmlFor="special-role-code"','SpeakerGuest-2026!','SponsorGuest-2026!','VIPGuest-2026!'],
+  'app/production-access/crew/page.tsx': ['htmlFor="crew-password"','htmlFor="crew-event-code"','htmlFor="crew-role"','secure production vault','never displays the password'],
+  'app/production-access/operator/page.tsx': ['htmlFor="operator-password"','OPERATOR_LAUNCHPAD_PASSWORD','secure production vault','never displays the password'],
+  'app/production-access/special-guest/page.tsx': ['htmlFor="special-event-code"','htmlFor="special-role-code"','secure production vault','never displays speaker, sponsor, VIP, or client passwords'],
   'app/join/page.tsx': ['htmlFor="join-event-code"'],
   'app/app/events/new/page.tsx': ['action={startEventSetup}','createEventSetupDraft','htmlFor={id}','required'],
 };

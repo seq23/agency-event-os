@@ -4,7 +4,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { WestPeekProductionsLogo } from "@/components/brand/WestPeekProductionsLogo";
 import { BrandedSetupError } from "@/components/system/BrandedSetupError";
-import { DAY1_CREW_PASSWORD, accessDefaultLines, missingAccessEnv } from "@/lib/env/safeEnv";
+import { accessDefaultLines, missingAccessEnv } from "@/lib/env/safeEnv";
 import { getCrewAccessPassword, getEnv, getV5AccessCookieNames, getV5AccessCookieSecret } from "@/lib/env";
 import { createV5AccessCookie, getV5CookieOptions } from "@/lib/auth/productionAccess";
 import { resolveCrewAccess } from "@/services/access/eventAccessResolver";
@@ -54,7 +54,7 @@ export default function CrewAccessPage({ searchParams }: { searchParams?: { erro
         <WestPeekProductionsLogo size="md" />
         <p className="mt-6 text-xs font-black uppercase tracking-[0.35em] text-brand-orange">Crew gate</p>
         <h1 className="mt-3 text-4xl font-black tracking-tight">Crew workspace access</h1>
-        <p className="mt-4 text-sm leading-6 text-brand-muted">Use the internal crew password from production, then choose the crew role you are operating as today. Day 1 default: <span className="font-mono font-bold text-brand-black">{DAY1_CREW_PASSWORD}</span></p>
+        <p className="mt-4 text-sm leading-6 text-brand-muted">Use the internal crew password from the Day 1 Operator Packet or your secure production vault, then choose the crew role you are operating as today. This public gate never displays the password.</p>
         <form action={enterCrew} className="mt-6 space-y-5">
           <div>
             <label htmlFor="crew-password" className="text-sm font-black">Crew password <span className="text-brand-orange">*</span></label>

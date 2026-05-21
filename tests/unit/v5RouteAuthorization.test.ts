@@ -38,5 +38,5 @@ it("keeps crew and operator route permissions separate", () => {
   const operator = { kind: "operator" as const, role: "executive_producer" as const, issuedAt, expiresAt };
   expect(canCrewAccessPath("/production-access/launchpad", crew)).toBe(false);
   expect(canOperatorAccessPath("/production-access/launchpad", operator)).toBe(true);
-  expect(canOperatorAccessPath("/app/events/new", operator)).toBe(false);
+  expect(canOperatorAccessPath("/app/events/new", operator)).toBe(true);
 });

@@ -4,7 +4,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { WestPeekProductionsLogo } from "@/components/brand/WestPeekProductionsLogo";
 import { BrandedSetupError } from "@/components/system/BrandedSetupError";
-import { DAY1_SPEAKER_PASSWORD, DAY1_SPONSOR_PASSWORD, DAY1_VIP_PASSWORD, accessDefaultLines, missingAccessEnv } from "@/lib/env/safeEnv";
+import { accessDefaultLines, missingAccessEnv } from "@/lib/env/safeEnv";
 import { getEnv, getV5AccessCookieNames, getV5AccessCookieSecret } from "@/lib/env";
 import { createV5AccessCookie, getV5CookieOptions } from "@/lib/auth/productionAccess";
 import { resolveSpecialGuestAccess } from "@/services/access/eventAccessResolver";
@@ -42,10 +42,8 @@ export default function SpecialGuestAccessPage({ searchParams }: { searchParams?
         <h1 className="mt-3 text-4xl font-black tracking-tight">Client, speaker, sponsor, crew-lite, or VIP</h1>
         <p className="mt-4 text-sm leading-6 text-brand-muted">Enter the event code and your role-scoped access password from production. For real events, create these in Event Setup → Access.</p>
         <div className="mt-5 rounded-2xl bg-brand-ash p-4 text-sm leading-6 text-brand-muted">
-          <p className="font-black text-brand-black">Day 1 demo defaults</p>
-          <p>Speaker: <span className="font-mono font-bold text-brand-black">{DAY1_SPEAKER_PASSWORD}</span></p>
-          <p>Sponsor: <span className="font-mono font-bold text-brand-black">{DAY1_SPONSOR_PASSWORD}</span></p>
-          <p>VIP / Client Preview: <span className="font-mono font-bold text-brand-black">{DAY1_VIP_PASSWORD}</span></p>
+          <p className="font-black text-brand-black">Day 1 access</p>
+          <p>Use the role-scoped password from the Day 1 Operator Packet or your secure production vault. This public gate never displays speaker, sponsor, VIP, or client passwords.</p>
         </div>
         <form action={enterGuest} className="mt-6 space-y-5">
           <div>

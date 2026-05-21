@@ -130,6 +130,7 @@
     "ZOOM_MEETING_SDK_SECRET"
   ],
   "localOnlyEnv": [
+    "AGENCY_EVENT_OS_ENV_BACKUP",
     "E2E_CREW_PASSWORD",
     "E2E_EVENT_CODE",
     "E2E_SPEAKER_CODE",
@@ -146,6 +147,7 @@
     "PLAYWRIGHT_RETRIES",
     "PLAYWRIGHT_SKIP_WEBSERVER",
     "PORT",
+    "POSTDEPLOY_BASE_URL",
     "SMOKE_BASE_URL"
   ],
   "internalRuntimeEnv": [

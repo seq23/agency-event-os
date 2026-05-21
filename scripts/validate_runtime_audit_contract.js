@@ -43,8 +43,20 @@ const scripts = pkg.scripts || {};
 for (const key of ["test:e2e", "postdeploy:browser", "test:e2e:deployed", "audit:cloudflare-secrets", "postdeploy:role-flow-e2e", "audit:speed-networking:e2e", "test:e2e:transactional", "validate:transactional-e2e-contract"]) {
   if (!scripts[key]) fail(`package.json missing ${key}`);
 }
-if (!scripts["postdeploy:full"] || !scripts["postdeploy:full"].includes("postdeploy:browser")) {
-  fail("postdeploy:full must include browser E2E audit");
+const full = scripts["postdeploy:full"] || "";
+const strictWrapper = "scripts/run_postdeploy_strict.js";
+
+if (!full) {
+  fail("package.json missing postdeploy:full");
+}
+
+if (full.includes(strictWrapper)) {
+  const strictBody = read(strictWrapper);
+  if (!strictBody.includes("postdeploy:browser")) {
+    fail("strict postdeploy wrapper must include browser E2E audit");
+  }
+} else if (!full.includes("postdeploy:browser")) {
+  fail("postdeploy:full must include browser E2E audit or use strict wrapper");
 }
 if (!scripts["validate:deploy-parity"] || !scripts["validate:deploy-parity"].includes("validate_runtime_audit_contract.js")) {
   fail("validate:deploy-parity must include validate_runtime_audit_contract.js");

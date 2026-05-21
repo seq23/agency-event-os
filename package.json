@@ -16,7 +16,7 @@
     "lint": "next lint",
     "postdeploy:browser": "PLAYWRIGHT_DEPLOYED=1 playwright test",
     "postdeploy:click-audit": "node scripts/post_deploy_click_audit.js",
-    "postdeploy:full": "npm run postdeploy:smoke && npm run postdeploy:click-audit && npm run postdeploy:role-flow && npm run postdeploy:video-provider && npm run postdeploy:browser",
+    "postdeploy:full": "node scripts/run_postdeploy_strict.js",
     "postdeploy:role-flow": "node scripts/post_deploy_role_flow_audit.js",
     "postdeploy:role-flow-e2e": "node scripts/post_deploy_role_flow_e2e_audit.js",
     "postdeploy:smoke": "node scripts/post_deploy_smoke_test.js",
@@ -125,7 +125,12 @@
     "test:e2e:local-diagnostics:surface": "node scripts/run_local_e2e_diagnostics.js surface",
     "test:e2e:local-diagnostics:transactional": "node scripts/run_local_e2e_diagnostics.js transactional",
     "test:e2e:local-diagnostics:outcome": "node scripts/run_local_e2e_diagnostics.js outcome",
-    "test:e2e:predeploy:headless": "node scripts/run_predeploy_playwright.js all"
+    "test:e2e:predeploy:headless": "node scripts/run_predeploy_playwright.js all",
+    "postdeploy:full:legacy": "npm run postdeploy:smoke && npm run postdeploy:click-audit && npm run postdeploy:role-flow && npm run postdeploy:video-provider && npm run postdeploy:browser",
+    "validate:no-generated-artifacts": "node scripts/validate_no_generated_artifacts.js",
+    "validate:supabase-schema": "node scripts/validate_supabase_schema_parity.js",
+    "deploy:doctor": "npm run validate:no-generated-artifacts && npm run validate && npm run audit:cloudflare-secrets && npm run validate:supabase-schema",
+    "deploy:production:safe": "npm run deploy:doctor && npm run cf:build && npm run cf:deploy && npm run postdeploy:full"
   },
   "dependencies": {
     "@hookform/resolvers": "3.9.0",

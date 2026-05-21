@@ -16,8 +16,8 @@ function LegalLinks({ compact = false }: { compact?: boolean }) {
 
   return (
     <nav className={base} aria-label="Legal and support links">
-      <Link className="underline-offset-4 hover:underline" href="/privacy">Privacy</Link>
-      <Link className="underline-offset-4 hover:underline" href="/terms">Terms</Link>
+      <Link prefetch={false} className="underline-offset-4 hover:underline" href="/privacy">Privacy</Link>
+      <Link prefetch={false} className="underline-offset-4 hover:underline" href="/terms">Terms</Link>
       <a className="underline-offset-4 hover:underline" href={SUPPORT_EMAIL}>Support</a>
     </nav>
   );

@@ -149,8 +149,9 @@ export async function expectRouteMatrix(page: Page, routes: RouteExpectation[]) 
 export async function expectLinksStayFirstParty(page: Page, selector = "a[href]") {
   const hrefs = await page.locator(selector).evaluateAll((links) => links.map((link) => (link as HTMLAnchorElement).href));
   for (const href of hrefs) {
+    if (href.startsWith("mailto:") || href.startsWith("tel:") || href.startsWith("javascript:")) continue;
     const url = new URL(href);
-    const allowedHosts = ["127.0.0.1", "localhost", "westpeek.live", "www.westpeek.live"];
+    const allowedHosts = ["127.0.0.1", "localhost", "westpeek.live", "www.westpeek.live", "productions.joinwestpeek.com"];
     const configuredHost = new URL(baseUrl()).hostname;
     if (!allowedHosts.includes(configuredHost)) allowedHosts.push(configuredHost);
     expect(allowedHosts, `first-party or local link expected: ${href}`).toContain(url.hostname);

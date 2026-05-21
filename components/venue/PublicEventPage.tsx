@@ -1,3 +1,4 @@
+import { LegalFooter } from "@/components/legal/LegalFooter";
 import { submitEventRegistration } from "@/lib/actions/registrationActions";
 import { SectionCard } from "@/components/shared/SectionCard";
 import { StatusBadge } from "@/components/shared/StatusBadge";
@@ -18,7 +19,8 @@ export function PublicEventPage({ slug }: { slug: string }) {
   }
 
   return (
-    <main className="min-h-screen bg-slate-50 p-6">
+    <>
+      <main className="min-h-screen bg-slate-50 p-6">
       <div className="mx-auto max-w-6xl space-y-6">
         <section className="rounded-3xl bg-slate-950 p-8 text-white">
           <p className="text-sm text-slate-300">{config.event.client}</p>
@@ -72,7 +74,9 @@ export function PublicEventPage({ slug }: { slug: string }) {
           </div>
         </SectionCard>
       </div>
-    </main>
+      </main>
+      <LegalFooter variant="standard" />
+    </>
   );
 }
 

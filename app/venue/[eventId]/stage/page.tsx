@@ -5,7 +5,7 @@ import { VenuePageShell } from "@/components/venue/VenuePageShell";
 export default function StagePage({ params }: { params: { eventId: string } }) {
   const model = buildVirtualVenueModel(params.eventId);
   return (
-    <VenuePageShell model={model}>
+    <VenuePageShell model={model} showLegalFooter={false}>
       <MainStageExperience model={model} />
     </VenuePageShell>
   );

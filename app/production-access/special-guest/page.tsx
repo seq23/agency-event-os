@@ -1,3 +1,4 @@
+import { LegalFooter } from "@/components/legal/LegalFooter";
 export const dynamic = "force-dynamic";
 
 import { cookies } from "next/headers";
@@ -35,7 +36,8 @@ export default function SpecialGuestAccessPage({ searchParams }: { searchParams?
   const missing = missingAccessEnv().filter((item) => item === "V5_ACCESS_COOKIE_SECRET");
   if (missing.length) return <BrandedSetupError title="Special guest access is not configured yet." message="Special guest login needs a cookie secret to create role-scoped access cookies. This page now fails safely with setup instructions instead of throwing a server digest page." missingVariables={missing} defaultValues={accessDefaultLines()} />;
   return (
-    <main className="min-h-screen bg-brand-ash px-5 py-10 text-brand-black sm:px-8 lg:px-12">
+    <>
+      <main className="min-h-screen bg-brand-ash px-5 py-10 text-brand-black sm:px-8 lg:px-12">
       <section className="mx-auto max-w-2xl rounded-[2rem] border border-brand-line bg-white p-6 shadow-brand sm:p-10">
         <WestPeekProductionsLogo size="md" />
         <p className="mt-6 text-xs font-black uppercase tracking-[0.35em] text-brand-orange">Special guest gate</p>
@@ -60,6 +62,8 @@ export default function SpecialGuestAccessPage({ searchParams }: { searchParams?
         </form>
         {searchParams?.error ? <p className="mt-4 rounded-2xl bg-amber-50 p-4 text-sm font-bold text-amber-800">That access code did not match a speaker, sponsor, client, or VIP access group for this event.</p> : null}
       </section>
-    </main>
+      </main>
+      <LegalFooter variant="compact" />
+    </>
   );
 }

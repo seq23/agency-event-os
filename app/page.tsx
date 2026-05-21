@@ -1,9 +1,11 @@
+import { LegalFooter } from "@/components/legal/LegalFooter";
 import { WestPeekLiveWordmark } from "@/components/brand/WestPeekLiveWordmark";
 import { WestPeekProductionsLogo } from "@/components/brand/WestPeekProductionsLogo";
 
 export default function HomePage() {
   return (
-    <main className="min-h-screen bg-brand-ash px-5 py-10 text-brand-black sm:px-8 lg:px-12">
+    <>
+      <main className="min-h-screen bg-brand-ash px-5 py-10 text-brand-black sm:px-8 lg:px-12">
       <section className="mx-auto flex min-h-[80vh] max-w-6xl flex-col justify-center rounded-[2rem] border border-brand-line bg-white p-6 shadow-brand sm:p-10 lg:p-14">
         <WestPeekProductionsLogo size="lg" />
         <p className="mt-6 text-xs font-black uppercase tracking-[0.35em] text-brand-orange">West Peek Live</p>
@@ -18,6 +20,8 @@ export default function HomePage() {
         </div>
         <a href="/venue/demo/lobby" className="mt-5 inline-flex text-sm font-bold text-brand-muted underline-offset-4 hover:text-brand-orange hover:underline">Preview demo venue →</a>
       </section>
-    </main>
+      </main>
+      <LegalFooter variant="standard" />
+    </>
   );
 }

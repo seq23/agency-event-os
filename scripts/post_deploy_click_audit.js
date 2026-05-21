@@ -9,6 +9,8 @@ const requiredStartPaths = [
   "/",
   "/join",
   "/production-access",
+  "/privacy",
+  "/terms",
   "/production-access/crew",
   "/production-access/operator",
   "/production-access/special-guest",
@@ -43,6 +45,8 @@ const hardFailStatuses = new Set([500, 502, 503, 504]);
 
 const allowedRedirectTargets = [
   "/production-access",
+  "/privacy",
+  "/terms",
   "/production-access/crew",
   "/production-access/operator",
   "/production-access/special-guest",

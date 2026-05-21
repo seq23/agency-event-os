@@ -1,3 +1,4 @@
+import { LegalFooter } from "@/components/legal/LegalFooter";
 export const dynamic = "force-dynamic";
 
 import { cookies } from "next/headers";
@@ -49,7 +50,8 @@ export default function CrewAccessPage({ searchParams }: { searchParams?: { erro
   const missing = missingAccessEnv();
   if (missing.length) return <BrandedSetupError title="Crew access is not configured yet." message="Crew login needs explicit access variables. This page now fails safely with setup instructions instead of throwing a server digest page." missingVariables={missing} defaultValues={accessDefaultLines()} />;
   return (
-    <main className="min-h-screen bg-brand-ash px-5 py-10 text-brand-black sm:px-8 lg:px-12">
+    <>
+      <main className="min-h-screen bg-brand-ash px-5 py-10 text-brand-black sm:px-8 lg:px-12">
       <section className="mx-auto max-w-2xl rounded-[2rem] border border-brand-line bg-white p-6 shadow-brand sm:p-10">
         <WestPeekProductionsLogo size="md" />
         <p className="mt-6 text-xs font-black uppercase tracking-[0.35em] text-brand-orange">Crew gate</p>
@@ -85,6 +87,8 @@ export default function CrewAccessPage({ searchParams }: { searchParams?: { erro
         {searchParams?.error === "operator_packet_required" ? <p className="mt-4 rounded-2xl bg-amber-50 p-4 text-sm font-bold text-amber-800">Enter operator access first. The Operator Packet contains internal launchpad instructions and stays behind the operator gate.</p> : null}
         {searchParams?.error === "invalid_event" ? <p className="mt-4 rounded-2xl bg-amber-50 p-4 text-sm font-bold text-amber-800">That event code is not valid for crew routing. Leave it blank to enter the demo crew workspace.</p> : null}
       </section>
-    </main>
+      </main>
+      <LegalFooter variant="compact" />
+    </>
   );
 }

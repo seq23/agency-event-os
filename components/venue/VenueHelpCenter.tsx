@@ -1,17 +1,82 @@
 import type { VirtualVenueModel } from "@/types/virtualVenue";
 import { HelpRequestForm } from "./HelpRequestForm";
 
-export function VenueHelpCenter({ model }: { model: VirtualVenueModel }) {
+const supportHref =
+  "mailto:info@westpeek.ventures?subject=West%20Peek%20Live%20Event%20Help";
+
+function HelpCard({ title, description, href }: { title: string; description: string; href: string }) {
   return (
-    <div className="grid gap-6 lg:grid-cols-[0.8fr_1.2fr]">
+    <a href={href} className="rounded-3xl border border-brand-line bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-brand">
+      <p className="text-sm font-black text-brand-black">{title}</p>
+      <p className="mt-2 text-sm leading-6 text-brand-muted">{description}</p>
+    </a>
+  );
+}
+
+const troubleshooting = [
+  {
+    title: "If the livestream is not loading",
+    items: ["Refresh the page.", "Check your internet connection.", "Return to the lobby and reopen the stage.", "Try another supported browser.", "Contact support if the issue continues."],
+  },
+  {
+    title: "If audio is not working",
+    items: ["Check your device volume.", "Check whether the browser tab is muted.", "Reconnect headphones or speakers.", "Refresh the stage page."],
+  },
+  {
+    title: "If your event code does not work",
+    items: ["Confirm the code from your invitation.", "Try the Join Event page again.", "Contact the event organizer or West Peek support."],
+  },
+  {
+    title: "If you are lost inside the venue",
+    items: ["Return to the Lobby.", "Use the venue navigation for Stage, Sessions, Expo, Networking, Replay, or Help.", "Open the Help page again if you need a reset point."],
+  },
+  {
+    title: "If speaker, sponsor, client, VIP, or crew access is not working",
+    items: ["Use the access link and role-scoped code from your production contact.", "Confirm the event code.", "Contact the event organizer or West Peek support."],
+  },
+];
+
+export function VenueHelpCenter({ model }: { model: VirtualVenueModel }) {
+  const eventId = model.eventId;
+
+  return (
+    <div className="space-y-6">
       <section className="rounded-3xl bg-white p-6 shadow-sm">
-        <h2 className="text-2xl font-semibold">Help center</h2>
-        <p className="mt-2 text-slate-600">Get event support without leaving the venue.</p>
-        <ul className="mt-4 space-y-2 text-sm text-slate-600">
-          {model.helpTopics.map((topic) => <li key={topic}>• {topic}</li>)}
-        </ul>
+        <p className="text-xs font-black uppercase tracking-[0.28em] text-brand-orange">Event Help</p>
+        <h2 className="mt-3 text-3xl font-black tracking-tight">Need help with this event?</h2>
+        <p className="mt-3 max-w-3xl text-sm leading-7 text-brand-muted">
+          Use this page for access, livestream, agenda, networking, sponsor booth, replay, or event navigation issues.
+          Event Help is for in-event rescue. Company support and legal/privacy requests go to info@westpeek.ventures.
+        </p>
       </section>
-      <HelpRequestForm eventId={model.eventId} topics={model.helpTopics} />
+
+      <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3" aria-label="Fast help actions">
+        <HelpCard title="Back to Lobby" description="Return to the event home base." href={`/venue/${eventId}/lobby`} />
+        <HelpCard title="Go to Stage" description="Open the main livestream and chat surface." href={`/venue/${eventId}/stage`} />
+        <HelpCard title="View Sessions" description="Find agenda sessions and room links." href={`/venue/${eventId}/sessions`} />
+        <HelpCard title="Open Expo" description="Find sponsor and exhibitor booths." href={`/venue/${eventId}/expo`} />
+        <HelpCard title="Open Networking" description="Return to networking and matching surfaces." href={`/venue/${eventId}/networking`} />
+        <HelpCard title="View Replay" description="Find available replay and archive surfaces." href={`/venue/${eventId}/replay`} />
+        <HelpCard title="Contact Support" description="Email West Peek support. Do not include passwords, private codes, payment information, or secret keys." href={supportHref} />
+      </section>
+
+      <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
+        <section className="rounded-3xl bg-white p-6 shadow-sm">
+          <h3 className="text-2xl font-black tracking-tight">Troubleshooting</h3>
+          <div className="mt-5 space-y-5">
+            {troubleshooting.map((block) => (
+              <section key={block.title} className="rounded-2xl bg-brand-ash p-4">
+                <h4 className="font-black text-brand-black">{block.title}</h4>
+                <ul className="mt-3 space-y-2 text-sm leading-6 text-brand-muted">
+                  {block.items.map((item) => <li key={item}>• {item}</li>)}
+                </ul>
+              </section>
+            ))}
+          </div>
+        </section>
+
+        <HelpRequestForm eventId={eventId} topics={model.helpTopics} />
+      </div>
     </div>
   );
 }

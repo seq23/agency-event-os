@@ -1,8 +1,10 @@
+import { LegalFooter } from "@/components/legal/LegalFooter";
 import { WestPeekProductionsLogo } from "@/components/brand/WestPeekProductionsLogo";
 
 export default function ProductionAccessPage() {
   return (
-    <main className="min-h-screen bg-brand-ash px-5 py-10 text-brand-black sm:px-8 lg:px-12">
+    <>
+      <main className="min-h-screen bg-brand-ash px-5 py-10 text-brand-black sm:px-8 lg:px-12">
       <section className="mx-auto max-w-4xl rounded-[2rem] border border-brand-line bg-white p-6 shadow-brand sm:p-10">
         <WestPeekProductionsLogo size="md" />
         <p className="mt-6 text-xs font-black uppercase tracking-[0.35em] text-brand-orange">Production Access</p>
@@ -23,6 +25,8 @@ export default function ProductionAccessPage() {
           </a>
         </div>
       </section>
-    </main>
+      </main>
+      <LegalFooter variant="standard" />
+    </>
   );
 }

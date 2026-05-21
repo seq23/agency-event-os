@@ -1,3 +1,4 @@
+import { LegalFooter } from "@/components/legal/LegalFooter";
 import { WestPeekProductionsLogo } from "@/components/brand/WestPeekProductionsLogo";
 import { LaunchpadCard } from "@/components/production/LaunchpadCard";
 import { LaunchpadSection } from "@/components/production/LaunchpadSection";
@@ -6,7 +7,8 @@ const demoEventId = "event-summit";
 
 export function OperatorLaunchpad() {
   return (
-    <main className="min-h-screen bg-brand-ash px-5 py-8 text-brand-black sm:px-8 lg:px-12">
+    <>
+      <main className="min-h-screen bg-brand-ash px-5 py-8 text-brand-black sm:px-8 lg:px-12">
       <div className="mx-auto max-w-7xl space-y-8">
         <section className="rounded-[2rem] border border-brand-line bg-white p-6 shadow-brand sm:p-10">
           <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
@@ -105,6 +107,8 @@ export function OperatorLaunchpad() {
           <LaunchpadCard title="Client Portal" href="/client/acme-health">Client-facing event review.</LaunchpadCard>
         </LaunchpadSection>
       </div>
-    </main>
+      </main>
+      <LegalFooter variant="compact" />
+    </>
   );
 }

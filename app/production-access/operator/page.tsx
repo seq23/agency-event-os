@@ -1,3 +1,4 @@
+import { LegalFooter } from "@/components/legal/LegalFooter";
 export const dynamic = "force-dynamic";
 
 import { cookies } from "next/headers";
@@ -30,7 +31,8 @@ export default function OperatorAccessPage({ searchParams }: { searchParams?: { 
   const missing = missingAccessEnv();
   if (missing.length) return <BrandedSetupError title="Operator access is not configured yet." message="The launchpad uses a separate high-trust operator password so crew access never unlocks admin diagnostics by accident." missingVariables={missing} defaultValues={accessDefaultLines()} />;
   return (
-    <main className="min-h-screen bg-brand-ash px-5 py-10 text-brand-black sm:px-8 lg:px-12">
+    <>
+      <main className="min-h-screen bg-brand-ash px-5 py-10 text-brand-black sm:px-8 lg:px-12">
       <section className="mx-auto max-w-2xl rounded-[2rem] border border-brand-line bg-white p-6 shadow-brand sm:p-10">
         <WestPeekProductionsLogo size="md" />
         <p className="mt-6 text-xs font-black uppercase tracking-[0.35em] text-brand-orange">Operator gate</p>
@@ -46,6 +48,8 @@ export default function OperatorAccessPage({ searchParams }: { searchParams?: { 
         </form>
         {searchParams?.error === "invalid" ? <p className="mt-4 rounded-2xl bg-amber-50 p-4 text-sm font-bold text-amber-800">That operator password did not match. Use the operator launchpad password, not the crew password.</p> : null}
       </section>
-    </main>
+      </main>
+      <LegalFooter variant="compact" />
+    </>
   );
 }

@@ -8,6 +8,8 @@ const checks = [
   { path: "/", kind: "public", mustContain: "Join an Event" },
   { path: "/join", kind: "public", mustContain: "Event code" },
   { path: "/production-access", kind: "public", mustContain: "Production Access" },
+  { path: "/privacy", kind: "public", mustContain: "Privacy Policy" },
+  { path: "/terms", kind: "public", mustContain: "Terms of Use" },
   { path: "/production-access/crew", kind: "public", mustContain: "Crew password" },
   { path: "/production-access/operator", kind: "public", mustContain: "Operator launchpad password" },
   { path: "/production-access/special-guest", kind: "public", mustContain: "Special guest password" },

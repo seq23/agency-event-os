@@ -1,7 +1,6 @@
 import type { VirtualVenueModel } from "@/types/virtualVenue";
 import { AnalyticsBeacon } from "@/components/analytics/AnalyticsBeacon";
 import { FallbackActiveBanner } from "@/components/venue/FallbackActiveBanner";
-import { FloatingHelpButton } from "@/components/venue/FloatingHelpButton";
 import { MainStageAgendaStrip } from "@/components/venue/MainStageAgendaStrip";
 import { MainStageLiveChat } from "@/components/venue/MainStageLiveChat";
 import { SessionFullState } from "@/components/venue/SessionFullState";
@@ -42,7 +41,6 @@ export async function MainStageExperience({ model }: { model: VirtualVenueModel 
       <EditAttendeeProfilePanel eventId={model.eventId} />
       <MainStageAgendaStrip sessions={model.sessions} eventId={model.eventId} />
       {model.sessions.length > 50 ? <SessionFullState /> : null}
-      <FloatingHelpButton eventId={model.eventId} />
     </div>
   );
 }

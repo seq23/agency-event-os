@@ -7,15 +7,16 @@ West Peek Live is an internal virtual event production operating system for West
 ## 2. Day 1 passwords
 
 - Crew password: `CrewAccess-2026!`
+- Operator launchpad password: `OperatorLaunchpad-2026!`
 - Speaker password: `SpeakerGuest-2026!`
 - Sponsor password: `SponsorGuest-2026!`
 - VIP / Client Preview password: `VIPGuest-2026!`
 
 Crew password is set with `CREW_ACCESS_PASSWORD`. Demo special guest passwords are seeded for training. Real event special guest passwords are created in Event Setup → Access.
 
-## 3. Front doors and Production Gate
+## 3. Front doors and Production Gate / Operator Gate
 
-The Production Gate is the internal password door. It routes owners, producers, VAs, crew, backend testers, speakers, sponsors, clients, and VIPs into the correct role-aware flow.
+The Production Gate / Operator Gate is the internal password door. It routes owners, producers, VAs, crew, backend testers, speakers, sponsors, clients, and VIPs into the correct role-aware flow.
 
 ## 3A. Front doors
 
@@ -29,7 +30,7 @@ The Production Gate is the internal password door. It routes owners, producers, 
 
 After production access, operators use the Operator Launchpad. It includes Core Production, Demo Event Actions, Event Operations, Backend/Admin Testing, Live Production Controls, Role Entry Testing, and Operator Documentation.
 
-## 5. Create First Event
+## 5. Create Event in Admin Workspace
 
 Go to `/app/events/new`. Fill event name, event code, client or organizer, date, audience, event type, primary video provider, fallback provider, Zoom backup URL, and Google Meet backup URL. Then continue into the setup spine.
 
@@ -96,7 +97,7 @@ Future billing surfaces: agency workspace billing, per-event billing, per-client
 | Area | Day 1 status |
 |---|---|
 | Operator Launchpad | Available |
-| Create First Event | Guided route available |
+| Create Event in Admin Workspace | Guided route available |
 | Demo Venue | 1:1 mirror required |
 | Crew Gate | Available |
 | Special Guest Gate | Available |
@@ -106,3 +107,155 @@ Future billing surfaces: agency workspace billing, per-event billing, per-client
 | Zoom | Manual backup |
 | Google Meet | Manual backup |
 | Billing | V2 roadmap |
+
+## 19. Phase 1 attendee identity spine
+
+Registration is now the event identity spine. The correct public attendee path is:
+
+1. `/events/[eventSlug]`
+2. `/events/[eventSlug]/register`
+3. `/venue/[eventId]/lobby`
+
+Registration must create all of the following before venue entry:
+
+- durable event-scoped attendee profile
+- attendee session cookie/token scoped to `eventId + attendeeId + role=attendee`
+- optional agenda intent
+- analytics registration event
+
+Required fields:
+
+- name
+- email
+- company / affiliation
+- title / role
+
+Optional fields:
+
+- personal website
+- social links
+- reason for attending
+- interesting fact
+- topics of interest
+- networking goals
+- networking opt-in
+
+Optional planning fields:
+
+- planned sessions
+- planned breakouts
+- planned sponsor booths
+- session reminders
+
+Planning is skippable and editable later. Planning never grants restricted, VIP, speaker, sponsor, crew, operator, admin, or camera/mic publishing access.
+
+## 20. Attendee access boundaries
+
+Attendee registration grants only attendee venue access. It never grants:
+
+- Supabase Auth
+- speaker access
+- sponsor access
+- client/VIP access
+- crew access
+- operator access
+- admin access
+- main-stage publish permission
+- restricted/VIP session access
+
+Main-stage chat, breakout chat, people directory, help requests, networking, My Agenda, sponsor lead capture, moderation/revoke targeting, and attendee live requests should use the real attendee profile/session. Do not use `Conference Attendee`, `current-attendee`, or demo identity placeholders for registered-attendee flows.
+
+## 21. My Agenda and profile state
+
+My Agenda reflects attendee planning state only. It is not an authorization layer.
+
+Operators should verify:
+
+1. attendee can register without planning selections
+2. attendee can register with planned sessions/breakouts/sponsor booths
+3. selected items appear in My Agenda
+4. restricted sessions remain restricted even if planned
+5. attendee profile shows real name, title, and company
+
+## 22. Sponsor lead boundary
+
+Sponsors receive attendee information only after intentional attendee engagement or opt-in. Attending the event alone does not export all attendee profiles to every sponsor.
+
+Allowed lead payloads must be scoped to the opted-in sponsor booth and only the allowed fields.
+
+## 23. Validation proof levels
+
+Validation is layered:
+
+- Static contracts prove files, forbidden strings, route/registry presence, and secret boundaries.
+- Unit tests prove pure rules.
+- Integration tests prove actions, persistence, cookies, and webhook behavior.
+- Transactional E2E proves forms, redirects, writes, and state changes.
+- Outcome E2E proves persona-correct results and catches surprise routing.
+
+Static validators must not claim product readiness. They only prove static contract presence.
+
+## 24. Outcome E2E standard
+
+Outcome E2E is required because a technically safe redirect can still be wrong if the CTA promise is misleading.
+
+Examples of outcome failures:
+
+- public CTA routes to `/app` or `/admin` without saying login/admin/workspace
+- crew CTA implies operator access
+- attendee CTA leads to protected admin flow
+- sponsor CTA implies access to all attendee data without opt-in
+- Daily fallback exposes reusable private room URL
+- pre-stream stage shows black/error instead of branded pre-stream card
+
+Use these artifacts as the source of truth:
+
+- `docs/E2E_OUTCOME_TESTING_STANDARD.md`
+- `docs/PERSONA_ROUTE_OUTCOME_MAP.md`
+- `data/testing/cta-promise-registry.json`
+- `data/testing/persona-route-outcomes.json`
+
+## 25. Video provider and failover outcomes
+
+Primary video provider is LiveKit. Daily is the embedded fallback. Zoom and Google Meet are white-label backup links only.
+
+Show-day expectations:
+
+1. early stage shows a branded pre-stream card, never a black/error screen
+2. LiveKit has a short startup buffer before fallback behavior is considered
+3. StreamYard feed failure recommends moving attendees to Daily while production restores StreamYard
+4. LiveKit distribution failure keeps StreamYard as production source by default while moving attendees to Daily
+5. switching overlay appears during fallback
+6. refresh during fallback hydrates the active fallback state
+7. attendee viewer tokens subscribe only by default
+8. attendee publish requires crew approval
+
+## 26. Final adversarial review gate
+
+Before delivering any repo ZIP, run a hostile Principal Engineer review:
+
+1. search for stale demo identity placeholders
+2. search for public route secret exposure
+3. verify Day 1 packet includes attendee identity, validation proof levels, and outcome E2E
+4. verify CTA and persona registries exist
+5. verify new validators are wired into package scripts
+6. verify the ZIP is a full baseline snapshot from repo root
+7. reopen the ZIP and confirm root files plus expected changed files exist
+
+Do not mark complete unless the artifact has been reopened and the requested validation level has passed.
+
+
+## Attendee retention policy
+
+Default attendee retention is event-scoped and cost-aware: attendee profiles, registrations, attendance summaries, and sponsor opt-ins are retained for 12 months unless a client policy shortens that window. Raw chat is retained for 90–180 days. Presence, telemetry, access attempts, and short-lived attendee session tokens expire within the live/replay support window or 30–90 days depending on operational need. Raw analytics should be aggregated or anonymized after 90–180 days. All queries must filter by `eventId`, paginate, and select only needed columns.
+
+
+## Local headed E2E diagnostics before repo update
+
+Before applying a new baseline ZIP to the real local repo or deploying, test the ZIP in a throwaway folder and run:
+
+```bash
+npm run test:e2e:predeploy
+```
+
+The browser opens visibly. The local app server starts automatically. The runner uses file runtime storage, mock video, and blank Supabase/provider secrets so local tests cannot accidentally mutate production systems. A diagnostics ZIP is written to `~/Downloads` even if tests fail. Upload that diagnostics ZIP for fixes instead of pasting long terminal logs.

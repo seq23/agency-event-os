@@ -44,7 +44,9 @@ export type AuditAction =
   | "last_minute_change_approve_with_conditions"
   | "last_minute_change_reject"
   | "last_minute_change_push_to_live"
-  | "last_minute_change_rollback";
+  | "last_minute_change_rollback"
+  | "request_event_production"
+  | "request_event_notification_failed";
 
 export interface CreateAuditLogInput {
   agencyId: string;

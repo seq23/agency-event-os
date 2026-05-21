@@ -27,6 +27,7 @@ export interface LiveKitJoinRequest {
   displayName: string;
   role: VideoParticipantRole;
   profileId?: string;
+  permissionOverride?: { canPublishAudio: boolean; canPublishVideo: boolean; canShareScreen: boolean };
 }
 
 export interface LiveKitJoinResult {

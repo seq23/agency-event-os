@@ -9,6 +9,7 @@ const isProduction = process.env.NODE_ENV === "production";
 const isProductionBuild = process.env.NEXT_PHASE === "phase-production-build" || process.env.npm_lifecycle_event === "build";
 const devOnlyCookieSecret = "dev-only-cookie-secret-change-before-deploy";
 const devOnlyCrewPassword = "dev-only-crew-password-change-before-deploy";
+const devOnlyOperatorPassword = "dev-only-operator-password-change-before-deploy";
 
 function requiredInProduction(name: string, value: string | undefined, fallback: string) {
   if (value) return value;
@@ -27,7 +28,9 @@ const envSchema = z.object({
   V5_ACCESS_COOKIE_SECRET: z.string().min(32),
   V5_CREW_COOKIE_NAME: z.string().min(1).default("wpl_crew_access"),
   V5_SPECIAL_GUEST_COOKIE_NAME: z.string().min(1).default("wpl_guest_access"),
+  V5_OPERATOR_COOKIE_NAME: z.string().min(1).default("wpl_operator_access"),
   CREW_ACCESS_PASSWORD: z.string().min(12),
+  OPERATOR_LAUNCHPAD_PASSWORD: z.string().min(12),
 
   RESEND_API_KEY: z.string().optional().or(z.literal("")),
   EMAIL_FROM: emailIdentitySchema.optional().or(z.literal("")),
@@ -39,6 +42,11 @@ const envSchema = z.object({
   DAILY_API_BASE_URL: z.string().url().default("https://api.daily.co/v1"),
   DAILY_DOMAIN: z.string().optional().or(z.literal("")),
   DAILY_FALLBACK_ENABLED: z.enum(["true", "false"]).default("false"),
+  LIVEKIT_INGRESS_RTMP_BASE_URL: z.string().optional().or(z.literal("")),
+  LIVEKIT_WEBHOOK_SECRET: z.string().optional().or(z.literal("")),
+  STREAMYARD_PRIMARY_ENABLED: z.enum(["true", "false"]).default("true"),
+  STAGE_STREAM_DEFAULT_SOURCE: z.enum(["LIVEKIT_INGRESS", "DAILY"]).default("LIVEKIT_INGRESS"),
+  DAILY_STAGE_FALLBACK_REQUIRES_TOKEN: z.enum(["true", "false"]).default("true"),
 });
 
 export type AppEnv = z.infer<typeof envSchema>;
@@ -54,7 +62,9 @@ export function getEnv(): AppEnv {
     V5_ACCESS_COOKIE_SECRET: requiredInProduction("V5_ACCESS_COOKIE_SECRET", process.env.V5_ACCESS_COOKIE_SECRET || process.env.V4_ACCESS_COOKIE_SECRET, devOnlyCookieSecret),
     V5_CREW_COOKIE_NAME: process.env.V5_CREW_COOKIE_NAME || process.env.V4_CREW_COOKIE_NAME || "wpl_crew_access",
     V5_SPECIAL_GUEST_COOKIE_NAME: process.env.V5_SPECIAL_GUEST_COOKIE_NAME || process.env.V4_SPECIAL_GUEST_COOKIE_NAME || "wpl_guest_access",
+    V5_OPERATOR_COOKIE_NAME: process.env.V5_OPERATOR_COOKIE_NAME || "wpl_operator_access",
     CREW_ACCESS_PASSWORD: requiredInProduction("CREW_ACCESS_PASSWORD", process.env.CREW_ACCESS_PASSWORD, devOnlyCrewPassword),
+    OPERATOR_LAUNCHPAD_PASSWORD: requiredInProduction("OPERATOR_LAUNCHPAD_PASSWORD", process.env.OPERATOR_LAUNCHPAD_PASSWORD, devOnlyOperatorPassword),
     RESEND_API_KEY: process.env.RESEND_API_KEY || "",
     EMAIL_FROM: process.env.EMAIL_FROM || "",
     EMAIL_REPLY_TO: process.env.EMAIL_REPLY_TO || "",
@@ -63,6 +73,11 @@ export function getEnv(): AppEnv {
     DAILY_API_BASE_URL: process.env.DAILY_API_BASE_URL || "https://api.daily.co/v1",
     DAILY_DOMAIN: process.env.DAILY_DOMAIN || "",
     DAILY_FALLBACK_ENABLED: process.env.DAILY_FALLBACK_ENABLED === "true" ? "true" : "false",
+    LIVEKIT_INGRESS_RTMP_BASE_URL: process.env.LIVEKIT_INGRESS_RTMP_BASE_URL || "",
+    LIVEKIT_WEBHOOK_SECRET: process.env.LIVEKIT_WEBHOOK_SECRET || "",
+    STREAMYARD_PRIMARY_ENABLED: process.env.STREAMYARD_PRIMARY_ENABLED === "false" ? "false" : "true",
+    STAGE_STREAM_DEFAULT_SOURCE: process.env.STAGE_STREAM_DEFAULT_SOURCE === "DAILY" ? "DAILY" : "LIVEKIT_INGRESS",
+    DAILY_STAGE_FALLBACK_REQUIRES_TOKEN: process.env.DAILY_STAGE_FALLBACK_REQUIRES_TOKEN === "false" ? "false" : "true",
   });
 }
 
@@ -113,6 +128,16 @@ export function isDailyConfigured(env: Partial<AppEnv> = getEnv()) {
   return Boolean(daily.dailyApiKey && daily.dailyApiBaseUrl && daily.dailyDomain);
 }
 
+export function getStageStreamEnv(env: Partial<AppEnv> = getEnv()) {
+  return {
+    livekitIngressRtmpBaseUrl: env.LIVEKIT_INGRESS_RTMP_BASE_URL || "",
+    livekitWebhookSecret: env.LIVEKIT_WEBHOOK_SECRET || "",
+    streamyardPrimaryEnabled: env.STREAMYARD_PRIMARY_ENABLED === "true",
+    defaultStageStreamSource: env.STAGE_STREAM_DEFAULT_SOURCE || "LIVEKIT_INGRESS",
+    dailyStageFallbackRequiresToken: env.DAILY_STAGE_FALLBACK_REQUIRES_TOKEN !== "false",
+  };
+}
+
 export function isDailyFallbackEnabled(env: Partial<AppEnv> = getEnv()) {
   return env.DAILY_FALLBACK_ENABLED === "true" && isDailyConfigured(env);
 }
@@ -125,11 +150,20 @@ export function getV5AccessCookieNames(env: AppEnv = getEnv()) {
   return {
     crewCookieName: env.V5_CREW_COOKIE_NAME,
     specialGuestCookieName: env.V5_SPECIAL_GUEST_COOKIE_NAME,
+    operatorCookieName: env.V5_OPERATOR_COOKIE_NAME,
   };
 }
 
 export function getCrewAccessPassword(env: AppEnv = getEnv()) {
   return env.CREW_ACCESS_PASSWORD;
+}
+
+export function getOperatorLaunchpadPassword(env: AppEnv = getEnv()) {
+  return env.OPERATOR_LAUNCHPAD_PASSWORD;
+}
+
+export function assertSeparatedProductionPasswords(env: AppEnv = getEnv()) {
+  if (env.CREW_ACCESS_PASSWORD === env.OPERATOR_LAUNCHPAD_PASSWORD) throw new Error("CREW_ACCESS_PASSWORD and OPERATOR_LAUNCHPAD_PASSWORD must be different.");
 }
 
 export function getV5AccessCookieSecret(env: AppEnv = getEnv()) {

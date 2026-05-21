@@ -12,12 +12,12 @@ import { logAccessAttempt } from "@/services/access/accessAuditService";
 import type { V4CrewRole } from "@/types/v4";
 
 // Day 1 default literal for validation: CrewAccess-2026!
-const allowedCrewRoles: V4CrewRole[] = ["executive_producer", "producer", "technical_director", "show_caller", "moderator", "va", "support"];
+const allowedCrewRoles: V4CrewRole[] = ["crew", "technical_director", "show_caller", "moderator", "va", "support"];
 
 function normalizeCrewRole(value: FormDataEntryValue | null): V4CrewRole {
-  const role = String(value || "producer");
+  const role = String(value || "crew");
   if (allowedCrewRoles.includes(role as V4CrewRole)) return role as V4CrewRole;
-  return "producer";
+  return "crew";
 }
 
 async function enterCrew(formData: FormData) {
@@ -42,7 +42,7 @@ async function enterCrew(formData: FormData) {
   const { crewCookieName } = getV5AccessCookieNames(env);
   const cookie = await createV5AccessCookie({ kind: "crew", eventId: access.eventId, role: crewRole, issuedAt: Date.now(), expiresAt: Date.now() + 1000 * 60 * 60 * 8 }, getV5AccessCookieSecret(env));
   cookies().set(crewCookieName, cookie, getV5CookieOptions(60 * 60 * 8));
-  redirect("/production-access/launchpad");
+  redirect(access.destination || `/crew/events/${access.eventId || "demo"}`);
 }
 
 export default function CrewAccessPage({ searchParams }: { searchParams?: { error?: string } }) {
@@ -53,8 +53,8 @@ export default function CrewAccessPage({ searchParams }: { searchParams?: { erro
       <section className="mx-auto max-w-2xl rounded-[2rem] border border-brand-line bg-white p-6 shadow-brand sm:p-10">
         <WestPeekProductionsLogo size="md" />
         <p className="mt-6 text-xs font-black uppercase tracking-[0.35em] text-brand-orange">Crew gate</p>
-        <h1 className="mt-3 text-4xl font-black tracking-tight">Production team access</h1>
-        <p className="mt-4 text-sm leading-6 text-brand-muted">Use the internal crew password from production, then choose the production role you are operating as today. Day 1 default: <span className="font-mono font-bold text-brand-black">{DAY1_CREW_PASSWORD}</span></p>
+        <h1 className="mt-3 text-4xl font-black tracking-tight">Crew workspace access</h1>
+        <p className="mt-4 text-sm leading-6 text-brand-muted">Use the internal crew password from production, then choose the crew role you are operating as today. Day 1 default: <span className="font-mono font-bold text-brand-black">{DAY1_CREW_PASSWORD}</span></p>
         <form action={enterCrew} className="mt-6 space-y-5">
           <div>
             <label htmlFor="crew-password" className="text-sm font-black">Crew password <span className="text-brand-orange">*</span></label>
@@ -63,15 +63,14 @@ export default function CrewAccessPage({ searchParams }: { searchParams?: { erro
           </div>
           <div>
             <label htmlFor="crew-event-code" className="text-sm font-black">Event code</label>
-            <p className="mt-1 text-xs text-brand-muted">Optional. Leave blank to open the Operator Launchpad, or enter an event code for event-specific routing.</p>
+            <p className="mt-1 text-xs text-brand-muted">Optional. Leave blank for the demo crew workspace, or enter an event code for event-specific crew routing.</p>
             <input id="crew-event-code" name="eventCode" className="mt-2 min-h-12 w-full rounded-full border border-brand-line px-5 text-sm" />
           </div>
           <div>
             <label htmlFor="crew-role" className="text-sm font-black">Production role <span className="text-brand-orange">*</span></label>
             <p className="mt-1 text-xs text-brand-muted">Choose the role you are operating as today so permissions and UI guidance match your responsibilities.</p>
-            <select id="crew-role" name="crewRole" defaultValue="producer" required className="mt-2 min-h-12 w-full rounded-full border border-brand-line px-5 text-sm">
-              <option value="executive_producer">Executive Producer</option>
-              <option value="producer">Producer</option>
+            <select id="crew-role" name="crewRole" defaultValue="crew" required className="mt-2 min-h-12 w-full rounded-full border border-brand-line px-5 text-sm">
+              <option value="crew">Crew</option>
               <option value="technical_director">Technical Director</option>
               <option value="show_caller">Show Caller</option>
               <option value="moderator">Moderator</option>
@@ -79,12 +78,12 @@ export default function CrewAccessPage({ searchParams }: { searchParams?: { erro
               <option value="support">Support</option>
             </select>
           </div>
-          <button className="w-full rounded-full bg-brand-black px-6 py-3 text-sm font-bold text-white">Enter production launchpad</button>
+          <button className="w-full rounded-full bg-brand-black px-6 py-3 text-sm font-bold text-white">Enter crew workspace</button>
         </form>
-        {searchParams?.error === "invalid" ? <p className="mt-4 rounded-2xl bg-amber-50 p-4 text-sm font-bold text-amber-800">That crew password did not match. Check the Day 1 internal password or ask the producer/admin.</p> : null}
-        {searchParams?.error === "launchpad_required" ? <p className="mt-4 rounded-2xl bg-amber-50 p-4 text-sm font-bold text-amber-800">Enter the crew password first. The Operator Launchpad stays behind the production gate.</p> : null}
-        {searchParams?.error === "operator_packet_required" ? <p className="mt-4 rounded-2xl bg-amber-50 p-4 text-sm font-bold text-amber-800">Enter the crew password first. The Operator Packet contains internal passwords and stays behind the production gate.</p> : null}
-        {searchParams?.error === "invalid_event" ? <p className="mt-4 rounded-2xl bg-amber-50 p-4 text-sm font-bold text-amber-800">That event code is not valid for crew routing. Leave it blank to enter the launchpad.</p> : null}
+        {searchParams?.error === "invalid" ? <p className="mt-4 rounded-2xl bg-amber-50 p-4 text-sm font-bold text-amber-800">That crew password did not match. Check the Day 1 internal password or ask the operator/admin.</p> : null}
+        {searchParams?.error === "launchpad_required" ? <p className="mt-4 rounded-2xl bg-amber-50 p-4 text-sm font-bold text-amber-800">Enter the crew password first. The Operator Launchpad requires the separate operator password.</p> : null}
+        {searchParams?.error === "operator_packet_required" ? <p className="mt-4 rounded-2xl bg-amber-50 p-4 text-sm font-bold text-amber-800">Enter operator access first. The Operator Packet contains internal launchpad instructions and stays behind the operator gate.</p> : null}
+        {searchParams?.error === "invalid_event" ? <p className="mt-4 rounded-2xl bg-amber-50 p-4 text-sm font-bold text-amber-800">That event code is not valid for crew routing. Leave it blank to enter the demo crew workspace.</p> : null}
       </section>
     </main>
   );

@@ -1,10 +1,15 @@
 import type { AuditLog } from "@/types/core";
 import type { V4AnalyticsEvent, V4RoomFallbackState, V4VideoProvider } from "@/types/v4";
+import type { StageStreamEvent, StageStreamState } from "@/types/stageStream";
+import type { LiveChatMessage } from "@/types/liveChat";
+import type { AttendeeLiveCapability, AttendeeLiveControlState } from "@/types/attendeeLive";
+import type { AttendeeProfile } from "@/types/attendeeRegistration";
+import type { AttendeeAgendaIntent, AttendeePermission, AttendeeSession, SponsorLeadOptIn } from "@/types/attendeeSession";
 
 export interface V5AccessAttemptRuntimeEvent {
   id: string;
   status: "access_attempted" | "access_granted" | "access_denied" | "access_expired" | "access_revoked";
-  accessKind: "attendee" | "crew" | "special_guest";
+  accessKind: "attendee" | "crew" | "operator" | "special_guest";
   eventId?: string;
   role?: string;
   route?: string;
@@ -91,7 +96,17 @@ export interface V6RuntimeSnapshot {
   supportRequests: V6SupportRequestRuntimeEvent[];
   emailEvents: V6EmailRuntimeEvent[];
   registrations: V6RegistrationRuntimeEvent[];
+  attendeeProfiles: AttendeeProfile[];
+  attendeeSessions: AttendeeSession[];
+  attendeeAgendaIntents: AttendeeAgendaIntent[];
+  sponsorLeadOptIns: SponsorLeadOptIn[];
+  attendeePermissions: AttendeePermission[];
   runOfShowEvents: V6RunOfShowRuntimeEvent[];
+  stageStreamStates: StageStreamState[];
+  stageStreamEvents: StageStreamEvent[];
+  liveChatMessages: LiveChatMessage[];
+  attendeeLiveCapabilities: AttendeeLiveCapability[];
+  attendeeLiveControlStates: AttendeeLiveControlState[];
 }
 
 export interface RuntimeStore {
@@ -105,7 +120,27 @@ export interface RuntimeStore {
   appendSupportRequest(event: V6SupportRequestRuntimeEvent): Promise<V6SupportRequestRuntimeEvent>;
   appendEmailEvent(event: V6EmailRuntimeEvent): Promise<V6EmailRuntimeEvent>;
   appendRegistration(event: V6RegistrationRuntimeEvent): Promise<V6RegistrationRuntimeEvent>;
+  upsertAttendeeProfile(profile: AttendeeProfile): Promise<AttendeeProfile>;
+  getAttendeeProfile(eventId: string, attendeeId: string): Promise<AttendeeProfile | undefined>;
+  getAttendeeProfileByEmailHash(eventId: string, emailHash: string): Promise<AttendeeProfile | undefined>;
+  listAttendeeProfiles(eventId: string, limit?: number): Promise<AttendeeProfile[]>;
+  upsertAttendeeSession(session: AttendeeSession): Promise<AttendeeSession>;
+  getAttendeeSession(eventId: string, sessionId: string): Promise<AttendeeSession | undefined>;
+  upsertAttendeeAgendaIntent(intent: AttendeeAgendaIntent): Promise<AttendeeAgendaIntent>;
+  getAttendeeAgendaIntent(eventId: string, attendeeId: string): Promise<AttendeeAgendaIntent | undefined>;
+  appendSponsorLeadOptIn(optIn: SponsorLeadOptIn): Promise<SponsorLeadOptIn>;
+  upsertAttendeePermission(permission: AttendeePermission): Promise<AttendeePermission>;
+  listAttendeePermissions(eventId: string, attendeeId: string): Promise<AttendeePermission[]>;
   appendRunOfShowEvent(event: V6RunOfShowRuntimeEvent): Promise<V6RunOfShowRuntimeEvent>;
+  getStageStreamState(key: string): Promise<StageStreamState | undefined>;
+  setStageStreamState(key: string, state: StageStreamState): Promise<StageStreamState>;
+  appendStageStreamEvent(event: StageStreamEvent): Promise<StageStreamEvent>;
+  appendLiveChatMessage(message: LiveChatMessage): Promise<LiveChatMessage>;
+  listLiveChatMessages(eventId: string, roomKind: string, roomId: string): Promise<LiveChatMessage[]>;
+  setAttendeeLiveCapability(key: string, capability: AttendeeLiveCapability): Promise<AttendeeLiveCapability>;
+  getAttendeeLiveCapability(key: string): Promise<AttendeeLiveCapability | undefined>;
+  setAttendeeLiveControlState(key: string, state: AttendeeLiveControlState): Promise<AttendeeLiveControlState>;
+  getAttendeeLiveControlState(key: string): Promise<AttendeeLiveControlState | undefined>;
   readSnapshot(): Promise<V6RuntimeSnapshot>;
 }
 
@@ -120,6 +155,16 @@ export function emptyRuntimeSnapshot(): V6RuntimeSnapshot {
     supportRequests: [],
     emailEvents: [],
     registrations: [],
+    attendeeProfiles: [],
+    attendeeSessions: [],
+    attendeeAgendaIntents: [],
+    sponsorLeadOptIns: [],
+    attendeePermissions: [],
     runOfShowEvents: [],
+    stageStreamStates: [],
+    stageStreamEvents: [],
+    liveChatMessages: [],
+    attendeeLiveCapabilities: [],
+    attendeeLiveControlStates: [],
   };
 }

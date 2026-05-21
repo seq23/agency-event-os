@@ -5,8 +5,7 @@ import { getAuthCookiePayload } from "./sessionCookie";
 import { resolvePermissionUserForSupabaseUser } from "./authService";
 
 function getLocalPlaywrightGauntletUser(sessionAccessToken?: string): PermissionUser | null {
-  if (process.env.LOCAL_PLAYWRIGHT_GAUNTLET_AUTH !== "true") return null;
-  if (process.env.NODE_ENV !== "production") return null;
+  if (process.env.LOCAL_PLAYWRIGHT_GAUNTLET_AUTH !== "true" && process.env.PLAYWRIGHT_LOCAL_E2E !== "1") return null;
   if (sessionAccessToken !== "local-playwright-gauntlet-session") return null;
 
   return {

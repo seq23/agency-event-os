@@ -1,5 +1,8 @@
 import type { AuditLog } from "@/types/core";
 import type { V4AnalyticsEvent, V4RoomFallbackState } from "@/types/v4";
+import type { StageStreamEvent, StageStreamState } from "@/types/stageStream";
+import type { LiveChatMessage } from "@/types/liveChat";
+import type { AttendeeLiveCapability, AttendeeLiveControlState } from "@/types/attendeeLive";
 import { emptyRuntimeSnapshot, type V5AccessAttemptRuntimeEvent, type V5FallbackRuntimeEvent, type V6EmailRuntimeEvent, type V6IncidentRuntimeEvent, type V6RegistrationRuntimeEvent, type V6RunOfShowRuntimeEvent, type V6RuntimeSnapshot, type V6SupportRequestRuntimeEvent } from "./runtimeStore";
 
 declare const require: undefined | ((moduleName: string) => unknown);
@@ -30,7 +33,7 @@ function readSnapshot(): V6RuntimeSnapshot {
   if (!fs) return memorySnapshot;
   if (!fs.existsSync(runtimeFilePath)) return emptyRuntimeSnapshot();
   const parsed = JSON.parse(fs.readFileSync(runtimeFilePath, "utf8")) as Partial<V6RuntimeSnapshot>;
-  return { ...emptyRuntimeSnapshot(), ...parsed };
+  return { ...emptyRuntimeSnapshot(), ...parsed, stageStreamStates: Array.isArray(parsed.stageStreamStates) ? parsed.stageStreamStates : [], stageStreamEvents: Array.isArray(parsed.stageStreamEvents) ? parsed.stageStreamEvents : [], liveChatMessages: Array.isArray(parsed.liveChatMessages) ? parsed.liveChatMessages : [], attendeeLiveCapabilities: Array.isArray(parsed.attendeeLiveCapabilities) ? parsed.attendeeLiveCapabilities : [], attendeeLiveControlStates: Array.isArray(parsed.attendeeLiveControlStates) ? parsed.attendeeLiveControlStates : [] };
 }
 
 function writeSnapshot(snapshot: V6RuntimeSnapshot) {
@@ -127,6 +130,49 @@ export function appendRunOfShowRuntimeEvent(event: V6RunOfShowRuntimeEvent) {
   return mutate((snapshot) => {
     snapshot.runOfShowEvents.push(event);
     return event;
+  });
+}
+
+
+export function getStageStreamStateSnapshot(key: string) {
+  return readSnapshot().stageStreamStates.find((state: StageStreamState) => `${state.eventId}:${state.stageId}` === key);
+}
+
+export function setStageStreamStateSnapshot(key: string, state: StageStreamState) {
+  return mutate((snapshot) => {
+    snapshot.stageStreamStates = snapshot.stageStreamStates.filter((item: StageStreamState) => `${item.eventId}:${item.stageId}` !== key);
+    snapshot.stageStreamStates.push(state);
+    return state;
+  });
+}
+
+export function appendStageStreamRuntimeEvent(event: StageStreamEvent) {
+  return mutate((snapshot) => {
+    snapshot.stageStreamEvents.push(event);
+    return event;
+  });
+}
+
+export function appendLiveChatRuntimeMessage(message: LiveChatMessage) {
+  return mutate((snapshot) => {
+    snapshot.liveChatMessages.push(message);
+    return message;
+  });
+}
+
+export function setAttendeeLiveCapabilitySnapshot(key: string, capability: AttendeeLiveCapability) {
+  return mutate((snapshot) => {
+    snapshot.attendeeLiveCapabilities = snapshot.attendeeLiveCapabilities.filter((item: AttendeeLiveCapability) => `${item.eventId}:${item.roomKind}:${item.roomId}:${item.attendeeId}` !== key);
+    snapshot.attendeeLiveCapabilities.push(capability);
+    return capability;
+  });
+}
+
+export function setAttendeeLiveControlSnapshot(key: string, state: AttendeeLiveControlState) {
+  return mutate((snapshot) => {
+    snapshot.attendeeLiveControlStates = snapshot.attendeeLiveControlStates.filter((item: AttendeeLiveControlState) => `${item.eventId}:${item.roomKind}:${item.roomId}` !== key);
+    snapshot.attendeeLiveControlStates.push(state);
+    return state;
   });
 }
 

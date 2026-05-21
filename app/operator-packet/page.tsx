@@ -12,17 +12,17 @@ async function requireOperatorPacketAccess() {
   const missing = missingAccessEnv();
   if (missing.length) return { ok: false as const, missing };
   const env = getEnv();
-  const { crewCookieName } = safeAccessCookieNames();
-  const payload = await readV5AccessCookie(cookies().get(crewCookieName)?.value, getV5AccessCookieSecret(env));
-  return { ok: Boolean(payload && payload.kind === "crew"), missing: [] as string[] };
+  const { operatorCookieName } = safeAccessCookieNames();
+  const payload = await readV5AccessCookie(cookies().get(operatorCookieName)?.value, getV5AccessCookieSecret(env));
+  return { ok: Boolean(payload && payload.kind === "operator"), missing: [] as string[] };
 }
 
 export default async function OperatorPacketRoute() {
   const access = await requireOperatorPacketAccess();
   if (access.missing.length) {
-    return <BrandedSetupError title="Operator packet is not configured yet." message="This packet contains internal access instructions and Day 1 passwords, so it must stay behind the production gate. Set the access variables below before using the in-app packet route." missingVariables={access.missing} defaultValues={accessDefaultLines()} />;
+    return <BrandedSetupError title="Operator packet is not configured yet." message="This packet contains internal access instructions and Day 1 passwords, so it must stay behind the operator gate. Set the access variables below before using the in-app packet route." missingVariables={access.missing} defaultValues={accessDefaultLines()} />;
   }
-  if (!access.ok) redirect("/production-access/crew?error=operator_packet_required");
+  if (!access.ok) redirect("/production-access/operator?error=operator_packet_required");
   return (
     <main className="min-h-screen bg-brand-ash px-5 py-10 text-brand-black sm:px-8 lg:px-12">
       <article className="mx-auto max-w-5xl rounded-[2rem] border border-brand-line bg-white p-6 shadow-brand sm:p-10">
@@ -31,7 +31,7 @@ export default async function OperatorPacketRoute() {
         <h1 className="mt-3 text-4xl font-black tracking-tight">West Peek Live operator guide</h1>
         <p className="mt-4 max-w-3xl text-sm leading-6 text-brand-muted">This in-app version summarizes the full packet. The repo includes the complete Markdown packet at docs/AGENCY_EVENT_OS_DAY1_OPERATOR_PACKET.md and the sendable DOCX packet.</p>
         <div className="mt-8 grid gap-4 md:grid-cols-2">
-          <section className="rounded-3xl bg-brand-ash p-5"><h2 className="font-black">Passwords</h2><p className="mt-2 text-sm leading-6">CrewAccess-2026! · SpeakerGuest-2026! · SponsorGuest-2026! · VIPGuest-2026!</p></section>
+          <section className="rounded-3xl bg-brand-ash p-5"><h2 className="font-black">Passwords</h2><p className="mt-2 text-sm leading-6">CrewAccess-2026! · OperatorLaunchpad-2026! · SpeakerGuest-2026! · SponsorGuest-2026! · VIPGuest-2026!</p></section>
           <section className="rounded-3xl bg-brand-ash p-5"><h2 className="font-black">Video fallback</h2><p className="mt-2 text-sm leading-6">LiveKit primary → Daily fallback → Zoom + Google Meet manual backups.</p></section>
           <section className="rounded-3xl bg-brand-ash p-5"><h2 className="font-black">Run-of-show spine</h2><p className="mt-2 text-sm leading-6">Agenda → Run of Show → Call Sheet → Show Caller View → Live Cues → Incidents → Post-Event Report.</p></section>
           <section className="rounded-3xl bg-brand-ash p-5"><h2 className="font-black">Testing/admin spine</h2><p className="mt-2 text-sm leading-6">Testing Console → Route Health → Access Gates → Supabase Runtime → Event Config Package → Video Providers → Post-Deploy Smoke.</p></section>

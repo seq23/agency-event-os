@@ -20,13 +20,8 @@ function clean(value: FormDataEntryValue | null, fallback = "") {
   return String(value ?? fallback).trim();
 }
 
-function normalizeEventId(eventId: string) {
-  return eventId === "demo" ? "event-summit" : eventId;
-}
-
 export async function recordRunOfShowControlAction(formData: FormData) {
-  const rawEventId = clean(formData.get("eventId"));
-  const eventId = normalizeEventId(rawEventId);
+  const eventId = clean(formData.get("eventId"));
   const segmentId = clean(formData.get("segmentId"), "current-segment");
   const actorRole = clean(formData.get("actorRole"), "producer");
   const label = clean(formData.get("label"), "Emergency note");
@@ -39,14 +34,9 @@ export async function recordRunOfShowControlAction(formData: FormData) {
     action: actionMap[label] ?? "note",
     actorRole,
     createdAt: new Date().toISOString(),
-  });
+  }).catch(() => undefined);
 
   revalidatePath(`/app/events/${eventId}/run-of-show`);
   revalidatePath(`/crew/events/${eventId}/run-of-show`);
   revalidatePath(`/venue/${eventId}/run-of-show`);
-  if (rawEventId && rawEventId !== eventId) {
-    revalidatePath(`/app/events/${rawEventId}/run-of-show`);
-    revalidatePath(`/crew/events/${rawEventId}/run-of-show`);
-    revalidatePath(`/venue/${rawEventId}/run-of-show`);
-  }
 }

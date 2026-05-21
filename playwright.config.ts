@@ -7,6 +7,11 @@ const executablePath = fs.existsSync(systemChromium) ? systemChromium : undefine
 const disableVideo = process.env.PLAYWRIGHT_DISABLE_VIDEO === "1" || process.env.PLAYWRIGHT_DISABLE_VIDEO === "true";
 const headed = process.env.PLAYWRIGHT_HEADED === "1" || process.env.PLAYWRIGHT_HEADED === "true";
 const retries = Number.parseInt(process.env.PLAYWRIGHT_RETRIES || (process.env.CI ? "1" : "0"), 10);
+const isLocalBaseURL = baseURL.includes("127.0.0.1") || baseURL.includes("localhost");
+const deployedRun = process.env.PLAYWRIGHT_DEPLOYED === "1" || !isLocalBaseURL;
+const skipWebServer = process.env.PLAYWRIGHT_SKIP_WEBSERVER === "1" || process.env.PLAYWRIGHT_SKIP_WEBSERVER === "true";
+const shouldStartLocalServer = !deployedRun && !skipWebServer;
+const localRuntimePath = process.env.AGENCY_EVENT_OS_RUNTIME_STORE_PATH || ".runtime-data/local-playwright-runtime.json";
 
 const chromiumArgs = [
   "--no-sandbox",
@@ -23,6 +28,43 @@ if (executablePath && !headed) {
   chromiumArgs.unshift("--headless=new");
 }
 
+const localE2EEnv = {
+  PLAYWRIGHT_LOCAL_E2E: "1",
+  LOCAL_PLAYWRIGHT_GAUNTLET_AUTH: "true",
+  PLAYWRIGHT_DEPLOYED: "0",
+  PLAYWRIGHT_BASE_URL: baseURL,
+  NODE_ENV: "development",
+  NEXT_PUBLIC_APP_URL: baseURL,
+  AGENCY_EVENT_OS_RUNTIME_STORE: "file",
+  AGENCY_EVENT_OS_RUNTIME_STORE_PATH: localRuntimePath,
+  ALLOW_FILE_RUNTIME_STORE_IN_PRODUCTION: "true",
+  VIDEO_PROVIDER: "mock",
+  ALLOW_MOCK_VIDEO_PROVIDER_IN_PRODUCTION: "true",
+  DAILY_FALLBACK_ENABLED: "false",
+  DAILY_STAGE_FALLBACK_REQUIRES_TOKEN: "true",
+  STREAMYARD_PRIMARY_ENABLED: "true",
+  STAGE_STREAM_DEFAULT_SOURCE: "LIVEKIT_INGRESS",
+  V5_ACCESS_COOKIE_SECRET: process.env.V5_ACCESS_COOKIE_SECRET || "local-playwright-e2e-cookie-secret-1234567890",
+  CREW_ACCESS_PASSWORD: process.env.CREW_ACCESS_PASSWORD || "CrewAccess-2026!",
+  OPERATOR_LAUNCHPAD_PASSWORD: process.env.OPERATOR_LAUNCHPAD_PASSWORD || "OperatorAccess-2026!",
+  AUTH_SESSION_COOKIE_NAME: process.env.AUTH_SESSION_COOKIE_NAME || "agency_event_os_session",
+  V5_CREW_COOKIE_NAME: process.env.V5_CREW_COOKIE_NAME || "wpl_crew_access",
+  V5_OPERATOR_COOKIE_NAME: process.env.V5_OPERATOR_COOKIE_NAME || "wpl_operator_access",
+  V5_SPECIAL_GUEST_COOKIE_NAME: process.env.V5_SPECIAL_GUEST_COOKIE_NAME || "wpl_guest_access",
+  EVENT_DEMO_SPEAKER_CODE: process.env.EVENT_DEMO_SPEAKER_CODE || "SpeakerGuest-2026!",
+  EVENT_DEMO_SPONSOR_CODE: process.env.EVENT_DEMO_SPONSOR_CODE || "SponsorGuest-2026!",
+  EVENT_DEMO_VIP_CODE: process.env.EVENT_DEMO_VIP_CODE || "VIPGuest-2026!",
+  NEXT_PUBLIC_SUPABASE_URL: "",
+  NEXT_PUBLIC_SUPABASE_ANON_KEY: "",
+  SUPABASE_SERVICE_ROLE_KEY: "",
+  LIVEKIT_URL: "",
+  LIVEKIT_API_KEY: "",
+  LIVEKIT_API_SECRET: "",
+  LIVEKIT_WEBHOOK_SECRET: "",
+  DAILY_API_KEY: "",
+  DAILY_DOMAIN: "",
+};
+
 export default defineConfig({
   testDir: "./tests/e2e",
   timeout: 30_000,
@@ -33,6 +75,17 @@ export default defineConfig({
   retries,
   workers: 1,
   reporter: [["list"], ["html", { open: "never" }]],
+  webServer: shouldStartLocalServer
+    ? {
+        command: `npm run dev -- --hostname 127.0.0.1 --port ${new URL(baseURL).port || "3000"}`,
+        url: baseURL,
+        reuseExistingServer: !process.env.CI,
+        timeout: 120_000,
+        stdout: "pipe",
+        stderr: "pipe",
+        env: localE2EEnv,
+      }
+    : undefined,
   use: {
     baseURL,
     trace: "retain-on-failure",

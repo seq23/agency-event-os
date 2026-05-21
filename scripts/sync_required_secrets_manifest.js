@@ -42,6 +42,7 @@ manifest.requiredSecrets = registry.cloudflareSecretKeys;
 manifest.demoDefaults = {
   ...(manifest.demoDefaults || {}),
   CREW_ACCESS_PASSWORD: "CrewAccess-2026!",
+  OPERATOR_LAUNCHPAD_PASSWORD: "OperatorLaunchpad-2026!",
   EVENT_DEMO_SPEAKER_CODE: "SpeakerGuest-2026!",
   EVENT_DEMO_SPONSOR_CODE: "SponsorGuest-2026!",
   EVENT_DEMO_VIP_CODE: "VIPGuest-2026!",
@@ -51,6 +52,11 @@ manifest.demoDefaults = {
   ALLOW_FILE_RUNTIME_STORE_IN_PRODUCTION: "true",
   VIDEO_PROVIDER: "livekit",
   DAILY_FALLBACK_ENABLED: "true",
+  LIVEKIT_INGRESS_RTMP_BASE_URL: "rtmp://livekit-ingress.example.com",
+  LIVEKIT_WEBHOOK_SECRET: "change-me-livekit-webhook-secret",
+  STREAMYARD_PRIMARY_ENABLED: "true",
+  STAGE_STREAM_DEFAULT_SOURCE: "LIVEKIT_INGRESS",
+  DAILY_STAGE_FALLBACK_REQUIRES_TOKEN: "true",
   DAILY_API_BASE_URL: "https://api.daily.co/v1"
 };
 writeJson(manifestPath, manifest);
@@ -60,13 +66,22 @@ const envExampleValues = {
   AUTH_SESSION_COOKIE_NAME: "agency_event_os_session",
   V5_CREW_COOKIE_NAME: "wpl_crew_access",
   V5_SPECIAL_GUEST_COOKIE_NAME: "wpl_guest_access",
+  V5_OPERATOR_COOKIE_NAME: "wpl_operator_access",
   EMAIL_FROM: "West Peek Live <hello@westpeek.live>",
   EMAIL_REPLY_TO: "support@westpeek.live",
   VIDEO_PROVIDER: "livekit",
   DAILY_API_BASE_URL: "https://api.daily.co/v1",
   DAILY_FALLBACK_ENABLED: "true",
+  LIVEKIT_INGRESS_RTMP_BASE_URL: "rtmp://livekit-ingress.example.com",
+  LIVEKIT_WEBHOOK_SECRET: "change-me-livekit-webhook-secret",
+  STREAMYARD_PRIMARY_ENABLED: "true",
+  STAGE_STREAM_DEFAULT_SOURCE: "LIVEKIT_INGRESS",
+  DAILY_STAGE_FALLBACK_REQUIRES_TOKEN: "true",
   AGENCY_EVENT_OS_RUNTIME_STORE: "supabase",
-  ALLOW_FILE_RUNTIME_STORE_IN_PRODUCTION: "false"
+  ALLOW_FILE_RUNTIME_STORE_IN_PRODUCTION: "false",
+  NEXT_PUBLIC_SELF_SERVE_ENABLED: "false",
+  SELF_SERVE_EVENT_CREATION_ENABLED: "false",
+  BILLING_REQUIRED_FOR_SELF_SERVE: "true"
 };
 const lines = [
   "# West Peek Live environment registry example.",

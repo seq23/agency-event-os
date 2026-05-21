@@ -16,6 +16,7 @@ if (missing.length || placeholders.length) {
   if (placeholders.length) { console.error("Placeholder/mock production env values:"); for (const key of placeholders) console.error("- " + key); }
   process.exit(1);
 }
+if (process.env.CREW_ACCESS_PASSWORD && process.env.OPERATOR_LAUNCHPAD_PASSWORD && process.env.CREW_ACCESS_PASSWORD === process.env.OPERATOR_LAUNCHPAD_PASSWORD) fail("CREW_ACCESS_PASSWORD and OPERATOR_LAUNCHPAD_PASSWORD must be different");
 if (process.env.VIDEO_PROVIDER === "mock") fail("VIDEO_PROVIDER=mock is forbidden for production/deploy validation");
 if (process.env.ALLOW_MOCK_VIDEO_PROVIDER_IN_PRODUCTION === "true") fail("ALLOW_MOCK_VIDEO_PROVIDER_IN_PRODUCTION=true is forbidden for production deploy validation");
 if (process.env.DAILY_FALLBACK_ENABLED !== "true") fail("DAILY_FALLBACK_ENABLED must be true for the production fallback contract");

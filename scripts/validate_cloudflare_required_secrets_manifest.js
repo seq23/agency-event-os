@@ -15,7 +15,9 @@ if (!Array.isArray(manifest.requiredSecrets) || manifest.requiredSecrets.length 
 
 const required = [
   "CREW_ACCESS_PASSWORD",
+  "OPERATOR_LAUNCHPAD_PASSWORD",
   "V5_ACCESS_COOKIE_SECRET",
+  "V5_OPERATOR_COOKIE_NAME",
   "EVENT_DEMO_SPEAKER_CODE",
   "EVENT_DEMO_SPONSOR_CODE",
   "EVENT_DEMO_VIP_CODE",
@@ -29,6 +31,8 @@ for (const key of required) {
 
 const defaults = manifest.demoDefaults || {};
 if (defaults.CREW_ACCESS_PASSWORD !== "CrewAccess-2026!") fail("demoDefaults missing crew password");
+if (defaults.OPERATOR_LAUNCHPAD_PASSWORD !== "OperatorLaunchpad-2026!") fail("demoDefaults missing operator password");
+if (defaults.CREW_ACCESS_PASSWORD === defaults.OPERATOR_LAUNCHPAD_PASSWORD) fail("demoDefaults must keep crew and operator passwords separate");
 if (defaults.EVENT_DEMO_SPEAKER_CODE !== "SpeakerGuest-2026!") fail("demoDefaults missing speaker code");
 if (defaults.EVENT_DEMO_SPONSOR_CODE !== "SponsorGuest-2026!") fail("demoDefaults missing sponsor code");
 if (defaults.EVENT_DEMO_VIP_CODE !== "VIPGuest-2026!") fail("demoDefaults missing VIP code");

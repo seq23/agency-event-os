@@ -1,0 +1,156 @@
+{
+  "personas": [
+    {
+      "id": "public_visitor",
+      "allowedRoutes": [
+        "/",
+        "/events/[slug]",
+        "/events/[slug]/register",
+        "/join",
+        "/production-access",
+        "/request-event"
+      ],
+      "forbiddenRoutes": [
+        "/admin",
+        "/app",
+        "/app/events/new",
+        "operator launchpad"
+      ],
+      "authExpectation": "none unless CTA says login/workspace/admin",
+      "safeFailure": "public explanation or registration",
+      "persona": "public visitor",
+      "expectedOutcome": "public explanation, request-event, production-access role gate, or attendee registration"
+    },
+    {
+      "id": "registered_attendee",
+      "allowedRoutes": [
+        "/venue/[eventId]/agenda",
+        "/venue/[eventId]/breakouts",
+        "/venue/[eventId]/help",
+        "/venue/[eventId]/lobby",
+        "/venue/[eventId]/people",
+        "/venue/[eventId]/stage"
+      ],
+      "forbiddenRoutes": [
+        "/admin",
+        "/app",
+        "/production-access/launchpad",
+        "speaker portal",
+        "sponsor portal"
+      ],
+      "authExpectation": "event-scoped attendee session",
+      "safeFailure": "registration required",
+      "persona": "registered attendee",
+      "expectedOutcome": "registration required, revoked/expired session message, or venue-safe attendee route"
+    },
+    {
+      "id": "crew",
+      "allowedRoutes": [
+        "/admin/testing/[eventId]",
+        "/production-access/crew"
+      ],
+      "forbiddenRoutes": [
+        "/app/events/new",
+        "/production-access/launchpad"
+      ],
+      "authExpectation": "crew password only",
+      "safeFailure": "access denied",
+      "persona": "crew",
+      "expectedOutcome": "crew workspace or access denied"
+    },
+    {
+      "id": "operator",
+      "allowedRoutes": [
+        "/admin/testing/[eventId]",
+        "/app/events/new",
+        "/production-access/launchpad"
+      ],
+      "forbiddenRoutes": [
+        "/supabase-admin"
+      ],
+      "authExpectation": "operator password, not Supabase Auth",
+      "safeFailure": "operator gate",
+      "persona": "operator/producer",
+      "expectedOutcome": "operator launchpad or disclosed admin workspace login"
+    },
+    {
+      "id": "sponsor",
+      "allowedRoutes": [
+        "/production-access/special-guest",
+        "/venue/[eventId]/expo"
+      ],
+      "forbiddenRoutes": [
+        "/admin",
+        "/app",
+        "all attendee data export"
+      ],
+      "authExpectation": "event-specific sponsor code",
+      "safeFailure": "special guest gate",
+      "persona": "sponsor",
+      "expectedOutcome": "special guest gate; only intentional attendee opt-ins visible"
+    },
+    {
+      "id": "speaker",
+      "persona": "speaker",
+      "allowedRoutes": [
+        "/production-access/special-guest",
+        "/venue/[eventId]/green-room"
+      ],
+      "forbiddenRoutes": [
+        "/admin",
+        "/app",
+        "operator launchpad",
+        "sponsor portal"
+      ],
+      "authExpectation": "event-specific speaker credential",
+      "expectedOutcome": "special guest gate or speaker-safe surface",
+      "safeFailure": "special guest gate or speaker-safe surface"
+    },
+    {
+      "id": "client_vip",
+      "persona": "client/VIP",
+      "allowedRoutes": [
+        "/production-access/special-guest",
+        "/venue/[eventId]/vip"
+      ],
+      "forbiddenRoutes": [
+        "/admin",
+        "/app",
+        "operator launchpad"
+      ],
+      "authExpectation": "event-specific client/VIP credential",
+      "expectedOutcome": "VIP-safe route or special guest gate",
+      "safeFailure": "VIP-safe route or special guest gate"
+    },
+    {
+      "id": "admin_owner",
+      "persona": "admin/owner",
+      "allowedRoutes": [
+        "/app",
+        "/app/events/new",
+        "/admin/testing/[eventId]"
+      ],
+      "forbiddenRoutes": [
+        "public attendee-only session bypass"
+      ],
+      "authExpectation": "admin account/workspace login",
+      "expectedOutcome": "disclosed admin/account login or admin workspace",
+      "safeFailure": "disclosed admin/account login or admin workspace"
+    },
+    {
+      "id": "future_self_serve_customer",
+      "persona": "future self-serve customer",
+      "allowedRoutes": [
+        "/request-event"
+      ],
+      "forbiddenRoutes": [
+        "/app",
+        "/admin",
+        "/app/events/new"
+      ],
+      "authExpectation": "none while V2 self-serve is disabled",
+      "expectedOutcome": "safe redirect to request-event until self-serve is intentionally enabled",
+      "safeFailure": "safe redirect to request-event until self-serve is intentionally enabled"
+    }
+  ]
+}

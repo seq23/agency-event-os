@@ -22,19 +22,12 @@ export function isDeployedBrowserRun() {
   return process.env.PLAYWRIGHT_DEPLOYED === "1" || (!url.includes("127.0.0.1") && !url.includes("localhost"));
 }
 
-function cookieSecure() {
-  return baseUrl().startsWith("https://");
+function isAccessGateBody(body: string) {
+  return ["special guest gate", "production access", "crew password", "operator launchpad password", "special guest password", "continue to assigned portal", "enter the event code"].some((term) => body.includes(term));
 }
 
-function isAccessGateBody(body: string) {
-  return [
-    "special guest gate",
-    "production access",
-    "crew password",
-    "special guest password",
-    "continue to assigned portal",
-    "enter the event code",
-  ].some((term) => body.includes(term));
+function cookieSecure() {
+  return baseUrl().startsWith("https://");
 }
 
 function expiresIn(hours: number) {
@@ -71,10 +64,23 @@ export async function grantAgencySession(page: Page) {
   }]);
 }
 
-export async function grantCrewAccess(page: Page, role = "producer", eventId?: string) {
+export async function grantCrewAccess(page: Page, role = "crew", eventId?: string) {
   await page.context().addCookies([{ 
     name: process.env.V5_CREW_COOKIE_NAME || "wpl_crew_access",
     value: createV5AccessCookie({ kind: "crew", role, eventId, issuedAt: Date.now(), expiresAt: Date.now() + 8 * 60 * 60 * 1000 }),
+    url: baseUrl(),
+    httpOnly: true,
+    secure: cookieSecure(),
+    sameSite: "Lax",
+    expires: expiresIn(8),
+  }]);
+}
+
+
+export async function grantOperatorAccess(page: Page, role = "executive_producer", eventId?: string) {
+  await page.context().addCookies([{
+    name: process.env.V5_OPERATOR_COOKIE_NAME || "wpl_operator_access",
+    value: createV5AccessCookie({ kind: "operator", role, eventId, issuedAt: Date.now(), expiresAt: Date.now() + 8 * 60 * 60 * 1000 }),
     url: baseUrl(),
     httpOnly: true,
     secure: cookieSecure(),

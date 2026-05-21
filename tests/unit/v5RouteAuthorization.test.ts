@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { canCrewAccessPath, canSpecialGuestAccessPath, eventIdFromPath } from "@/lib/auth/v5RouteAuthorization";
+import { canCrewAccessPath, canOperatorAccessPath, canSpecialGuestAccessPath, eventIdFromPath } from "@/lib/auth/v5RouteAuthorization";
 import type { V5AccessCookiePayload } from "@/lib/auth/productionAccess";
 import type { V4SpecialGuestRole } from "@/types/v4";
 
@@ -18,7 +18,7 @@ it("extracts exact event IDs from app, portal, and venue routes", () => {
 
 it("does not authorize event-1 cookies on event-12 routes", () => {
   expect(canSpecialGuestAccessPath("/speaker/events/event-12", guest("speaker", "event-1"))).toBe(false);
-  expect(canCrewAccessPath("/app/events/event-12", { kind: "crew", role: "crew", eventId: "event-1", issuedAt, expiresAt })).toBe(false);
+  expect(canCrewAccessPath("/crew/events/event-12", { kind: "crew", role: "crew", eventId: "event-1", issuedAt, expiresAt })).toBe(false);
 });
 
 it("denies role escalation between special guest portals", () => {
@@ -30,4 +30,13 @@ it("denies role escalation between special guest portals", () => {
 it("allows only the correct event-scoped portal", () => {
   expect(canSpecialGuestAccessPath("/speaker/events/event-1/green-room", guest("speaker"))).toBe(true);
   expect(canSpecialGuestAccessPath("/venue/event-1/lobby", guest("vip"))).toBe(true);
+});
+
+
+it("keeps crew and operator route permissions separate", () => {
+  const crew = { kind: "crew" as const, role: "crew" as const, eventId: "event-1", issuedAt, expiresAt };
+  const operator = { kind: "operator" as const, role: "executive_producer" as const, issuedAt, expiresAt };
+  expect(canCrewAccessPath("/production-access/launchpad", crew)).toBe(false);
+  expect(canOperatorAccessPath("/production-access/launchpad", operator)).toBe(true);
+  expect(canOperatorAccessPath("/app/events/new", operator)).toBe(false);
 });

@@ -114,3 +114,11 @@ npm run predeploy:hard
 ```
 
 This blocks deploys when required production config is missing, when `VIDEO_PROVIDER=mock`, when mock video override is enabled, when Daily fallback is not enabled, or when the Cloudflare secret manifest is out of sync.
+
+
+## Operator Launchpad Secret Split
+
+- CREW_ACCESS_PASSWORD gates limited crew workspace access only.
+- OPERATOR_LAUNCHPAD_PASSWORD gates the Operator Launchpad and high-trust show-control diagnostics.
+- V5_OPERATOR_COOKIE_NAME stores the operator-gate cookie name.
+- CREW_ACCESS_PASSWORD and OPERATOR_LAUNCHPAD_PASSWORD must never match.

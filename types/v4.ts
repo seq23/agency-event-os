@@ -1,6 +1,6 @@
 export type V4PublicEventState = "draft" | "upcoming" | "open" | "live" | "ended" | "archived";
 export type V4PublishState = "draft" | "ready_for_review" | "approved" | "published" | "live" | "ended" | "archived";
-export type V4AccessKind = "attendee" | "crew" | "special_guest";
+export type V4AccessKind = "attendee" | "crew" | "operator" | "special_guest";
 export type V4SpecialGuestRole = "client" | "speaker" | "sponsor" | "crew_lite" | "vip";
 export type V4CrewRole = "crew" | "executive_producer" | "producer" | "technical_director" | "show_caller" | "moderator" | "va" | "support";
 export type V4RoomType = "main_stage" | "backstage" | "breakout_session" | "networking_match" | "sponsor_booth" | "rehearsal_room";

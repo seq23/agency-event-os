@@ -17,9 +17,9 @@ export default function ProductionAccessPage() {
             <h2 className="text-2xl font-black">Conference Special Guest</h2>
             <p className="mt-3 text-sm leading-6 text-slate-600">Event code plus role code for client, speaker, sponsor, crew-lite, or VIP destinations.</p>
           </a>
-          <a href="/production-access/crew" className="rounded-3xl border border-slate-200 p-6 hover:border-brand-orange">
+          <a href="/production-access/operator" className="rounded-3xl border border-slate-200 p-6 hover:border-brand-orange">
             <h2 className="text-2xl font-black">Operator Launchpad</h2>
-            <p className="mt-3 text-sm leading-6 text-slate-600">Unlock the internal command center through the crew gate. It contains production, demo, testing, backend diagnostics, role gates, and docs.</p>
+            <p className="mt-3 text-sm leading-6 text-slate-600">Use the separate operator password for show-control diagnostics, testing, fallback decisions, and admin-adjacent tools.</p>
           </a>
         </div>
       </section>

@@ -1,0 +1,3 @@
+# West Peek Live fallback redirects
+/operator /production-access/launchpad 302
+/crew /production-access/crew 302

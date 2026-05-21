@@ -2,13 +2,23 @@ import { NextRequest, NextResponse } from "next/server";
 import { getAuthCookieName, getEnv, getV5AccessCookieNames, getV5AccessCookieSecret } from "@/lib/env";
 import { isProtectedPath } from "@/lib/auth/routeAccess";
 import { readV5AccessCookie } from "@/lib/auth/productionAccess";
-import { canCrewAccessPath, canSpecialGuestAccessPath, specialGuestEntryPathFor } from "@/lib/auth/v5RouteAuthorization";
+import { canCrewAccessPath, canOperatorAccessPath, canSpecialGuestAccessPath, specialGuestEntryPathFor } from "@/lib/auth/v5RouteAuthorization";
 
 async function readCrewAccess(request: NextRequest) {
   try {
     const env = getEnv();
     const { crewCookieName } = getV5AccessCookieNames(env);
     return readV5AccessCookie(request.cookies.get(crewCookieName)?.value, getV5AccessCookieSecret(env));
+  } catch {
+    return undefined;
+  }
+}
+
+async function readOperatorAccess(request: NextRequest) {
+  try {
+    const env = getEnv();
+    const { operatorCookieName } = getV5AccessCookieNames(env);
+    return readV5AccessCookie(request.cookies.get(operatorCookieName)?.value, getV5AccessCookieSecret(env));
   } catch {
     return undefined;
   }
@@ -31,6 +41,9 @@ export async function middleware(request: NextRequest) {
   let sessionCookie: string | undefined;
   try { sessionCookie = request.cookies.get(getAuthCookieName())?.value; } catch { sessionCookie = undefined; }
   if (sessionCookie && (pathname.startsWith("/app") || pathname.startsWith("/admin"))) return NextResponse.next();
+
+  const operatorAccess = await readOperatorAccess(request);
+  if (canOperatorAccessPath(pathname, operatorAccess)) return NextResponse.next();
 
   const crewAccess = await readCrewAccess(request);
   if (canCrewAccessPath(pathname, crewAccess)) return NextResponse.next();

@@ -1,8 +1,8 @@
 import { expect, test } from "@playwright/test";
-import { expectVisibleRoute, grantCrewAccess, isDeployedBrowserRun } from "./helpers/roleJourney";
+import { expectVisibleRoute, grantOperatorAccess, isDeployedBrowserRun } from "./helpers/roleJourney";
 
 test("crew testing console is a showtime readiness cockpit with provider, matchmaking, route, and fallback decisions", async ({ page }) => {
-  await grantCrewAccess(page, "producer");
+  await grantOperatorAccess(page, "executive_producer");
   await expectVisibleRoute(page, {
     path: "/admin/testing/demo",
     label: "crew testing console",

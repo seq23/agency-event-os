@@ -38,9 +38,9 @@ export async function resolveSpecialGuestAccess(eventCode: string | undefined, r
   };
 }
 
-export function resolveCrewAccess(eventCode: string | undefined, crewRole: V4CrewRole = "producer"): V4AccessResolution {
+export function resolveCrewAccess(eventCode: string | undefined, crewRole: V4CrewRole = "crew"): V4AccessResolution {
   if (!eventCode?.trim()) {
-    return { ok: true, accessKind: "crew", role: crewRole, destination: "/app/events", message: "Crew access granted." };
+    return { ok: true, accessKind: "crew", role: crewRole, destination: "/crew/events/demo", message: "Crew access granted." };
   }
   const eventRecord = findEventIndexRecord(eventCode);
   if (!eventRecord) {
@@ -51,7 +51,7 @@ export function resolveCrewAccess(eventCode: string | undefined, crewRole: V4Cre
     accessKind: "crew",
     eventId: eventRecord.eventId,
     role: crewRole,
-    destination: `/app/events/${eventRecord.eventId}`,
+    destination: `/crew/events/${eventRecord.eventId}`,
     message: "Crew access granted.",
   };
 }

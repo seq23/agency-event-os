@@ -2,7 +2,8 @@ import { expect, test } from "@playwright/test";
 import { createPairHistoryRecord, normalizedSpeedNetworkingPairKey, selectNextSpeedNetworkingPair } from "@/services/speed-networking";
 import type { SpeedNetworkingEntry, SpeedNetworkingMatch, SpeedNetworkingPairHistory } from "@/types/speedNetworkingEngine";
 import { gotoAndAssert } from "./helpers/assertNoAppError";
-import { grantAgencySession, grantCrewAccess } from "./helpers/roleJourney";
+import { asRegisteredAttendee } from "./helpers/persona";
+import { grantAgencySession, grantOperatorAccess } from "./helpers/roleJourney";
 import { expectEventuallyDraft, expectEventuallyRuntime, readRuntimeSnapshot, resetRuntimeTraceFiles } from "./helpers/runtimeTrace";
 
 const unique = Date.now();
@@ -11,7 +12,7 @@ const deployedBrowserRun =
   process.env.PLAYWRIGHT_DEPLOYED === "1" ||
   (process.env.PLAYWRIGHT_BASE_URL ? !process.env.PLAYWRIGHT_BASE_URL.includes("127.0.0.1") && !process.env.PLAYWRIGHT_BASE_URL.includes("localhost") : false);
 
-const transactionalDescribe = deployedBrowserRun ? test.describe.skip : test.describe.serial;
+const transactionalDescribe = deployedBrowserRun ? test.describe.skip : test.describe;
 
 transactionalDescribe("Transactional Full Buffett E2E", () => {
   test.beforeEach(() => {
@@ -39,11 +40,11 @@ transactionalDescribe("Transactional Full Buffett E2E", () => {
     await gotoAndAssert(page, "/app/events/demo/run-of-show");
     await page.getByRole("button", { name: /^Mark live$/i }).click();
     await expectEventuallyRuntime(
-      (snapshot) => (snapshot.runOfShowEvents || []).some((event: any) => event.eventId === "event-summit" && event.action === "mark_live"),
+      (snapshot) => (snapshot.runOfShowEvents || []).some((event: any) => event.eventId === "demo" && event.action === "mark_live"),
       "producer run-of-show action should persist",
     );
 
-    await grantCrewAccess(page, "producer");
+    await grantOperatorAccess(page, "executive_producer");
     await gotoAndAssert(page, "/admin/testing/demo");
     const body = (await page.locator("body").innerText()).toLowerCase();
     for (const term of ["showtime readiness", "livestream", "livekit", "matchmaking", "fallback", "zoom", "google meet", "debug", "fix"]) {
@@ -89,6 +90,7 @@ transactionalDescribe("Transactional Full Buffett E2E", () => {
   });
 
   test("attendee networking join writes queue analytics and matching engine proves match/no-repeat/exhaustion semantics", async ({ page }) => {
+    await asRegisteredAttendee(page, "event-summit");
     await gotoAndAssert(page, "/venue/event-summit/networking");
     await page.getByRole("button", { name: /join queue/i }).click();
     await expect(page).toHaveURL(/\/venue\/event-summit\/networking\?state=waiting&queued=1/);
@@ -146,7 +148,7 @@ transactionalDescribe("Transactional Full Buffett E2E", () => {
       expect(text).not.toMatch(/digest\s*[:=]/i);
     }
 
-    await grantCrewAccess(page, "producer");
+    await grantOperatorAccess(page, "executive_producer");
     await gotoAndAssert(page, "/admin/testing/demo");
     const body = (await page.locator("body").innerText()).toLowerCase();
     expect(body).toContain("livekit");

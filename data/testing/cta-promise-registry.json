@@ -1,0 +1,148 @@
+{
+  "rules": {
+    "publicCannotSurpriseRouteToAppOrAdmin": true,
+    "protectedCtasMustDiscloseAuth": true,
+    "attendeeCtasStayAttendeeSafe": true,
+    "sponsorDataRequiresIntentionalOptIn": true,
+    "dailyFallbackCannotExposeReusablePrivateUrl": true
+  },
+  "ctas": [
+    {
+      "sourceRoute": "/",
+      "ctaText": "Join an Event",
+      "href": "/join",
+      "intendedPersona": "public_visitor",
+      "authExpectation": "none",
+      "expectedOutcome": "event discovery or code entry",
+      "forbiddenOutcomes": [
+        "admin workspace",
+        "operator launchpad"
+      ],
+      "requiresAuthDisclosure": false
+    },
+    {
+      "sourceRoute": "/events/[slug]",
+      "ctaText": "Register",
+      "href": "/events/[slug]/register",
+      "intendedPersona": "public_visitor",
+      "authExpectation": "none",
+      "expectedOutcome": "event-scoped attendee registration",
+      "forbiddenOutcomes": [
+        "speaker access",
+        "sponsor access",
+        "crew access",
+        "operator access",
+        "admin access"
+      ],
+      "requiresAuthDisclosure": false
+    },
+    {
+      "sourceRoute": "/events/[slug]/register",
+      "ctaText": "Submit registration",
+      "href": "/venue/[eventId]/lobby",
+      "intendedPersona": "registered_attendee",
+      "authExpectation": "attendee session cookie",
+      "expectedOutcome": "venue lobby with attendee identity",
+      "forbiddenOutcomes": [
+        "publish permission",
+        "restricted access",
+        "admin workspace"
+      ],
+      "requiresAuthDisclosure": false
+    },
+    {
+      "sourceRoute": "/production-access/launchpad",
+      "ctaText": "Operator Launchpad",
+      "href": "/production-access/launchpad",
+      "intendedPersona": "operator",
+      "authExpectation": "operator password",
+      "expectedOutcome": "operator launchpad",
+      "forbiddenOutcomes": [
+        "Supabase Auth creation"
+      ],
+      "requiresAuthDisclosure": true
+    },
+    {
+      "sourceRoute": "/venue/[eventId]/stage",
+      "ctaText": "Request to Join Stage",
+      "href": "server-action:requestAttendeeStageAccess",
+      "intendedPersona": "registered_attendee",
+      "authExpectation": "attendee session plus crew approval",
+      "expectedOutcome": "request queued without publish permission",
+      "forbiddenOutcomes": [
+        "camera publish by default",
+        "microphone publish by default"
+      ],
+      "requiresAuthDisclosure": false
+    },
+    {
+      "sourceRoute": "/",
+      "ctaText": "Enter an Event",
+      "href": "/join",
+      "intendedPersona": "public visitor",
+      "authExpectation": "none",
+      "expectedOutcome": "event code or public event discovery, never admin workspace",
+      "forbiddenOutcomes": [
+        "/app",
+        "/admin",
+        "operator launchpad"
+      ],
+      "requiresAuthDisclosure": false
+    },
+    {
+      "sourceRoute": "/",
+      "ctaText": "Production Access",
+      "href": "/production-access",
+      "intendedPersona": "crew/speaker/sponsor/client/VIP",
+      "authExpectation": "role-specific production credential",
+      "expectedOutcome": "role selection for production access, not attendee registration or admin app",
+      "forbiddenOutcomes": [
+        "attendee registration",
+        "silent admin access"
+      ],
+      "requiresAuthDisclosure": true
+    },
+    {
+      "sourceRoute": "/production-access/launchpad",
+      "ctaText": "Create Event in Admin Workspace",
+      "href": "/app/events/new",
+      "intendedPersona": "admin/producer",
+      "authExpectation": "admin workspace login may be required",
+      "expectedOutcome": "admin/producer reaches event creation workspace with disclosed auth expectation",
+      "forbiddenOutcomes": [
+        "public self-serve surprise",
+        "undisclosed login redirect"
+      ],
+      "requiresAuthDisclosure": true
+    },
+    {
+      "sourceRoute": "/",
+      "ctaText": "Request Event Production",
+      "href": "/request-event",
+      "intendedPersona": "public prospect/client",
+      "authExpectation": "none",
+      "expectedOutcome": "public prospect/client can request event production without entering /app",
+      "forbiddenOutcomes": [
+        "/app",
+        "/admin",
+        "operator launchpad"
+      ],
+      "requiresAuthDisclosure": false
+    },
+    {
+      "sourceRoute": "/start/create-event",
+      "ctaText": "Hidden V2 self-serve create event",
+      "href": "/signup?intent=create-event&next=/app/events/new",
+      "intendedPersona": "future_self_serve_customer",
+      "authExpectation": "hidden V2 route redirects safely while disabled; account/admin/workspace expectation must be disclosed before protected app access",
+      "expectedOutcome": "hidden self-serve entry does not surprise-route a public visitor into an undisclosed admin workspace",
+      "forbiddenOutcomes": [
+        "/app without auth disclosure",
+        "/admin",
+        "operator launchpad",
+        "silent production access"
+      ],
+      "requiresAuthDisclosure": true
+    }
+  ]
+}

@@ -14,7 +14,7 @@ export function OperatorLaunchpad() {
               <WestPeekProductionsLogo size="md" />
               <p className="mt-5 text-xs font-black uppercase tracking-[0.35em] text-brand-orange">Operator Launchpad</p>
               <h1 className="mt-3 text-4xl font-black tracking-tight sm:text-5xl">Everything internal starts here.</h1>
-              <p className="mt-4 max-w-3xl text-sm leading-6 text-brand-muted">This is the post-production-gate command center for owners, producers, VAs, backend testers, and show-day crew. Use the demo event for training when no real client conference is set up yet.</p>
+              <p className="mt-4 max-w-3xl text-sm leading-6 text-brand-muted">This is the post-operator-gate command center for owners, producers, VAs, backend testers, and show-day crew. Use the demo event for training when no real client conference is set up yet.</p>
             </div>
             <a href="/production-access/logout" className="rounded-full border border-brand-black px-5 py-3 text-center text-sm font-bold hover:border-brand-orange hover:text-brand-orange">Log out access</a>
           </div>
@@ -24,7 +24,7 @@ export function OperatorLaunchpad() {
           <p className="text-xs font-black uppercase tracking-[0.3em] text-brand-orange">No configured events yet?</p>
           <h2 className="mt-2 text-2xl font-black">Recommended Day 1 path</h2>
           <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
-            <a className="rounded-2xl bg-brand-black p-4 text-sm font-bold text-white" href="/app/events/new">Create First Event</a>
+            <a className="rounded-2xl bg-brand-black p-4 text-sm font-bold text-white" href="/app/events/new">Create Event in Admin Workspace</a>
             <a className="rounded-2xl border border-brand-line p-4 text-sm font-bold" href="/venue/demo/lobby">Preview Demo Venue</a>
             <a className="rounded-2xl border border-brand-line p-4 text-sm font-bold" href="/operator-packet">Open Operator Packet</a>
             <a className="rounded-2xl border border-brand-line p-4 text-sm font-bold" href="/production-access/crew">Test Crew Login</a>
@@ -41,8 +41,8 @@ export function OperatorLaunchpad() {
         </section>
 
         <LaunchpadSection eyebrow="Core production" title="Run the agency cockpit">
-          <LaunchpadCard title="Open Production Console" href="/app">Main app dashboard, event portfolio, and empty-state onboarding.</LaunchpadCard>
-          <LaunchpadCard title="Create First Event" href="/app/events/new">Start a guided production setup instead of hunting through JSON or hidden routes.</LaunchpadCard>
+          <LaunchpadCard title="Open Admin Workspace" href="/app">Supabase-authenticated dashboard, event portfolio, and admin onboarding.</LaunchpadCard>
+          <LaunchpadCard title="Create Event in Admin Workspace" href="/app/events/new">Requires admin account login; starts guided production setup only after Supabase Auth.</LaunchpadCard>
           <LaunchpadCard title="Manage Events" href="/app/events">View existing events and choose the active event to operate.</LaunchpadCard>
           <LaunchpadCard title="Preview Demo Venue" href="/venue/demo/lobby" badge="1:1 mirror">Open the attendee-facing demo venue powered by real venue components and demo data.</LaunchpadCard>
         </LaunchpadSection>
@@ -96,7 +96,8 @@ export function OperatorLaunchpad() {
         </LaunchpadSection>
 
         <LaunchpadSection eyebrow="Role entry testing" title="Test each front door">
-          <LaunchpadCard title="Crew Gate" href="/production-access/crew">Test crew password and role access.</LaunchpadCard>
+          <LaunchpadCard title="Crew Gate" href="/production-access/crew">Test crew password and limited crew workspace access.</LaunchpadCard>
+          <LaunchpadCard title="Operator Gate" href="/production-access/operator">Test separate operator password and launchpad access.</LaunchpadCard>
           <LaunchpadCard title="Special Guest Gate" href="/production-access/special-guest">Test speaker, sponsor, client, and VIP access.</LaunchpadCard>
           <LaunchpadCard title="Public Join" href="/join">Test attendee event-code flow.</LaunchpadCard>
           <LaunchpadCard title="Speaker Portal" href="/speaker">Speaker-side entry.</LaunchpadCard>

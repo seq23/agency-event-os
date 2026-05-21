@@ -121,3 +121,11 @@ Operational rules:
 ## Master Plan v4
 
 V4 env adds CREW_ACCESS_PASSWORD, V4_ACCESS_COOKIE_SECRET, V4 cookie names, LiveKit/Daily/Zoom/Google Meet keys, and GitHub event config workflow variables.
+
+
+## Operator Launchpad Secret Split
+
+- CREW_ACCESS_PASSWORD gates limited crew workspace access only.
+- OPERATOR_LAUNCHPAD_PASSWORD gates the Operator Launchpad and high-trust show-control diagnostics.
+- V5_OPERATOR_COOKIE_NAME stores the operator-gate cookie name.
+- CREW_ACCESS_PASSWORD and OPERATOR_LAUNCHPAD_PASSWORD must never match.

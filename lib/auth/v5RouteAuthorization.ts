@@ -39,10 +39,39 @@ export function pathIncludesEvent(pathname: string, eventId: string) {
 
 export function canCrewAccessPath(pathname: string, payload?: V5AccessCookiePayload) {
   if (!payload || payload.kind !== "crew") return false;
-  if (!pathname.startsWith("/app") && !pathname.startsWith("/crew") && !pathname.startsWith("/admin/testing")) return false;
+  if (!pathname.startsWith("/crew")) return false;
   const pathEventId = eventIdFromPath(pathname);
   if (payload.eventId) return pathEventId === payload.eventId;
   return true;
+}
+
+const operatorExactPaths = new Set([
+  "/production-access/launchpad",
+  "/operator-packet",
+  "/admin/testing",
+  "/admin/testing/demo",
+  "/admin/testing/event-summit",
+]);
+
+const operatorEventSurfaceSuffixes = new Set([
+  "run-of-show",
+  "video-health",
+  "incidents",
+  "approval-queue",
+  "change-control",
+  "preview",
+]);
+
+export function canOperatorAccessPath(pathname: string, payload?: V5AccessCookiePayload) {
+  if (!payload || payload.kind !== "operator") return false;
+  const cleanPath = pathname.split("?")[0];
+  if (operatorExactPaths.has(cleanPath)) return true;
+  if (cleanPath.startsWith("/admin/testing/")) return true;
+  const parts = segments(cleanPath);
+  if (parts[0] === "app" && parts[1] === "events" && parts[2] && parts[3]) {
+    return operatorEventSurfaceSuffixes.has(parts[3]);
+  }
+  return false;
 }
 
 export function canSpecialGuestAccessPath(pathname: string, payload?: V5AccessCookiePayload) {
@@ -66,5 +95,5 @@ export function assertCanPerformCrewAction(payload: V5AccessCookiePayload | unde
 }
 
 export function specialGuestEntryPathFor(pathname: string) {
-  return pathname.startsWith("/app") ? "/production-access/crew" : "/production-access/special-guest";
+  return pathname.startsWith("/app") || pathname.startsWith("/admin") ? "/production-access/operator" : "/production-access/special-guest";
 }

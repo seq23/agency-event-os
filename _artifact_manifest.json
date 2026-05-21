@@ -1,0 +1,42 @@
+{
+  "artifactName": "agency-event-os-main_BASELINE_05-20-26_05d2805_hostile2.zip",
+  "sourceBase": "uploaded agency-event-os-main_BASELINE_05-20-26_05d2805.zip",
+  "sourceCommitClaim": "05d2805 from uploaded baseline name; no .git metadata in ZIP",
+  "hostileReviewPasses": [
+    "replaced fabricated LiveKit ingress credentials with LiveKit Twirp CreateIngress call",
+    "kept package dependency surface unchanged to avoid package-lock drift",
+    "protected operator-only ingress/fallback/state endpoints with operator cookie guard",
+    "reworked LiveKit webhook verification to fail closed without Node crypto in app route",
+    "added functional click-to-copy client button for StreamYard credentials",
+    "removed fake seeded chat messages",
+    "wired breakout video join button to tokenized LiveKit room client",
+    "filled Supabase readSnapshot coverage for new stream/chat/live participation tables",
+    "blocked public StagePlayer from mutating global fallback state directly",
+    "restricted Daily stage token issuance to active/switching Daily fallback state",
+    "added video token request role authorization so public callers cannot self-declare producer/speaker publishing roles",
+    "removed hardcoded demo-attendee hidden IDs from attendee-facing controls"
+  ],
+  "structuralValidatorsPassed": [
+    "validate_stage_stream_contract",
+    "validate_streamyard_ingress_contract",
+    "validate_stage_player_ux_contract",
+    "validate_live_chat_contract",
+    "validate_attendee_live_controls_contract",
+    "validate_access_boundary_contract",
+    "validate_public_frontdoor_contract",
+    "validate_runtime_audit_contract",
+    "validate_required_env_registry",
+    "validate_deploy_env_contract",
+    "validate_cloudflare_required_secrets_manifest",
+    "validate_no_node_crypto_on_public_runtime"
+  ],
+  "localValidationRequired": true,
+  "fullBuildValidationRunInSandbox": false,
+  "lastArtifactPass": "local-headed-e2e-diagnostics-flow",
+  "updatedAt": "2026-05-20T23:30:00Z",
+  "notes": "Adds headed local predeploy diagnostics runner that writes failure artifacts ZIP to Downloads and runs with max-failures=0.",
+  "latest_fix": "local E2E diagnostics runtimeTrace event-drafts directory creation",
+  "changedFiles": [
+    "tests/e2e/helpers/runtimeTrace.ts"
+  ]
+}

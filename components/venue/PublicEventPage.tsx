@@ -5,6 +5,7 @@ import { EventEndedState } from "@/components/venue/EventEndedState";
 import { EventNotOpenState } from "@/components/venue/EventNotOpenState";
 import { RegistrationClosedState } from "@/components/venue/RegistrationClosedState";
 import { RegistrationRequiredState } from "@/components/venue/RegistrationRequiredState";
+import { RegistrationAgendaPlanner } from "@/components/venue/RegistrationAgendaPlanner";
 import { getEventConfigPackage } from "@/services/events/eventConfigRepository";
 import { mapEventStatusToPublicState } from "@/services/events/eventStateResolver";
 
@@ -98,13 +99,14 @@ export function EventRegistration({ slug }: { slug: string }) {
         <input type="hidden" name="slug" value={config.event.slug} />
         <p className="text-sm text-slate-500">Registration</p>
         <h1 className="mt-2 text-3xl font-semibold">{config.event.name}</h1>
-        <p className="mt-2 text-slate-600">Registration writes a runtime registration event and routes you into the venue.</p>
+        <p className="mt-2 text-slate-600">Registration creates your event-scoped attendee identity, attendee session, and optional agenda intent before routing you into the venue.</p>
+        <p className="mt-2 rounded-2xl bg-amber-50 p-3 text-sm text-amber-900">Attendee registration does not grant speaker, sponsor, client, crew, operator, admin, VIP, restricted-session, or camera/mic publishing access.</p>
         <div className="mt-6 space-y-4">
           {[
             ["name", "Name", "text", true],
             ["email", "Email", "email", true],
-            ["company", "Company", "text", false],
-            ["title", "Job title", "text", false],
+            ["company", "Company / affiliation", "text", true],
+            ["title", "Title / role", "text", true],
             ["personalWebsite", "Personal website", "url", false],
           ].map(([field, label, type, required]) => (
             <div key={String(field)}>
@@ -124,6 +126,16 @@ export function EventRegistration({ slug }: { slug: string }) {
             <label htmlFor="interestingFact" className="text-sm font-medium text-slate-700">One interesting fact you want everyone to know</label>
             <textarea id="interestingFact" name="interestingFact" rows={3} className="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-3 text-sm outline-none focus:border-brand-orange" />
           </div>
+          <div>
+            <label htmlFor="topicsOfInterest" className="text-sm font-medium text-slate-700">Topics of interest</label>
+            <textarea id="topicsOfInterest" name="topicsOfInterest" rows={3} placeholder="AI, fundraising, leadership, operations — one per line or comma-separated" className="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-3 text-sm outline-none focus:border-brand-orange" />
+          </div>
+          <div>
+            <label htmlFor="networkingGoals" className="text-sm font-medium text-slate-700">Networking goals</label>
+            <textarea id="networkingGoals" name="networkingGoals" rows={3} className="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-3 text-sm outline-none focus:border-brand-orange" />
+          </div>
+          <label className="flex items-center gap-2 rounded-xl border border-slate-200 p-3 text-sm text-slate-700"><input type="checkbox" name="networkingOptIn" /> Make my profile visible in the event people directory and networking queue.</label>
+          <RegistrationAgendaPlanner sessions={config.agenda.sessions.map((session) => ({ id: session.id, title: session.title, startsAt: session.startsAt, status: "upcoming", roomHref: `/venue/${config.event.id}/sessions/${session.id}`, speakerNames: [], room: session.room } as any))} breakouts={[]} booths={config.sponsors.sponsors.map((sponsor) => ({ id: sponsor.id, name: sponsor.name, headline: sponsor.headline || "Sponsor booth", description: "Sponsor booth", href: `/venue/${config.event.id}/expo/${sponsor.id}`, ctaLabel: "Visit booth" }))} />
           <button type="submit" className="w-full rounded-xl bg-slate-950 px-4 py-3 font-semibold text-white">Submit registration</button>
         </div>
       </form>

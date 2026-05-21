@@ -10,7 +10,9 @@ const requiredStartPaths = [
   "/join",
   "/production-access",
   "/production-access/crew",
+  "/production-access/operator",
   "/production-access/special-guest",
+  "/request-event",
   "/production-access/launchpad",
   "/events/demo",
   "/venue/demo/lobby",
@@ -42,7 +44,9 @@ const hardFailStatuses = new Set([500, 502, 503, 504]);
 const allowedRedirectTargets = [
   "/production-access",
   "/production-access/crew",
+  "/production-access/operator",
   "/production-access/special-guest",
+  "/request-event",
   "/login",
 ];
 
@@ -94,6 +98,7 @@ function hasGenericServerError(body) {
 
 function isProtectedPath(pathname) {
   return pathname === "/production-access/launchpad" ||
+    pathname === "/operator-packet" ||
     pathname === "/app" ||
     pathname.startsWith("/app/") ||
     pathname === "/admin/testing" ||

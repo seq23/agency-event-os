@@ -39,9 +39,8 @@ export function getTasksForEvent(eventId: string) {
 }
 
 export function getRunOfShowForEvent(eventId: string) {
-  const normalizedEventId = eventId === "demo" ? "event-summit" : eventId;
   return runtimeSeedData.runOfShowSegments
-    .filter((segment) => segment.eventId === normalizedEventId)
+    .filter((segment) => segment.eventId === eventId)
     .sort((a, b) => a.startAt.localeCompare(b.startAt));
 }
 

@@ -2,6 +2,7 @@ import type { V4CrewRole, V4SpecialGuestRole } from "@/types/v4";
 
 export const V5_CREW_COOKIE_DEFAULT = "wpl_crew_access";
 export const V5_SPECIAL_GUEST_COOKIE_DEFAULT = "wpl_guest_access";
+export const V5_OPERATOR_COOKIE_DEFAULT = "wpl_operator_access";
 export const V4_CREW_COOKIE_DEFAULT = V5_CREW_COOKIE_DEFAULT;
 export const V4_SPECIAL_GUEST_COOKIE_DEFAULT = V5_SPECIAL_GUEST_COOKIE_DEFAULT;
 
@@ -12,6 +13,7 @@ interface V5AccessCookieBase {
 
 export type V5AccessCookiePayload =
   | (V5AccessCookieBase & { kind: "crew"; eventId?: string; role?: V4CrewRole })
+  | (V5AccessCookieBase & { kind: "operator"; eventId?: string; role?: V4CrewRole })
   | (V5AccessCookieBase & { kind: "special_guest"; eventId: string; role: V4SpecialGuestRole });
 
 export type V4AccessCookiePayload = V5AccessCookiePayload;

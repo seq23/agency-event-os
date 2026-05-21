@@ -17,7 +17,7 @@ export function buildLiveKitRoomLabel(input: Pick<LiveKitJoinRequest, "roomType"
 }
 
 export async function buildLiveKitJoinResult(input: LiveKitJoinRequest): Promise<LiveKitJoinResult> {
-  const permissions = buildDefaultTokenPermissions(input.role);
+  const permissions = input.permissionOverride || buildDefaultTokenPermissions(input.role);
   const room = await createVideoRoom({
     agencyId: input.agencyId ?? `event-${input.eventId}-agency`,
     eventId: input.eventId,
@@ -55,7 +55,7 @@ export async function buildResilientVideoJoinResult(input: LiveKitJoinRequest): 
       throw error;
     }
 
-    const permissions = buildDefaultTokenPermissions(input.role);
+    const permissions = input.permissionOverride || buildDefaultTokenPermissions(input.role);
     const room = await createVideoRoom({
       agencyId: input.agencyId ?? `event-${input.eventId}-agency`,
       eventId: input.eventId,

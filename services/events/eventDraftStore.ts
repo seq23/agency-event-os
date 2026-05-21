@@ -43,9 +43,15 @@ export function createEventSetupDraft(formData: FormData) {
     fallbackVideo: field(formData, "fallbackVideo", "Daily, then Zoom + Google Meet"),
   };
   const filePath = draftPath();
-  const drafts = readDrafts(filePath);
-  drafts.push(draft);
-  writeDrafts(filePath, drafts);
+  try {
+    const drafts = readDrafts(filePath);
+    drafts.push(draft);
+    writeDrafts(filePath, drafts);
+  } catch {
+    // Cloudflare Workers and other serverless runtimes may not allow durable local filesystem writes.
+    // Event creation must still continue into the operator setup journey instead of crashing.
+    memoryDrafts = [...memoryDrafts.filter((existing) => existing.id !== draft.id), draft];
+  }
   return draft;
 }
 

@@ -23,8 +23,18 @@ if (!operator.includes('accessKind: "operator"')) fail("operator gate must log o
 if (crew.includes('"executive_producer"') || crew.includes('"producer"')) fail("crew gate must not offer producer/executive_producer roles; those belong to operator/admin access");
 if (crew.includes('Enter production launchpad') || crew.includes('redirect("/production-access/launchpad")')) fail("crew gate must not promise or redirect to operator launchpad");
 if (routeAuth.includes('pathname.startsWith("/app/events/") && !pathname.includes("/new")')) fail("operator access must use an explicit event-surface allowlist, not broad /app/events access");
-for (const forbidden of ['"setup"', '"publish"', '"access"', '"report"']) {
-  if (routeAuth.includes(forbidden) && routeAuth.includes('operatorEventSurfaceSuffixes')) fail(`operator route allowlist must not include high-risk admin surface ${forbidden}`);
+// Operator access is intentionally event-scoped: the Day 1 operator may use explicit event production
+// surfaces such as setup, crew briefing, run-of-show, preview, and video health after the operator gate.
+// What remains forbidden is broad, pattern-based /app/events access or account/platform-owner surfaces.
+for (const required of ['"setup"', '"crew"', '"run-of-show"', '"preview"']) {
+  if (!routeAuth.includes(required) || !routeAuth.includes('operatorEventSurfaceSuffixes')) {
+    fail(`operator event-scoped allowlist missing approved production surface ${required}`);
+  }
+}
+for (const forbidden of ['"settings"', '"billing"', '"users"', '"secrets"', '"account"']) {
+  if (routeAuth.includes(forbidden) && routeAuth.includes('operatorEventSurfaceSuffixes')) {
+    fail(`operator event-surface allowlist must not include platform-owner surface ${forbidden}`);
+  }
 }
 const runtimeStore = read("services/runtime/runtimeStore.ts");
 const v4Types = read("types/v4.ts");

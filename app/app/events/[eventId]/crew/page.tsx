@@ -1,2 +1,5 @@
-import { EventCrewBoard } from "@/components/contractors/ContractorBoard";
-export default function CrewPage({ params }: { params: { eventId: string } }){ return <EventCrewBoard eventId={params.eventId} />; }
+import { CrewInstructionManager } from "@/components/events/CrewInstructionManager";
+
+export default function EventCrewInstructionsPage({ params }: { params: { eventId: string } }) {
+  return <CrewInstructionManager eventId={params.eventId} />;
+}

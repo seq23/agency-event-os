@@ -1,6 +1,6 @@
 declare const require: undefined | ((moduleName: string) => unknown);
 
-type EventDraft = {
+export type EventDraft = {
   id: string;
   createdAt: string;
   eventName: string;
@@ -47,4 +47,10 @@ export function createEventSetupDraft(formData: FormData) {
   drafts.push(draft);
   writeDrafts(filePath, drafts);
   return draft;
+}
+
+
+export function getEventSetupDraftById(id: string) {
+  const filePath = draftPath();
+  return readDrafts(filePath).find((draft) => draft.id === id);
 }

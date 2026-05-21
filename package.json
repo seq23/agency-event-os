@@ -134,7 +134,9 @@
     "test:e2e:day1-operator": "OPERATOR_LAUNCHPAD_PASSWORD='OperatorLaunchpad-2026!' CREW_ACCESS_PASSWORD='CrewAccess-2026!' V5_ACCESS_COOKIE_SECRET='local-playwright-gauntlet-cookie-secret-1234567890' playwright test tests/e2e/day1-operator-common-sense.spec.ts",
     "validate:legal-brand": "node scripts/validate_legal_brand_contract.js",
     "test:e2e:legal-brand": "playwright test tests/e2e/legal-brand-attribution.spec.ts tests/e2e/brand-overlap-mobile.spec.ts",
-    "test:e2e:snapshots": "playwright test tests/e2e/brand-overlap-mobile.spec.ts --headed"
+    "test:e2e:snapshots": "playwright test tests/e2e/brand-overlap-mobile.spec.ts --headed",
+    "test:e2e:operator-event-creation": "OPERATOR_LAUNCHPAD_PASSWORD='OperatorLaunchpad-2026!' CREW_ACCESS_PASSWORD='CrewAccess-2026!' V5_ACCESS_COOKIE_SECRET='local-playwright-gauntlet-cookie-secret-1234567890' playwright test tests/e2e/operator-event-creation-user-journey.spec.ts",
+    "test:e2e:operator-crew-preview": "OPERATOR_LAUNCHPAD_PASSWORD='OperatorLaunchpad-2026!' CREW_ACCESS_PASSWORD='CrewAccess-2026!' E2E_CREW_PASSWORD='CrewAccess-2026!' V5_ACCESS_COOKIE_SECRET='local-playwright-gauntlet-cookie-secret-1234567890' playwright test tests/e2e/operator-launchpad-common-sense.spec.ts tests/e2e/crew-showday-common-sense.spec.ts tests/e2e/operator-preview-venue-parity.spec.ts tests/e2e/operator-event-creation-user-journey.spec.ts tests/e2e/operator-crew-instruction-flow.spec.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "3.9.0",

@@ -1,8 +1,59 @@
 const fs = require('fs');
+
 const file = 'docs/AGENCY_EVENT_OS_DAY1_OPERATOR_PACKET.md';
 if (!fs.existsSync(file)) throw new Error('Day 1 operator packet missing.');
+
 const s = fs.readFileSync(file, 'utf8');
-const required = ['LiveKit','Daily','Zoom','Google Meet','CrewAccess-2026!','OperatorLaunchpad-2026!','SpeakerGuest-2026!','SponsorGuest-2026!','VIPGuest-2026!','Operator Launchpad','Production Gate','Preview Demo Venue','Create Event in Admin Workspace','Testing Console','run-of-show spine','Setup spine','Access spine','Venue spine','Fallback spine','Communications spine'];
-const missing = required.filter((token) => !s.toLowerCase().includes(token.toLowerCase()));
+const lower = s.toLowerCase();
+
+const required = [
+  'West Peek Live',
+  'Owner',
+  'Operator',
+  'Crew',
+  'Special Guest',
+  'Owner / Boss Master Gate',
+  'Operator Launchpad',
+  'Crew Access',
+  '/production-access',
+  '/production-access/owner',
+  '/production-access/operator',
+  '/production-access/crew',
+  '/production-access/special-guest',
+  'LiveKit',
+  'Daily',
+  'Zoom',
+  'Google Meet',
+  'Day 1',
+];
+
+const missing = required.filter((token) => !lower.includes(token.toLowerCase()));
 if (missing.length) throw new Error(`Day 1 packet missing: ${missing.join(', ')}`);
+
+const staleForbidden = [
+  'SpeakerGuest-2026!',
+  'SponsorGuest-2026!',
+  'VIPGuest-2026!',
+  'Demo special guest passwords are seeded for training',
+];
+
+const staleFound = staleForbidden.filter((token) => s.includes(token));
+if (staleFound.length) {
+  throw new Error(`Day 1 packet contains stale fake guest-password model: ${staleFound.join(', ')}`);
+}
+
+const providerSecretPatterns = [
+  /SUPABASE_SERVICE_ROLE_KEY\s*=\s*eyJ/i,
+  /LIVEKIT_API_SECRET\s*=\s*\S+/i,
+  /DAILY_API_KEY\s*=\s*\S+/i,
+  /RESEND_API_KEY\s*=\s*re_/i,
+  /ZOOM_MEETING_SDK_SECRET\s*=\s*\S+/i,
+  /V5_ACCESS_COOKIE_SECRET\s*=\s*\S+/i,
+];
+
+const leakedProviderSecrets = providerSecretPatterns.filter((pattern) => pattern.test(s));
+if (leakedProviderSecrets.length) {
+  throw new Error('Day 1 packet appears to contain raw provider/API/runtime secrets. Keep provider secrets in the private env vault, not the operator packet.');
+}
+
 console.log('validate_v7_day1_packet: PASS');

@@ -1,12 +1,20 @@
 import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
 import { WestPeekProductionsLogo } from "@/components/brand/WestPeekProductionsLogo";
-import { createEventSetupDraft } from "@/services/events/eventDraftStore";
+import { EVENT_SETUP_DRAFT_COOKIE_NAME, createEventSetupDraft, encodeEventSetupDraftCookie } from "@/services/events/eventDraftStore";
 
 export const dynamic = "force-dynamic";
 
 async function startEventSetup(formData: FormData) {
   "use server";
   const draft = createEventSetupDraft(formData);
+  cookies().set(EVENT_SETUP_DRAFT_COOKIE_NAME, encodeEventSetupDraftCookie(draft), {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+    path: "/app/events/event-summit/setup",
+    maxAge: 60 * 30,
+  });
   redirect(`/app/events/event-summit/setup?draftId=${encodeURIComponent(draft.id)}`);
 }
 

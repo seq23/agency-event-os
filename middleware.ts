@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getAuthCookieName, getEnv, getV5AccessCookieNames, getV5AccessCookieSecret } from "@/lib/env";
 import { isProtectedPath } from "@/lib/auth/routeAccess";
 import { readV5AccessCookie } from "@/lib/auth/productionAccess";
-import { canCrewAccessPath, canOperatorAccessPath, canSpecialGuestAccessPath, specialGuestEntryPathFor } from "@/lib/auth/v5RouteAuthorization";
+import { canCrewAccessPath, canOperatorAccessPath, canOwnerAccessPath, canSpecialGuestAccessPath, specialGuestEntryPathFor } from "@/lib/auth/v5RouteAuthorization";
 
 async function readCrewAccess(request: NextRequest) {
   try {
@@ -19,6 +19,16 @@ async function readOperatorAccess(request: NextRequest) {
     const env = getEnv();
     const { operatorCookieName } = getV5AccessCookieNames(env);
     return readV5AccessCookie(request.cookies.get(operatorCookieName)?.value, getV5AccessCookieSecret(env));
+  } catch {
+    return undefined;
+  }
+}
+
+async function readOwnerAccess(request: NextRequest) {
+  try {
+    const env = getEnv();
+    const { ownerCookieName } = getV5AccessCookieNames(env);
+    return readV5AccessCookie(request.cookies.get(ownerCookieName)?.value, getV5AccessCookieSecret(env));
   } catch {
     return undefined;
   }
@@ -42,6 +52,9 @@ export async function middleware(request: NextRequest) {
   try { sessionCookie = request.cookies.get(getAuthCookieName())?.value; } catch { sessionCookie = undefined; }
   if (sessionCookie && (pathname.startsWith("/app") || pathname.startsWith("/admin"))) return NextResponse.next();
 
+  const ownerAccess = await readOwnerAccess(request);
+  if (canOwnerAccessPath(pathname, ownerAccess)) return NextResponse.next();
+
   const operatorAccess = await readOperatorAccess(request);
   if (canOperatorAccessPath(pathname, operatorAccess)) return NextResponse.next();
 
@@ -57,5 +70,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/app/:path*", "/admin/:path*", "/client/:path*", "/crew/:path*", "/speaker/:path*", "/sponsor/:path*"],
+  matcher: ["/app/:path*", "/admin/:path*", "/billing", "/billing/:path*", "/client/:path*", "/crew/:path*", "/speaker/:path*", "/sponsor/:path*"],
 };

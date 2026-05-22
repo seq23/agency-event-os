@@ -40,3 +40,17 @@ it("keeps crew and operator route permissions separate", () => {
   expect(canOperatorAccessPath("/production-access/launchpad", operator)).toBe(true);
   expect(canOperatorAccessPath("/app/events/new", operator)).toBe(true);
 });
+
+
+import {
+  canOperatorAccessPath as __canOperatorAccessPath,
+  canOwnerAccessPath as __canOwnerAccessPath,
+} from "../../lib/auth/v5RouteAuthorization";
+
+describe("owner route authorization", () => {
+  it("owner can access settings while operator cannot escalate to owner settings", () => {
+    expect(__canOwnerAccessPath("/app/settings", { kind: "owner", role: "owner", issuedAt: Date.now(), expiresAt: Date.now() + 1000 })).toBe(true);
+    expect(__canOwnerAccessPath("/billing", { kind: "owner", role: "owner", issuedAt: Date.now(), expiresAt: Date.now() + 1000 })).toBe(true);
+    expect(__canOperatorAccessPath("/app/settings", { kind: "operator", issuedAt: Date.now(), expiresAt: Date.now() + 1000 })).toBe(false);
+  });
+});

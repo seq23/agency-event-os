@@ -10,6 +10,7 @@ const isProductionBuild = process.env.NEXT_PHASE === "phase-production-build" ||
 const devOnlyCookieSecret = "dev-only-cookie-secret-change-before-deploy";
 const devOnlyCrewPassword = "dev-only-crew-password-change-before-deploy";
 const devOnlyOperatorPassword = "dev-only-operator-password-change-before-deploy";
+const devOnlyOwnerPassword = "dev-only-owner-password-change-before-deploy";
 
 function requiredInProduction(name: string, value: string | undefined, fallback: string) {
   if (value) return value;
@@ -29,8 +30,10 @@ const envSchema = z.object({
   V5_CREW_COOKIE_NAME: z.string().min(1).default("wpl_crew_access"),
   V5_SPECIAL_GUEST_COOKIE_NAME: z.string().min(1).default("wpl_guest_access"),
   V5_OPERATOR_COOKIE_NAME: z.string().min(1).default("wpl_operator_access"),
+  V5_OWNER_COOKIE_NAME: z.string().min(1).default("wpl_owner_access"),
   CREW_ACCESS_PASSWORD: z.string().min(12),
   OPERATOR_LAUNCHPAD_PASSWORD: z.string().min(12),
+  OWNER_MASTER_ACCESS_PASSWORD: z.string().min(12),
 
   RESEND_API_KEY: z.string().optional().or(z.literal("")),
   EMAIL_FROM: emailIdentitySchema.optional().or(z.literal("")),
@@ -63,8 +66,10 @@ export function getEnv(): AppEnv {
     V5_CREW_COOKIE_NAME: process.env.V5_CREW_COOKIE_NAME || process.env.V4_CREW_COOKIE_NAME || "wpl_crew_access",
     V5_SPECIAL_GUEST_COOKIE_NAME: process.env.V5_SPECIAL_GUEST_COOKIE_NAME || process.env.V4_SPECIAL_GUEST_COOKIE_NAME || "wpl_guest_access",
     V5_OPERATOR_COOKIE_NAME: process.env.V5_OPERATOR_COOKIE_NAME || "wpl_operator_access",
+    V5_OWNER_COOKIE_NAME: process.env.V5_OWNER_COOKIE_NAME || "wpl_owner_access",
     CREW_ACCESS_PASSWORD: requiredInProduction("CREW_ACCESS_PASSWORD", process.env.CREW_ACCESS_PASSWORD, devOnlyCrewPassword),
     OPERATOR_LAUNCHPAD_PASSWORD: requiredInProduction("OPERATOR_LAUNCHPAD_PASSWORD", process.env.OPERATOR_LAUNCHPAD_PASSWORD, devOnlyOperatorPassword),
+    OWNER_MASTER_ACCESS_PASSWORD: requiredInProduction("OWNER_MASTER_ACCESS_PASSWORD", process.env.OWNER_MASTER_ACCESS_PASSWORD, devOnlyOwnerPassword),
     RESEND_API_KEY: process.env.RESEND_API_KEY || "",
     EMAIL_FROM: process.env.EMAIL_FROM || "",
     EMAIL_REPLY_TO: process.env.EMAIL_REPLY_TO || "",
@@ -151,6 +156,7 @@ export function getV5AccessCookieNames(env: AppEnv = getEnv()) {
     crewCookieName: env.V5_CREW_COOKIE_NAME,
     specialGuestCookieName: env.V5_SPECIAL_GUEST_COOKIE_NAME,
     operatorCookieName: env.V5_OPERATOR_COOKIE_NAME,
+    ownerCookieName: env.V5_OWNER_COOKIE_NAME,
   };
 }
 
@@ -162,8 +168,23 @@ export function getOperatorLaunchpadPassword(env: AppEnv = getEnv()) {
   return env.OPERATOR_LAUNCHPAD_PASSWORD;
 }
 
+export function getOwnerMasterPassword(env: AppEnv = getEnv()) {
+  return env.OWNER_MASTER_ACCESS_PASSWORD;
+}
+
 export function assertSeparatedProductionPasswords(env: AppEnv = getEnv()) {
-  if (env.CREW_ACCESS_PASSWORD === env.OPERATOR_LAUNCHPAD_PASSWORD) throw new Error("CREW_ACCESS_PASSWORD and OPERATOR_LAUNCHPAD_PASSWORD must be different.");
+  const pairs = [
+    ["CREW_ACCESS_PASSWORD", env.CREW_ACCESS_PASSWORD],
+    ["OPERATOR_LAUNCHPAD_PASSWORD", env.OPERATOR_LAUNCHPAD_PASSWORD],
+    ["OWNER_MASTER_ACCESS_PASSWORD", env.OWNER_MASTER_ACCESS_PASSWORD],
+  ] as const;
+  for (let left = 0; left < pairs.length; left += 1) {
+    for (let right = left + 1; right < pairs.length; right += 1) {
+      if (pairs[left][1] === pairs[right][1]) {
+        throw new Error(`${pairs[left][0]} and ${pairs[right][0]} must be different.`);
+      }
+    }
+  }
 }
 
 export function getV5AccessCookieSecret(env: AppEnv = getEnv()) {

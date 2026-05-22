@@ -6,7 +6,9 @@ const secret = "0123456789abcdef0123456789abcdef";
 it("round-trips valid HMAC access cookies", async () => {
   const cookie = await createV5AccessCookie({ kind: "special_guest", eventId: "event-1", role: "speaker", issuedAt: Date.now(), expiresAt: Date.now() + 60000 }, secret);
   const parsed = await readV5AccessCookie(cookie, secret);
-  expect(parsed?.eventId).toBe("event-1");
+  expect(parsed?.kind).toBe("special_guest");
+  if (parsed?.kind !== "special_guest") throw new Error("expected special_guest payload");
+  expect(parsed.eventId).toBe("event-1");
   expect(parsed?.role).toBe("speaker");
 });
 

@@ -1,11 +1,14 @@
+import { cookies } from "next/headers";
 import { EventSetupShell } from "@/components/events/setup/EventSetupShell";
 import { BasicsSetupPanel } from "@/components/events/setup/SetupPanels";
-import { getEventSetupDraftById } from "@/services/events/eventDraftStore";
+import { EVENT_SETUP_DRAFT_COOKIE_NAME, decodeEventSetupDraftCookie, getEventSetupDraftById } from "@/services/events/eventDraftStore";
 import { getEventConfigPackage } from "@/services/events/eventConfigRepository";
 
 export default function EventSetupPage({ params, searchParams }: { params: { eventId: string }; searchParams?: { draftId?: string } }) {
   const config = getEventConfigPackage(params.eventId);
-  const draft = searchParams?.draftId ? getEventSetupDraftById(searchParams.draftId) : undefined;
+  const draftFromStore = searchParams?.draftId ? getEventSetupDraftById(searchParams.draftId) : undefined;
+  const draftFromCookie = decodeEventSetupDraftCookie(cookies().get(EVENT_SETUP_DRAFT_COOKIE_NAME)?.value);
+  const draft = draftFromStore || (draftFromCookie?.id === searchParams?.draftId ? draftFromCookie : undefined);
   return (
     <EventSetupShell eventId={params.eventId} active="basics" eyebrow="Setup · Basics" title="Event basics">
       {draft ? (
@@ -21,7 +24,8 @@ export default function EventSetupPage({ params, searchParams }: { params: { eve
             <p><span className="font-black text-brand-black">Video plan:</span> {draft.primaryVideo} primary; {draft.fallbackVideo} fallback</p>
           </div>
           <div className="mt-5 flex flex-wrap gap-3">
-            <a className="rounded-full bg-brand-black px-4 py-2 text-sm font-bold text-white" href={`/app/events/${params.eventId}/preview`}>Preview event</a>
+            <a className="rounded-full bg-brand-black px-4 py-2 text-sm font-bold text-white" href={`/venue/${params.eventId}/lobby`}>Preview event</a>
+            <a className="rounded-full border border-brand-line px-4 py-2 text-sm font-bold" href={`/app/events/${params.eventId}/preview`}>Review setup preview</a>
             <a className="rounded-full border border-brand-black px-4 py-2 text-sm font-bold" href={`/app/events/${params.eventId}/run-of-show`}>Open run of show</a>
             <a className="rounded-full border border-brand-line px-4 py-2 text-sm font-bold" href="/production-access/launchpad">Back to operator launchpad</a>
           </div>

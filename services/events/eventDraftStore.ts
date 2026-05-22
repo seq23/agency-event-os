@@ -60,3 +60,21 @@ export function getEventSetupDraftById(id: string) {
   const filePath = draftPath();
   return readDrafts(filePath).find((draft) => draft.id === id);
 }
+
+
+export const EVENT_SETUP_DRAFT_COOKIE_NAME = "wpl_event_setup_draft";
+
+export function encodeEventSetupDraftCookie(draft: EventDraft) {
+  return Buffer.from(JSON.stringify(draft), "utf8").toString("base64url");
+}
+
+export function decodeEventSetupDraftCookie(value?: string) {
+  if (!value) return undefined;
+  try {
+    const parsed = JSON.parse(Buffer.from(value, "base64url").toString("utf8"));
+    if (!parsed || typeof parsed !== "object" || typeof parsed.id !== "string") return undefined;
+    return parsed as EventDraft;
+  } catch {
+    return undefined;
+  }
+}

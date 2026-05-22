@@ -88,6 +88,19 @@ export function canOperatorAccessPath(pathname: string, payload?: V5AccessCookie
   return false;
 }
 
+export function canOwnerAccessPath(pathname: string, payload?: V5AccessCookiePayload) {
+  if (!payload || payload.kind !== "owner") return false;
+  const cleanPath = pathname.split("?")[0];
+  return (
+    cleanPath === "/billing" ||
+    cleanPath.startsWith("/billing/") ||
+    cleanPath.startsWith("/app") ||
+    cleanPath.startsWith("/admin") ||
+    cleanPath === "/operator-packet" ||
+    cleanPath === "/production-access/launchpad"
+  );
+}
+
 export function canSpecialGuestAccessPath(pathname: string, payload?: V5AccessCookiePayload) {
   if (!payload || payload.kind !== "special_guest" || !payload.eventId || !payload.role) return false;
   const allowedPrefixes = roleRoutePrefixes[payload.role];
@@ -109,6 +122,7 @@ export function assertCanPerformCrewAction(payload: V5AccessCookiePayload | unde
 }
 
 export function specialGuestEntryPathFor(pathname: string) {
+  if (pathname === "/billing" || pathname.startsWith("/billing/") || pathname === "/app/settings") return "/production-access/owner";
   if (pathname.startsWith("/app") || pathname.startsWith("/admin")) return "/production-access/operator";
   if (pathname.startsWith("/crew")) return "/production-access/crew";
   return "/production-access/special-guest";

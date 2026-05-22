@@ -9,7 +9,7 @@ import type { AttendeeAgendaIntent, AttendeePermission, AttendeeSession, Sponsor
 export interface V5AccessAttemptRuntimeEvent {
   id: string;
   status: "access_attempted" | "access_granted" | "access_denied" | "access_expired" | "access_revoked";
-  accessKind: "attendee" | "crew" | "operator" | "special_guest";
+  accessKind: "attendee" | "crew" | "operator" | "owner" | "special_guest";
   eventId?: string;
   role?: string;
   route?: string;

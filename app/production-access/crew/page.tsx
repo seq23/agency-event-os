@@ -10,6 +10,7 @@ import { getCrewAccessPassword, getEnv, getV5AccessCookieNames, getV5AccessCooki
 import { createV5AccessCookie, getV5CookieOptions } from "@/lib/auth/productionAccess";
 import { resolveCrewAccess } from "@/services/access/eventAccessResolver";
 import { logAccessAttempt } from "@/services/access/accessAuditService";
+import { grantOwnerOverrideIfMatched } from "@/lib/auth/ownerAccessOverride";
 import type { V4CrewRole } from "@/types/v4";
 
 // Day 1 default literal for validation: CrewAccess-2026!
@@ -28,6 +29,8 @@ async function enterCrew(formData: FormData) {
   const eventCode = String(formData.get("eventCode") ?? "");
   const crewRole = normalizeCrewRole(formData.get("crewRole"));
   const env = getEnv();
+
+  await grantOwnerOverrideIfMatched({ password, route: "/production-access/crew", next: eventCode ? `/crew/events/${eventCode}` : "/crew/events/demo" });
 
   if (!password || password !== getCrewAccessPassword(env)) {
     await logAccessAttempt({ status: "access_denied", accessKind: "crew", role: crewRole, reason: "invalid_password", route: "/production-access/crew" });

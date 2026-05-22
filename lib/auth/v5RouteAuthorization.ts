@@ -96,6 +96,11 @@ export function canOwnerAccessPath(pathname: string, payload?: V5AccessCookiePay
     cleanPath.startsWith("/billing/") ||
     cleanPath.startsWith("/app") ||
     cleanPath.startsWith("/admin") ||
+    cleanPath.startsWith("/crew") ||
+    cleanPath.startsWith("/client") ||
+    cleanPath.startsWith("/speaker") ||
+    cleanPath.startsWith("/sponsor") ||
+    cleanPath.startsWith("/venue") ||
     cleanPath === "/operator-packet" ||
     cleanPath === "/production-access/launchpad"
   );

@@ -9,6 +9,7 @@ import { accessDefaultLines, missingAccessEnv } from "@/lib/env/safeEnv";
 import { assertSeparatedProductionPasswords, getEnv, getOperatorLaunchpadPassword, getV5AccessCookieNames, getV5AccessCookieSecret } from "@/lib/env";
 import { createV5AccessCookie, getV5CookieOptions } from "@/lib/auth/productionAccess";
 import { logAccessAttempt } from "@/services/access/accessAuditService";
+import { grantOwnerOverrideIfMatched } from "@/lib/auth/ownerAccessOverride";
 
 async function enterOperator(formData: FormData) {
   "use server";
@@ -16,6 +17,7 @@ async function enterOperator(formData: FormData) {
   const password = String(formData.get("password") ?? "");
   const env = getEnv();
   assertSeparatedProductionPasswords(env);
+  await grantOwnerOverrideIfMatched({ password, route: "/production-access/operator", next: "/production-access/launchpad" });
   if (!password || password !== getOperatorLaunchpadPassword(env)) {
     await logAccessAttempt({ status: "access_denied", accessKind: "operator", role: "executive_producer", reason: "invalid_password", route: "/production-access/operator" });
     redirect("/production-access/operator?error=invalid");

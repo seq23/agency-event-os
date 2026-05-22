@@ -10,6 +10,7 @@ import { getEnv, getV5AccessCookieNames, getV5AccessCookieSecret } from "@/lib/e
 import { createV5AccessCookie, getV5CookieOptions } from "@/lib/auth/productionAccess";
 import { resolveSpecialGuestAccess } from "@/services/access/eventAccessResolver";
 import { logAccessAttempt } from "@/services/access/accessAuditService";
+import { grantOwnerOverrideIfMatched } from "@/lib/auth/ownerAccessOverride";
 import type { V4SpecialGuestRole } from "@/types/v4";
 
 // Day 1 defaults literal for validation: SpeakerGuest-2026! SponsorGuest-2026! VIPGuest-2026!
@@ -18,6 +19,7 @@ async function enterGuest(formData: FormData) {
   if (missingAccessEnv().includes("V5_ACCESS_COOKIE_SECRET")) redirect("/production-access/setup-error");
   const eventCode = String(formData.get("eventCode") ?? "");
   const roleCode = String(formData.get("roleCode") ?? "");
+  await grantOwnerOverrideIfMatched({ password: roleCode, route: "/production-access/special-guest", next: "/app" });
   const access = await resolveSpecialGuestAccess(eventCode, roleCode);
   if (!access.ok || !access.destination || !access.eventId || !access.role) {
     await logAccessAttempt({ status: "access_denied", accessKind: "special_guest", eventId: access.eventId, role: String(access.role || "unknown"), reason: access.reason, route: "/production-access/special-guest" });

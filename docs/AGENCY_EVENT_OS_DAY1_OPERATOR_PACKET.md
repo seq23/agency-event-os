@@ -6,13 +6,134 @@ West Peek Live is an internal virtual event production operating system for West
 
 ## 2. Day 1 passwords
 
-- Crew password: `CrewAccess-2026!`
-- Operator launchpad password: `OperatorLaunchpad-2026!`
-- Speaker password: `SpeakerGuest-2026!`
-- Sponsor password: `SponsorGuest-2026!`
-- VIP / Client Preview password: `VIPGuest-2026!`
+DAY 1 OPERATOR ACCESS CREDENTIALS
 
-Crew password is set with `CREW_ACCESS_PASSWORD`. Demo special guest passwords are seeded for training. Real event special guest passwords are created in Event Setup → Access.
+Use these credentials only for Day 1 production access. Do not forward outside the approved operator / crew group.
+
+OFFICIAL PRODUCTION ACCESS URL
+
+https://west-peek-live.seq-taylor.workers.dev/production-access
+
+
+OPERATOR ACCESS
+
+Operator Launchpad URL:
+https://west-peek-live.seq-taylor.workers.dev/production-access/operator
+
+Operator Launchpad Password:
+OperatorLaunchpad-2026!
+
+
+CREW ACCESS
+
+Crew Access URL:
+https://west-peek-live.seq-taylor.workers.dev/production-access/crew
+
+Crew Access Password:
+CrewAccess-2026!
+
+
+SPECIAL GUEST ACCESS
+
+Special Guest Access URL:
+https://west-peek-live.seq-taylor.workers.dev/production-access/special-guest
+
+
+DEMO EVENT ACCESS CODES
+
+Demo Client Code:
+PrYQ0PUDfonDxO-rYA-v-4U1YR8PNrpg
+
+Demo Crew Lite Code:
+BlyZ2QfZZWOXsj4BZuVrv3I-fklo67JZ
+
+Demo Speaker Code:
+cTehLlo_kiXFoYR_IROc-S1D0UBKtrE-
+
+Demo Sponsor Code:
+ASFbEmnJ_Ga4Xp0jCXkmeTXhiiTIwdp7
+
+Demo VIP Code:
+SBYFMZODMzZm8IrpIKMjxgASdzVOsMkX
+
+
+LEADERSHIP RESET WEBINAR ACCESS CODES
+
+Client Code:
+k3VSeIa_Ka8TWYqvi-NRkGBEIz3Iw0q6
+
+Crew Lite Code:
+wi1AeitcWDyW01Jztfs0rC0gbdlDk8Gj
+
+Speaker Code:
+QEr9ehV9mA3oHkLdMcXHA9jWvtF98_Qv
+
+Sponsor Code:
+ky8noBJRGtS6V5nRjTX7Ju-Ul7l4t3fl
+
+VIP Code:
+Xci1kZVzQXm1mghh6cZtjlDX9hUDzEFz
+
+
+PREMIUM WORKSHOP INTENSIVE ACCESS CODES
+
+Client Code:
+MRruS-m3jztox1ZWPlUOuS0wW7Ezx3rE
+
+Crew Lite Code:
+yJFC6Ojt6Dryr-t8WrZyq2JOQJWMm_v-
+
+Speaker Code:
+JSNKiJLGyaBNdWpzj5xEDVE8jK--rqsf
+
+Sponsor Code:
+9goixfw44tkXNR2tFKXmQKRH7KQWAvnX
+
+VIP Code:
+QGzqouoJaeOjxFxKVGWap15dvi-GKW4D
+
+
+PROVIDER INNOVATION EXPO ACCESS CODES
+
+Client Code:
+FnvZCEe0A_iTUvMGC1I0owMUA2CUrK0j
+
+Crew Lite Code:
+dpc8LH6U41pIV7A5pu4fqcDZelVvjUTF
+
+Speaker Code:
+eFkuJoVGB_8N2PgfdsLZ5Al6U3oRXahb
+
+Sponsor Code:
+uBA8ud4sa8MewG0dtEc-UT9ojnSlFJ8s
+
+VIP Code:
+iZKH6BxA1TJ-5fnb6x3vqfbDDp4xFJht
+
+
+SEED DEMO DAY ACCESS CODES
+
+Client Code:
+Uirggpw0N-n1yJ1U4MD6QLo_jv6c4PwS
+
+Crew Lite Code:
+MbiSwARGHaqFG8WkrlL1bKCGXVZID8Dh
+
+Speaker Code:
+ZpNE8vQ9ENnARtHsp0zJh9B_Xw15zkKk
+
+Sponsor Code:
+RldlFefyX-tmoRgVdkT7NoCK05-rLkzc
+
+VIP Code:
+OdZhmiybVyHepvcb_xLSPxmRzT0_kLYW
+
+
+IMPORTANT SECURITY NOTE
+
+Do not include owner / boss master access in the Day 1 operator packet unless the recipient is explicitly approved for owner-level control.
+
+Owner Master Access is private owner-only access and should stay in the private off-site env/password document, not the operator packet.
 
 ## 3. Front doors and Production Gate / Operator Gate
 

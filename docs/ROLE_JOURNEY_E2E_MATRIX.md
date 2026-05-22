@@ -47,3 +47,8 @@ The crew testing console must help a producer answer:
 The crew testing console must expose a go/no-go barometer that summarizes livestream readiness, LiveKit primary status, Daily automatic fallback status, Zoom / Google Meet manual fallback readiness, matchmaking/networking status, route health, run-of-show readiness, and the producer's next debugging action.
 
 A producer should be able to decide before showtime whether to proceed, monitor, or switch fallback rooms without reading source code or interpreting raw logs.
+
+
+## Speaker teleprompter material queue
+
+Master gauntlet must prove speaker portal access, teleprompter route, self-serve material submission, queued producer review, and operator approval queue visibility for the same newly-created event slug.

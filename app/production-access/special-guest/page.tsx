@@ -13,7 +13,7 @@ import { logAccessAttempt } from "@/services/access/accessAuditService";
 import { grantOwnerOverrideIfMatched } from "@/lib/auth/ownerAccessOverride";
 import type { V4SpecialGuestRole } from "@/types/v4";
 
-// Day 1 defaults literal for validation: SpeakerGuest-2026! SponsorGuest-2026! VIPGuest-2026!
+// Day 1 special guest defaults are registry-managed; do not display or hardcode role codes here.
 async function enterGuest(formData: FormData) {
   "use server";
   if (missingAccessEnv().includes("V5_ACCESS_COOKIE_SECRET")) redirect("/production-access/setup-error");
@@ -29,7 +29,7 @@ async function enterGuest(formData: FormData) {
   const { specialGuestCookieName } = getV5AccessCookieNames(env);
   const role = access.role as V4SpecialGuestRole;
   await logAccessAttempt({ status: "access_granted", accessKind: "special_guest", eventId: access.eventId, role, route: access.destination });
-  const cookie = await createV5AccessCookie({ kind: "special_guest", eventId: access.eventId, role, issuedAt: Date.now(), expiresAt: Date.now() + 1000 * 60 * 60 * 12 }, getV5AccessCookieSecret(env));
+  const cookie = await createV5AccessCookie({ kind: "special_guest", eventId: access.eventId, clientSlug: access.clientSlug, role, issuedAt: Date.now(), expiresAt: Date.now() + 1000 * 60 * 60 * 12 }, getV5AccessCookieSecret(env));
   cookies().set(specialGuestCookieName, cookie, getV5CookieOptions(60 * 60 * 12));
   redirect(access.destination);
 }

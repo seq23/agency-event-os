@@ -13,7 +13,7 @@ import { logAccessAttempt } from "@/services/access/accessAuditService";
 import { grantOwnerOverrideIfMatched } from "@/lib/auth/ownerAccessOverride";
 import type { V4CrewRole } from "@/types/v4";
 
-// Day 1 default literal for validation: CrewAccess-2026!
+// Day 1 access defaults are registry-managed; do not display or hardcode human passwords here.
 const allowedCrewRoles: V4CrewRole[] = ["crew", "technical_director", "show_caller", "moderator", "va", "support"];
 
 function normalizeCrewRole(value: FormDataEntryValue | null): V4CrewRole {

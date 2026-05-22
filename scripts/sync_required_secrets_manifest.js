@@ -39,25 +39,20 @@ const manifest = fs.existsSync(manifestPath) ? readJson(manifestPath) : {};
 manifest.workerName = registry.workerName || "west-peek-live";
 manifest.liveSmokeBaseUrl = registry.liveSmokeBaseUrl || "https://west-peek-live.seq-taylor.workers.dev";
 manifest.requiredSecrets = registry.cloudflareSecretKeys;
+const registryDemoDefaults = registry.demoDefaults || {};
 manifest.demoDefaults = {
   ...(manifest.demoDefaults || {}),
-  CREW_ACCESS_PASSWORD: "CrewAccess-2026!",
-  OPERATOR_LAUNCHPAD_PASSWORD: "OperatorLaunchpad-2026!",
-  EVENT_DEMO_SPEAKER_CODE: "SpeakerGuest-2026!",
-  EVENT_DEMO_SPONSOR_CODE: "SponsorGuest-2026!",
-  EVENT_DEMO_VIP_CODE: "VIPGuest-2026!",
-  EVENT_DEMO_CLIENT_CODE: "VIPGuest-2026!",
-  EVENT_DEMO_CREW_LITE_CODE: "CrewAccess-2026!",
-  AGENCY_EVENT_OS_RUNTIME_STORE: "file",
-  ALLOW_FILE_RUNTIME_STORE_IN_PRODUCTION: "true",
-  VIDEO_PROVIDER: "livekit",
-  DAILY_FALLBACK_ENABLED: "true",
-  LIVEKIT_INGRESS_RTMP_BASE_URL: "rtmp://livekit-ingress.example.com",
-  LIVEKIT_WEBHOOK_SECRET: "change-me-livekit-webhook-secret",
-  STREAMYARD_PRIMARY_ENABLED: "true",
-  STAGE_STREAM_DEFAULT_SOURCE: "LIVEKIT_INGRESS",
-  DAILY_STAGE_FALLBACK_REQUIRES_TOKEN: "true",
-  DAILY_API_BASE_URL: "https://api.daily.co/v1"
+  ...registryDemoDefaults,
+  AGENCY_EVENT_OS_RUNTIME_STORE: registryDemoDefaults.AGENCY_EVENT_OS_RUNTIME_STORE || "file",
+  ALLOW_FILE_RUNTIME_STORE_IN_PRODUCTION: registryDemoDefaults.ALLOW_FILE_RUNTIME_STORE_IN_PRODUCTION || "true",
+  VIDEO_PROVIDER: registryDemoDefaults.VIDEO_PROVIDER || "livekit",
+  DAILY_FALLBACK_ENABLED: registryDemoDefaults.DAILY_FALLBACK_ENABLED || "true",
+  LIVEKIT_INGRESS_RTMP_BASE_URL: registryDemoDefaults.LIVEKIT_INGRESS_RTMP_BASE_URL || "rtmp://livekit-ingress.example.com",
+  LIVEKIT_WEBHOOK_SECRET: registryDemoDefaults.LIVEKIT_WEBHOOK_SECRET || "change-me-livekit-webhook-secret",
+  STREAMYARD_PRIMARY_ENABLED: registryDemoDefaults.STREAMYARD_PRIMARY_ENABLED || "true",
+  STAGE_STREAM_DEFAULT_SOURCE: registryDemoDefaults.STAGE_STREAM_DEFAULT_SOURCE || "LIVEKIT_INGRESS",
+  DAILY_STAGE_FALLBACK_REQUIRES_TOKEN: registryDemoDefaults.DAILY_STAGE_FALLBACK_REQUIRES_TOKEN || "true",
+  DAILY_API_BASE_URL: registryDemoDefaults.DAILY_API_BASE_URL || "https://api.daily.co/v1"
 };
 writeJson(manifestPath, manifest);
 

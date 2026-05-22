@@ -1,18 +1,11 @@
 import { expect, test } from "@playwright/test";
 import { gotoAndAssert } from "./helpers/assertNoAppError";
-
-const day1Passwords = [
-  "OperatorLaunchpad-2026!",
-  "CrewAccess-2026!",
-  "SpeakerGuest-2026!",
-  "SponsorGuest-2026!",
-  "VIPGuest-2026!",
-];
+import { day1Passwords, requiredDay1Default } from "./helpers/day1AccessDefaults";
 
 test("operator Day 1 password unlocks create-event flow without a second auth wall", async ({ page }) => {
   await gotoAndAssert(page, "/production-access/operator");
 
-  await page.getByLabel(/operator launchpad password/i).fill(process.env.E2E_OPERATOR_PASSWORD || "OperatorLaunchpad-2026!");
+  await page.getByLabel(/operator launchpad password/i).fill(process.env.E2E_OPERATOR_PASSWORD || requiredDay1Default("OPERATOR_LAUNCHPAD_PASSWORD"));
   await page.getByRole("button", { name: /enter operator launchpad/i }).click();
 
   await expect(page).toHaveURL(/\/production-access\/launchpad/);

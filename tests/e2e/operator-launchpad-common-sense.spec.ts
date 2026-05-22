@@ -1,11 +1,12 @@
 import { expect, test, type Page } from "@playwright/test";
 import { gotoAndAssert } from "./helpers/assertNoAppError";
+import { requiredDay1Default } from "./helpers/day1AccessDefaults";
 
 const forbidden = /Application error|Internal Server Error|not authorized|forbidden|missing setup|unknown event|Supabase Auth required|admin account required/i;
 
 async function loginOperator(page: Page) {
   await gotoAndAssert(page, "/production-access/operator");
-  await page.getByLabel(/operator launchpad password/i).fill(process.env.E2E_OPERATOR_PASSWORD || "OperatorLaunchpad-2026!");
+  await page.getByLabel(/operator launchpad password/i).fill(process.env.E2E_OPERATOR_PASSWORD || requiredDay1Default("OPERATOR_LAUNCHPAD_PASSWORD"));
   await page.getByRole("button", { name: /enter operator launchpad/i }).click();
   await expect(page).toHaveURL(/\/production-access\/launchpad/);
 }

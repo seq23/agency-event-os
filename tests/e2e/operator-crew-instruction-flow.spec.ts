@@ -1,9 +1,10 @@
 import { expect, test } from "@playwright/test";
 import { gotoAndAssert } from "./helpers/assertNoAppError";
+import { requiredDay1Default } from "./helpers/day1AccessDefaults";
 
 test("operator can find crew instructions and crew can consume them without operator launchpad access", async ({ page }) => {
   await gotoAndAssert(page, "/production-access/operator");
-  await page.getByLabel(/operator launchpad password/i).fill(process.env.E2E_OPERATOR_PASSWORD || "OperatorLaunchpad-2026!");
+  await page.getByLabel(/operator launchpad password/i).fill(process.env.E2E_OPERATOR_PASSWORD || requiredDay1Default("OPERATOR_LAUNCHPAD_PASSWORD"));
   await page.getByRole("button", { name: /enter operator launchpad/i }).click();
 
   await expect(page).toHaveURL(/\/production-access\/launchpad/);
@@ -23,7 +24,7 @@ test("operator can find crew instructions and crew can consume them without oper
 
 test("crew without operator access is refused from operator launchpad but still has instructions", async ({ page }) => {
   await gotoAndAssert(page, "/production-access/crew");
-  await page.getByLabel(/crew password/i).fill(process.env.E2E_CREW_PASSWORD || "CrewAccess-2026!");
+  await page.getByLabel(/crew password/i).fill(process.env.E2E_CREW_PASSWORD || requiredDay1Default("CREW_ACCESS_PASSWORD"));
   await page.getByLabel(/event code/i).fill("demo");
   await page.getByLabel(/production role/i).selectOption("crew");
   await page.getByRole("button", { name: /enter crew workspace/i }).click();

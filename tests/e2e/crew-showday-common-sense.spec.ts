@@ -1,11 +1,12 @@
 import { expect, test, type Page } from "@playwright/test";
 import { gotoAndAssert } from "./helpers/assertNoAppError";
+import { requiredDay1Default } from "./helpers/day1AccessDefaults";
 
 const forbidden = /Application error|Internal Server Error|operator required|admin account required|missing setup|unknown event/i;
 
 async function loginCrew(page: Page) {
   await gotoAndAssert(page, "/production-access/crew");
-  await page.getByLabel(/crew password/i).fill(process.env.E2E_CREW_PASSWORD || "CrewAccess-2026!");
+  await page.getByLabel(/crew password/i).fill(process.env.E2E_CREW_PASSWORD || requiredDay1Default("CREW_ACCESS_PASSWORD"));
   await page.getByLabel(/event code/i).fill("demo");
   await page.getByLabel(/production role/i).selectOption("crew");
   await page.getByRole("button", { name: /enter crew workspace/i }).click();

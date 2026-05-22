@@ -45,6 +45,12 @@ export function pathIncludesEvent(pathname: string, eventId: string) {
   return eventIdsMatch(eventIdFromPath(pathname), eventId);
 }
 
+function clientSlugFromPath(pathname: string): string | undefined {
+  const parts = segments(pathname);
+  if (parts[0] === "client" && parts[1]) return parts[1];
+  return undefined;
+}
+
 export function canCrewAccessPath(pathname: string, payload?: V5AccessCookiePayload) {
   if (!payload || payload.kind !== "crew") return false;
   if (!pathname.startsWith("/crew")) return false;
@@ -65,14 +71,36 @@ const operatorExactPaths = new Set([
 ]);
 
 const operatorEventSurfaceSuffixes = new Set([
-  "run-of-show",
-  "video-health",
-  "incidents",
+  "access",
+  "agenda",
+  "analytics",
   "approval-queue",
+  "approvals",
+  "assets",
+  "attendee-flow",
+  "branding",
+  "builder",
   "change-control",
+  "communications",
   "crew",
-  "setup",
+  "inbox",
+  "incidents",
+  "overview",
   "preview",
+  "producer",
+  "publish",
+  "report",
+  "run-of-show",
+  "setup",
+  "speakers",
+  "sponsors",
+  "talent",
+  "tasks",
+  "timeline",
+  "vendors",
+  "venue",
+  "video-health",
+  "video",
 ]);
 
 export function canOperatorAccessPath(pathname: string, payload?: V5AccessCookiePayload) {
@@ -111,8 +139,9 @@ export function canSpecialGuestAccessPath(pathname: string, payload?: V5AccessCo
   const allowedPrefixes = roleRoutePrefixes[payload.role];
   if (!allowedPrefixes?.some((prefix) => pathname.startsWith(prefix))) return false;
   const pathEventId = eventIdFromPath(pathname);
-  if (!pathEventId) return false;
-  return eventIdsMatch(pathEventId, payload.eventId);
+  if (!pathEventId || !eventIdsMatch(pathEventId, payload.eventId)) return false;
+  if (payload.role === "client" && payload.clientSlug) return clientSlugFromPath(pathname) === payload.clientSlug;
+  return true;
 }
 
 export function canPerformCrewAction(payload: V5AccessCookiePayload | undefined, action: string, eventId?: string) {

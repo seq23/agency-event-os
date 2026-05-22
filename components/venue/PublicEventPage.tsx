@@ -55,7 +55,7 @@ export function PublicEventPage({ slug }: { slug: string }) {
               {config.speakers.speakers.map((speaker) => (
                 <div key={speaker.id} className="rounded-xl bg-slate-50 p-3">
                   <p className="font-medium">{speaker.name}</p>
-                  <p className="text-sm text-slate-500">Role access configured through {speaker.roleCodeEnvKey}</p>
+                  <p className="text-sm text-slate-500">Speaker access is issued privately by the production team.</p>
                 </div>
               ))}
             </div>

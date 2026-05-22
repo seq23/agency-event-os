@@ -1,4 +1,5 @@
 const fs = require("fs");
+const { demoDefaults } = require("./lib/day1AccessDefaults");
 function fail(message) { console.error("validate_production_config_policy: FAIL — " + message); process.exit(1); }
 function read(file) { if (!fs.existsSync(file)) fail("missing " + file); return fs.readFileSync(file, "utf8"); }
 const envTs = read("lib/env.ts");
@@ -12,12 +13,12 @@ for (const key of ["VIDEO_PROVIDER", "LIVEKIT_URL", "LIVEKIT_API_KEY", "LIVEKIT_
 }
 const resolver = read("services/access/eventAccessResolver.ts");
 if (resolver.includes("demoFallbackCodes")) fail("eventAccessResolver must not use source-code demo fallback access codes");
-if (resolver.includes("SpeakerGuest-2026!") || resolver.includes("SponsorGuest-2026!") || resolver.includes("VIPGuest-2026!")) {
-  fail("eventAccessResolver must not contain raw special guest passwords");
+for (const raw of [demoDefaults().EVENT_DEMO_SPEAKER_CODE, demoDefaults().EVENT_DEMO_SPONSOR_CODE, demoDefaults().EVENT_DEMO_VIP_CODE].filter(Boolean)) {
+  if (resolver.includes(raw)) fail("eventAccessResolver must not contain raw special guest passwords");
 }
 const envExample = read(".env.example");
 if (envExample.match(/^VIDEO_PROVIDER=mock$/m)) fail(".env.example must not set VIDEO_PROVIDER=mock");
-for (const raw of ["CrewAccess-2026!", "OperatorLaunchpad-2026!", "SpeakerGuest-2026!", "SponsorGuest-2026!", "VIPGuest-2026!"]) {
+for (const raw of [demoDefaults().CREW_ACCESS_PASSWORD, demoDefaults().OPERATOR_LAUNCHPAD_PASSWORD, demoDefaults().EVENT_DEMO_SPEAKER_CODE, demoDefaults().EVENT_DEMO_SPONSOR_CODE, demoDefaults().EVENT_DEMO_VIP_CODE].filter(Boolean)) {
   if (envExample.includes(raw)) fail(".env.example must not contain raw Day 1 password " + raw);
 }
 if (!envTs.includes("assertSeparatedProductionPasswords")) fail("lib/env.ts must expose crew/operator password separation assertion");

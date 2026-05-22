@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { crewBriefing, normalizeCrewEventId } from "@/lib/crew/crewBriefing";
+import { getEvent } from "@/lib/runtime/getRuntimeData";
 
 const nav = [
   ["Crew Home", ""],
@@ -23,6 +24,7 @@ export function CrewInstructionShell({
   children: ReactNode;
 }) {
   const canonicalEventId = normalizeCrewEventId(eventId);
+  const event = getEvent(canonicalEventId);
 
   return (
     <main className="min-h-screen bg-brand-ash px-5 py-8 text-brand-black sm:px-8">
@@ -33,7 +35,7 @@ export function CrewInstructionShell({
             <div>
               <h1 className="text-4xl font-black tracking-tight">{title}</h1>
               <p className="mt-3 max-w-3xl text-sm leading-6 text-brand-muted">
-                {crewBriefing.eventName} · Call time: {crewBriefing.callTime} · Show start: {crewBriefing.showStart}
+                {event.name || crewBriefing.eventName} · Event ID: {canonicalEventId} · Call time: {crewBriefing.callTime} · Show start: {crewBriefing.showStart}
               </p>
             </div>
             <a className="rounded-full border border-brand-black px-5 py-3 text-sm font-bold" href={`mailto:${crewBriefing.escalationEmail}`}>

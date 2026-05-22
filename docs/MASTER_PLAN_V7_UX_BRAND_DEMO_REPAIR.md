@@ -14,10 +14,10 @@ V7 repairs the product experience after over-hardening. Intentional demo/sales/o
 
 ## Day 1 passwords
 
-- Crew: CrewAccess-2026!
-- Speaker: SpeakerGuest-2026!
-- Sponsor: SponsorGuest-2026!
-- VIP / Client Preview: VIPGuest-2026!
+- Crew: Crew-Call-2026!
+- Speaker: Demo-Speaker-2026!
+- Sponsor: Demo-Sponsor-2026!
+- VIP / Client Preview: Demo-VIP-2026!
 
 ## Video fallback ladder
 

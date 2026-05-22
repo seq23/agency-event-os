@@ -9,6 +9,7 @@ export type EventDraft = {
   eventDate: string;
   audience: string;
   eventType: string;
+  productionFeed: string;
   primaryVideo: string;
   fallbackVideo: string;
 };
@@ -39,6 +40,7 @@ export function createEventSetupDraft(formData: FormData) {
     eventDate: field(formData, "eventDate", ""),
     audience: field(formData, "audience", "Guests, speakers, sponsors, VIPs"),
     eventType: field(formData, "eventType", "webinar"),
+    productionFeed: field(formData, "productionFeed", "StreamYard"),
     primaryVideo: field(formData, "primaryVideo", "LiveKit"),
     fallbackVideo: field(formData, "fallbackVideo", "Daily, then Zoom + Google Meet"),
   };
@@ -59,6 +61,29 @@ export function createEventSetupDraft(formData: FormData) {
 export function getEventSetupDraftById(id: string) {
   const filePath = draftPath();
   return readDrafts(filePath).find((draft) => draft.id === id);
+}
+
+export function getEventSetupDraftByEventCode(eventCode: string | undefined) {
+  const code = slugify(String(eventCode || ""));
+  if (!code) return undefined;
+  const filePath = draftPath();
+  return readDrafts(filePath).slice().reverse().find((draft) => draft.eventCode === code);
+}
+
+function titleCaseSlug(slug: string) {
+  return slug.split("-").filter(Boolean).map((part) => part.charAt(0).toUpperCase() + part.slice(1)).join("-");
+}
+
+export function getEventSetupDraftRoleCodes(eventCode: string | undefined) {
+  const code = slugify(String(eventCode || ""));
+  const prefix = titleCaseSlug(code || "Draft-Event");
+  return {
+    client: `${prefix}-Client-2026!`,
+    speaker: `${prefix}-Speaker-2026!`,
+    sponsor: `${prefix}-Sponsor-2026!`,
+    vip: `${prefix}-VIP-2026!`,
+    crew_lite: `${prefix}-CrewLite-2026!`,
+  } as const;
 }
 
 

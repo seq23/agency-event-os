@@ -36,8 +36,9 @@ export const crewBriefing = {
     {
       title: "Video and fallback instructions",
       items: [
-        "Primary venue distribution is LiveKit unless production announces otherwise.",
-        "Daily is the secondary fallback candidate.",
+        "Production feed/source is StreamYard unless production announces otherwise.",
+        "Primary embedded venue distribution is LiveKit.",
+        "Daily is the secondary embedded fallback candidate.",
         "Zoom and Google Meet are white-label backup room links, not the core event engine.",
         "If the stage degrades, follow the fallback banner and operator instructions.",
         "Never expose private room URLs or provider credentials to attendees."
@@ -65,7 +66,7 @@ export const crewTasks = [
 export const crewRunOfShow = [
   { time: "T-60", cue: "Crew call", owner: "Crew Lead", note: "Open crew home, call sheet, run of show, and tasks." },
   { time: "T-45", cue: "Venue route check", owner: "Crew", note: "Check lobby, stage, sessions, expo, networking, replay, and help." },
-  { time: "T-30", cue: "Video/fallback check", owner: "Production", note: "Confirm LiveKit primary and Daily / Zoom / Google Meet fallback context." },
+  { time: "T-30", cue: "Video/fallback check", owner: "Production", note: "Confirm StreamYard production feed, LiveKit embedded distribution, and Daily / Zoom / Google Meet fallback context." },
   { time: "T-15", cue: "Access gate check", owner: "Crew Lead", note: "Confirm crew, special guest, and attendee entry paths are coherent." },
   { time: "LIVE", cue: "Monitor show", owner: "Crew", note: "Watch stage, chat, help, networking, incidents, and escalation." },
 ];

@@ -1,42 +1,41 @@
 {
-  "artifactName": "agency-event-os-main_BASELINE_05-20-26_05d2805_hostile2.zip",
-  "sourceBase": "uploaded agency-event-os-main_BASELINE_05-20-26_05d2805.zip",
-  "sourceCommitClaim": "05d2805 from uploaded baseline name; no .git metadata in ZIP",
-  "hostileReviewPasses": [
-    "replaced fabricated LiveKit ingress credentials with LiveKit Twirp CreateIngress call",
-    "kept package dependency surface unchanged to avoid package-lock drift",
-    "protected operator-only ingress/fallback/state endpoints with operator cookie guard",
-    "reworked LiveKit webhook verification to fail closed without Node crypto in app route",
-    "added functional click-to-copy client button for StreamYard credentials",
-    "removed fake seeded chat messages",
-    "wired breakout video join button to tokenized LiveKit room client",
-    "filled Supabase readSnapshot coverage for new stream/chat/live participation tables",
-    "blocked public StagePlayer from mutating global fallback state directly",
-    "restricted Daily stage token issuance to active/switching Daily fallback state",
-    "added video token request role authorization so public callers cannot self-declare producer/speaker publishing roles",
-    "removed hardcoded demo-attendee hidden IDs from attendee-facing controls"
+  "artifact": "agency-event-os-main_BASELINE_05-22-26_19b3afe.zip",
+  "repo": "agency-event-os",
+  "sourceBaseline": "agency-event-os-main_BASELINE_05-21-26_19b3afe.zip",
+  "status": "STRUCTURALLY CHECKED \u2014 LOCAL VALIDATION REQUIRED",
+  "scope": "Day 1 env/password/code registry cleanup pass",
+  "changedAreas": [
+    "deployment/env-var-registry.json demoDefaults",
+    "deployment/cloudflare-required-secrets.json generated from registry defaults",
+    "lib/env/safeEnv.ts registry-derived defaults",
+    "Playwright/package scripts registry-derived Day 1 env runner",
+    "E2E helper defaults from registry",
+    "private env sync helper",
+    "operator packet/docs Day 1 values"
   ],
-  "structuralValidatorsPassed": [
-    "validate_stage_stream_contract",
-    "validate_streamyard_ingress_contract",
-    "validate_stage_player_ux_contract",
-    "validate_live_chat_contract",
-    "validate_attendee_live_controls_contract",
-    "validate_access_boundary_contract",
-    "validate_public_frontdoor_contract",
-    "validate_runtime_audit_contract",
-    "validate_required_env_registry",
-    "validate_deploy_env_contract",
-    "validate_cloudflare_required_secrets_manifest",
-    "validate_no_node_crypto_on_public_runtime"
+  "sandboxValidation": [
+    "legacy invented value scan: PASS",
+    "new hardcoded values outside allowed registry/docs/example surfaces: PASS",
+    "package scripts contain no Day 1 hardcoded values: PASS",
+    "node --check on changed JS scripts: PASS",
+    "validate_required_env_registry: PASS",
+    "validate_cloudflare_required_secrets_manifest: PASS",
+    "validate_production_config_policy: PASS",
+    "validate_env_does_not_crash_access_gates: PASS",
+    "validate_v7_day1_packet: PASS",
+    "validate_day1_streamyard_model_contract: PASS",
+    "validate_no_generated_artifacts: PASS"
   ],
-  "localValidationRequired": true,
-  "fullBuildValidationRunInSandbox": false,
-  "lastArtifactPass": "local-headed-e2e-diagnostics-flow",
-  "updatedAt": "2026-05-20T23:30:00Z",
-  "notes": "Adds headed local predeploy diagnostics runner that writes failure artifacts ZIP to Downloads and runs with max-failures=0.",
-  "latest_fix": "local E2E diagnostics runtimeTrace event-drafts directory creation",
-  "changedFiles": [
-    "tests/e2e/helpers/runtimeTrace.ts"
-  ]
+  "notRun": [
+    "npm run typecheck \u2014 not run successfully in sandbox because uploaded ZIP workspace has no node_modules/Next/Vitest type dependencies",
+    "npm run lint \u2014 not run in sandbox for same dependency reason",
+    "npm run test \u2014 not run in sandbox for same dependency reason",
+    "Playwright E2E \u2014 not run in sandbox"
+  ],
+  "notes": [
+    "Master gauntlet now opens speaker teleprompter, submits speaker material, and verifies operator approval queue visibility.",
+    "Speaker materials can enter via self-serve teleprompter form, hello@/manual intake, or crew/operator handoff into one producer review queue."
+  ],
+  "latestPass": "speaker teleprompter/material queue gauntlet patch",
+  "updatedAt": "2026-05-22T05:50:10Z"
 }

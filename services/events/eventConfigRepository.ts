@@ -46,6 +46,7 @@ import workshopRunOfShow from "@/data/events/premium-workshop-intensive/run-of-s
 import workshopVideo from "@/data/events/premium-workshop-intensive/video.json";
 import workshopCommunications from "@/data/events/premium-workshop-intensive/communications.json";
 import type { V4SpecialGuestRole } from "@/types/v4";
+import { getEventSetupDraftByEventCode, getEventSetupDraftRoleCodes } from "@/services/events/eventDraftStore";
 
 export interface EventIndexRecord {
   slug: string;
@@ -130,6 +131,83 @@ function normalizeEventLookupKey(rawCode: string | undefined) {
   return eventLookupAliases[code] || code;
 }
 
+function dynamicEventIndexRecord(code: string | undefined): EventIndexRecord | undefined {
+  const draft = getEventSetupDraftByEventCode(code);
+  if (!draft) return undefined;
+  return {
+    slug: draft.eventCode,
+    eventId: draft.eventCode,
+    publicCode: draft.eventCode,
+    status: "registration_open",
+    configPath: `.runtime-data/event-drafts.json#${draft.id}`,
+  };
+}
+
+function dynamicEventConfig(code: string | undefined): EventConfigRecord | undefined {
+  const draft = getEventSetupDraftByEventCode(code);
+  if (!draft) return undefined;
+  return {
+    id: draft.eventCode,
+    slug: draft.eventCode,
+    name: draft.eventName,
+    client: draft.clientName,
+    clientSlug: draft.clientName.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "client",
+    timezone: "America/Chicago",
+    state: "registration_open",
+    publishLifecycle: "test_created_runtime_event",
+    publicCode: draft.eventCode,
+    runtimeStateBoundary: "event_scoped_runtime",
+  };
+}
+
+function dynamicAttendeeConfig(code: string | undefined): AttendeeConfigRecord | undefined {
+  const event = dynamicEventConfig(code);
+  if (!event) return undefined;
+  return { eventId: event.id, joinStates: ["registration_open", "live"], defaultDestination: `/venue/${event.id}/lobby`, supportEnabled: true };
+}
+
+function dynamicPackageBody(event: EventConfigRecord): Omit<EventConfigPackage, "event" | "attendee"> {
+  return {
+    branding: { eventId: event.id, logo: "west-peek-live", hero: event.name, theme: "west-peek-live" },
+    agenda: { eventId: event.id, sessions: [
+      { id: `${event.id}-main-stage`, title: `${event.name} Main Stage`, room: "Main Stage", startsAt: "10:00 AM" },
+      { id: `${event.id}-operator-briefing`, title: "Operator briefing", room: "Session Room", startsAt: "11:00 AM" },
+    ] },
+    speakers: { eventId: event.id, speakers: [
+      { id: `${event.id}-speaker`, name: "Playwright Speaker", roleCodeEnvKey: "generated_event_speaker_code" },
+    ] },
+    sponsors: { eventId: event.id, sponsors: [
+      { id: `${event.id}-sponsor`, name: "Playwright Sponsor", headline: "Generated sponsor booth", websiteUrl: "https://westpeek.live" },
+    ] },
+    runOfShow: { eventId: event.id, segments: [
+      { id: `${event.id}-opening`, title: "Opening remarks", startsAt: "10:00 AM", stage: "Main Stage" },
+      { id: `${event.id}-stream-check`, title: "StreamYard to LiveKit check", startsAt: "10:10 AM", stage: "Main Stage" },
+    ] },
+    video: { eventId: event.id, providerLadder: ["StreamYard production feed", "LiveKit embedded distribution", "Daily fallback", "Zoom + Google Meet manual backup"], dailyAutomatic: true, zoomRequiresCrewConfirmation: true, googleMeetManualOnly: true, roomLevelOverrides: true },
+    communications: { eventId: event.id, templates: ["attendee_registration", "speaker_instructions", "sponsor_instructions", "crew_call_sheet"] },
+  };
+}
+
+function dynamicAccessConfig(code: string | undefined): EventAccessConfigRecord | undefined {
+  const event = dynamicEventConfig(code);
+  if (!event) return undefined;
+  return {
+    eventId: event.id,
+    crewPasswordEnvKey: "CREW_ACCESS_PASSWORD",
+    specialGuestCodes: [
+      { role: "client", envKey: `GENERATED_${event.id.toUpperCase().replace(/[^A-Z0-9]+/g, "_")}_CLIENT_CODE`, destinationTemplate: "/client/{clientSlug}/events/{eventId}" },
+      { role: "speaker", envKey: `GENERATED_${event.id.toUpperCase().replace(/[^A-Z0-9]+/g, "_")}_SPEAKER_CODE`, destinationTemplate: "/speaker/events/{eventId}" },
+      { role: "sponsor", envKey: `GENERATED_${event.id.toUpperCase().replace(/[^A-Z0-9]+/g, "_")}_SPONSOR_CODE`, destinationTemplate: "/sponsor/events/{eventId}" },
+      { role: "vip", envKey: `GENERATED_${event.id.toUpperCase().replace(/[^A-Z0-9]+/g, "_")}_VIP_CODE`, destinationTemplate: "/venue/{eventId}/lobby" },
+      { role: "crew_lite", envKey: `GENERATED_${event.id.toUpperCase().replace(/[^A-Z0-9]+/g, "_")}_CREW_LITE_CODE`, destinationTemplate: "/crew/events/{eventId}" },
+    ],
+  };
+}
+
+export function getGeneratedEventRoleCode(eventCode: string | undefined, role: V4SpecialGuestRole) {
+  return getEventSetupDraftRoleCodes(eventCode)[role as keyof ReturnType<typeof getEventSetupDraftRoleCodes>];
+}
+
 const eventConfigPackages: Record<string, Omit<EventConfigPackage, "event" | "attendee">> = {
   demo: {
     branding: demoBranding,
@@ -185,32 +263,32 @@ export function getEventIndex(): EventIndexRecord[] {
 export function findEventIndexRecord(rawCode: string | undefined) {
   const code = normalizeEventLookupKey(rawCode);
   if (!code) return undefined;
-  return getEventIndex().find((event) => event.slug === code || event.publicCode.toLowerCase() === code || event.eventId.toLowerCase() === code);
+  return getEventIndex().find((event) => event.slug === code || event.publicCode.toLowerCase() === code || event.eventId.toLowerCase() === code) || dynamicEventIndexRecord(code);
 }
 
 export function getEventConfig(slugOrEventId: string | undefined): EventConfigRecord | undefined {
   const code = normalizeEventLookupKey(slugOrEventId);
   if (!code) return undefined;
   const record = getEventIndex().find((item) => item.slug === code || item.eventId === code || item.publicCode.toLowerCase() === code);
-  return record ? eventConfigs[record.slug] : eventConfigs[code];
+  return record ? (eventConfigs[record.slug] || dynamicEventConfig(record.slug)) : (eventConfigs[code] || dynamicEventConfig(code));
 }
 
 export function getAttendeeConfig(slugOrEventId: string | undefined): AttendeeConfigRecord | undefined {
   const code = normalizeEventLookupKey(slugOrEventId);
   if (!code) return undefined;
   const record = getEventIndex().find((item) => item.slug === code || item.eventId === code || item.publicCode.toLowerCase() === code);
-  return record ? attendeeConfigs[record.slug] : attendeeConfigs[code];
+  return record ? (attendeeConfigs[record.slug] || dynamicAttendeeConfig(record.slug)) : (attendeeConfigs[code] || dynamicAttendeeConfig(code));
 }
 
 export function getEventAccessConfig(slug: string): EventAccessConfigRecord | undefined {
   const access = accessIndex as AccessIndex;
-  return access.events[slug];
+  return access.events[slug] || dynamicAccessConfig(slug);
 }
 
 export function destinationForRole(role: V4SpecialGuestRole, eventId: string) {
-  const record = getEventIndex().find((item) => item.eventId === eventId);
-  const config = record ? getEventConfig(record.slug) : undefined;
-  const access = record ? getEventAccessConfig(record.slug) : undefined;
+  const record = findEventIndexRecord(eventId);
+  const config = getEventConfig(record?.slug || eventId);
+  const access = getEventAccessConfig(record?.slug || eventId);
   const roleConfig = access?.specialGuestCodes.find((item) => item.role === role);
   const template = roleConfig?.destinationTemplate;
   if (!template) return `/venue/${eventId}/lobby`;
@@ -225,7 +303,7 @@ export function getEventConfigPackage(slugOrEventId: string | undefined): EventC
   if (!event) throw new Error(`Event config package missing event record for ${slugOrEventId || "unknown"}.`);
   const attendee = getAttendeeConfig(event.slug);
   if (!attendee) throw new Error(`Event config package missing attendee config for ${event.slug}.`);
-  const packageBody = eventConfigPackages[event.slug];
+  const packageBody = eventConfigPackages[event.slug] || dynamicPackageBody(event);
   if (!packageBody) throw new Error(`Event config package missing files for ${event.slug}.`);
   return { event, attendee, ...packageBody };
 }

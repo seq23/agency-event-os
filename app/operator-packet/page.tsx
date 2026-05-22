@@ -31,8 +31,8 @@ export default async function OperatorPacketRoute() {
         <h1 className="mt-3 text-4xl font-black tracking-tight">West Peek Live operator guide</h1>
         <p className="mt-4 max-w-3xl text-sm leading-6 text-brand-muted">This in-app version summarizes the full packet. The repo includes the complete Markdown packet at docs/AGENCY_EVENT_OS_DAY1_OPERATOR_PACKET.md and the sendable DOCX packet.</p>
         <div className="mt-8 grid gap-4 md:grid-cols-2">
-          <section className="rounded-3xl bg-brand-ash p-5"><h2 className="font-black">Passwords</h2><p className="mt-2 text-sm leading-6">CrewAccess-2026! · OperatorLaunchpad-2026! · SpeakerGuest-2026! · SponsorGuest-2026! · VIPGuest-2026!</p></section>
-          <section className="rounded-3xl bg-brand-ash p-5"><h2 className="font-black">Video fallback</h2><p className="mt-2 text-sm leading-6">LiveKit primary → Daily fallback → Zoom + Google Meet manual backups.</p></section>
+          <section className="rounded-3xl bg-brand-ash p-5"><h2 className="font-black">Access model</h2><p className="mt-2 text-sm leading-6">Owner master, operator, crew, and event-scoped guest codes stay in the private vault. Public pages must never display Day 1 passwords.</p></section>
+          <section className="rounded-3xl bg-brand-ash p-5"><h2 className="font-black">Livestream model</h2><p className="mt-2 text-sm leading-6">StreamYard production feed/source → LiveKit embedded distribution → Daily embedded fallback → Zoom + Google Meet backup continuity links.</p></section>
           <section className="rounded-3xl bg-brand-ash p-5"><h2 className="font-black">Run-of-show spine</h2><p className="mt-2 text-sm leading-6">Agenda → Run of Show → Call Sheet → Show Caller View → Live Cues → Incidents → Post-Event Report.</p></section>
           <section className="rounded-3xl bg-brand-ash p-5"><h2 className="font-black">Testing/admin spine</h2><p className="mt-2 text-sm leading-6">Testing Console → Route Health → Access Gates → Supabase Runtime → Event Config Package → Video Providers → Post-Deploy Smoke.</p></section>
         </div>

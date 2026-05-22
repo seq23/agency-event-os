@@ -22,6 +22,7 @@ export interface V4AccessResolution {
   ok: boolean;
   accessKind: V4AccessKind;
   eventId?: string;
+  clientSlug?: string;
   role?: V4SpecialGuestRole | V4CrewRole;
   destination?: string;
   reason?: "missing_code" | "invalid_event" | "invalid_role_code" | "expired" | "forbidden";

@@ -1,13 +1,6 @@
 import { expect, test } from "@playwright/test";
 import { gotoAndAssert } from "./helpers/assertNoAppError";
-
-const day1Passwords = [
-  "OperatorLaunchpad-2026!",
-  "CrewAccess-2026!",
-  "SpeakerGuest-2026!",
-  "SponsorGuest-2026!",
-  "VIPGuest-2026!",
-];
+import { day1Passwords } from "./helpers/day1AccessDefaults";
 
 test("privacy and terms pages expose approved legal/support contact model", async ({ page }) => {
   await gotoAndAssert(page, "/privacy");

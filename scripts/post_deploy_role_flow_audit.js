@@ -5,21 +5,23 @@ if (!baseUrl) {
   process.exit(0);
 }
 
+const { requiredDay1Default } = require('./lib/day1AccessDefaults');
+
 const checks = [
   {
     path: "/production-access/crew",
     mustContain: ["Crew password", "secure production vault", "never displays the password"],
-    mustNotContain: ["CrewAccess-2026!"],
+    mustNotContain: [requiredDay1Default("CREW_ACCESS_PASSWORD")],
   },
   {
     path: "/production-access/special-guest",
     mustContain: ["Special guest password", "secure production vault", "never displays speaker, sponsor, VIP, or client passwords"],
-    mustNotContain: ["SpeakerGuest-2026!", "SponsorGuest-2026!", "VIPGuest-2026!"],
+    mustNotContain: [requiredDay1Default("EVENT_DEMO_SPEAKER_CODE"), requiredDay1Default("EVENT_DEMO_SPONSOR_CODE"), requiredDay1Default("EVENT_DEMO_VIP_CODE")],
   },
   {
     path: "/production-access/operator",
     mustContain: ["Operator launchpad password", "secure production vault", "never displays the password"],
-    mustNotContain: ["OperatorLaunchpad-2026!"],
+    mustNotContain: [requiredDay1Default("OPERATOR_LAUNCHPAD_PASSWORD")],
   },
   { path: "/production-access", mustContain: ["Production Access", "Crew / Production Team", "Conference Special Guest"], mustNotContain: [] },
 ];

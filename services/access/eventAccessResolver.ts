@@ -1,4 +1,4 @@
-import { destinationForRole, findEventIndexRecord, getEventAccessConfig } from "@/services/events/eventConfigRepository";
+import { destinationForRole, findEventIndexRecord, getEventAccessConfig, getEventConfig, getGeneratedEventRoleCode } from "@/services/events/eventConfigRepository";
 import type { V4AccessResolution, V4CrewRole } from "@/types/v4";
 
 function readEnvCode(envKey: string) {
@@ -20,7 +20,7 @@ export async function resolveSpecialGuestAccess(eventCode: string | undefined, r
   }
 
   const matchingRole = accessConfig.specialGuestCodes.find((item) => {
-    const expected = readEnvCode(item.envKey);
+    const expected = readEnvCode(item.envKey) || getGeneratedEventRoleCode(eventRecord.slug, item.role);
     return Boolean(expected && expected === normalizedRoleCode);
   });
 
@@ -28,10 +28,12 @@ export async function resolveSpecialGuestAccess(eventCode: string | undefined, r
     return { ok: false, accessKind: "special_guest", eventId: eventRecord.eventId, reason: "invalid_role_code", message: "That access code is not valid for this event." };
   }
 
+  const eventConfig = getEventConfig(eventRecord.slug);
   return {
     ok: true,
     accessKind: "special_guest",
     eventId: eventRecord.eventId,
+    clientSlug: eventConfig?.clientSlug,
     role: matchingRole.role,
     destination: destinationForRole(matchingRole.role, eventRecord.eventId),
     message: "Access granted.",

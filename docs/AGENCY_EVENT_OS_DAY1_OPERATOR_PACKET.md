@@ -34,7 +34,7 @@
 Use this only for owner-level control, settings, billing, admin testing, and full workspace access.
 
 ```text
-OWNER_MASTER_ACCESS_PASSWORD=OwnerMaster-2026!
+OWNER_MASTER_ACCESS_PASSWORD=Owner-Command-2026!
 ```
 
 Owner gate:
@@ -50,7 +50,7 @@ https://west-peek-live.seq-taylor.workers.dev/production-access/owner
 Use this for Day 1 show operation, launchpad, event creation, setup, preview, run-of-show, crew manager, video health, incidents, approval queue, and change control.
 
 ```text
-OPERATOR_LAUNCHPAD_PASSWORD=OperatorLaunchpad-2026!
+OPERATOR_LAUNCHPAD_PASSWORD=Show-Runner-2026!
 ```
 
 Operator gate:
@@ -66,7 +66,7 @@ https://west-peek-live.seq-taylor.workers.dev/production-access/operator
 Use this for show-day crew surfaces: crew home, call sheet, run-of-show, tasks, fallback, escalation, and show instructions.
 
 ```text
-CREW_ACCESS_PASSWORD=CrewAccess-2026!
+CREW_ACCESS_PASSWORD=Crew-Call-2026!
 ```
 
 Crew gate:
@@ -100,11 +100,11 @@ Roles:
 ## 6. Demo event access codes
 
 ```text
-EVENT_DEMO_CLIENT_CODE=PrYQ0PUDfonDxO-rYA-v-4U1YR8PNrpg
-EVENT_DEMO_CREW_LITE_CODE=BlyZ2QfZZWOXsj4BZuVrv3I-fklo67JZ
-EVENT_DEMO_SPEAKER_CODE=cTehLlo_kiXFoYR_IROc-S1D0UBKtrE-
-EVENT_DEMO_SPONSOR_CODE=ASFbEmnJ_Ga4Xp0jCXkmeTXhiiTIwdp7
-EVENT_DEMO_VIP_CODE=SBYFMZODMzZm8IrpIKMjxgASdzVOsMkX
+EVENT_DEMO_CLIENT_CODE=Demo-Client-2026!
+EVENT_DEMO_CREW_LITE_CODE=Demo-CrewLite-2026!
+EVENT_DEMO_SPEAKER_CODE=Demo-Speaker-2026!
+EVENT_DEMO_SPONSOR_CODE=Demo-Sponsor-2026!
+EVENT_DEMO_VIP_CODE=Demo-VIP-2026!
 ```
 
 ---
@@ -112,11 +112,11 @@ EVENT_DEMO_VIP_CODE=SBYFMZODMzZm8IrpIKMjxgASdzVOsMkX
 ## 7. Leadership Reset Webinar access codes
 
 ```text
-EVENT_LEADERSHIP_RESET_WEBINAR_CLIENT_CODE=k3VSeIa_Ka8TWYqvi-NRkGBEIz3Iw0q6
-EVENT_LEADERSHIP_RESET_WEBINAR_CREW_LITE_CODE=wi1AeitcWDyW01Jztfs0rC0gbdlDk8Gj
-EVENT_LEADERSHIP_RESET_WEBINAR_SPEAKER_CODE=QEr9ehV9mA3oHkLdMcXHA9jWvtF98_Qv
-EVENT_LEADERSHIP_RESET_WEBINAR_SPONSOR_CODE=ky8noBJRGtS6V5nRjTX7Ju-Ul7l4t3fl
-EVENT_LEADERSHIP_RESET_WEBINAR_VIP_CODE=Xci1kZVzQXm1mghh6cZtjlDX9hUDzEFz
+EVENT_LEADERSHIP_RESET_WEBINAR_CLIENT_CODE=Leadership-Client-2026!
+EVENT_LEADERSHIP_RESET_WEBINAR_CREW_LITE_CODE=Leadership-CrewLite-2026!
+EVENT_LEADERSHIP_RESET_WEBINAR_SPEAKER_CODE=Leadership-Speaker-2026!
+EVENT_LEADERSHIP_RESET_WEBINAR_SPONSOR_CODE=Leadership-Sponsor-2026!
+EVENT_LEADERSHIP_RESET_WEBINAR_VIP_CODE=Leadership-VIP-2026!
 ```
 
 ---
@@ -124,11 +124,11 @@ EVENT_LEADERSHIP_RESET_WEBINAR_VIP_CODE=Xci1kZVzQXm1mghh6cZtjlDX9hUDzEFz
 ## 8. Premium Workshop Intensive access codes
 
 ```text
-EVENT_PREMIUM_WORKSHOP_INTENSIVE_CLIENT_CODE=MRruS-m3jztox1ZWPlUOuS0wW7Ezx3rE
-EVENT_PREMIUM_WORKSHOP_INTENSIVE_CREW_LITE_CODE=yJFC6Ojt6Dryr-t8WrZyq2JOQJWMm_v-
-EVENT_PREMIUM_WORKSHOP_INTENSIVE_SPEAKER_CODE=JSNKiJLGyaBNdWpzj5xEDVE8jK--rqsf
-EVENT_PREMIUM_WORKSHOP_INTENSIVE_SPONSOR_CODE=9goixfw44tkXNR2tFKXmQKRH7KQWAvnX
-EVENT_PREMIUM_WORKSHOP_INTENSIVE_VIP_CODE=QGzqouoJaeOjxFxKVGWap15dvi-GKW4D
+EVENT_PREMIUM_WORKSHOP_INTENSIVE_CLIENT_CODE=Workshop-Client-2026!
+EVENT_PREMIUM_WORKSHOP_INTENSIVE_CREW_LITE_CODE=Workshop-CrewLite-2026!
+EVENT_PREMIUM_WORKSHOP_INTENSIVE_SPEAKER_CODE=Workshop-Speaker-2026!
+EVENT_PREMIUM_WORKSHOP_INTENSIVE_SPONSOR_CODE=Workshop-Sponsor-2026!
+EVENT_PREMIUM_WORKSHOP_INTENSIVE_VIP_CODE=Workshop-VIP-2026!
 ```
 
 ---
@@ -136,11 +136,11 @@ EVENT_PREMIUM_WORKSHOP_INTENSIVE_VIP_CODE=QGzqouoJaeOjxFxKVGWap15dvi-GKW4D
 ## 9. Provider Innovation Expo access codes
 
 ```text
-EVENT_PROVIDER_INNOVATION_EXPO_CLIENT_CODE=FnvZCEe0A_iTUvMGC1I0owMUA2CUrK0j
-EVENT_PROVIDER_INNOVATION_EXPO_CREW_LITE_CODE=dpc8LH6U41pIV7A5pu4fqcDZelVvjUTF
-EVENT_PROVIDER_INNOVATION_EXPO_SPEAKER_CODE=eFkuJoVGB_8N2PgfdsLZ5Al6U3oRXahb
-EVENT_PROVIDER_INNOVATION_EXPO_SPONSOR_CODE=uBA8ud4sa8MewG0dtEc-UT9ojnSlFJ8s
-EVENT_PROVIDER_INNOVATION_EXPO_VIP_CODE=iZKH6BxA1TJ-5fnb6x3vqfbDDp4xFJht
+EVENT_PROVIDER_INNOVATION_EXPO_CLIENT_CODE=Expo-Client-2026!
+EVENT_PROVIDER_INNOVATION_EXPO_CREW_LITE_CODE=Expo-CrewLite-2026!
+EVENT_PROVIDER_INNOVATION_EXPO_SPEAKER_CODE=Expo-Speaker-2026!
+EVENT_PROVIDER_INNOVATION_EXPO_SPONSOR_CODE=Expo-Sponsor-2026!
+EVENT_PROVIDER_INNOVATION_EXPO_VIP_CODE=Expo-VIP-2026!
 ```
 
 ---
@@ -148,11 +148,11 @@ EVENT_PROVIDER_INNOVATION_EXPO_VIP_CODE=iZKH6BxA1TJ-5fnb6x3vqfbDDp4xFJht
 ## 10. Seed Demo Day access codes
 
 ```text
-EVENT_SEED_DEMO_DAY_CLIENT_CODE=Uirggpw0N-n1yJ1U4MD6QLo_jv6c4PwS
-EVENT_SEED_DEMO_DAY_CREW_LITE_CODE=MbiSwARGHaqFG8WkrlL1bKCGXVZID8Dh
-EVENT_SEED_DEMO_DAY_SPEAKER_CODE=ZpNE8vQ9ENnARtHsp0zJh9B_Xw15zkKk
-EVENT_SEED_DEMO_DAY_SPONSOR_CODE=RldlFefyX-tmoRgVdkT7NoCK05-rLkzc
-EVENT_SEED_DEMO_DAY_VIP_CODE=OdZhmiybVyHepvcb_xLSPxmRzT0_kLYW
+EVENT_SEED_DEMO_DAY_CLIENT_CODE=SeedDemo-Client-2026!
+EVENT_SEED_DEMO_DAY_CREW_LITE_CODE=SeedDemo-CrewLite-2026!
+EVENT_SEED_DEMO_DAY_SPEAKER_CODE=SeedDemo-Speaker-2026!
+EVENT_SEED_DEMO_DAY_SPONSOR_CODE=SeedDemo-Sponsor-2026!
+EVENT_SEED_DEMO_DAY_VIP_CODE=SeedDemo-VIP-2026!
 ```
 
 ---
@@ -173,6 +173,21 @@ EVENT_SEED_DEMO_DAY_VIP_CODE=OdZhmiybVyHepvcb_xLSPxmRzT0_kLYW
 12. Open Lobby, Stage, Sessions, Breakouts, Networking, Expo, People, Replay, and Help.
 13. Keep Incidents and Change Control available during the show.
 
+
+---
+
+## 11A. Speaker materials and teleprompter intake
+
+Speaker materials have one producer review queue. The intake path can vary, but the destination must not vary.
+
+| Intake path | Who uses it | What happens | Show-day rule |
+|---|---|---|---|
+| Speaker self-serve | Speaker | Speaker opens `/speaker/events/[eventId]/teleprompter` and submits teleprompter notes, deck links, or supporting document links. | Preferred path. Nothing goes live until producer review. |
+| hello@ email fallback | Speaker or assistant | Operator/crew copies the email summary or file link into the speaker material intake panel on the event approval queue. | Email is not the system of record; the producer queue is. |
+| Crew/operator upload or handoff | Crew, operator, producer | Crew/operator records the handoff in the same speaker material intake panel. | Use when a speaker sends a file by text, Drive, Slack, or live handoff. |
+
+Operational rule: materials may arrive through self-serve, hello@ email, or crew/operator handoff, but they must end in the event-specific producer review queue before teleprompter/deck/show materials are changed. Speakers cannot directly publish script, slide, or teleprompter changes to the live show.
+
 ---
 
 ## 12. Access boundaries
@@ -191,10 +206,12 @@ EVENT_SEED_DEMO_DAY_VIP_CODE=OdZhmiybVyHepvcb_xLSPxmRzT0_kLYW
 
 ## 13. Video provider model
 
-- Primary embedded event engine: LiveKit.
+- Production feed/source: StreamYard.
+- Primary embedded event engine/distribution: LiveKit.
 - Secondary embedded fallback: Daily.
 - White-label backup rooms: Zoom + Google Meet links.
 - Zoom and Google Meet are backup continuity links, not the core event engine.
+- Do not collapse StreamYard and LiveKit into the same failure plane: StreamYard is the production feed/source; LiveKit is the embedded event distribution layer.
 
 ---
 

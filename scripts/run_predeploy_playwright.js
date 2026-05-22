@@ -2,6 +2,7 @@
 const { spawnSync } = require('node:child_process');
 const fs = require('node:fs');
 const path = require('node:path');
+const { day1Default } = require('./lib/day1AccessDefaults');
 
 const root = process.cwd();
 const cli = path.join(root, 'node_modules', '@playwright', 'test', 'cli.js');
@@ -46,16 +47,16 @@ const safeEnv = {
   DAILY_STAGE_FALLBACK_REQUIRES_TOKEN: 'true',
   STREAMYARD_PRIMARY_ENABLED: 'true',
   STAGE_STREAM_DEFAULT_SOURCE: 'LIVEKIT_INGRESS',
-  V5_ACCESS_COOKIE_SECRET: process.env.V5_ACCESS_COOKIE_SECRET || 'local-playwright-e2e-cookie-secret-1234567890',
-  CREW_ACCESS_PASSWORD: process.env.CREW_ACCESS_PASSWORD || 'CrewAccess-2026!',
-  OPERATOR_LAUNCHPAD_PASSWORD: process.env.OPERATOR_LAUNCHPAD_PASSWORD || 'OperatorAccess-2026!',
+  V5_ACCESS_COOKIE_SECRET: day1Default('V5_ACCESS_COOKIE_SECRET', 'local-playwright-e2e-cookie-secret-1234567890'),
+  CREW_ACCESS_PASSWORD: day1Default('CREW_ACCESS_PASSWORD'),
+  OPERATOR_LAUNCHPAD_PASSWORD: day1Default('OPERATOR_LAUNCHPAD_PASSWORD'),
   AUTH_SESSION_COOKIE_NAME: process.env.AUTH_SESSION_COOKIE_NAME || 'agency_event_os_session',
   V5_CREW_COOKIE_NAME: process.env.V5_CREW_COOKIE_NAME || 'wpl_crew_access',
   V5_OPERATOR_COOKIE_NAME: process.env.V5_OPERATOR_COOKIE_NAME || 'wpl_operator_access',
   V5_SPECIAL_GUEST_COOKIE_NAME: process.env.V5_SPECIAL_GUEST_COOKIE_NAME || 'wpl_guest_access',
-  EVENT_DEMO_SPEAKER_CODE: process.env.EVENT_DEMO_SPEAKER_CODE || 'SpeakerGuest-2026!',
-  EVENT_DEMO_SPONSOR_CODE: process.env.EVENT_DEMO_SPONSOR_CODE || 'SponsorGuest-2026!',
-  EVENT_DEMO_VIP_CODE: process.env.EVENT_DEMO_VIP_CODE || 'VIPGuest-2026!',
+  EVENT_DEMO_SPEAKER_CODE: day1Default('EVENT_DEMO_SPEAKER_CODE'),
+  EVENT_DEMO_SPONSOR_CODE: day1Default('EVENT_DEMO_SPONSOR_CODE'),
+  EVENT_DEMO_VIP_CODE: day1Default('EVENT_DEMO_VIP_CODE'),
   NEXT_PUBLIC_SUPABASE_URL: '',
   NEXT_PUBLIC_SUPABASE_ANON_KEY: '',
   SUPABASE_SERVICE_ROLE_KEY: '',

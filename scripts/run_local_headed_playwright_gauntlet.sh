@@ -25,11 +25,11 @@ export LOCAL_PLAYWRIGHT_GAUNTLET_AUTH="${LOCAL_PLAYWRIGHT_GAUNTLET_AUTH:-true}"
 export AGENCY_EVENT_OS_RUNTIME_STORE="${AGENCY_EVENT_OS_RUNTIME_STORE:-file}"
 export ALLOW_FILE_RUNTIME_STORE_IN_PRODUCTION="${ALLOW_FILE_RUNTIME_STORE_IN_PRODUCTION:-true}"
 export AGENCY_EVENT_OS_RUNTIME_STORE_PATH="${AGENCY_EVENT_OS_RUNTIME_STORE_PATH:-$ROOT_DIR/.runtime-data/local-playwright-runtime.json}"
-export V5_ACCESS_COOKIE_SECRET="${V5_ACCESS_COOKIE_SECRET:-local-playwright-gauntlet-cookie-secret-1234567890}"
-export CREW_ACCESS_PASSWORD="${CREW_ACCESS_PASSWORD:-CrewAccess-2026!}"
-export EVENT_DEMO_SPEAKER_CODE="${EVENT_DEMO_SPEAKER_CODE:-SpeakerGuest-2026!}"
-export EVENT_DEMO_SPONSOR_CODE="${EVENT_DEMO_SPONSOR_CODE:-SponsorGuest-2026!}"
-export EVENT_DEMO_VIP_CODE="${EVENT_DEMO_VIP_CODE:-VIPGuest-2026!}"
+export V5_ACCESS_COOKIE_SECRET="${V5_ACCESS_COOKIE_SECRET:-$(node -e "const {day1Default}=require('./scripts/lib/day1AccessDefaults'); process.stdout.write(day1Default('V5_ACCESS_COOKIE_SECRET', 'local-playwright-gauntlet-cookie-secret-1234567890'))")}"
+export CREW_ACCESS_PASSWORD="${CREW_ACCESS_PASSWORD:-$(node -e "const {requiredDay1Default}=require('./scripts/lib/day1AccessDefaults'); process.stdout.write(requiredDay1Default('CREW_ACCESS_PASSWORD'))")}"
+export EVENT_DEMO_SPEAKER_CODE="${EVENT_DEMO_SPEAKER_CODE:-$(node -e "const {requiredDay1Default}=require('./scripts/lib/day1AccessDefaults'); process.stdout.write(requiredDay1Default('EVENT_DEMO_SPEAKER_CODE'))")}"
+export EVENT_DEMO_SPONSOR_CODE="${EVENT_DEMO_SPONSOR_CODE:-$(node -e "const {requiredDay1Default}=require('./scripts/lib/day1AccessDefaults'); process.stdout.write(requiredDay1Default('EVENT_DEMO_SPONSOR_CODE'))")}"
+export EVENT_DEMO_VIP_CODE="${EVENT_DEMO_VIP_CODE:-$(node -e "const {requiredDay1Default}=require('./scripts/lib/day1AccessDefaults'); process.stdout.write(requiredDay1Default('EVENT_DEMO_VIP_CODE'))")}"
 
 cleanup() {
   if [[ -n "${SERVER_PID:-}" ]] && kill -0 "$SERVER_PID" >/dev/null 2>&1; then

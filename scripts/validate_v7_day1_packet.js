@@ -20,6 +20,9 @@ const required = [
   '/production-access/operator',
   '/production-access/crew',
   '/production-access/special-guest',
+  'StreamYard',
+  'Production feed/source',
+  'Primary embedded event engine/distribution',
   'LiveKit',
   'Daily',
   'Zoom',
@@ -30,16 +33,27 @@ const required = [
 const missing = required.filter((token) => !lower.includes(token.toLowerCase()));
 if (missing.length) throw new Error(`Day 1 packet missing: ${missing.join(', ')}`);
 
-const staleForbidden = [
-  'SpeakerGuest-2026!',
-  'SponsorGuest-2026!',
-  'VIPGuest-2026!',
-  'Demo special guest passwords are seeded for training',
+const staleForbiddenPatterns = [
+  /SpeakerGuest-\d{4}!/,
+  /SponsorGuest-\d{4}!/,
+  /VIPGuest-\d{4}!/,
+  /Demo special guest passwords are seeded for training/,
 ];
 
-const staleFound = staleForbidden.filter((token) => s.includes(token));
+const staleFound = staleForbiddenPatterns.filter((pattern) => pattern.test(s));
 if (staleFound.length) {
-  throw new Error(`Day 1 packet contains stale fake guest-password model: ${staleFound.join(', ')}`);
+  throw new Error('Day 1 packet contains stale fake guest-password model.');
+}
+
+
+const staleProviderModel = [
+  'LiveKit primary → Daily fallback',
+  'Primary video provider',
+  'Primary venue distribution is LiveKit',
+];
+const staleProviderFound = staleProviderModel.filter((token) => s.includes(token));
+if (staleProviderFound.length) {
+  throw new Error(`Day 1 packet contains stale video provider model: ${staleProviderFound.join(', ')}`);
 }
 
 const providerSecretPatterns = [

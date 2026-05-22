@@ -12,10 +12,10 @@ async function startEventSetup(formData: FormData) {
     httpOnly: true,
     sameSite: "lax",
     secure: process.env.NODE_ENV === "production",
-    path: "/app/events/event-summit/setup",
+    path: `/app/events/${draft.eventCode}/setup`,
     maxAge: 60 * 30,
   });
-  redirect(`/app/events/event-summit/setup?draftId=${encodeURIComponent(draft.id)}`);
+  redirect(`/app/events/${draft.eventCode}/setup?draftId=${encodeURIComponent(draft.id)}`);
 }
 
 const fields = [
@@ -25,7 +25,8 @@ const fields = [
   ["eventDate", "Event date", "2026-06-01"],
   ["audience", "Primary audience", "Guests, speakers, sponsors, VIPs"],
   ["eventType", "Event type", "Webinar / summit / workshop / expo"],
-  ["primaryVideo", "Primary video provider", "LiveKit"],
+  ["productionFeed", "Production feed / source", "StreamYard"],
+  ["primaryVideo", "Primary embedded distribution", "LiveKit"],
   ["fallbackVideo", "Fallback video provider", "Daily, then Zoom + Google Meet"],
 ] as const;
 

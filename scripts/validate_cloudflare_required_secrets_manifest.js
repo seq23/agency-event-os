@@ -8,6 +8,7 @@ function fail(message) {
 const manifestPath = "deployment/cloudflare-required-secrets.json";
 if (!fs.existsSync(manifestPath)) fail("missing deployment/cloudflare-required-secrets.json");
 const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
+const registry = JSON.parse(fs.readFileSync("deployment/env-var-registry.json", "utf8"));
 
 if (manifest.workerName !== "west-peek-live") fail("workerName must be west-peek-live");
 if (manifest.liveSmokeBaseUrl !== "https://west-peek-live.seq-taylor.workers.dev") fail("liveSmokeBaseUrl must be the deployed Worker URL");
@@ -30,11 +31,20 @@ for (const key of required) {
 }
 
 const defaults = manifest.demoDefaults || {};
-if (defaults.CREW_ACCESS_PASSWORD !== "CrewAccess-2026!") fail("demoDefaults missing crew password");
-if (defaults.OPERATOR_LAUNCHPAD_PASSWORD !== "OperatorLaunchpad-2026!") fail("demoDefaults missing operator password");
+const registryDefaults = registry.demoDefaults || {};
+for (const key of [
+  "CREW_ACCESS_PASSWORD",
+  "OPERATOR_LAUNCHPAD_PASSWORD",
+  "OWNER_MASTER_ACCESS_PASSWORD",
+  "EVENT_DEMO_CLIENT_CODE",
+  "EVENT_DEMO_SPEAKER_CODE",
+  "EVENT_DEMO_SPONSOR_CODE",
+  "EVENT_DEMO_VIP_CODE",
+  "EVENT_DEMO_CREW_LITE_CODE",
+]) {
+  if (!registryDefaults[key]) fail(`registry demoDefaults missing ${key}`);
+  if (defaults[key] !== registryDefaults[key]) fail(`manifest demoDefaults for ${key} must match registry demoDefaults`);
+}
 if (defaults.CREW_ACCESS_PASSWORD === defaults.OPERATOR_LAUNCHPAD_PASSWORD) fail("demoDefaults must keep crew and operator passwords separate");
-if (defaults.EVENT_DEMO_SPEAKER_CODE !== "SpeakerGuest-2026!") fail("demoDefaults missing speaker code");
-if (defaults.EVENT_DEMO_SPONSOR_CODE !== "SponsorGuest-2026!") fail("demoDefaults missing sponsor code");
-if (defaults.EVENT_DEMO_VIP_CODE !== "VIPGuest-2026!") fail("demoDefaults missing VIP code");
 
 console.log("validate_cloudflare_required_secrets_manifest: PASS");

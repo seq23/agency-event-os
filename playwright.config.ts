@@ -1,5 +1,6 @@
 import { defineConfig, devices } from "@playwright/test";
 import fs from "node:fs";
+import envRegistry from "./deployment/env-var-registry.json";
 
 const baseURL = process.env.PLAYWRIGHT_BASE_URL || "http://127.0.0.1:3000";
 const systemChromium = process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH || "/usr/bin/chromium";
@@ -12,6 +13,16 @@ const deployedRun = process.env.PLAYWRIGHT_DEPLOYED === "1" || !isLocalBaseURL;
 const skipWebServer = process.env.PLAYWRIGHT_SKIP_WEBSERVER === "1" || process.env.PLAYWRIGHT_SKIP_WEBSERVER === "true";
 const shouldStartLocalServer = !deployedRun && !skipWebServer;
 const localRuntimePath = process.env.AGENCY_EVENT_OS_RUNTIME_STORE_PATH || ".runtime-data/local-playwright-runtime.json";
+const day1Defaults = envRegistry.demoDefaults as Record<string, string | undefined>;
+
+function readLocalEnvValue(key: string) {
+  if (!fs.existsSync(".env.local")) return undefined;
+  const line = fs.readFileSync(".env.local", "utf8").split(/\r?\n/).find((entry) => entry.trim().startsWith(`${key}=`));
+  if (!line) return undefined;
+  return line.slice(line.indexOf("=") + 1).trim().replace(/^[\"']|[\"']$/g, "");
+}
+
+const day1Default = (key: string, fallback = "") => process.env[key] || readLocalEnvValue(key) || day1Defaults[key] || fallback;
 
 const chromiumArgs = [
   "--no-sandbox",
@@ -44,23 +55,23 @@ const localE2EEnv = {
   DAILY_STAGE_FALLBACK_REQUIRES_TOKEN: "true",
   STREAMYARD_PRIMARY_ENABLED: "true",
   STAGE_STREAM_DEFAULT_SOURCE: "LIVEKIT_INGRESS",
-  V5_ACCESS_COOKIE_SECRET: process.env.V5_ACCESS_COOKIE_SECRET || "local-playwright-e2e-cookie-secret-1234567890",
-  CREW_ACCESS_PASSWORD: process.env.CREW_ACCESS_PASSWORD || "CrewAccess-2026!",
-  OPERATOR_LAUNCHPAD_PASSWORD: process.env.OPERATOR_LAUNCHPAD_PASSWORD || "OperatorAccess-2026!",
+  V5_ACCESS_COOKIE_SECRET: day1Default("V5_ACCESS_COOKIE_SECRET", "local-playwright-e2e-cookie-secret-1234567890"),
+  CREW_ACCESS_PASSWORD: day1Default("CREW_ACCESS_PASSWORD"),
+  OPERATOR_LAUNCHPAD_PASSWORD: day1Default("OPERATOR_LAUNCHPAD_PASSWORD"),
   AUTH_SESSION_COOKIE_NAME: process.env.AUTH_SESSION_COOKIE_NAME || "agency_event_os_session",
   V5_CREW_COOKIE_NAME: process.env.V5_CREW_COOKIE_NAME || "wpl_crew_access",
   V5_OPERATOR_COOKIE_NAME: process.env.V5_OPERATOR_COOKIE_NAME || "wpl_operator_access",
   V5_SPECIAL_GUEST_COOKIE_NAME: process.env.V5_SPECIAL_GUEST_COOKIE_NAME || "wpl_guest_access",
-  EVENT_DEMO_SPEAKER_CODE: process.env.EVENT_DEMO_SPEAKER_CODE || "SpeakerGuest-2026!",
-  EVENT_DEMO_SPONSOR_CODE: process.env.EVENT_DEMO_SPONSOR_CODE || "SponsorGuest-2026!",
-  EVENT_DEMO_VIP_CODE: process.env.EVENT_DEMO_VIP_CODE || "VIPGuest-2026!",
+  EVENT_DEMO_SPEAKER_CODE: day1Default("EVENT_DEMO_SPEAKER_CODE"),
+  EVENT_DEMO_SPONSOR_CODE: day1Default("EVENT_DEMO_SPONSOR_CODE"),
+  EVENT_DEMO_VIP_CODE: day1Default("EVENT_DEMO_VIP_CODE"),
   NEXT_PUBLIC_SUPABASE_URL: "",
   NEXT_PUBLIC_SUPABASE_ANON_KEY: "",
   SUPABASE_SERVICE_ROLE_KEY: "",
-  LIVEKIT_URL: "",
-  LIVEKIT_API_KEY: "",
-  LIVEKIT_API_SECRET: "",
-  LIVEKIT_WEBHOOK_SECRET: "",
+  LIVEKIT_URL: day1Default("LIVEKIT_URL"),
+  LIVEKIT_API_KEY: day1Default("LIVEKIT_API_KEY"),
+  LIVEKIT_API_SECRET: day1Default("LIVEKIT_API_SECRET"),
+  LIVEKIT_WEBHOOK_SECRET: day1Default("LIVEKIT_WEBHOOK_SECRET", "local-playwright-livekit-webhook-secret-1234567890"),
   DAILY_API_KEY: "",
   DAILY_DOMAIN: "",
 };

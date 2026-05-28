@@ -27,12 +27,13 @@ test("operator can create a phony event and understand the setup journey", async
   await page.getByLabel(/Event date/i).fill("2026-06-15");
   await page.getByLabel(/Primary audience/i).fill("Operators, attendees, speakers, sponsors, VIPs");
   await page.getByLabel(/Event type/i).fill("Virtual summit");
-  await page.getByLabel(/Primary video provider/i).fill("LiveKit");
+  await page.getByLabel(/Production feed \/ source/i).fill("StreamYard");
+  await page.getByLabel(/Primary embedded distribution/i).fill("LiveKit");
   await page.getByLabel(/Fallback video provider/i).fill("Daily, then Zoom + Google Meet");
 
   await page.getByRole("button", { name: /Create setup draft and continue/i }).click();
 
-  await expect(page).toHaveURL(/\/app\/events\/event-summit\/setup\?draftId=draft-playwright-operator-preview-/);
+  await expect(page).toHaveURL(/\/app\/events\/playwright-operator-preview\/setup\?draftId=draft-playwright-operator-preview-/);
   const body = page.locator("body");
 
   await expect(body).toContainText(/Setup.*Basics|Event basics/i);

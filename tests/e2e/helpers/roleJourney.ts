@@ -1,6 +1,7 @@
 import { createHmac } from "node:crypto";
 import { expect, type Page } from "@playwright/test";
 import { gotoAndAssert } from "./assertNoAppError";
+import { requiredDay1Default } from "./day1AccessDefaults";
 
 type RouteExpectation = {
   path: string;
@@ -99,6 +100,32 @@ export async function grantSpecialGuestAccess(page: Page, role: "client" | "spea
     sameSite: "Lax",
     expires: expiresIn(12),
   }]);
+}
+
+export async function loginAsOperator(page: Page, nextPath?: string) {
+  const target = nextPath ? `/production-access/operator?next=${encodeURIComponent(nextPath)}` : "/production-access/operator";
+  await gotoAndAssert(page, target);
+  await page.getByLabel(/operator launchpad password/i).fill(process.env.E2E_OPERATOR_PASSWORD || requiredDay1Default("OPERATOR_LAUNCHPAD_PASSWORD"));
+  await page.getByRole("button", { name: /enter operator launchpad/i }).click();
+  await page.waitForLoadState("networkidle").catch(() => undefined);
+  if (nextPath) await gotoAndAssert(page, nextPath);
+}
+
+export async function loginAsSpecialGuest(page: Page, role: "client" | "speaker" | "sponsor" | "crew_lite" | "vip", eventCode = "demo", nextPath?: string) {
+  const passwordByRole: Record<typeof role, string> = {
+    client: requiredDay1Default("EVENT_DEMO_CLIENT_CODE"),
+    speaker: requiredDay1Default("EVENT_DEMO_SPEAKER_CODE"),
+    sponsor: requiredDay1Default("EVENT_DEMO_SPONSOR_CODE"),
+    crew_lite: requiredDay1Default("EVENT_DEMO_CREW_LITE_CODE"),
+    vip: requiredDay1Default("EVENT_DEMO_VIP_CODE"),
+  };
+
+  await gotoAndAssert(page, "/production-access/special-guest");
+  await page.getByLabel(/event code/i).fill(eventCode);
+  await page.getByLabel(/special guest password/i).fill(passwordByRole[role]);
+  await page.getByRole("button", { name: /continue to assigned portal/i }).click();
+  await page.waitForLoadState("networkidle").catch(() => undefined);
+  if (nextPath) await gotoAndAssert(page, nextPath);
 }
 
 export async function expectVisibleRoute(page: Page, route: RouteExpectation) {

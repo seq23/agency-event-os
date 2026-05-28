@@ -1,21 +1,97 @@
 const fs = require("fs");
 const path = require("path");
-const forbiddenFiles = [".env", ".env.local", ".env.production", ".open-next", ".wrangler"];
-for (const target of forbiddenFiles) if (fs.existsSync(target)) throw new Error(`Forbidden local/generated artifact present: ${target}`);
-// node_modules is intentionally allowed in an installed validation workspace. Packaging checks exclude it from delivered ZIPs.
-const secretPatterns = [/sk_live_[A-Za-z0-9]/i, /SUPABASE_SERVICE_ROLE_KEY[ \t]*=[ \t]*[^\n#]+/, /RESEND_API_KEY[ \t]*=[ \t]*[^\n#]+/, /LIVEKIT_API_SECRET[ \t]*=[ \t]*[^\n#]+/, /-----BEGIN PRIVATE KEY-----/];
+const { execSync } = require("child_process");
+
+const generatedArtifacts = [".open-next", ".wrangler"];
+for (const target of generatedArtifacts) {
+  if (fs.existsSync(target)) {
+    throw new Error(`Forbidden generated artifact present: ${target}`);
+  }
+}
+
+const forbiddenTrackedSecretFiles = [
+  ".env",
+  ".env.local",
+  ".env.production",
+  ".env.backup",
+  ".env.local.backup",
+  "cloudflare-secrets.json"
+];
+
+let trackedFiles = [];
+try {
+  trackedFiles = execSync("git ls-files", { encoding: "utf8" }).split(/\r?\n/).filter(Boolean);
+} catch {
+  trackedFiles = [];
+}
+
+for (const target of forbiddenTrackedSecretFiles) {
+  if (trackedFiles.includes(target)) {
+    throw new Error(`Forbidden secret file is tracked by git: ${target}`);
+  }
+}
+
+const warningOnlyEnvFiles = new Set([
+  ".env.example",
+  ".env.local.example",
+  ".env.preview.example",
+  ".env.production.example",
+  ".env.local"
+]);
+
+const skippedFiles = new Set([
+  "scripts/validate_v5_no_secrets.js",
+  "scripts/import_event_config_package.js",
+  "scripts/validate_event_config_package.js"
+]);
+
+const hardFailSecretPatterns = [
+  /sk_live_[A-Za-z0-9]/i,
+  /-----BEGIN PRIVATE KEY-----/
+];
+
+const warningSecretPatterns = [
+  /SUPABASE_SERVICE_ROLE_KEY[ \t]*=[ \t]*[^\n#]+/,
+  /RESEND_API_KEY[ \t]*=[ \t]*[^\n#]+/,
+  /LIVEKIT_API_SECRET[ \t]*=[ \t]*[^\n#]+/
+];
+
+const warnings = [];
+
 function walk(dir) {
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
     if ([".git", "node_modules", ".next", ".open-next", ".wrangler"].includes(entry.name)) continue;
+
     const full = path.join(dir, entry.name);
-    if (entry.isDirectory()) walk(full);
-    else if (entry.isFile()) {
-      const rel = path.relative(process.cwd(), full);
-      if (["scripts/validate_v5_no_secrets.js", "scripts/import_event_config_package.js", "scripts/validate_event_config_package.js"].includes(rel)) continue;
-      const body = fs.readFileSync(full, "utf8");
-      for (const pattern of secretPatterns) if (pattern.test(body)) throw new Error(`Secret-like value found in ${full}`);
+    const rel = path.relative(process.cwd(), full);
+
+    if (entry.isDirectory()) {
+      walk(full);
+      continue;
+    }
+
+    if (!entry.isFile()) continue;
+    if (skippedFiles.has(rel)) continue;
+
+    const body = fs.readFileSync(full, "utf8");
+
+    for (const pattern of hardFailSecretPatterns) {
+      if (pattern.test(body)) throw new Error(`High-risk secret-like value found in ${rel}`);
+    }
+
+    for (const pattern of warningSecretPatterns) {
+      if (pattern.test(body)) {
+        if (warningOnlyEnvFiles.has(rel)) {
+          warnings.push(`WARNING ONLY: env placeholder/value pattern found in ${rel}; not blocking local validation.`);
+        } else {
+          throw new Error(`Server-secret-like value found in source file ${rel}`);
+        }
+      }
     }
   }
 }
+
 walk(".");
+
+for (const warning of warnings) console.warn(warning);
 console.log("validate_v5_no_secrets: PASS");

@@ -1,8 +1,8 @@
 import { expect, test } from "@playwright/test";
-import { expectVisibleRoute, grantOperatorAccess, isDeployedBrowserRun } from "./helpers/roleJourney";
+import { expectVisibleRoute, loginAsOperator, isDeployedBrowserRun } from "./helpers/roleJourney";
 
 test("producer console exposes StreamYard ingress credentials and failover decisioning", async ({ page }) => {
-  await grantOperatorAccess(page, "executive_producer");
+  await loginAsOperator(page, "/admin/testing/demo");
   await expectVisibleRoute(page, { path: "/admin/testing/demo", label: "testing console", anyOf: ["streamyard", "ingress", "fallback", "daily"] });
   if (isDeployedBrowserRun()) return;
   const body = (await page.locator("body").innerText()).toLowerCase();

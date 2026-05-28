@@ -3,7 +3,7 @@ import { createPairHistoryRecord, normalizedSpeedNetworkingPairKey, selectNextSp
 import type { SpeedNetworkingEntry, SpeedNetworkingMatch, SpeedNetworkingPairHistory } from "@/types/speedNetworkingEngine";
 import { gotoAndAssert } from "./helpers/assertNoAppError";
 import { asRegisteredAttendee } from "./helpers/persona";
-import { grantAgencySession, grantOperatorAccess } from "./helpers/roleJourney";
+import { grantAgencySession, grantOperatorAccess, loginAsOperator } from "./helpers/roleJourney";
 import { expectEventuallyDraft, expectEventuallyRuntime, readRuntimeSnapshot, resetRuntimeTraceFiles } from "./helpers/runtimeTrace";
 
 const unique = Date.now();
@@ -20,8 +20,7 @@ transactionalDescribe("Transactional Full Buffett E2E", () => {
   });
 
   test("producer creates a local setup draft, records a run-of-show action, and opens show-readiness cockpit", async ({ page }) => {
-    await grantAgencySession(page);
-    await gotoAndAssert(page, "/app/events/new");
+    await loginAsOperator(page, "/app/events/new");
 
     const eventName = `Transactional Buffett Summit ${unique}`;
     await page.locator('[name="eventName"]').fill(eventName);
@@ -30,10 +29,11 @@ transactionalDescribe("Transactional Full Buffett E2E", () => {
     await page.locator('[name="eventDate"]').fill("2026-06-15");
     await page.locator('[name="audience"]').fill("Operators, speakers, sponsors, VIPs");
     await page.locator('[name="eventType"]').fill("Virtual summit");
-    await page.locator('[name="primaryVideo"]').fill("LiveKit");
-    await page.locator('[name="fallbackVideo"]').fill("Daily, then Zoom + Google Meet");
+    await page.getByLabel(/Production feed \/ source/i).fill("StreamYard");
+    await page.getByLabel(/Primary embedded distribution/i).fill("LiveKit");
+    await page.getByLabel(/Fallback video provider/i).fill("Daily, then Zoom + Google Meet");
     await page.getByRole("button", { name: /create setup draft and continue/i }).click();
-    await expect(page).toHaveURL(/\/app\/events\/event-summit\/setup\?draftId=/);
+    await expect(page).toHaveURL(new RegExp(`/app/events/transactional-buffett-${unique}/setup\\?draftId=`));
 
     await expectEventuallyDraft((drafts) => drafts.some((draft) => draft.eventName === eventName && draft.primaryVideo === "LiveKit"), "event setup draft should persist to local runtime");
 
@@ -44,8 +44,7 @@ transactionalDescribe("Transactional Full Buffett E2E", () => {
       "producer run-of-show action should persist",
     );
 
-    await grantOperatorAccess(page, "executive_producer");
-    await gotoAndAssert(page, "/admin/testing/demo");
+    await loginAsOperator(page, "/admin/testing/demo");
     const body = (await page.locator("body").innerText()).toLowerCase();
     for (const term of ["showtime readiness", "livestream", "livekit", "matchmaking", "fallback", "zoom", "google meet", "debug", "fix"]) {
       expect(body).toContain(term);
@@ -148,8 +147,7 @@ transactionalDescribe("Transactional Full Buffett E2E", () => {
       expect(text).not.toMatch(/digest\s*[:=]/i);
     }
 
-    await grantOperatorAccess(page, "executive_producer");
-    await gotoAndAssert(page, "/admin/testing/demo");
+    await loginAsOperator(page, "/admin/testing/demo");
     const body = (await page.locator("body").innerText()).toLowerCase();
     expect(body).toContain("livekit");
     expect(body).toContain("daily");

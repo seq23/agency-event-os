@@ -1,8 +1,8 @@
 import { test } from "@playwright/test";
-import { expectRouteMatrix, grantSpecialGuestAccess } from "./helpers/roleJourney";
+import { expectRouteMatrix, loginAsSpecialGuest } from "./helpers/roleJourney";
 
 test("speaker role journey exposes onboarding, tech check, green room, backstage, and teleprompter surfaces", async ({ page }) => {
-  await grantSpecialGuestAccess(page, "speaker");
+  await loginAsSpecialGuest(page, "speaker", "demo", "/speaker/events/demo");
   await expectRouteMatrix(page, [
     { path: "/speaker/events/demo", label: "speaker event", anyOf: ["speaker", "backstage", "green room"] },
     { path: "/speaker/events/demo/onboarding", label: "speaker onboarding", anyOf: ["onboarding", "speaker"] },
@@ -14,7 +14,7 @@ test("speaker role journey exposes onboarding, tech check, green room, backstage
 });
 
 test("sponsor role journey exposes setup, booth, leads, ready room, and report surfaces", async ({ page }) => {
-  await grantSpecialGuestAccess(page, "sponsor");
+  await loginAsSpecialGuest(page, "sponsor", "demo", "/sponsor/events/demo");
   await expectRouteMatrix(page, [
     { path: "/sponsor/events/demo", label: "sponsor event", anyOf: ["sponsor", "booth", "leads"] },
     { path: "/sponsor/events/demo/setup", label: "sponsor setup", anyOf: ["setup", "sponsor"] },
@@ -26,7 +26,7 @@ test("sponsor role journey exposes setup, booth, leads, ready room, and report s
 });
 
 test("crew role journey exposes call sheet, run-of-show, and task surfaces", async ({ page }) => {
-  await grantSpecialGuestAccess(page, "crew_lite");
+  await loginAsSpecialGuest(page, "crew_lite", "demo", "/crew/events/demo");
   await expectRouteMatrix(page, [
     { path: "/crew/events/demo", label: "crew event", anyOf: ["crew", "call sheet", "run of show"] },
     { path: "/crew/events/demo/call-sheet", label: "crew call sheet", anyOf: ["call sheet", "crew"] },
@@ -36,7 +36,7 @@ test("crew role journey exposes call sheet, run-of-show, and task surfaces", asy
 });
 
 test("client role journey exposes approvals, assets, reports, run-of-show, and timeline", async ({ page }) => {
-  await grantSpecialGuestAccess(page, "client");
+  await loginAsSpecialGuest(page, "client", "demo", "/client/nova-capital/events/demo");
   await expectRouteMatrix(page, [
     { path: "/client/nova-capital/events/demo", label: "client event", anyOf: ["client", "event", "approvals"] },
     { path: "/client/nova-capital/events/demo/approvals", label: "client approvals", anyOf: ["approval", "client"] },

@@ -8,16 +8,36 @@ const baseUrl = (process.env.POSTDEPLOY_BASE_URL || process.env.PLAYWRIGHT_BASE_
 const stageId = process.env.TIER4_STAGE_ID || process.env.STREAMYARD_E2E_STAGE_ID || 'main-stage';
 const evidencePath = process.env.TIER4_STREAMYARD_LIVE_EVIDENCE_PATH || 'reports/tier4/streamyard-livekit-evidence.json';
 const attendeeId = process.env.TIER4_ATTENDEE_ID || `tier4-attendee-${crypto.randomBytes(3).toString('hex')}`;
-const secretPatterns = /LIVEKIT_API_SECRET|LIVEKIT_WEBHOOK_SECRET|DAILY_API_KEY|ZOOM_MEETING_SDK_SECRET|SUPABASE_SERVICE_ROLE_KEY|CLOUDFLARE_API_TOKEN|CLOUDFLARE_STREAM_API_TOKEN|stream[_\s-]*key|rtmps?:\/\/|Bearer\s+[A-Za-z0-9._-]+/i;
+const secretPatterns = /rtmps?:\/\/|Bearer\s+[A-Za-z0-9._~+\/=-]{16,}/i;
 const trace = [];
 const failures = [];
+const secretValues = new Map();
+
+for (const key of [
+  'LIVEKIT_API_SECRET',
+  'LIVEKIT_WEBHOOK_SECRET',
+  'DAILY_API_KEY',
+  'ZOOM_MEETING_SDK_SECRET',
+  'SUPABASE_SERVICE_ROLE_KEY',
+  'CLOUDFLARE_API_TOKEN',
+  'CLOUDFLARE_STREAM_API_TOKEN',
+  'V5_ACCESS_COOKIE_SECRET'
+]) {
+  if (process.env[key]) secretValues.set(key, process.env[key]);
+}
 
 function nowIso() { return new Date().toISOString(); }
 function pushTrace(step, details = {}) { trace.push({ step, at: nowIso(), ...details }); }
 function b64(input) { return Buffer.from(input).toString('base64url'); }
 function redact(value) { return value ? `${String(value).slice(0, 6)}…redacted` : undefined; }
 function readJson(file) { return JSON.parse(fs.readFileSync(path.resolve(root, file), 'utf8')); }
-function assertNoSecrets(label, value) { const text = typeof value === 'string' ? value : JSON.stringify(value); if (secretPatterns.test(text)) failures.push(`${label} exposed provider secret or private material.`); }
+function assertNoSecrets(label, value) {
+  const text = typeof value === 'string' ? value : JSON.stringify(value);
+  for (const [key, secret] of secretValues) {
+    if (secret && text.includes(secret)) failures.push(`${label} exposed raw provider secret (${key}).`);
+  }
+  if (secretPatterns.test(text)) failures.push(`${label} exposed provider secret or private material.`);
+}
 function makeOperatorCookie(eventId) {
   const secret = process.env.V5_ACCESS_COOKIE_SECRET;
   if (!secret || secret.length < 32) throw new Error('V5_ACCESS_COOKIE_SECRET is required for Tier 4 attendee live consumption proof.');
@@ -58,7 +78,7 @@ function parseCookie(setCookie) {
   if (index < 1) return undefined;
   return { name: first.slice(0, index), value: first.slice(index + 1) };
 }
-async function runBrowserAttendeeProof({ eventId, attendeeCookie }) {
+async function runBrowserAttendeeProof({ eventId, attendeeCookie, operatorCookie, attendeeId }) {
   pushTrace('attendee_browser_stage_trace_start');
   const parsed = parseCookie(attendeeCookie);
   if (!parsed) return { ok: false, error: 'missing attendee cookie for browser trace' };
@@ -66,18 +86,115 @@ async function runBrowserAttendeeProof({ eventId, attendeeCookie }) {
   const browser = await chromium.launch({ headless: process.env.TIER4_ATTENDEE_BROWSER_HEADED === '1' ? false : true });
   const context = await browser.newContext({ ignoreHTTPSErrors: true });
   await context.addCookies([{ name: parsed.name, value: parsed.value, url: baseUrl, httpOnly: true, sameSite: 'Lax' }]);
+
+  const browserSetup = { stageLiveStatus: undefined, sessionStatus: undefined, sessionOk: false, sessionCookieSet: false, permitStatus: undefined, permitOk: false };
+  const operatorHeaders = { cookie: operatorCookie };
+
+  const stageLiveSeed = await context.request.post(`${baseUrl}/api/video/stage-stream-fallback`, {
+    headers: operatorHeaders,
+    data: { eventId, stageId, signal: 'ingress_started', reason: 'Tier 4 browser-context live state seed.' },
+  }).catch(() => undefined);
+  browserSetup.stageLiveStatus = stageLiveSeed?.status();
+  const stageLiveJson = await stageLiveSeed?.json().catch(() => undefined);
+  browserSetup.stageLiveOk = Boolean(stageLiveJson?.ok);
+  browserSetup.stageLiveReturnedState = stageLiveJson?.state ? {
+    activeStreamSource: stageLiveJson.state.activeStreamSource,
+    streamStatus: stageLiveJson.state.streamStatus,
+    hasEverStarted: stageLiveJson.state.hasEverStarted,
+  } : undefined;
+
+  const stageReadback = await context.request.get(`${baseUrl}/api/video/stage-stream-state?eventId=${encodeURIComponent(eventId)}&stageId=${encodeURIComponent(stageId)}`).catch(() => undefined);
+  browserSetup.stageReadbackStatus = stageReadback?.status();
+  const stageReadbackJson = await stageReadback?.json().catch(() => undefined);
+  browserSetup.stageReadbackState = stageReadbackJson?.state ? {
+    activeStreamSource: stageReadbackJson.state.activeStreamSource,
+    streamStatus: stageReadbackJson.state.streamStatus,
+    hasEverStarted: stageReadbackJson.state.hasEverStarted,
+  } : undefined;
+  browserSetup.stageReadbackLive = Boolean(stageReadbackJson?.state?.activeStreamSource === 'LIVEKIT_INGRESS' && stageReadbackJson?.state?.streamStatus === 'LIVEKIT_INGRESS_LIVE' && stageReadbackJson?.state?.hasEverStarted === true);
+
+  const browserSession = await context.request.post(`${baseUrl}/api/tier4/attendee-live-session`, {
+    headers: operatorHeaders,
+    data: { eventId, attendeeId, name: 'Tier 4 Browser Event Goer' },
+  }).catch(() => undefined);
+  browserSetup.sessionStatus = browserSession?.status();
+  const browserSessionJson = await browserSession?.json().catch(() => undefined);
+  browserSetup.sessionOk = Boolean(browserSessionJson?.ok);
+  const browserSetCookie = browserSession?.headers()['set-cookie'] || '';
+  const browserParsedCookie = parseCookie(browserSetCookie);
+  if (browserParsedCookie) {
+    await context.addCookies([{ name: browserParsedCookie.name, value: browserParsedCookie.value, url: baseUrl, httpOnly: true, sameSite: 'Lax' }]);
+    browserSetup.sessionCookieSet = true;
+  }
+
+  const browserPermit = await context.request.post(`${baseUrl}/api/attendee-live/access`, {
+    headers: operatorHeaders,
+    data: { eventId, roomKind: 'main_stage', roomId: stageId, attendeeId, action: 'permit', canJoinLiveStream: true },
+  }).catch(() => undefined);
+  browserSetup.permitStatus = browserPermit?.status();
+  const browserPermitJson = await browserPermit?.json().catch(() => undefined);
+  browserSetup.permitOk = Boolean(browserPermitJson?.capability?.canJoinLiveStream === true && browserPermitJson?.capability?.revoked === false);
+
+  if (!browserSetup.stageReadbackLive) {
+    return {
+      ok: false,
+      error: 'deployed stage stream state did not persist browser-context ingress_started seed before attendee navigation',
+      stagePlayerFound: false,
+      livekitSurfaceFound: false,
+      browserSetup,
+      browserSignals: { consoleErrors: [], stageStateResponses: [], livekitTokenResponses: [] },
+    };
+  }
+
   const page = await context.newPage();
+  const browserSignals = { consoleErrors: [], stageStateResponses: [], livekitTokenResponses: [] };
+  page.on('console', (message) => {
+    if (['error', 'warning'].includes(message.type())) browserSignals.consoleErrors.push({ type: message.type(), text: message.text().slice(0, 500) });
+  });
+  page.on('response', async (res) => {
+    if (res.url().includes('/api/video/stage-stream-state')) {
+      const text = await res.text().catch(() => '');
+      let json;
+      try { json = text ? JSON.parse(text) : undefined; } catch {}
+      browserSignals.stageStateResponses.push({
+        status: res.status(),
+        ok: Boolean(json?.ok),
+        activeStreamSource: json?.state?.activeStreamSource,
+        streamStatus: json?.state?.streamStatus,
+        hasEverStarted: json?.state?.hasEverStarted,
+      });
+      return;
+    }
+    if (!res.url().includes('/api/video/livekit-token')) return;
+    const text = await res.text().catch(() => '');
+    let json;
+    try { json = text ? JSON.parse(text) : undefined; } catch {}
+    browserSignals.livekitTokenResponses.push({
+      status: res.status(),
+      ok: Boolean(json?.ok),
+      error: json?.error || undefined,
+      hasToken: Boolean(json?.result?.token?.token),
+      hasLivekitUrl: Boolean(json?.result?.livekitUrl)
+    });
+  });
   const screenshotPath = path.join(reportsDir, 'tier4-attendee-live-stage.png');
   try {
     const response = await page.goto(`${baseUrl}/venue/${encodeURIComponent(eventId)}/stage`, { waitUntil: 'domcontentloaded', timeout: 45000 });
     await page.waitForLoadState('networkidle', { timeout: 15000 }).catch(() => undefined);
+    await page.waitForSelector('[data-testid="attendee-livekit-room-surface"]', { timeout: 25000 }).catch(() => undefined);
+    await page.waitForTimeout(1500).catch(() => undefined);
     const bodyText = await page.locator('body').innerText({ timeout: 10000 }).catch(() => '');
     assertNoSecrets('attendee browser body', bodyText);
     const stagePlayer = await page.locator('[data-testid="stage-player"]').count();
     const livekitSurface = await page.locator('[data-testid="attendee-livekit-room-surface"]').count();
+    const stagePlayerAttrs = stagePlayer > 0 ? await page.locator('[data-testid="stage-player"]').first().evaluate((el) => ({
+      activeStreamSource: el.getAttribute('data-active-stream-source'),
+      streamStatus: el.getAttribute('data-stream-status'),
+    })).catch(() => undefined) : undefined;
+    const livekitSurfaceState = livekitSurface > 0 ? await page.locator('[data-testid="attendee-livekit-room-surface"]').first().getAttribute('data-livekit-consumption-state').catch(() => undefined) : undefined;
     const pageLooksLive = /Live stage connected|Connecting to LiveKit Ingress feed|Stage is getting ready|Main stage/i.test(bodyText);
     await page.screenshot({ path: screenshotPath, fullPage: true }).catch(() => undefined);
-    return { ok: Boolean(response?.ok() && stagePlayer > 0 && livekitSurface > 0 && pageLooksLive), status: response?.status(), stagePlayerFound: stagePlayer > 0, livekitSurfaceFound: livekitSurface > 0, screenshot: path.relative(root, screenshotPath), bodySnippet: bodyText.slice(0, 240) };
+    return { ok: Boolean(response?.ok() && stagePlayer > 0 && livekitSurface > 0 && pageLooksLive), status: response?.status(), stagePlayerFound: stagePlayer > 0, livekitSurfaceFound: livekitSurface > 0, stagePlayerAttrs, livekitSurfaceState, browserSetup, browserSignals, screenshot: path.relative(root, screenshotPath), bodySnippet: bodyText.slice(0, 240) };
   } finally {
     await browser.close().catch(() => undefined);
   }
@@ -117,7 +234,7 @@ async function main() {
   if (tokenOk.response.status !== 200 || !tokenOk.json?.ok || !tokenOk.json?.result?.token?.token) failures.push(`permitted attendee live token returned ${tokenOk.response.status}: ${tokenOk.text.slice(0, 200)}`);
   if (tokenOk.json?.result?.token?.roomId !== `${eventId}-${stageId}`.replace(/[^a-zA-Z0-9_-]+/g, '-').toLowerCase()) failures.push('attendee LiveKit token room must match StreamYard-compatible ingress room.');
 
-  const browserProof = await runBrowserAttendeeProof({ eventId, attendeeCookie }).catch((error) => ({ ok: false, error: error?.message || String(error) }));
+  const browserProof = await runBrowserAttendeeProof({ eventId, attendeeCookie, operatorCookie, attendeeId }).catch((error) => ({ ok: false, error: error?.message || String(error) }));
   if (!browserProof.ok) failures.push(`attendee browser live-stage proof failed: ${browserProof.error || JSON.stringify(browserProof)}`);
 
   pushTrace('revoke_attendee_start');

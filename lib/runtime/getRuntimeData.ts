@@ -65,6 +65,29 @@ function dynamicDraftRunOfShow(eventId: string): SeedRunOfShow[] | undefined {
   ] as SeedRunOfShow[];
 }
 
+function fallbackRuntimeEvent(eventId: string): SeedEvent {
+  const base = runtimeSeedData.events[0];
+  const safeEventId = eventId.trim() || base.id;
+  const title = safeEventId
+    .split(/[-_]+/)
+    .filter(Boolean)
+    .slice(0, 6)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ") || "Generated Virtual Event";
+  return {
+    ...base,
+    id: safeEventId,
+    slug: safeEventId,
+    name: title,
+    status: "registration_open",
+    registrationEnabled: true,
+    venueEnabled: true,
+    description: `${title} generated from the requested venue event id.`,
+    internalGoal: "Preserve requested runtime event identity instead of silently falling back to another event.",
+    clientFacingGoal: `Operate ${title} with registration, venue, roles, and video readiness.`,
+  } as SeedEvent;
+}
+
 export function getRuntimeData() {
   return runtimeSeedData;
 }
@@ -79,7 +102,7 @@ export function getRuntimeUsers() {
 
 export function getEvent(eventId: string) {
   const normalizedEventId = eventId === "demo" ? "event-summit" : eventId;
-  return runtimeSeedData.events.find((event) => event.id === normalizedEventId || event.slug === normalizedEventId) ?? dynamicDraftEvent(normalizedEventId) ?? runtimeSeedData.events[0];
+  return runtimeSeedData.events.find((event) => event.id === normalizedEventId || event.slug === normalizedEventId) ?? dynamicDraftEvent(normalizedEventId) ?? fallbackRuntimeEvent(normalizedEventId);
 }
 
 export function getClient(clientId: string) {
@@ -96,7 +119,7 @@ export function getClientBySlug(slug: string) {
 }
 
 export function getEventBySlug(slug: string) {
-  return runtimeSeedData.events.find((event) => event.slug === slug) ?? dynamicDraftEvent(slug) ?? runtimeSeedData.events[0];
+  return runtimeSeedData.events.find((event) => event.slug === slug) ?? dynamicDraftEvent(slug) ?? fallbackRuntimeEvent(slug);
 }
 
 export function getTasksForEvent(eventId: string) {

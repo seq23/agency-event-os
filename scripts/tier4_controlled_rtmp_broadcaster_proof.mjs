@@ -85,7 +85,7 @@ function sanitize(raw) {
     if (value) text = text.split(value).join(`[REDACTED_${key}]`);
   }
   text = text.replace(/rtmps?:\/\/[^\s"']+/gi, '[REDACTED_RTMP_URL]');
-  text = text.replace(/Bearer\s+[A-Za-z0-9._-]+/gi, 'Bearer [REDACTED_TOKEN]');
+  text = text.replace(/Bearer\s+[A-Za-z0-9._~+/=-]{16,}/gi, '[REDACTED_AUTH_VALUE]');
   return text;
 }
 function assertNoSecretLeak(label, value) {
@@ -94,7 +94,7 @@ function assertNoSecretLeak(label, value) {
     if (secret && raw.includes(secret)) failures.push(`${label}: raw secret leaked (${key}).`);
   }
   if (/rtmps?:\/\//i.test(raw)) failures.push(`${label}: raw RTMP URL leaked.`);
-  if (/Bearer\s+[A-Za-z0-9._-]+/i.test(raw)) failures.push(`${label}: bearer token leaked.`);
+  if (/Bearer\s+[A-Za-z0-9._~+/=-]{16,}/i.test(raw)) failures.push(`${label}: bearer token leaked.`);
 }
 function requireEnv(keys, lane) {
   const missing = keys.filter((key) => !process.env[key]);

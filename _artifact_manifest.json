@@ -1,22 +1,6 @@
 {
   "repo": "agency-event-os",
-  "artifact": "Tier 4 LiveKit ingress cleanup contract fix",
-  "generatedAt": "2026-06-12T14:40:00Z",
-  "changes": [
-    "Auto-delete controlled Tier 4 LiveKit ingress via Ingress/DeleteIngress",
-    "Add safe stale-ingress cleanup utility with approval gate",
-    "Add validate:tier4-cleanup-contract and wire it into validation",
-    "Update validation matrix/model/runbook/evidence template for explicit cleanup lane",
-    "Document provider quota/resource cleanup failure class"
-  ],
-  "validation": [
-    "node scripts/validate_tier4_cleanup_contract.mjs PASS",
-    "node scripts/validate_livekit_twirp_url_contract.js PASS",
-    "node scripts/validate-tier4-contract.mjs PASS",
-    "node scripts/validate-tier4-hostile-coverage.mjs PASS",
-    "node scripts/validate-final-tier-contract.mjs PASS",
-    "node scripts/validate_structure.js PASS",
-    "node scripts/validate_no_generated_artifacts.js PASS",
-    "full npm run validate not run in sandbox; local updater required"
-  ]
+  "generatedAt": "2026-06-12T15:48:00Z",
+  "fileCount": 1087,
+  "notes": "Hostile live-event fallback runtime pass: app-level show-day ladder, attendee provider masking, backend owner/showrunner/crew controls/logs, rollback controls, and validator."
 }

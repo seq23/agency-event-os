@@ -41,6 +41,34 @@
     "eventScopedAccessVerified": true,
     "forbiddenRoleMatrixPassed": true
   },
+  "streamyardProviderApi": {
+    "configured": false,
+    "automaticApiProofAvailable": false,
+    "providerPlanRequirement": "enterprise_only",
+    "proofStrategy": "manual_operator_provider_plus_streamyard_compatible_controlled_rtmp_path",
+    "proofPassed": true,
+    "cleanupStatus": "not_required_manual_operator_provider"
+  },
+  "streamyardCompatibleRtmpPath": {
+    "proofPassed": true,
+    "controlledRtmpBroadcaster": true,
+    "targetProvider": "LiveKit ingress RTMP endpoint",
+    "mediaConnectionObserved": true,
+    "participantObserved": true,
+    "cleanupStatus": "deleted"
+  },
+  "cloudflareStreamFallback": {
+    "configured": false,
+    "proofPassed": false,
+    "liveInputCreated": false,
+    "ingestCredentialIssued": false,
+    "playbackCredentialIssued": false,
+    "mediaBroadcastAttempted": false,
+    "mediaConnectionObserved": false,
+    "cleanupStatus": "deleted",
+    "cleanupAttempted": true,
+    "cleanupDeleted": true
+  },
   "dailyFallback": {
     "configured": false,
     "proofPassed": false,

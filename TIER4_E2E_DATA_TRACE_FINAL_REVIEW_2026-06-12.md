@@ -129,3 +129,16 @@ Trace phases:
 ## Verdict
 
 The Tier 4 ladder now separates app failure, harness failure, provider quota/cleanup failure, and fallback-specific failures. Tier 4 COMPLETE still requires local/deployed execution with real credentials, but the failure classes experienced today are now represented in code, evidence, cleanup, and validation contracts.
+
+
+## Tier 4 fallback ladder expansion — 2026-06-12
+
+Show-day ladder order is now explicit and must be exercised in Tier 4:
+
+1. StreamYard-compatible Custom RTMP path into LiveKit, proven by controlled ffmpeg RTMP broadcaster. StreamYard itself remains a manual/operator provider because automated StreamYard API access is enterprise-only.
+2. LiveKit + Cloudflare Stream Live fallback, proven through the Cloudflare Stream Live Inputs API, controlled RTMP media push, and live input cleanup.
+3. Daily real fallback provider, proven by room create, meeting token create, and room delete cleanup. Daily API keys are normalized so pasted `Bearer ...` values do not create `Bearer Bearer ...` authentication failures; a 401 after normalization is a real Daily key/domain/provider auth failure.
+4. Zoom fallback, proven by denied unauthenticated access and authorized SDK signature generation; no provider cleanup is required because the proof is stateless.
+5. Google Meet fallback, proven by valid HTTPS Meet continuity URL or explicit not-applicable disposition; no provider cleanup is required because it is a manual/static continuity link.
+
+Tier 4 must attempt every configured rung and fail only after the full ladder trace is written.

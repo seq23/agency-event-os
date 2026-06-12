@@ -26,6 +26,10 @@ requireText('scripts/tier4_real_provider_journey_probe.mjs', [
   'zoom_unauth_signature_start',
   'zoom_auth_signature_result',
   'google_meet_url_check_result',
+  'Cloudflare Stream Live fallback provider',
+  'cloudflare_stream_live_input_create_start',
+  'cloudflare_stream_live_input_cleanup_result',
+  'TIER4_CLOUDFLARE_STREAM_CONTROLLED_BROADCASTER',
   'Daily real fallback provider',
   'cleanupStatus !== \'deleted\'',
   'Zoom authorized manual escalation',
@@ -35,11 +39,13 @@ requireText('scripts/tier4_real_provider_journey_probe.mjs', [
   'GOOGLE_MEET_EMERGENCY_URL',
   'TIER4_GOOGLE_MEET_NOT_APPLICABLE_REASON',
   'provider_lane_result',
+  'exerciseEveryConfiguredRung',
   'DAILY_API_BASE_URL must start with https://',
 ]);
 requireText('scripts/tier4_controlled_rtmp_broadcaster_proof.mjs', [
   'providerLadderEventId',
   'TIER4_PROVIDER_LADDER_EVENT_ID',
+  'cloudflareStreamFallback',
   'dailyFallback',
   'zoomEscalation',
   'googleMeetFallback',
@@ -54,13 +60,14 @@ requireText('scripts/tier4_live_provider_operational_proof.mjs', [
   'googleMeetFallback.cleanupStatus must be not_required_manual_static_link',
 ]);
 requireText('TIER4_PROVIDER_EVIDENCE_TEMPLATE.json', [
+  'cloudflareStreamFallback',
   'dailyFallback', 'zoomEscalation', 'googleMeetFallback', 'livekitOnlyMode', 'cleanupStatus'
 ]);
-requireText('REPO_VALIDATION_MATRIX.md', ['Daily fallback', 'Zoom', 'Google Meet', 'cleanup']);
-requireText('TIER_VALIDATION_MODEL.md', ['Daily', 'Zoom', 'Google Meet', 'cleanup']);
-requireText('TESTING_SEQUENCE.md', ['Daily', 'Zoom', 'Google Meet', 'tier4:auto-controlled-livekit-proof']);
+requireText('REPO_VALIDATION_MATRIX.md', ['Cloudflare Stream', 'Daily fallback', 'Zoom', 'Google Meet', 'cleanup']);
+requireText('TIER_VALIDATION_MODEL.md', ['Cloudflare Stream', 'Daily', 'Zoom', 'Google Meet', 'cleanup']);
+requireText('TESTING_SEQUENCE.md', ['Cloudflare Stream', 'Daily', 'Zoom', 'Google Meet', 'tier4:auto-controlled-livekit-proof']);
 requireText('VALIDATOR_ADMISSION_REGISTER.md', ['validate:tier4-provider-ladder-contract']);
-requireText('TIER4_E2E_DATA_TRACE_FINAL_REVIEW_2026-06-12.md', ['LiveKit Twirp URL normalization', 'Daily fallback resource cleanup', 'Zoom fallback authorization', 'Google Meet manual continuity fallback', 'Controlled RTMP harness vs provider ladder event collision']);
+requireText('TIER4_E2E_DATA_TRACE_FINAL_REVIEW_2026-06-12.md', ['LiveKit Twirp URL normalization', 'Cloudflare Stream Live fallback', 'Daily fallback resource cleanup', 'Zoom fallback authorization', 'Google Meet manual continuity fallback', 'Controlled RTMP harness vs provider ladder event collision']);
 
 const pkg = JSON.parse(read('package.json'));
 if (!pkg.scripts?.['validate:tier4-provider-ladder-contract']) failures.push('package.json missing validate:tier4-provider-ladder-contract');
@@ -72,4 +79,4 @@ if (failures.length) {
   for (const failure of failures) console.error(`- ${failure}`);
   process.exit(1);
 }
-console.log('TIER 4 PROVIDER LADDER CONTRACT VALIDATION OK — LiveKit, Daily, Zoom, and Google Meet lanes are explicit and cleanup semantics are enforced.');
+console.log('TIER 4 PROVIDER LADDER CONTRACT VALIDATION OK — LiveKit, Cloudflare Stream, Daily, Zoom, and Google Meet lanes are explicit and cleanup semantics are enforced.');

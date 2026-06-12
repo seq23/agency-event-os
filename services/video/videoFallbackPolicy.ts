@@ -1,7 +1,7 @@
 import { isDailyFallbackEnabled } from "@/lib/env";
 import type { AppEnv } from "@/lib/env";
 
-export type VideoFallbackProviderKey = "livekit" | "daily" | "zoom_sdk" | "google_meet";
+export type VideoFallbackProviderKey = "livekit" | "cloudflare_stream" | "daily" | "zoom_sdk" | "google_meet";
 
 export interface VideoFallbackPolicy {
   primary: VideoFallbackProviderKey;
@@ -14,8 +14,8 @@ export interface VideoFallbackPolicy {
 export function getVideoFallbackPolicy(env?: Partial<AppEnv>): VideoFallbackPolicy {
   const dailyEnabled = env ? isDailyFallbackEnabled(env) : isDailyFallbackEnabled();
   const order: VideoFallbackProviderKey[] = dailyEnabled
-    ? ["livekit", "daily", "zoom_sdk", "google_meet"]
-    : ["livekit", "zoom_sdk", "google_meet"];
+    ? ["livekit", "cloudflare_stream", "daily", "zoom_sdk", "google_meet"]
+    : ["livekit", "cloudflare_stream", "zoom_sdk", "google_meet"];
 
   return {
     primary: "livekit",

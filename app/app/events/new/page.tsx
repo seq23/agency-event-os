@@ -27,7 +27,7 @@ const fields = [
   ["eventType", "Event type", "Webinar / summit / workshop / expo"],
   ["productionFeed", "Production feed / source", "StreamYard"],
   ["primaryVideo", "Primary embedded distribution", "LiveKit"],
-  ["fallbackVideo", "Fallback video provider", "Daily, then Zoom + Google Meet"],
+  ["fallbackVideo", "Fallback video provider", "Cloudflare Stream, then Daily, then Zoom + Google Meet"],
 ] as const;
 
 export default function CreateFirstEventPage() {

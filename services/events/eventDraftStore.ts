@@ -42,7 +42,7 @@ export function createEventSetupDraft(formData: FormData) {
     eventType: field(formData, "eventType", "webinar"),
     productionFeed: field(formData, "productionFeed", "StreamYard"),
     primaryVideo: field(formData, "primaryVideo", "LiveKit"),
-    fallbackVideo: field(formData, "fallbackVideo", "Daily, then Zoom + Google Meet"),
+    fallbackVideo: field(formData, "fallbackVideo", "Cloudflare Stream, then Daily, then Zoom + Google Meet"),
   };
   const filePath = draftPath();
   try {

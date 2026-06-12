@@ -195,7 +195,7 @@ test("Day 1 showtime master gauntlet proves role journeys, transactions, outcome
   await operator.getByLabel(/Event type/i).fill("Virtual summit");
   await operator.getByLabel(/Production feed \/ source/i).fill("StreamYard");
   await operator.getByLabel(/Primary embedded distribution/i).fill("LiveKit");
-  await operator.getByLabel(/Fallback video provider/i).fill("Daily, then Zoom + Google Meet");
+  await operator.getByLabel(/Fallback video provider/i).fill("Cloudflare Stream, then Daily, then Zoom + Google Meet");
   await operator.getByRole("button", { name: /Create setup draft and continue/i }).click();
 
   await expect(operator).toHaveURL(/\/app\/events\/playwright-day1-showtime-master\/setup\?draftId=draft-playwright-day1-showtime-master-/);

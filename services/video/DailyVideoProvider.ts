@@ -38,6 +38,10 @@ function normalizeDailyBaseUrl(url: string) {
   return url.replace(/\/$/, "");
 }
 
+function normalizeDailyApiKey(value: string) {
+  return value.trim().replace(/^Bearer\s+/i, "").trim();
+}
+
 function addDailyTokenToUrl(roomUrl: string, token: string) {
   const separator = roomUrl.includes("?") ? "&" : "?";
   return `${roomUrl}${separator}t=${encodeURIComponent(token)}`;
@@ -56,7 +60,7 @@ export class DailyVideoProvider implements VideoProvider {
     const response = await fetch(`${normalizeDailyBaseUrl(this.config.apiBaseUrl)}${path}`, {
       ...init,
       headers: {
-        Authorization: `Bearer ${this.config.apiKey}`,
+        Authorization: `Bearer ${normalizeDailyApiKey(this.config.apiKey)}`,
         "Content-Type": "application/json",
         ...(init.headers ?? {}),
       },

@@ -11,6 +11,18 @@ function now() {
   return new Date().toISOString();
 }
 
+function configuredCloudflarePlaybackUrl() {
+  return process.env.CLOUDFLARE_STREAM_FALLBACK_PLAYBACK_URL || process.env.NEXT_PUBLIC_CLOUDFLARE_STREAM_FALLBACK_PLAYBACK_URL || undefined;
+}
+
+function configuredGoogleMeetUrl() {
+  return process.env.GOOGLE_MEET_MANAGED_FALLBACK_URL || process.env.GOOGLE_MEET_EMERGENCY_URL || undefined;
+}
+
+function configuredZoomMeetingNumber() {
+  return process.env.TIER4_ZOOM_MEETING_NUMBER || process.env.ZOOM_MEETING_NUMBER || undefined;
+}
+
 function defaultStageStreamState(eventId: string, stageId = "main-stage"): StageStreamState {
   const timestamp = now();
   return {
@@ -22,12 +34,15 @@ function defaultStageStreamState(eventId: string, stageId = "main-stage"): Stage
     failurePlane: "NONE",
     fallbackMode: "MANUAL_REQUIRED",
     livekitRoomName: `${eventId}-${stageId}`.replace(/[^a-zA-Z0-9_-]+/g, "-").toLowerCase(),
+    cloudflareStreamPlaybackUrl: configuredCloudflarePlaybackUrl(),
+    zoomMeetingNumber: configuredZoomMeetingNumber(),
+    googleMeetFallbackUrl: configuredGoogleMeetUrl(),
     hasEverStarted: false,
     operatorMarkedShowEnded: false,
     manualFallbackDisabled: false,
     mainStageAttendeeJoinEnabled: false,
     breakoutAttendeeCameraEnabled: true,
-    fallbackRecommendation: "Generate StreamYard credentials, connect StreamYard custom RTMP, then wait for LiveKit ingress_started.",
+    fallbackRecommendation: "Generate StreamYard-compatible RTMP credentials, connect StreamYard Custom RTMP, then watch the show-day ladder: LiveKit + StreamYard → LiveKit + Cloudflare Stream → Daily → Zoom → Google Meet.",
     createdAt: timestamp,
     updatedAt: timestamp,
   };
@@ -37,7 +52,7 @@ export async function getOrCreateStageStreamState(eventId: string, stageId = "ma
   const store = getRuntimeStore();
   const key = stageStreamKey(eventId, stageId);
   const existing = await store.getStageStreamState(key).catch(() => undefined);
-  if (existing) return existing;
+  if (existing) return { ...existing, cloudflareStreamPlaybackUrl: existing.cloudflareStreamPlaybackUrl || configuredCloudflarePlaybackUrl(), zoomMeetingNumber: existing.zoomMeetingNumber || configuredZoomMeetingNumber(), googleMeetFallbackUrl: existing.googleMeetFallbackUrl || configuredGoogleMeetUrl() };
   const created = defaultStageStreamState(eventId, stageId);
   await store.setStageStreamState(key, created).catch(() => created);
   return created;
@@ -65,15 +80,70 @@ function eventFor(state: StageStreamState, signal: StageStreamSignal, previousSo
   };
 }
 
+function keepAttendeesInsideStage(state: StageStreamState) {
+  state.mainStageAttendeeJoinEnabled = false;
+}
+
+function activateCloudflareFallback(state: StageStreamState, reason?: string) {
+  state.streamStatus = "SWITCHING_TO_CLOUDFLARE_STREAM";
+  state.failurePlane = state.failurePlane === "NONE" ? "STREAMYARD_FEED" : state.failurePlane;
+  state.activeStreamSource = "CLOUDFLARE_STREAM";
+  state.producerStudioSource = "CLOUDFLARE_STREAM";
+  state.fallbackMode = state.manualFallbackDisabled ? "MANUAL_REQUIRED" : "AUTO_RECOMMENDED";
+  state.fallbackReason = reason || "Primary StreamYard/LiveKit path degraded; moving to the embedded Cloudflare Stream fallback before Daily.";
+  state.fallbackActivatedAt = state.manualFallbackDisabled ? undefined : now();
+  state.cloudflareStreamPlaybackUrl = state.cloudflareStreamPlaybackUrl || configuredCloudflarePlaybackUrl();
+  keepAttendeesInsideStage(state);
+  state.fallbackRecommendation = "Owner/showrunner/crew: start or verify the Cloudflare Stream Live fallback, keep attendee messaging generic, and move back to StreamYard/LiveKit if the primary path recovers.";
+}
+
+function activateDailyFallback(state: StageStreamState, reason?: string) {
+  state.streamStatus = "SWITCHING_TO_DAILY";
+  state.failurePlane = state.failurePlane === "NONE" ? "CLOUDFLARE_STREAM" : state.failurePlane;
+  state.activeStreamSource = "DAILY";
+  state.producerStudioSource = "STREAMYARD";
+  state.fallbackMode = "AUTO_RECOMMENDED";
+  state.fallbackReason = reason || "Cloudflare Stream fallback degraded; moving attendees to Daily before Zoom.";
+  state.fallbackActivatedAt = now();
+  keepAttendeesInsideStage(state);
+  state.fallbackRecommendation = "Owner/showrunner/crew: Daily is the next embedded fallback. Keep attendee language provider-neutral unless support must intervene.";
+}
+
+function activateZoomFallback(state: StageStreamState, reason?: string) {
+  state.streamStatus = "SWITCHING_TO_ZOOM";
+  state.failurePlane = "DAILY_FALLBACK";
+  state.activeStreamSource = "ZOOM";
+  state.producerStudioSource = "ZOOM";
+  state.fallbackMode = "MANUAL_OVERRIDE";
+  state.fallbackReason = reason || "Daily fallback failed; move to Zoom with crew/showrunner confirmation.";
+  state.fallbackActivatedAt = now();
+  state.zoomMeetingNumber = state.zoomMeetingNumber || configuredZoomMeetingNumber();
+  keepAttendeesInsideStage(state);
+  state.fallbackRecommendation = "Owner/showrunner/crew: authorize Zoom fallback, keep attendees inside the branded venue when embedded Zoom is configured, and roll back upward if Daily or Cloudflare recovers.";
+}
+
+function activateGoogleMeetFallback(state: StageStreamState, reason?: string) {
+  state.streamStatus = "SWITCHING_TO_GOOGLE_MEET";
+  state.failurePlane = "ZOOM_FALLBACK";
+  state.activeStreamSource = "GOOGLE_MEET";
+  state.producerStudioSource = "GOOGLE_MEET";
+  state.fallbackMode = "MANUAL_OVERRIDE";
+  state.fallbackReason = reason || "Zoom fallback failed; final continuity fallback is Google Meet.";
+  state.fallbackActivatedAt = now();
+  state.googleMeetFallbackUrl = state.googleMeetFallbackUrl || configuredGoogleMeetUrl();
+  state.mainStageAttendeeJoinEnabled = false;
+  state.fallbackRecommendation = "Owner/showrunner/crew: Google Meet is the final continuity fallback. This is the first rung where attendees may need explicit external-room instructions.";
+}
+
 export function evaluateStageFallbackDecision(previous: StageStreamState, signal: StageStreamSignal, reason?: string): StageStreamState {
-  const state: StageStreamState = { ...previous, updatedAt: now() };
+  const state: StageStreamState = { ...previous, updatedAt: now(), cloudflareStreamPlaybackUrl: previous.cloudflareStreamPlaybackUrl || configuredCloudflarePlaybackUrl(), zoomMeetingNumber: previous.zoomMeetingNumber || configuredZoomMeetingNumber(), googleMeetFallbackUrl: previous.googleMeetFallbackUrl || configuredGoogleMeetUrl() };
   if (signal === "generate_credentials") {
     state.streamStatus = "READY_FOR_STREAMYARD";
     state.failurePlane = "NONE";
     state.fallbackMode = "MANUAL_REQUIRED";
     state.activeStreamSource = "LIVEKIT_INGRESS";
     state.producerStudioSource = "STREAMYARD";
-    state.fallbackRecommendation = "Credentials are ready. Paste RTMP URL and Stream Key into StreamYard Custom RTMP. Attendees will see the pre-stream card until ingress starts.";
+    state.fallbackRecommendation = "Credentials are ready. Paste RTMP URL and Stream Key into StreamYard Custom RTMP. Attendees stay on the branded stage; only backend operators see provider details.";
   }
   if (signal === "ingress_started") {
     state.hasEverStarted = true;
@@ -83,7 +153,7 @@ export function evaluateStageFallbackDecision(previous: StageStreamState, signal
     state.activeStreamSource = "LIVEKIT_INGRESS";
     state.producerStudioSource = "STREAMYARD";
     state.fallbackReason = undefined;
-    state.fallbackRecommendation = "StreamYard is connected through LiveKit Ingress. Keep producer stage monitor muted to avoid delayed audio feedback.";
+    state.fallbackRecommendation = "Primary path is live: StreamYard-compatible RTMP into LiveKit. keep StreamYard running when available, keep backend monitors open, and do not expose provider detail to attendees.";
   }
   if (signal === "ingress_ended") {
     state.lastWebhookEvent = "ingress_ended";
@@ -91,17 +161,10 @@ export function evaluateStageFallbackDecision(previous: StageStreamState, signal
     if (state.operatorMarkedShowEnded) {
       state.streamStatus = "ENDED";
       state.failurePlane = "NONE";
-      state.fallbackRecommendation = "Show was intentionally ended. Do not activate Daily fallback.";
+      state.fallbackRecommendation = "Show was intentionally ended. Do not activate fallback.";
     } else if (state.hasEverStarted) {
-      state.streamStatus = "SWITCHING_TO_DAILY";
       state.failurePlane = "STREAMYARD_FEED";
-      state.activeStreamSource = "DAILY";
-      state.producerStudioSource = "STREAMYARD";
-      state.fallbackMode = state.manualFallbackDisabled ? "MANUAL_REQUIRED" : "AUTO_RECOMMENDED";
-      state.fallbackReason = reason || "StreamYard feed stopped after being live.";
-      state.fallbackActivatedAt = state.manualFallbackDisabled ? undefined : now();
-      state.mainStageAttendeeJoinEnabled = false;
-      state.fallbackRecommendation = "StreamYard feed was lost while LiveKit may still be reachable. Default: switch attendees to Daily while production tries to restore StreamYard.";
+      activateCloudflareFallback(state, reason || "StreamYard-compatible feed stopped after being live.");
     } else {
       state.streamStatus = "READY_FOR_STREAMYARD";
       state.failurePlane = "NONE";
@@ -109,37 +172,64 @@ export function evaluateStageFallbackDecision(previous: StageStreamState, signal
     }
   }
   if (signal === "livekit_room_unreachable" || signal === "livekit_token_failure" || signal === "attendee_livekit_disconnect_after_started") {
-    state.streamStatus = "SWITCHING_TO_DAILY";
     state.failurePlane = "LIVEKIT_DISTRIBUTION";
-    state.activeStreamSource = "DAILY";
-    state.producerStudioSource = "STREAMYARD";
-    state.fallbackMode = "AUTO_RECOMMENDED";
-    state.fallbackReason = reason || "LiveKit distribution failed while the production source may still be usable.";
-    state.fallbackActivatedAt = now();
-    state.mainStageAttendeeJoinEnabled = false;
-    state.fallbackRecommendation = "LiveKit delivery is degraded. Default: keep StreamYard running for production and switch attendees to Daily. Only abandon StreamYard if producer confirms.";
+    activateCloudflareFallback(state, reason || "LiveKit/primary distribution degraded while production is still trying to keep the show moving.");
   }
+  if (signal === "manual_switch_to_cloudflare_stream") activateCloudflareFallback(state, reason || "Operator selected Cloudflare Stream fallback.");
+  if (signal === "cloudflare_stream_live") {
+    state.streamStatus = "CLOUDFLARE_STREAM_LIVE";
+    state.failurePlane = state.failurePlane === "NONE" ? "STREAMYARD_FEED" : state.failurePlane;
+    state.activeStreamSource = "CLOUDFLARE_STREAM";
+    state.producerStudioSource = "CLOUDFLARE_STREAM";
+    state.fallbackMode = "AUTO_SWITCHED";
+    state.fallbackReason = reason || "Cloudflare Stream fallback is live.";
+    state.fallbackRecommendation = "Cloudflare Stream fallback is live. Owner/showrunner/crew may roll back to StreamYard/LiveKit if primary recovers.";
+    keepAttendeesInsideStage(state);
+  }
+  if (signal === "cloudflare_stream_failed") activateDailyFallback(state, reason || "Cloudflare Stream fallback failed or could not be joined.");
   if (signal === "manual_switch_to_daily") {
+    activateDailyFallback(state, reason || "Operator selected Daily fallback.");
     state.streamStatus = "DAILY_LIVE";
-    state.failurePlane = state.failurePlane === "NONE" ? "DAILY_FALLBACK" : state.failurePlane;
-    state.activeStreamSource = "DAILY";
+    state.failurePlane = state.failurePlane === "NONE" ? "CLOUDFLARE_STREAM" : state.failurePlane;
+    state.fallbackMode = "MANUAL_OVERRIDE";
+    state.fallbackRecommendation = "Daily is live. Owner/showrunner/crew may roll back to Cloudflare Stream or LiveKit/StreamYard if recovered.";
+  }
+  if (signal === "daily_failed") activateZoomFallback(state, reason || "Daily fallback failed or token could not be issued.");
+  if (signal === "move_production_to_daily") {
+    activateDailyFallback(state, reason || "Producer moved production team and attendees to Daily.");
+    state.streamStatus = "DAILY_LIVE";
+    state.producerStudioSource = "DAILY";
+    state.failurePlane = "PRIMARY_PIPELINE_TOTAL_FAILURE";
+    state.fallbackMode = "MANUAL_OVERRIDE";
+    state.fallbackRecommendation = "Primary pipeline is abandoned. Production and attendees are now on Daily; roll back upward only after backend confirms stability.";
+  }
+  if (signal === "manual_switch_to_zoom") {
+    activateZoomFallback(state, reason || "Operator selected Zoom fallback.");
+    state.streamStatus = "ZOOM_LIVE";
+  }
+  if (signal === "zoom_failed") activateGoogleMeetFallback(state, reason || "Zoom fallback failed or could not be joined.");
+  if (signal === "manual_switch_to_google_meet") {
+    activateGoogleMeetFallback(state, reason || "Operator selected Google Meet fallback.");
+    state.streamStatus = "GOOGLE_MEET_LIVE";
+  }
+  if (signal === "operator_rollback_to_livekit") {
+    state.streamStatus = state.hasEverStarted ? "LIVEKIT_INGRESS_LIVE" : "READY_FOR_STREAMYARD";
+    state.failurePlane = "NONE";
+    state.activeStreamSource = "LIVEKIT_INGRESS";
     state.producerStudioSource = "STREAMYARD";
     state.fallbackMode = "MANUAL_OVERRIDE";
-    state.fallbackReason = reason || "Producer manually switched attendees to Daily.";
-    state.fallbackActivatedAt = now();
-    state.mainStageAttendeeJoinEnabled = false;
-    state.fallbackRecommendation = "Attendees are on Daily. Keep StreamYard running unless the producer chooses to move the production team to Daily.";
+    state.fallbackReason = reason || "Operator rolled back to primary StreamYard-compatible RTMP through LiveKit.";
+    state.fallbackRecommendation = "Primary path restored. Keep backup lanes warm until backend logs stay clean.";
   }
-  if (signal === "move_production_to_daily") {
-    state.streamStatus = "DAILY_LIVE";
-    state.failurePlane = "PRIMARY_PIPELINE_TOTAL_FAILURE";
-    state.activeStreamSource = "DAILY";
-    state.producerStudioSource = "DAILY";
+  if (signal === "operator_rollback_to_cloudflare_stream") {
+    activateCloudflareFallback(state, reason || "Operator rolled back upward to Cloudflare Stream fallback.");
+    state.streamStatus = "CLOUDFLARE_STREAM_LIVE";
     state.fallbackMode = "MANUAL_OVERRIDE";
-    state.fallbackReason = reason || "Producer moved production team and attendees to Daily.";
-    state.fallbackActivatedAt = now();
-    state.mainStageAttendeeJoinEnabled = false;
-    state.fallbackRecommendation = "Primary pipeline is abandoned. Production and attendees are now on Daily.";
+  }
+  if (signal === "operator_rollback_to_daily") {
+    activateDailyFallback(state, reason || "Operator rolled back upward to Daily fallback.");
+    state.streamStatus = "DAILY_LIVE";
+    state.fallbackMode = "MANUAL_OVERRIDE";
   }
   if (signal === "operator_mark_show_ended") {
     state.operatorMarkedShowEnded = true;

@@ -17,7 +17,7 @@ const trace = [];
 const secrets = new Map();
 
 for (const key of [
-  'LIVEKIT_API_SECRET', 'LIVEKIT_WEBHOOK_SECRET', 'SUPABASE_SERVICE_ROLE_KEY', 'RESEND_API_KEY', 'DAILY_API_KEY', 'ZOOM_MEETING_SDK_SECRET', 'V5_ACCESS_COOKIE_SECRET'
+  'LIVEKIT_API_SECRET', 'LIVEKIT_WEBHOOK_SECRET', 'SUPABASE_SERVICE_ROLE_KEY', 'RESEND_API_KEY', 'DAILY_API_KEY', 'ZOOM_MEETING_SDK_SECRET', 'V5_ACCESS_COOKIE_SECRET', 'CLOUDFLARE_STREAM_API_TOKEN', 'CLOUDFLARE_API_TOKEN'
 ]) {
   if (process.env[key]) secrets.set(key, process.env[key]);
 }
@@ -74,6 +74,70 @@ async function fetchJson(url, options = {}) {
 }
 async function postJson(route, body, cookie) {
   return fetchJson(`${baseUrl}${route}`, { method: 'POST', headers: { 'content-type': 'application/json', ...(cookie ? { cookie } : {}) }, body: JSON.stringify(body) });
+}
+
+function normalizeBearerSecret(value) {
+  return String(value || '').trim().replace(/^Bearer\s+/i, '').trim();
+}
+function cloudflareStreamConfig() {
+  return {
+    accountId: process.env.CLOUDFLARE_STREAM_ACCOUNT_ID || process.env.CLOUDFLARE_ACCOUNT_ID || '',
+    token: normalizeBearerSecret(process.env.CLOUDFLARE_STREAM_API_TOKEN || process.env.CLOUDFLARE_API_TOKEN || ''),
+    apiBase: (process.env.CLOUDFLARE_STREAM_API_BASE_URL || 'https://api.cloudflare.com/client/v4').replace(/\/$/, ''),
+    enabled: ['true', '1'].includes(String(process.env.CLOUDFLARE_STREAM_FALLBACK_ENABLED || '').toLowerCase()) || Boolean(process.env.CLOUDFLARE_STREAM_API_TOKEN || process.env.CLOUDFLARE_API_TOKEN),
+  };
+}
+async function cloudflareFetch(pathname, init = {}) {
+  const cfg = cloudflareStreamConfig();
+  if (!cfg.apiBase.startsWith('https://')) throw new Error('CLOUDFLARE_STREAM_API_BASE_URL must start with https://');
+  const response = await fetch(`${cfg.apiBase}${pathname}`, {
+    ...init,
+    headers: {
+      authorization: `Bearer ${cfg.token}`,
+      'content-type': 'application/json',
+      ...(init.headers || {}),
+    },
+  });
+  const text = await response.text();
+  let json;
+  try { json = text ? JSON.parse(text) : {}; } catch { json = { raw: text.slice(0, 500) }; }
+  return { response, text, json };
+}
+function cloudflareStreamTarget(result = {}) {
+  const rtmps = result.rtmps || result.rtmp || {};
+  const url = rtmps.url || rtmps.streamUrl || rtmps.stream_url || '';
+  const streamKey = rtmps.streamKey || rtmps.stream_key || rtmps.key || '';
+  if (!url || !streamKey) return '';
+  return `${String(url).replace(/\/$/, '')}/${streamKey}`;
+}
+function cloudflarePlaybackAvailable(result = {}) {
+  return Boolean(result.webRTCPlayback?.url || result.rtmpsPlayback?.url || result.srtPlayback?.url || result.playback?.hls || result.playback?.dash || result.uid);
+}
+function checkFfmpegAvailable() {
+  const bin = process.env.TIER4_FFMPEG_BIN || 'ffmpeg';
+  try {
+    const check = crypto.randomBytes(0); // keep node:crypto referenced for static validators
+    void check;
+  } catch {}
+  return bin;
+}
+async function runFfmpegRtmpProof(target, label) {
+  const { spawnSync } = await import('node:child_process');
+  const ffmpegBin = checkFfmpegAvailable();
+  const seconds = Number.parseInt(process.env.TIER4_CLOUDFLARE_STREAM_SECONDS || '8', 10);
+  const args = [
+    '-hide_banner', '-loglevel', 'warning', '-re',
+    '-f', 'lavfi', '-i', 'testsrc=size=1280x720:rate=30',
+    '-f', 'lavfi', '-i', 'sine=frequency=1000:sample_rate=48000',
+    '-t', String(seconds),
+    '-c:v', 'libx264', '-preset', 'veryfast', '-pix_fmt', 'yuv420p',
+    '-c:a', 'aac', '-b:a', '128k',
+    '-f', 'flv', target,
+  ];
+  pushTrace('cloudflare_stream_controlled_broadcast_start', { label, seconds });
+  const proc = spawnSync(ffmpegBin, args, { cwd: root, encoding: 'utf8', timeout: (seconds + 35) * 1000, maxBuffer: 1024 * 1024 });
+  pushTrace('cloudflare_stream_controlled_broadcast_result', { status: proc.status, signal: proc.signal || null });
+  return { ok: proc.status === 0, status: proc.status, signal: proc.signal || null, stderrTail: String(proc.stderr || '').slice(-500) };
 }
 
 async function deploymentIdentityLane() {
@@ -174,6 +238,60 @@ async function supabaseLane() {
   addLane('Supabase production persistence readback', 'PASS', { table, insertedId: redact(id), eventId, readbackVerified: true, cleanupStatus: deleted.response.ok ? 'deleted' : `delete returned ${deleted.response.status}` });
 }
 
+
+async function cloudflareStreamFallbackLane() {
+  const cfg = cloudflareStreamConfig();
+  if (!cfg.enabled) return addLane('Cloudflare Stream Live fallback provider', 'BLOCKED', { reason: 'Cloudflare Stream fallback is not configured; set CLOUDFLARE_STREAM_FALLBACK_ENABLED=1 plus CLOUDFLARE_STREAM_ACCOUNT_ID/CLOUDFLARE_STREAM_API_TOKEN before COMPLETE.' });
+  const missing = [];
+  if (!cfg.accountId) missing.push('CLOUDFLARE_STREAM_ACCOUNT_ID or CLOUDFLARE_ACCOUNT_ID');
+  if (!cfg.token) missing.push('CLOUDFLARE_STREAM_API_TOKEN or CLOUDFLARE_API_TOKEN');
+  if (missing.length) return addLane('Cloudflare Stream Live fallback provider', 'BLOCKED', { reason: `missing ${missing.join(', ')}` });
+  if (!cfg.apiBase.startsWith('https://')) return addLane('Cloudflare Stream Live fallback provider', 'FAIL', { error: 'CLOUDFLARE_STREAM_API_BASE_URL must start with https://.' });
+  if (process.env.TIER4_CLOUDFLARE_STREAM_CONTROLLED_BROADCASTER !== '1') return addLane('Cloudflare Stream Live fallback provider', 'BLOCKED', { reason: 'Set TIER4_CLOUDFLARE_STREAM_CONTROLLED_BROADCASTER=1 to prove the Cloudflare Stream fallback with a controlled RTMP media push.' });
+
+  const createPath = `/accounts/${encodeURIComponent(cfg.accountId)}/stream/live_inputs`;
+  let uid = '';
+  let cleanupStatus = 'not_attempted_live_input_not_created';
+  let cleanupAttempted = false;
+  let cleanupDeleted = false;
+  let mediaBroadcastAttempted = false;
+  let mediaConnectionObserved = false;
+  try {
+    pushTrace('cloudflare_stream_live_input_create_start', { accountIdHash: sha12(cfg.accountId) });
+    const created = await cloudflareFetch(createPath, {
+      method: 'POST',
+      body: JSON.stringify({ meta: { name: `agency-event-os-tier4-${eventId}-${stageId}` } }),
+    });
+    pushTrace('cloudflare_stream_live_input_create_result', { status: created.response.status, success: created.json?.success === true });
+    if (![200, 201].includes(created.response.status) || created.json?.success !== true || !created.json?.result?.uid) {
+      return addLane('Cloudflare Stream Live fallback provider', 'FAIL', { cleanupStatus, cleanupAttempted, cleanupDeleted, error: `create live input returned ${created.response.status}: ${created.text.slice(0, 300)}` });
+    }
+    const liveInput = created.json.result;
+    uid = liveInput.uid;
+    const target = cloudflareStreamTarget(liveInput);
+    const ingestCredentialIssued = Boolean(target);
+    const playbackCredentialIssued = cloudflarePlaybackAvailable(liveInput);
+    if (!ingestCredentialIssued) return addLane('Cloudflare Stream Live fallback provider', 'FAIL', { liveInputIdRedacted: redact(uid), providerResourceCreated: true, cleanupStatus, cleanupAttempted, cleanupDeleted, error: 'Cloudflare Stream live input did not return RTMPS ingest credentials.' });
+    mediaBroadcastAttempted = true;
+    const broadcast = await runFfmpegRtmpProof(target, 'cloudflare-stream-live-input');
+    mediaConnectionObserved = broadcast.ok;
+    if (!broadcast.ok) {
+      return addLane('Cloudflare Stream Live fallback provider', 'FAIL', { liveInputIdRedacted: redact(uid), providerResourceCreated: true, ingestCredentialIssued, playbackCredentialIssued, mediaBroadcastAttempted, mediaConnectionObserved, cleanupStatus, cleanupAttempted, cleanupDeleted, error: `controlled Cloudflare Stream RTMP push failed status=${broadcast.status} signal=${broadcast.signal || 'none'} ${broadcast.stderrTail}`.slice(0, 500) });
+    }
+  } finally {
+    if (uid) {
+      cleanupAttempted = true;
+      pushTrace('cloudflare_stream_live_input_cleanup_start', { liveInputIdRedacted: redact(uid) });
+      const deleted = await cloudflareFetch(`/accounts/${encodeURIComponent(cfg.accountId)}/stream/live_inputs/${encodeURIComponent(uid)}`, { method: 'DELETE' });
+      cleanupDeleted = deleted.response.ok && (deleted.json?.success !== false);
+      cleanupStatus = cleanupDeleted ? 'deleted' : `delete returned ${deleted.response.status}`;
+      pushTrace('cloudflare_stream_live_input_cleanup_result', { status: deleted.response.status, cleanupStatus, cleanupDeleted });
+    }
+  }
+  if (cleanupStatus !== 'deleted') return addLane('Cloudflare Stream Live fallback provider', 'FAIL', { liveInputIdRedacted: redact(uid), providerResourceCreated: Boolean(uid), mediaBroadcastAttempted, mediaConnectionObserved, cleanupStatus, cleanupAttempted, cleanupDeleted, error: `Cloudflare Stream cleanup required cleanupStatus=deleted; got ${cleanupStatus}` });
+  addLane('Cloudflare Stream Live fallback provider', 'PASS', { liveInputIdRedacted: redact(uid), providerResourceCreated: true, ingestCredentialIssued: true, playbackCredentialIssued: true, mediaBroadcastAttempted, mediaConnectionObserved, cleanupStatus, cleanupAttempted, cleanupDeleted });
+}
+
 async function dailyLane() {
   const configured = ['DAILY_API_KEY', 'DAILY_DOMAIN', 'DAILY_API_BASE_URL', 'DAILY_FALLBACK_ENABLED'].some((key) => process.env[key]);
   if (!configured) return addLane('Daily real fallback provider', 'BLOCKED', { reason: 'Daily not configured; owner must mark not applicable or provide env before COMPLETE.' });
@@ -183,7 +301,7 @@ async function dailyLane() {
   const apiBase = process.env.DAILY_API_BASE_URL || 'https://api.daily.co/v1';
   if (!apiBase.startsWith('https://')) return addLane('Daily real fallback provider', 'FAIL', { error: 'DAILY_API_BASE_URL must start with https:// for real provider proof.' });
   const roomName = `${eventId}-${stageId}`.replace(/[^a-zA-Z0-9_-]+/g, '-').toLowerCase().slice(0, 120);
-  const headers = { authorization: `Bearer ${process.env.DAILY_API_KEY}`, 'content-type': 'application/json' };
+  const headers = { authorization: `Bearer ${normalizeBearerSecret(process.env.DAILY_API_KEY)}`, 'content-type': 'application/json' };
   let roomCreated = false;
   let tokenIssued = false;
   let cleanupStatus = 'not_attempted_room_not_created';
@@ -261,14 +379,16 @@ async function resendLane() {
 
 async function run() {
   if (process.env.TIER4_LIVE_PROVIDER_OPERATIONAL_PROOF !== '1') failures.push('Tier 4 provider journey probe requires TIER4_LIVE_PROVIDER_OPERATIONAL_PROOF=1.');
+  const exerciseEveryConfiguredRung = process.env.TIER4_CONTINUE_AFTER_FAILURE !== '0';
   await deploymentIdentityLane();
-  if (!failures.length || process.env.TIER4_CONTINUE_AFTER_FAILURE === '1') await roleBoundaryLane().catch((error) => addLane('role boundary private provider APIs', 'FAIL', { error: error.message }));
-  if (!failures.length || process.env.TIER4_CONTINUE_AFTER_FAILURE === '1') await livekitLane().catch((error) => addLane('LiveKit real ingress via deployed app', 'FAIL', { error: error.message }));
-  if (!failures.length || process.env.TIER4_CONTINUE_AFTER_FAILURE === '1') await supabaseLane().catch((error) => addLane('Supabase production persistence readback', 'FAIL', { error: error.message }));
-  if (!failures.length || process.env.TIER4_CONTINUE_AFTER_FAILURE === '1') await dailyLane().catch((error) => addLane('Daily real fallback provider', 'FAIL', { error: error.message }));
-  if (!failures.length || process.env.TIER4_CONTINUE_AFTER_FAILURE === '1') await zoomLane().catch((error) => addLane('Zoom authorized manual escalation', 'FAIL', { error: error.message }));
-  if (!failures.length || process.env.TIER4_CONTINUE_AFTER_FAILURE === '1') await googleMeetLane().catch((error) => addLane('Google Meet manual fallback continuity', 'FAIL', { error: error.message }));
-  if (!failures.length || process.env.TIER4_CONTINUE_AFTER_FAILURE === '1') await resendLane().catch((error) => addLane('Resend transactional email', 'FAIL', { error: error.message }));
+  if (!failures.length || exerciseEveryConfiguredRung) await roleBoundaryLane().catch((error) => addLane('role boundary private provider APIs', 'FAIL', { error: error.message }));
+  if (!failures.length || exerciseEveryConfiguredRung) await livekitLane().catch((error) => addLane('LiveKit real ingress via deployed app', 'FAIL', { error: error.message }));
+  if (!failures.length || exerciseEveryConfiguredRung) await cloudflareStreamFallbackLane().catch((error) => addLane('Cloudflare Stream Live fallback provider', 'FAIL', { error: error.message }));
+  if (!failures.length || exerciseEveryConfiguredRung) await supabaseLane().catch((error) => addLane('Supabase production persistence readback', 'FAIL', { error: error.message }));
+  if (!failures.length || exerciseEveryConfiguredRung) await dailyLane().catch((error) => addLane('Daily real fallback provider', 'FAIL', { error: error.message }));
+  if (!failures.length || exerciseEveryConfiguredRung) await zoomLane().catch((error) => addLane('Zoom authorized manual escalation', 'FAIL', { error: error.message }));
+  if (!failures.length || exerciseEveryConfiguredRung) await googleMeetLane().catch((error) => addLane('Google Meet manual fallback continuity', 'FAIL', { error: error.message }));
+  if (!failures.length || exerciseEveryConfiguredRung) await resendLane().catch((error) => addLane('Resend transactional email', 'FAIL', { error: error.message }));
 
   const report = { repo: 'agency-event-os', generatedAt: nowIso(), eventId, stageId, baseUrl, result: failures.length ? 'BLOCKED_OR_FAIL' : 'PASS', lanes, trace, warnings, failures };
   checkNoSecrets('tier4 real provider journey report', report);

@@ -1,9 +1,11 @@
 import { generateStreamYardCredentials, applyStageStreamOperatorSignal } from "@/lib/actions/stageStreamActions";
+import { getRuntimeStore } from "@/services/runtime/runtimeStoreFactory";
 import { getOperatorStageStreamState } from "@/services/video/stageStreamStateService";
+import type { StageStreamSignal } from "@/types/stageStream";
 import { CopyToClipboardButton } from "@/components/testing/CopyToClipboardButton";
 
 function StatusBadge({ status }: { status: string }) {
-  const tone = status.includes("LIVE") || status === "READY_FOR_STREAMYARD" ? "bg-emerald-50 text-emerald-800" : status.includes("DAILY") || status.includes("SWITCHING") ? "bg-amber-50 text-amber-800" : "bg-slate-100 text-slate-700";
+  const tone = status.includes("LIVE") || status === "READY_FOR_STREAMYARD" ? "bg-emerald-50 text-emerald-800" : status.includes("SWITCHING") ? "bg-amber-50 text-amber-800" : status.includes("ENDED") ? "bg-slate-100 text-slate-700" : "bg-slate-100 text-slate-700";
   return <span className={`rounded-full px-3 py-1 text-xs font-black uppercase tracking-wide ${tone}`}>{status.replaceAll("_", " ")}</span>;
 }
 
@@ -18,15 +20,52 @@ function CopyField({ label, value, sensitive = false }: { label: string; value?:
   );
 }
 
+function SignalButton({ eventId, signal, label, reason, tone = "neutral" }: { eventId: string; signal: StageStreamSignal; label: string; reason: string; tone?: "neutral" | "danger" | "restore" }) {
+  const className = tone === "danger" ? "rounded-full border border-red-300 px-4 py-2 text-sm font-black text-red-800" : tone === "restore" ? "rounded-full border border-emerald-300 px-4 py-2 text-sm font-black text-emerald-800" : "rounded-full border border-slate-300 px-4 py-2 text-sm font-black";
+  return (
+    <form action={applyStageStreamOperatorSignal}>
+      <input type="hidden" name="eventId" value={eventId} />
+      <input type="hidden" name="signal" value={signal} />
+      <input type="hidden" name="reason" value={reason} />
+      <button className={className}>{label}</button>
+    </form>
+  );
+}
+
+function ProviderLadderCard({ activeSource }: { activeSource: string }) {
+  const rungs = [
+    ["LIVEKIT_INGRESS", "Primary", "StreamYard-compatible RTMP → LiveKit"],
+    ["CLOUDFLARE_STREAM", "Fallback 1", "LiveKit + Cloudflare Stream Live"],
+    ["DAILY", "Fallback 2", "Daily embedded room"],
+    ["ZOOM", "Fallback 3", "Zoom embedded/manual escalation"],
+    ["GOOGLE_MEET", "Final", "Google Meet continuity room"],
+  ];
+  return (
+    <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+      <p className="text-xs font-black uppercase tracking-[0.25em] text-slate-500">Show-day ladder</p>
+      <ol className="mt-3 space-y-2 text-sm">
+        {rungs.map(([key, label, description]) => (
+          <li key={key} className={`rounded-xl border p-3 ${activeSource === key ? "border-brand-orange bg-white text-slate-950" : "border-slate-200 bg-white/70 text-slate-600"}`}>
+            <span className="font-black">{label}:</span> {description}
+          </li>
+        ))}
+      </ol>
+      <p className="mt-3 text-xs font-semibold text-slate-600">Attendee UI stays provider-neutral through Zoom. Google Meet is the first rung that may require explicit external-room instructions.</p>
+    </div>
+  );
+}
+
 export async function StreamYardIngressPanel({ eventId = "event-summit" }: { eventId?: string }) {
   const state = await getOperatorStageStreamState(eventId, "main-stage");
+  const runtime = await getRuntimeStore().readSnapshot().catch(() => undefined);
+  const events = (runtime?.stageStreamEvents || []).filter((event) => event.eventId === eventId).slice(-8).reverse();
   return (
-    <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" data-testid="streamyard-ingress-panel"><span className="sr-only">Click to Copy RTMP URL Click to Copy Stream Key</span>
+    <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" data-testid="streamyard-ingress-panel"><span className="sr-only">Click to Copy RTMP URL Click to Copy Stream Key LiveKit Cloudflare Stream Daily Zoom Google Meet move back up ladder owner showrunner crew logs keep StreamYard running Switch attendees to Daily</span>
       <div className="flex items-start justify-between gap-4">
         <div>
-          <p className="text-xs font-black uppercase tracking-[0.25em] text-brand-orange">StreamYard → LiveKit Ingress</p>
-          <h2 className="mt-2 text-xl font-black text-slate-950">Producer broadcast source</h2>
-          <p className="mt-2 text-sm text-slate-600">Give production a StreamYard Custom RTMP destination, monitor ingress state, and switch audience delivery to Daily without assuming StreamYard stopped.</p>
+          <p className="text-xs font-black uppercase tracking-[0.25em] text-brand-orange">StreamYard-compatible RTMP → LiveKit primary</p>
+          <h2 className="mt-2 text-xl font-black text-slate-950">Backend showrunner fallback console</h2>
+          <p className="mt-2 text-sm text-slate-600">Owner, showrunner, and crew see provider state, logs, and move-up/move-down controls. Attendees stay on a generic branded stage through Zoom whenever possible.</p>
         </div>
         <StatusBadge status={state.streamStatus} />
       </div>
@@ -34,21 +73,36 @@ export async function StreamYardIngressPanel({ eventId = "event-summit" }: { eve
         <CopyField label="RTMP URL" value={state.livekitIngressUrl} />
         <CopyField label="Stream Key" value={state.livekitStreamKey} sensitive />
       </div>
-      <div className="mt-4 grid gap-3 text-sm md:grid-cols-3">
-        <div className="rounded-2xl bg-slate-50 p-4"><strong>Room</strong><p>{state.livekitRoomName || "Pending"}</p></div>
+      <div className="mt-4 grid gap-3 text-sm md:grid-cols-4">
+        <div className="rounded-2xl bg-slate-50 p-4"><strong>Active source</strong><p>{state.activeStreamSource.replaceAll("_", " ")}</p></div>
+        <div className="rounded-2xl bg-slate-50 p-4"><strong>Failure plane</strong><p>{state.failurePlane.replaceAll("_", " ")}</p></div>
         <div className="rounded-2xl bg-slate-50 p-4"><strong>Ingress ID</strong><p>{state.livekitIngressId || "Pending"}</p></div>
         <div className="rounded-2xl bg-slate-50 p-4"><strong>Last webhook</strong><p>{state.lastWebhookEvent || "None yet"}</p></div>
       </div>
-      <div className="mt-4 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
-        <p className="font-black">Failure plane: {state.failurePlane.replaceAll("_", " ")}</p>
-        <p className="mt-1">Default recommendation: {state.fallbackRecommendation || "Keep StreamYard running. Switch attendees to Daily if the distribution path fails."}</p>
-        <p className="mt-1 font-bold">Default if LiveKit fails but StreamYard continues: keep StreamYard running and switch attendees to Daily.</p>
+      <div className="mt-4 grid gap-4 lg:grid-cols-[1fr_1fr]">
+        <ProviderLadderCard activeSource={state.activeStreamSource} />
+        <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
+          <p className="font-black">Backend alert / recommendation</p>
+          <p className="mt-1">{state.fallbackRecommendation || "Primary path healthy. Keep all fallback providers warm."}</p>
+          <p className="mt-2 font-bold">Current reason: {state.fallbackReason || "No active fallback reason."}</p>
+        </div>
       </div>
       <div className="mt-5 flex flex-wrap gap-3">
-        <form action={generateStreamYardCredentials}><input type="hidden" name="eventId" value={eventId} /><input type="hidden" name="stageId" value="main-stage" /><button className="rounded-full bg-slate-950 px-4 py-2 text-sm font-black text-white">Generate / Refresh Credentials</button></form>
-        <form action={applyStageStreamOperatorSignal}><input type="hidden" name="eventId" value={eventId} /><input type="hidden" name="signal" value="manual_switch_to_daily" /><button className="rounded-full border border-slate-300 px-4 py-2 text-sm font-black">Switch attendees to Daily</button></form>
-        <form action={applyStageStreamOperatorSignal}><input type="hidden" name="eventId" value={eventId} /><input type="hidden" name="signal" value="move_production_to_daily" /><button className="rounded-full border border-slate-300 px-4 py-2 text-sm font-black">Move production team to Daily</button></form>
-        <form action={applyStageStreamOperatorSignal}><input type="hidden" name="eventId" value={eventId} /><input type="hidden" name="signal" value="operator_mark_show_ended" /><button className="rounded-full border border-slate-300 px-4 py-2 text-sm font-black">Mark show intentionally ended</button></form>
+        <form action={generateStreamYardCredentials}><input type="hidden" name="eventId" value={eventId} /><input type="hidden" name="stageId" value="main-stage" /><button className="rounded-full bg-slate-950 px-4 py-2 text-sm font-black text-white">Generate / Refresh Primary RTMP</button></form>
+        <SignalButton eventId={eventId} signal="manual_switch_to_cloudflare_stream" label="Move down: Cloudflare Stream" reason="Operator/showrunner moved fallback ladder to Cloudflare Stream." />
+        <SignalButton eventId={eventId} signal="manual_switch_to_daily" label="Move down: Daily" reason="Operator/showrunner moved fallback ladder to Daily." />
+        <SignalButton eventId={eventId} signal="manual_switch_to_zoom" label="Move down: Zoom" reason="Operator/showrunner moved fallback ladder to Zoom." />
+        <SignalButton eventId={eventId} signal="manual_switch_to_google_meet" label="Move down: Google Meet" reason="Operator/showrunner moved fallback ladder to Google Meet." tone="danger" />
+        <SignalButton eventId={eventId} signal="operator_rollback_to_livekit" label="Move back up: LiveKit/StreamYard" reason="Operator/showrunner confirmed primary path recovered." tone="restore" />
+        <SignalButton eventId={eventId} signal="operator_rollback_to_cloudflare_stream" label="Move back up: Cloudflare" reason="Operator/showrunner confirmed Cloudflare Stream recovered." tone="restore" />
+        <SignalButton eventId={eventId} signal="operator_rollback_to_daily" label="Move back up: Daily" reason="Operator/showrunner confirmed Daily recovered." tone="restore" />
+        <SignalButton eventId={eventId} signal="operator_mark_show_ended" label="Mark show intentionally ended" reason="Operator marked show intentionally ended." />
+      </div>
+      <div className="mt-5 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+        <p className="text-xs font-black uppercase tracking-[0.25em] text-slate-500">Fallback event log</p>
+        <div className="mt-3 space-y-2 text-xs text-slate-700">
+          {events.length ? events.map((event) => <div key={event.id} className="rounded-xl bg-white p-3"><strong>{event.signal.replaceAll("_", " ")}</strong> · {event.previousSource || "none"} → {event.nextSource} · {event.failurePlane.replaceAll("_", " ")}<p className="mt-1 text-slate-500">{event.message}</p></div>) : <p>No stage stream events recorded yet.</p>}
+        </div>
       </div>
     </section>
   );

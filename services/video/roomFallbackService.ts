@@ -2,7 +2,7 @@ import { randomId } from "@/lib/security/portableCrypto";
 import { getRuntimeStore } from "@/services/runtime/runtimeStoreFactory";
 import type { V4RoomFallbackState, V4RoomType, V4VideoProvider } from "@/types/v4";
 
-const providerLadder: V4VideoProvider[] = ["livekit", "daily", "zoom", "google_meet"];
+const providerLadder: V4VideoProvider[] = ["livekit", "cloudflare_stream", "daily", "zoom", "google_meet"];
 const manualOnlyProviders: V4VideoProvider[] = ["zoom", "google_meet"];
 
 function fallbackKey(eventId: string, roomType: V4RoomType) {
@@ -15,7 +15,7 @@ export function createInitialRoomFallbackState(eventId: string, roomType: V4Room
     roomId: `${eventId}-${roomType}`,
     roomType,
     activeProvider: "livekit",
-    health: { livekit: "healthy", daily: "healthy", zoom: "unknown", google_meet: "unknown" },
+    health: { livekit: "healthy", cloudflare_stream: "healthy", daily: "healthy", zoom: "unknown", google_meet: "unknown" },
     automaticFallbackEnabled: true,
     rollbackAvailable: false,
     lastCheckedAt: new Date().toISOString(),
@@ -38,7 +38,7 @@ export function recommendFallbackProvider(state: V4RoomFallbackState): V4VideoPr
 }
 
 export function canAutoSwitchTo(provider: V4VideoProvider) {
-  return provider === "daily";
+  return provider === "cloudflare_stream" || provider === "daily";
 }
 
 export function requiresCrewConfirmation(provider: V4VideoProvider) {

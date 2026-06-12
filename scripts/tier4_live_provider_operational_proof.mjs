@@ -125,10 +125,23 @@ function inspectEvidence(file, failures) {
   const roleProof = evidence.roleBoundaryProof || {};
   if (roleProof.privateProviderControlsDeniedToPublic !== true) failures.push('StreamYard/LiveKit: roleBoundaryProof.privateProviderControlsDeniedToPublic must be true.');
   if (roleProof.eventScopedAccessVerified !== true) failures.push('StreamYard/LiveKit: roleBoundaryProof.eventScopedAccessVerified must be true.');
-  for (const laneName of ['dailyFallback', 'zoomEscalation', 'googleMeetFallback', 'resendEmail']) {
+  for (const laneName of ['cloudflareStreamFallback', 'dailyFallback', 'zoomEscalation', 'googleMeetFallback', 'resendEmail']) {
     const lane = evidence[laneName];
     if (lane && lane.configured === true && lane.proofPassed !== true) failures.push(`StreamYard/LiveKit: ${laneName}.proofPassed must be true when configured.`);
   }
+  const streamyardProviderApi = evidence.streamyardProviderApi || {};
+  if (streamyardProviderApi.automaticApiProofAvailable === true) failures.push('StreamYard/LiveKit: streamyardProviderApi.automaticApiProofAvailable must remain false unless enterprise API automation has been implemented and validated.');
+  const streamyardCompatible = evidence.streamyardCompatibleRtmpPath || {};
+  if (streamyardCompatible.proofPassed !== true) failures.push('StreamYard/LiveKit: streamyardCompatibleRtmpPath.proofPassed must be true.');
+  if (streamyardCompatible.cleanupStatus !== 'deleted') failures.push('StreamYard/LiveKit: streamyardCompatibleRtmpPath.cleanupStatus must be deleted.');
+  const cloudflareProof = evidence.cloudflareStreamFallback || {};
+  if (cloudflareProof.configured === true) {
+    if (cloudflareProof.proofPassed !== true) failures.push('StreamYard/LiveKit: cloudflareStreamFallback.proofPassed must be true when configured.');
+    if (cloudflareProof.ingestCredentialIssued !== true) failures.push('StreamYard/LiveKit: cloudflareStreamFallback.ingestCredentialIssued must be true.');
+    if (cloudflareProof.mediaConnectionObserved !== true) failures.push('StreamYard/LiveKit: cloudflareStreamFallback.mediaConnectionObserved must be true when Cloudflare Stream fallback is configured.');
+    if (cloudflareProof.cleanupStatus !== 'deleted') failures.push('StreamYard/LiveKit: cloudflareStreamFallback.cleanupStatus must be deleted.');
+  }
+
   const dailyProof = evidence.dailyFallback || {};
   if (dailyProof.configured === true) {
     if (dailyProof.cleanupStatus !== 'deleted') failures.push('StreamYard/LiveKit: dailyFallback.cleanupStatus must be deleted when Daily fallback is configured and tested.');
@@ -177,6 +190,13 @@ const evidence = inspectEvidence(process.env.TIER4_STREAMYARD_LIVE_EVIDENCE_PATH
 
 requireAll(['NEXT_PUBLIC_SUPABASE_URL', 'NEXT_PUBLIC_SUPABASE_ANON_KEY', 'SUPABASE_SERVICE_ROLE_KEY'], failures, 'Supabase production persistence');
 
+const cloudflareStreamEnabled = optionalLaneEnabled(['CLOUDFLARE_STREAM_ACCOUNT_ID', 'CLOUDFLARE_ACCOUNT_ID', 'CLOUDFLARE_STREAM_API_TOKEN', 'CLOUDFLARE_API_TOKEN', 'CLOUDFLARE_STREAM_FALLBACK_ENABLED']);
+if (cloudflareStreamEnabled) {
+  if (!process.env.CLOUDFLARE_STREAM_ACCOUNT_ID && !process.env.CLOUDFLARE_ACCOUNT_ID) failures.push('Cloudflare Stream fallback: missing CLOUDFLARE_STREAM_ACCOUNT_ID or CLOUDFLARE_ACCOUNT_ID.');
+  if (!process.env.CLOUDFLARE_STREAM_API_TOKEN && !process.env.CLOUDFLARE_API_TOKEN) failures.push('Cloudflare Stream fallback: missing CLOUDFLARE_STREAM_API_TOKEN or CLOUDFLARE_API_TOKEN.');
+  if (process.env.TIER4_CLOUDFLARE_STREAM_CONTROLLED_BROADCASTER !== '1') failures.push('Cloudflare Stream fallback: TIER4_CLOUDFLARE_STREAM_CONTROLLED_BROADCASTER must be 1 for full Tier 4 proof.');
+} else warnings.push('Cloudflare Stream fallback Tier 4 lane not configured; must be configured before COMPLETE because it is the fallback between StreamYard/LiveKit and Daily.');
+
 const dailyEnabled = optionalLaneEnabled(['DAILY_API_KEY', 'DAILY_DOMAIN', 'DAILY_API_BASE_URL', 'DAILY_FALLBACK_ENABLED']);
 if (dailyEnabled) requireAll(['DAILY_API_KEY', 'DAILY_DOMAIN'], failures, 'Daily fallback');
 else warnings.push('Daily fallback Tier 4 lane not configured; must be explicitly accepted as not applicable before COMPLETE if Daily is a production provider.');
@@ -197,6 +217,7 @@ const envKeys = [
   'TIER4_LIVE_PROVIDER_OPERATIONAL_PROOF', 'STREAMYARD_REAL_PROVIDER_SMOKE', 'STREAMYARD_OPERATOR_CONFIRMED_BROADCAST',
   'LIVEKIT_URL', 'LIVEKIT_API_KEY', 'LIVEKIT_API_SECRET', 'LIVEKIT_WEBHOOK_SECRET', 'LIVEKIT_INGRESS_RTMP_BASE_URL',
   'NEXT_PUBLIC_SUPABASE_URL', 'NEXT_PUBLIC_SUPABASE_ANON_KEY', 'SUPABASE_SERVICE_ROLE_KEY',
+  'CLOUDFLARE_STREAM_ACCOUNT_ID', 'CLOUDFLARE_ACCOUNT_ID', 'CLOUDFLARE_STREAM_API_TOKEN', 'CLOUDFLARE_API_TOKEN', 'CLOUDFLARE_STREAM_FALLBACK_ENABLED', 'TIER4_CLOUDFLARE_STREAM_CONTROLLED_BROADCASTER',
   'DAILY_API_KEY', 'DAILY_DOMAIN', 'DAILY_API_BASE_URL', 'DAILY_FALLBACK_ENABLED',
   'ZOOM_MEETING_SDK_KEY', 'ZOOM_MEETING_SDK_SECRET',
   'GOOGLE_MEET_MANAGED_FALLBACK_URL', 'GOOGLE_MEET_EMERGENCY_URL', 'TIER4_GOOGLE_MEET_NOT_APPLICABLE_REASON',
@@ -205,7 +226,7 @@ const envKeys = [
 
 if (!failures.length) {
   lanes.push(run('npm run postdeploy:full', 'tier4-prereq-postdeploy-full', { POSTDEPLOY_BASE_URL: deployedBaseUrl, SMOKE_BASE_URL: deployedBaseUrl, PLAYWRIGHT_BASE_URL: deployedBaseUrl }));
-  lanes.push(run('npm run tier4:real-provider-journey-probe', 'tier4-real-provider-journey-probe', { POSTDEPLOY_BASE_URL: deployedBaseUrl, PLAYWRIGHT_BASE_URL: deployedBaseUrl, TIER4_EVENT_ID: evidence?.eventId || process.env.TIER4_EVENT_ID || process.env.STREAMYARD_E2E_EVENT_ID || '' }));
+  lanes.push(run('npm run tier4:real-provider-journey-probe', 'tier4-real-provider-journey-probe', { POSTDEPLOY_BASE_URL: deployedBaseUrl, PLAYWRIGHT_BASE_URL: deployedBaseUrl, TIER4_EVENT_ID: evidence?.eventId || process.env.TIER4_EVENT_ID || process.env.STREAMYARD_E2E_EVENT_ID || '', TIER4_CONTINUE_AFTER_FAILURE: process.env.TIER4_CONTINUE_AFTER_FAILURE || '1', TIER4_CLOUDFLARE_STREAM_CONTROLLED_BROADCASTER: process.env.TIER4_CLOUDFLARE_STREAM_CONTROLLED_BROADCASTER || '' }));
   lanes.push(run('npm run smoke:streamyard-livekit:real', 'tier4-streamyard-livekit-smoke', { POSTDEPLOY_BASE_URL: deployedBaseUrl, PLAYWRIGHT_BASE_URL: deployedBaseUrl }));
   lanes.push(run('npm run test:e2e:tier4-real-streamyard-livekit', 'tier4-real-streamyard-livekit-e2e', { POSTDEPLOY_BASE_URL: deployedBaseUrl, PLAYWRIGHT_BASE_URL: deployedBaseUrl }));
   lanes.push(run('npm run test:e2e:tier4-real-provider-journeys', 'tier4-real-provider-journeys-e2e', { POSTDEPLOY_BASE_URL: deployedBaseUrl, PLAYWRIGHT_BASE_URL: deployedBaseUrl, TIER4_EVENT_ID: evidence?.eventId || process.env.TIER4_EVENT_ID || process.env.STREAMYARD_E2E_EVENT_ID || '' }));

@@ -83,3 +83,51 @@ For final real-provider proof, run Tier 4 only after real credentials/operator e
 POSTDEPLOY_BASE_URL="https://<fresh-deployment-url>" PLAYWRIGHT_BASE_URL="https://<fresh-deployment-url>" TIER4_LIVE_PROVIDER_OPERATIONAL_PROOF=1 STREAMYARD_REAL_PROVIDER_SMOKE=1 STREAMYARD_OPERATOR_CONFIRMED_BROADCAST=1 TIER4_STREAMYARD_LIVE_EVIDENCE_PATH="reports/tier4/streamyard-livekit-evidence.json" TIER4_EVENT_ID="tier4-YYYY-MM-DD-001" TIER4_STAGE_ID="main-stage" TIER4_RESEND_SEND_APPROVED=1 NODE_OPTIONS="--max-old-space-size=3072" npm run tier4:live-provider-operational-proof
 ```
 - `scripts/validate_tier4_provider_ladder_contract.mjs` — validates expanded Tier 4 provider ladder data trace and cleanup semantics.
+
+
+## Tier 4 fallback ladder expansion — 2026-06-12
+
+Show-day ladder order is now explicit and must be exercised in Tier 4:
+
+1. StreamYard-compatible Custom RTMP path into LiveKit, proven by controlled ffmpeg RTMP broadcaster. StreamYard itself remains a manual/operator provider because automated StreamYard API access is enterprise-only.
+2. LiveKit + Cloudflare Stream Live fallback, proven through the Cloudflare Stream Live Inputs API, controlled RTMP media push, and live input cleanup.
+3. Daily real fallback provider, proven by room create, meeting token create, and room delete cleanup. Daily API keys are normalized so pasted `Bearer ...` values do not create `Bearer Bearer ...` authentication failures; a 401 after normalization is a real Daily key/domain/provider auth failure.
+4. Zoom fallback, proven by denied unauthenticated access and authorized SDK signature generation; no provider cleanup is required because the proof is stateless.
+5. Google Meet fallback, proven by valid HTTPS Meet continuity URL or explicit not-applicable disposition; no provider cleanup is required because it is a manual/static continuity link.
+
+Tier 4 must attempt every configured rung and fail only after the full ladder trace is written.
+
+
+## Hostile live-event fallback runtime pass — 2026-06-12
+
+Added/updated runtime contract for the actual live-event ladder:
+
+1. StreamYard-compatible RTMP → LiveKit primary.
+2. LiveKit + Cloudflare Stream fallback.
+3. Daily fallback.
+4. Zoom fallback.
+5. Google Meet final continuity fallback.
+
+Key changes:
+
+- `HOSTILE_CODE_REVIEW_TIER4_LIVE_EVENT_FALLBACK_2026-06-12.md`
+- `scripts/validate_tier4_live_event_fallback_runtime_contract.mjs`
+- `components/video/CloudflareStreamFallbackStagePlayer.tsx`
+- `components/video/GoogleMeetFallbackStagePlayer.tsx`
+- `components/video/StagePlayer.tsx` attendee provider masking
+- `components/testing/StreamYardIngressPanel.tsx` backend ladder controls/logs
+- `services/video/stageStreamStateService.ts` show-day ladder transitions and rollback signals
+- `types/stageStream.ts` expanded runtime state
+- `types/v4.ts`, `services/video/roomFallbackService.ts`, `services/video/videoFallbackPolicy.ts` Cloudflare rung before Daily
+- docs/env registry updates for Cloudflare playback URL and Zoom meeting number classification
+
+Validation performed in sandbox after patch:
+
+- `npm run validate` — PASS
+- `npm run validate:no-generated-artifacts` — PASS
+- `npm run validate:tier4-live-event-fallback-runtime` — PASS
+
+Validation not claimed:
+
+- Deployed postdeploy validation was not run from sandbox.
+- Real Tier 4 provider validation was not run from sandbox because provider credentials/live deployment are local/external.

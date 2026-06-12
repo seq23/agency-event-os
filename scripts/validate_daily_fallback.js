@@ -35,7 +35,7 @@ for (const key of ["DAILY_API_KEY", "DAILY_API_BASE_URL", "DAILY_DOMAIN", "DAILY
 
 const policy = read("services/video/videoFallbackPolicy.ts");
 for (const phrase of [
-  '["livekit", "daily", "zoom_sdk", "google_meet"]',
+  '["livekit", "cloudflare_stream", "daily", "zoom_sdk", "google_meet"]',
   'producerPermissionRequiredForDaily: false',
 ]) {
   if (!policy.includes(phrase)) failures.push(`Fallback policy missing phrase: ${phrase}`);
@@ -64,7 +64,7 @@ for (const phrase of ["Live deployment smoke diagnostics", "snapshot.smokeChecks
 }
 
 const liveKitSurface = read("components/venue/LiveKitVideoSurface.tsx");
-if (!liveKitSurface.includes("Automatic fallback uses Daily first")) {
+if (!liveKitSurface.includes("Automatic fallback uses Cloudflare Stream before Daily")) {
   failures.push("LiveKit surface still has stale fallback copy.");
 }
 

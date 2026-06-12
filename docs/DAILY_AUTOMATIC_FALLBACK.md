@@ -3,7 +3,7 @@
 West Peek Live! uses this video fallback order:
 
 ```txt
-LiveKit → Daily → Zoom → Google Meet
+LiveKit + StreamYard → Cloudflare Stream → Daily → Zoom → Google Meet
 ```
 
 Daily is the first automatic backup provider. It is not treated as an emergency manual room and it does not require producer permission when the backend toggle is enabled.
@@ -14,7 +14,7 @@ Daily is the first automatic backup provider. It is not treated as an emergency 
 DAILY_FALLBACK_ENABLED=true
 ```
 
-When enabled, LiveKit setup failures can fall through to Daily automatically. When disabled, the resolver skips Daily and falls through to Zoom, then Google Meet.
+When enabled, Primary StreamYard-compatible RTMP/LiveKit failures fall first to the Cloudflare Stream live fallback, then Daily. When Daily is disabled, the resolver skips Daily and falls through to Zoom, then Google Meet.
 
 ## Required server-side secrets
 

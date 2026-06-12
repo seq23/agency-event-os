@@ -6,7 +6,7 @@ const reads = (file) => {
 };
 
 const requiredByFile = {
-  "app/app/events/new/page.tsx": ["Production feed / source", "StreamYard", "Primary embedded distribution", "LiveKit", "Daily, then Zoom + Google Meet"],
+  "app/app/events/new/page.tsx": ["Production feed / source", "StreamYard", "Primary embedded distribution", "LiveKit", "Cloudflare Stream, then Daily, then Zoom + Google Meet"],
   "app/operator-packet/page.tsx": ["StreamYard production feed/source", "LiveKit embedded distribution", "Daily embedded fallback", "Zoom + Google Meet backup continuity links", "Public pages must never display Day 1 passwords"],
   "lib/crew/crewBriefing.ts": ["Production feed/source is StreamYard", "Primary embedded venue distribution is LiveKit", "Daily is the secondary embedded fallback candidate", "Zoom and Google Meet are white-label backup room links"],
   "docs/AGENCY_EVENT_OS_DAY1_OPERATOR_PACKET.md": ["Production feed/source: StreamYard", "Primary embedded event engine/distribution: LiveKit", "Do not collapse StreamYard and LiveKit into the same failure plane"],
@@ -17,7 +17,7 @@ const requiredByFile = {
 
 const staleByFile = {
   "app/app/events/new/page.tsx": ["Primary video provider"],
-  "app/operator-packet/page.tsx": ["LiveKit primary → Daily fallback"],
+  "app/operator-packet/page.tsx": ["LiveKit + StreamYard primary → Cloudflare Stream → Daily fallback"],
   "lib/crew/crewBriefing.ts": ["Primary venue distribution is LiveKit unless production announces otherwise", "Confirm LiveKit primary and Daily / Zoom / Google Meet fallback context"],
   "docs/AGENCY_EVENT_OS_DAY1_OPERATOR_PACKET.md": ["Primary embedded event engine: LiveKit."],
   "tests/e2e/day1-showtime-master-gauntlet.spec.ts": ["getByLabel(/Primary video provider/i)", "toContainText(/LiveKit.*Daily, then Zoom"],

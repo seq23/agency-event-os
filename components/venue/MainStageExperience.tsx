@@ -27,7 +27,7 @@ export async function MainStageExperience({ model }: { model: VirtualVenueModel 
         <section className="rounded-3xl bg-slate-950 p-6 text-white shadow-sm">
           <p className="text-xs font-black uppercase tracking-[0.25em] text-slate-400">Main stage</p>
           <h1 className="mt-2 text-3xl font-black">{liveSession?.title || "Main stage is standing by"}</h1>
-          <p className="mt-3 max-w-3xl text-slate-300">Active provider: {fallbackState.activeProvider}. If this provider degrades, production can switch the room-level fallback without disrupting the rest of the event.</p>
+          <p className="mt-3 max-w-3xl text-slate-300">Production is monitoring the live stream and backup paths. You can stay on this page if the show refreshes or switches behind the scenes.</p>
           <div className="mt-6">
             <StagePlayer initialState={stageStreamState} eventId={model.eventId} stageId="main-stage" viewerRole="attendee" displayName={identity?.displayName || "Registered attendee"} profileId={identity?.attendeeId} />
           </div>

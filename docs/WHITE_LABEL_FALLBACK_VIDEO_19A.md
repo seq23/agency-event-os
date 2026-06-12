@@ -102,7 +102,7 @@ This phase does not:
 
 ## Daily Automatic Fallback Layer
 
-Fallback order is now `LiveKit → Daily → Zoom → Google Meet`. Daily is the first automatic in-platform backup and does not require producer permission when `DAILY_FALLBACK_ENABLED=true`. Zoom and Google Meet remain managed emergency fallbacks after Daily.
+Fallback order is now `LiveKit + StreamYard → Cloudflare Stream → Daily → Zoom → Google Meet`. Cloudflare Stream is the first automatic in-platform backup after the StreamYard-compatible RTMP primary, and Daily is the next embedded fallback and does not require producer permission when `DAILY_FALLBACK_ENABLED=true`. Zoom and Google Meet remain managed emergency fallbacks after Daily.
 
 Required backend-only environment/secrets:
 
@@ -118,5 +118,5 @@ Operational rules:
 - Never expose `DAILY_API_KEY` in browser code.
 - Daily room creation and meeting-token generation run server-side only.
 - If `DAILY_FALLBACK_ENABLED=false`, the resolver skips Daily and falls through to Zoom, then Google Meet.
-- Testing Console must show LiveKit, Daily, Zoom, Google Meet, Resend, Supabase, route, OpenNext, and browser-console smoke status before production events.
+- Testing Console must show LiveKit + StreamYard, Cloudflare Stream, Daily, Zoom, Google Meet, Resend, Supabase, route, OpenNext, and browser-console smoke status before production events.
 

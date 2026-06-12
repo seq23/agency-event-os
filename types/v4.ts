@@ -4,7 +4,7 @@ export type V4AccessKind = "attendee" | "crew" | "operator" | "owner" | "special
 export type V4SpecialGuestRole = "client" | "speaker" | "sponsor" | "crew_lite" | "vip";
 export type V4CrewRole = "crew" | "executive_producer" | "producer" | "technical_director" | "show_caller" | "moderator" | "va" | "support";
 export type V4RoomType = "main_stage" | "backstage" | "breakout_session" | "networking_match" | "sponsor_booth" | "rehearsal_room";
-export type V4VideoProvider = "livekit" | "daily" | "zoom" | "google_meet";
+export type V4VideoProvider = "livekit" | "cloudflare_stream" | "daily" | "zoom" | "google_meet";
 export type V4HealthStatus = "healthy" | "degraded" | "down" | "unknown";
 
 export interface V4JoinResolution {

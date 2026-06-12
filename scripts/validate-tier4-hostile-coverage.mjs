@@ -21,8 +21,11 @@ requireIncludes('scripts/tier4_live_provider_operational_proof.mjs', [
   'tier4:real-provider-journey-probe',
   'deploymentIdentity',
   'livekitProviderApi',
+  'cloudflareStreamFallback',
   'supabaseProductionPersistence',
   'roleBoundaryProof',
+  'cloudflareStreamFallback',
+  'cloudflareStreamFallback',
   'dailyFallback',
   'zoomEscalation',
   'resendEmail'
@@ -30,6 +33,7 @@ requireIncludes('scripts/tier4_live_provider_operational_proof.mjs', [
 requireIncludes('scripts/tier4_real_provider_journey_probe.mjs', [
   'LiveKit real ingress via deployed app',
   'Supabase production persistence readback',
+  'Cloudflare Stream Live fallback provider',
   'Daily real fallback provider',
   'Zoom authorized manual escalation',
   'Resend transactional email',
@@ -46,8 +50,11 @@ requireIncludes('app/api/video/zoom-signature/route.ts', [
 requireIncludes('TIER4_PROVIDER_EVIDENCE_TEMPLATE.json', [
   'deploymentIdentity',
   'livekitProviderApi',
+  'cloudflareStreamFallback',
   'supabaseProductionPersistence',
   'roleBoundaryProof',
+  'cloudflareStreamFallback',
+  'cloudflareStreamFallback',
   'dailyFallback',
   'zoomEscalation',
   'resendEmail'
@@ -61,6 +68,7 @@ requireIncludes('REAL_PROVIDER_LANE_MATRIX.md', [
 ]);
 requireIncludes('TIER4_LIVE_PROVIDER_OPERATIONAL_PROOF.md', [
   'Tier 4 real provider journey probe',
+  'Cloudflare Stream Live fallback',
   'Zoom signature route is server-side authorization gated',
   'Supabase production write/readback',
   'Resend sends exactly one approved test email'

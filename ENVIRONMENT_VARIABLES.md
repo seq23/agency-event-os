@@ -192,3 +192,16 @@ Do not commit `.env.local`.
 
 | `TIER4_GOOGLE_MEET_NOT_APPLICABLE_REASON` | Explicit owner disposition when Google Meet is intentionally out of scope for Tier 4. |
 | `GOOGLE_MEET_MANAGED_FALLBACK_URL` | Optional Google Meet manual fallback continuity URL for Tier 4 proof. |
+
+
+## Cloudflare Stream Live fallback / Tier 4
+
+| Variable | Purpose |
+| --- | --- |
+| `CLOUDFLARE_STREAM_FALLBACK_ENABLED` | Enables the automated Cloudflare Stream Live fallback proof between StreamYard-compatible LiveKit RTMP and Daily. |
+| `CLOUDFLARE_STREAM_ACCOUNT_ID` / `CLOUDFLARE_ACCOUNT_ID` | Cloudflare account id used for Stream Live Inputs API proof. |
+| `CLOUDFLARE_STREAM_API_TOKEN` / `CLOUDFLARE_API_TOKEN` | Cloudflare API token with Stream Live Inputs create/read/delete permissions. |
+| `CLOUDFLARE_STREAM_API_BASE_URL` | Must be `https://api.cloudflare.com/client/v4` unless Cloudflare changes the API host. |
+| `TIER4_CLOUDFLARE_STREAM_CONTROLLED_BROADCASTER` | Local/operator Tier 4 approval flag. Must be `1` to push a controlled ffmpeg RTMP media stream into Cloudflare Stream. |
+| `TIER4_CLOUDFLARE_STREAM_SECONDS` | Local/operator Tier 4 duration for the controlled Cloudflare Stream RTMP proof. |
+| `STREAMYARD_ENTERPRISE_API_BASE_URL` / `STREAMYARD_ENTERPRISE_API_TOKEN` | Reserved for future StreamYard Enterprise API automation. Current Tier 4 uses manual/operator evidence plus StreamYard-compatible controlled RTMP proof because normal StreamYard API access is enterprise-only. |

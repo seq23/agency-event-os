@@ -48,7 +48,7 @@ for (const rel of fallbackDocs) {
   const file = path.join(root, rel);
   if (!fs.existsSync(file)) continue;
   const text = fs.readFileSync(file, "utf8");
-  if (!text.includes("LiveKit → Daily → Zoom → Google Meet")) {
+  if (!text.includes("LiveKit + StreamYard → Cloudflare Stream → Daily → Zoom → Google Meet")) {
     failures.push(`Missing canonical fallback order in ${rel}`);
   }
 }

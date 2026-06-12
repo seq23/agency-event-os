@@ -183,7 +183,7 @@ function dynamicPackageBody(event: EventConfigRecord): Omit<EventConfigPackage, 
       { id: `${event.id}-opening`, title: "Opening remarks", startsAt: "10:00 AM", stage: "Main Stage" },
       { id: `${event.id}-stream-check`, title: "StreamYard to LiveKit check", startsAt: "10:10 AM", stage: "Main Stage" },
     ] },
-    video: { eventId: event.id, providerLadder: ["StreamYard production feed", "LiveKit embedded distribution", "Daily fallback", "Zoom + Google Meet manual backup"], dailyAutomatic: true, zoomRequiresCrewConfirmation: true, googleMeetManualOnly: true, roomLevelOverrides: true },
+    video: { eventId: event.id, providerLadder: ["StreamYard production feed", "LiveKit embedded distribution", "Cloudflare Stream fallback", "Daily fallback", "Zoom + Google Meet manual backup"], dailyAutomatic: true, zoomRequiresCrewConfirmation: true, googleMeetManualOnly: true, roomLevelOverrides: true },
     communications: { eventId: event.id, templates: ["attendee_registration", "speaker_instructions", "sponsor_instructions", "crew_call_sheet"] },
   };
 }

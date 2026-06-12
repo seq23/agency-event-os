@@ -10,7 +10,7 @@ export function WhiteLabelVideoRoom({
   eventId: string;
 }) {
   if (config.providerMode === "zoom_embedded") {
-    return <ZoomEmbeddedRoom config={config} userName="West Peek Guest" />;
+    return <ZoomEmbeddedRoom config={config} eventId={eventId} userName="West Peek Guest" />;
   }
 
   if (config.providerMode === "external_backup_link") {

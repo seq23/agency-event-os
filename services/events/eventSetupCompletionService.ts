@@ -21,7 +21,7 @@ const setupSections: Array<{ key: SetupSectionKey; label: string; description: s
   { key: "sponsors", label: "Sponsors", description: "Booth setup, CTA, assets, lead capture, and reporting readiness." },
   { key: "access", label: "Access", description: "Public code, crew password env key, and role-scoped guest env keys." },
   { key: "run-of-show", label: "Run of Show", description: "Segments, cues, producer notes, technical cues, and backup plan." },
-  { key: "video", label: "Video", description: "LiveKit, Daily, Zoom, Google Meet ladder, room overrides, and rollback." },
+  { key: "video", label: "Video", description: "StreamYard-compatible RTMP + LiveKit primary, Cloudflare Stream fallback, Daily, Zoom, Google Meet ladder, room overrides, and rollback." },
   { key: "communications", label: "Communications", description: "Attendee, speaker, sponsor, client, crew, replay, and report email templates." },
   { key: "preview", label: "Preview", description: "Public, client, speaker, sponsor, and crew-lite journeys before publish." },
   { key: "publish", label: "Publish", description: "Review, config package generation, Actions PR, deploy, and smoke boundary." },
@@ -65,7 +65,7 @@ export function getSetupSections(eventId: string): SetupSectionStatus[] {
   if (!access?.crewPasswordEnvKey) blockersByKey.access.push("Crew password env key missing.");
   if (!access?.specialGuestCodes?.length) blockersByKey.access.push("Special guest env-key mapping missing.");
   if (!hasValue(packageConfig.runOfShow?.segments)) blockersByKey["run-of-show"].push("At least one run-of-show segment is required.");
-  if (!packageConfig.video?.providerLadder?.includes("livekit")) blockersByKey.video.push("LiveKit must remain the first provider in the ladder.");
+  if (!packageConfig.video?.providerLadder?.includes("livekit")) blockersByKey.video.push("LiveKit/StreamYard-compatible RTMP must remain the first provider in the ladder and Cloudflare Stream must sit before Daily.");
   if (!packageConfig.video?.zoomRequiresCrewConfirmation) blockersByKey.video.push("Zoom fallback must require crew confirmation.");
   if (!hasValue(packageConfig.communications?.templates)) blockersByKey.communications.push("Communications templates are missing.");
   if (getEventIndex().length === 0) blockersByKey.preview.push("No event index records are available for preview resolution.");

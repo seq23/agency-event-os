@@ -5,6 +5,7 @@ import type { WhiteLabelVideoRoomConfig } from "@/types/whiteLabelVideo";
 
 type ZoomEmbeddedRoomProps = {
   config: WhiteLabelVideoRoomConfig;
+  eventId: string;
   userName?: string;
   userEmail?: string;
 };
@@ -41,7 +42,7 @@ function loadScript(src: string) {
   });
 }
 
-export function ZoomEmbeddedRoom({ config, userName = "Guest", userEmail }: ZoomEmbeddedRoomProps) {
+export function ZoomEmbeddedRoom({ config, eventId, userName = "Guest", userEmail }: ZoomEmbeddedRoomProps) {
   const [status, setStatus] = useState<"idle" | "loading" | "joined" | "error">("idle");
   const [message, setMessage] = useState<string>("");
 
@@ -69,14 +70,17 @@ export function ZoomEmbeddedRoom({ config, userName = "Guest", userEmail }: Zoom
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ meetingNumber, role: 0 }),
+        body: JSON.stringify({ eventId, meetingNumber, zoomRole: 0, videoRole: "attendee" }),
       });
 
       if (!response.ok) {
         throw new Error("Room authorization could not be prepared.");
       }
 
-      const { sdkKey, signature } = await response.json();
+      const json = await response.json();
+      const sdkKey = json.result?.sdkKey || json.sdkKey;
+      const signature = json.result?.signature || json.signature;
+      if (!sdkKey || !signature) throw new Error("Room authorization could not be completed.");
       const client = window.ZoomMtgEmbedded.createClient();
       const root = document.getElementById("west-peek-zoom-room");
 

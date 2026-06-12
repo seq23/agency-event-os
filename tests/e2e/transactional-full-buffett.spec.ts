@@ -31,7 +31,7 @@ transactionalDescribe("Transactional Full Buffett E2E", () => {
     await page.locator('[name="eventType"]').fill("Virtual summit");
     await page.getByLabel(/Production feed \/ source/i).fill("StreamYard");
     await page.getByLabel(/Primary embedded distribution/i).fill("LiveKit");
-    await page.getByLabel(/Fallback video provider/i).fill("Daily, then Zoom + Google Meet");
+    await page.getByLabel(/Fallback video provider/i).fill("Cloudflare Stream, then Daily, then Zoom + Google Meet");
     await page.getByRole("button", { name: /create setup draft and continue/i }).click();
     await expect(page).toHaveURL(new RegExp(`/app/events/transactional-buffett-${unique}/setup\\?draftId=`));
 

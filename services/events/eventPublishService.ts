@@ -29,7 +29,7 @@ export function getPublishReadiness(eventId: string): V4PublishReadinessItem[] {
     { id: "run-of-show", label: "Run of show", status: ros.length ? "pass" : "fail", detail: `${ros.length} run-of-show segment(s) found.` },
     { id: "speakers", label: "Speaker readiness", status: speakers.length ? "pass" : "warning", detail: `${speakers.length} speaker profile(s) connected.` },
     { id: "sponsors", label: "Sponsor readiness", status: sponsors.length ? "pass" : "warning", detail: `${sponsors.length} sponsor profile(s) connected.` },
-    { id: "video", label: "Video fallback", status: "pass", detail: "LiveKit primary with Daily fallback and Zoom/Google Meet manual escalation." },
+    { id: "video", label: "Video fallback", status: "pass", detail: "LiveKit + StreamYard primary with Cloudflare Stream, Daily, Zoom, and Google Meet fallback escalation." },
     { id: "publish", label: "Review boundary", status: "pass", detail: "Publishing is modeled as Actions/PR/config package; app must not direct-commit to main." },
   ];
 }

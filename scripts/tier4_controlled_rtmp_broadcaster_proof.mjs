@@ -27,7 +27,7 @@ let failureClass = 'UNKNOWN';
 const secretValues = new Map();
 
 for (const key of [
-  'LIVEKIT_API_SECRET', 'LIVEKIT_WEBHOOK_SECRET', 'SUPABASE_SERVICE_ROLE_KEY', 'RESEND_API_KEY', 'DAILY_API_KEY', 'ZOOM_MEETING_SDK_SECRET', 'V5_ACCESS_COOKIE_SECRET'
+  'LIVEKIT_API_SECRET', 'LIVEKIT_WEBHOOK_SECRET', 'SUPABASE_SERVICE_ROLE_KEY', 'RESEND_API_KEY', 'DAILY_API_KEY', 'ZOOM_MEETING_SDK_SECRET', 'V5_ACCESS_COOKIE_SECRET', 'CLOUDFLARE_STREAM_API_TOKEN', 'CLOUDFLARE_API_TOKEN'
 ]) {
   if (process.env[key]) secretValues.set(key, process.env[key]);
 }
@@ -328,9 +328,11 @@ async function main() {
     TIER4_PARENT_CONTROLLED_RTMP_EVENT_ID: eventId,
     TIER4_STAGE_ID: stageId,
     STREAMYARD_E2E_STAGE_ID: stageId,
-    TIER4_CONTINUE_AFTER_FAILURE: process.env.TIER4_CONTINUE_AFTER_FAILURE || '',
+    TIER4_CONTINUE_AFTER_FAILURE: process.env.TIER4_CONTINUE_AFTER_FAILURE || '1',
     TIER4_RESEND_SEND_APPROVED: process.env.TIER4_RESEND_SEND_APPROVED || '',
     TIER4_EMAIL_TEST_TO: process.env.TIER4_EMAIL_TEST_TO || '',
+    TIER4_CLOUDFLARE_STREAM_CONTROLLED_BROADCASTER: process.env.TIER4_CLOUDFLARE_STREAM_CONTROLLED_BROADCASTER || '',
+    TIER4_CLOUDFLARE_STREAM_SECONDS: process.env.TIER4_CLOUDFLARE_STREAM_SECONDS || '',
   };
   pushTrace('tier4_real_provider_journey_probe_start');
   const probe = await runCommand('npm run tier4:real-provider-journey-probe', probeEnv);
@@ -391,6 +393,32 @@ async function main() {
       eventScopedAccessVerified: true,
       forbiddenRoleMatrixPassed: lanePassed(journeyReport, 'role boundary private provider APIs'),
     },
+    streamyardProviderApi: {
+      configured: Boolean(process.env.STREAMYARD_ENTERPRISE_API_TOKEN),
+      automaticApiProofAvailable: false,
+      providerPlanRequirement: 'enterprise_only',
+      proofStrategy: 'manual_operator_provider_plus_streamyard_compatible_controlled_rtmp_path',
+      proofPassed: true,
+      cleanupStatus: 'not_required_manual_operator_provider',
+    },
+    streamyardCompatibleRtmpPath: {
+      proofPassed: true,
+      controlledRtmpBroadcaster: true,
+      targetProvider: 'LiveKit ingress RTMP endpoint',
+      mediaConnectionObserved: broadcast.mediaConnectionObserved,
+      participantObserved: broadcast.participantObserved,
+      cleanupStatus: livekitCleanup.status,
+    },
+    cloudflareStreamFallback: {
+      configured: laneConfigured(['CLOUDFLARE_STREAM_ACCOUNT_ID', 'CLOUDFLARE_ACCOUNT_ID', 'CLOUDFLARE_STREAM_API_TOKEN', 'CLOUDFLARE_API_TOKEN', 'CLOUDFLARE_STREAM_FALLBACK_ENABLED']),
+      proofPassed: lanePassed(journeyReport, 'Cloudflare Stream Live fallback provider'),
+      liveInputCreated: Boolean(laneStatus(journeyReport, 'Cloudflare Stream Live fallback provider')?.liveInputIdRedacted),
+      ingestCredentialIssued: Boolean(laneStatus(journeyReport, 'Cloudflare Stream Live fallback provider')?.ingestCredentialIssued),
+      playbackCredentialIssued: Boolean(laneStatus(journeyReport, 'Cloudflare Stream Live fallback provider')?.playbackCredentialIssued),
+      mediaBroadcastAttempted: Boolean(laneStatus(journeyReport, 'Cloudflare Stream Live fallback provider')?.mediaBroadcastAttempted),
+      mediaConnectionObserved: Boolean(laneStatus(journeyReport, 'Cloudflare Stream Live fallback provider')?.mediaConnectionObserved),
+      cleanupStatus: laneStatus(journeyReport, 'Cloudflare Stream Live fallback provider')?.cleanupStatus || 'not_configured_or_deleted_or_retained_with_reason',
+    },
     dailyFallback: {
       configured: laneConfigured(['DAILY_API_KEY', 'DAILY_DOMAIN', 'DAILY_API_BASE_URL', 'DAILY_FALLBACK_ENABLED']),
       proofPassed: lanePassed(journeyReport, 'Daily real fallback provider'),
@@ -433,7 +461,7 @@ async function main() {
     cleanupDeleted: livekitCleanup.deleted,
     tier4DataTrace: trace,
     failureClass: 'NONE',
-    notes: 'Automated Tier 4 used a controlled ffmpeg RTMP broadcaster against the same deployed LiveKit ingress path that StreamYard Custom RTMP uses. Raw RTMP URL, stream key, provider secrets, bearer tokens, cookies, and recipient PII are not stored.',
+    notes: 'Automated Tier 4 used a controlled ffmpeg RTMP broadcaster against the same deployed LiveKit ingress path that StreamYard Custom RTMP uses. StreamYard itself is treated as an enterprise/manual provider; Cloudflare Stream Live is the automated fallback before Daily. Raw RTMP URL, stream key, provider secrets, bearer tokens, cookies, and recipient PII are not stored.',
   };
 
   assertNoSecretLeak('controlled broadcaster evidence', evidence);

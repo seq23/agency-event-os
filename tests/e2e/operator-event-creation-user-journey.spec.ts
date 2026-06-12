@@ -29,7 +29,7 @@ test("operator can create a phony event and understand the setup journey", async
   await page.getByLabel(/Event type/i).fill("Virtual summit");
   await page.getByLabel(/Production feed \/ source/i).fill("StreamYard");
   await page.getByLabel(/Primary embedded distribution/i).fill("LiveKit");
-  await page.getByLabel(/Fallback video provider/i).fill("Daily, then Zoom + Google Meet");
+  await page.getByLabel(/Fallback video provider/i).fill("Cloudflare Stream, then Daily, then Zoom + Google Meet");
 
   await page.getByRole("button", { name: /Create setup draft and continue/i }).click();
 

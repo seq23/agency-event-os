@@ -10,7 +10,7 @@ export const baselineTestingConsoleSnapshot: TestingConsoleSnapshot = {
   whiteLabelBackupUrl: "https://westpeeklive.daily.co/client-safe-room",
   whiteLabelBackupEnabled: true,
   generatedAt: "2026-05-18T16:15:00.000Z",
-  fallbackOrder: ["livekit", "daily", "zoom_sdk", "google_meet"],
+  fallbackOrder: ["livekit", "cloudflare_stream", "daily", "zoom_sdk", "google_meet"],
   dailyAutomaticFallbackEnabled: true,
   checks: [
     {

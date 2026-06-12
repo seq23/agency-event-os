@@ -213,3 +213,16 @@ A Tier 4 report that omits Daily, Zoom, or Google Meet is incomplete for this pr
 - `validate:tier4-provider-ladder-contract` is admitted as a hard validator.
 - It proves the Tier 4 data trace includes LiveKit-only, StreamYard/LiveKit, Daily, Zoom, and Google Meet fallback lanes.
 - It proves cleanup semantics are explicit: LiveKit and Daily must delete created provider resources; Zoom is stateless; Google Meet is manual continuity or explicit not-applicable.
+
+
+## Tier 4 fallback ladder expansion — 2026-06-12
+
+Show-day ladder order is now explicit and must be exercised in Tier 4:
+
+1. StreamYard-compatible Custom RTMP path into LiveKit, proven by controlled ffmpeg RTMP broadcaster. StreamYard itself remains a manual/operator provider because automated StreamYard API access is enterprise-only.
+2. LiveKit + Cloudflare Stream Live fallback, proven through the Cloudflare Stream Live Inputs API, controlled RTMP media push, and live input cleanup.
+3. Daily real fallback provider, proven by room create, meeting token create, and room delete cleanup. Daily API keys are normalized so pasted `Bearer ...` values do not create `Bearer Bearer ...` authentication failures; a 401 after normalization is a real Daily key/domain/provider auth failure.
+4. Zoom fallback, proven by denied unauthenticated access and authorized SDK signature generation; no provider cleanup is required because the proof is stateless.
+5. Google Meet fallback, proven by valid HTTPS Meet continuity URL or explicit not-applicable disposition; no provider cleanup is required because it is a manual/static continuity link.
+
+Tier 4 must attempt every configured rung and fail only after the full ladder trace is written.

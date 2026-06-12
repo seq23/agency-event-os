@@ -47,9 +47,8 @@ if (staleFound.length) {
 
 
 const staleProviderModel = [
-  'LiveKit primary → Daily fallback',
-  'Primary video provider',
-  'Primary venue distribution is LiveKit',
+  'Primary video provider: Zoom',
+  'Primary venue distribution is Zoom',
 ];
 const staleProviderFound = staleProviderModel.filter((token) => s.includes(token));
 if (staleProviderFound.length) {

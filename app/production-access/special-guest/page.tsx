@@ -51,7 +51,7 @@ export default function SpecialGuestAccessPage({ searchParams }: { searchParams?
           <p className="font-black text-brand-black">Day 1 access</p>
           <p>Use the role-scoped password from the Day 1 Operator Packet or your secure production vault. This public gate never displays speaker, sponsor, VIP, or client passwords.</p>
         </div>
-        <form action={enterGuest} className="mt-6 space-y-5">
+        <form action="/api/production-access/special-guest" method="post" className="mt-6 space-y-5">
           <input type="hidden" name="next" value={searchParams?.next || "/app"} />
           <div>
             <label htmlFor="special-event-code" className="text-sm font-black">Event code <span className="text-brand-orange">*</span></label>

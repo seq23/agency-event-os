@@ -62,7 +62,7 @@ export default function CrewAccessPage({ searchParams }: { searchParams?: { erro
         <p className="mt-6 text-xs font-black uppercase tracking-[0.35em] text-brand-orange">Crew gate</p>
         <h1 className="mt-3 text-4xl font-black tracking-tight">Crew workspace access</h1>
         <p className="mt-4 text-sm leading-6 text-brand-muted">Use the internal crew password from the Day 1 Operator Packet or your secure production vault, then choose the crew role you are operating as today. This public gate never displays the password.</p>
-        <form action={enterCrew} className="mt-6 space-y-5">
+        <form action="/api/production-access/crew" method="post" className="mt-6 space-y-5">
           <input type="hidden" name="next" value={searchParams?.next || ""} />
           <div>
             <label htmlFor="crew-password" className="text-sm font-black">Crew password <span className="text-brand-orange">*</span></label>

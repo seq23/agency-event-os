@@ -42,7 +42,7 @@ export default function OperatorAccessPage({ searchParams }: { searchParams?: { 
         <p className="mt-6 text-xs font-black uppercase tracking-[0.35em] text-brand-orange">Operator gate</p>
         <h1 className="mt-3 text-4xl font-black tracking-tight">Operator Launchpad access</h1>
         <p className="mt-4 text-sm leading-6 text-brand-muted">Use the separate operator launchpad password from the Day 1 Operator Packet or your secure production vault. This public gate never displays the password.</p>
-        <form action={enterOperator} className="mt-6 space-y-5">
+        <form action="/api/production-access/operator" method="post" className="mt-6 space-y-5">
           <input type="hidden" name="next" value={searchParams?.next || "/production-access/launchpad"} />
           <div>
             <label htmlFor="operator-password" className="text-sm font-black">Operator launchpad password <span className="text-brand-orange">*</span></label>

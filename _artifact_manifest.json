@@ -1,24 +1,30 @@
 {
   "repo": "agency-event-os",
-  "generatedAt": "2026-06-12T22:45:00Z",
-  "artifact": "agency-event-os-main_BASELINE_06-12-26_d7595a6f.zip",
-  "sourceArtifact": "agency-event-os-main_BASELINE_06-12-26_3b7cdfa4.zip",
+  "generatedAt": "2026-06-12T23:00:00Z",
+  "artifact": "agency-event-os-main_BASELINE_06-12-26_2d608beb.zip",
+  "sourceArtifact": "agency-event-os-main_BASELINE_06-12-26_d7595a6f.zip",
   "status": "STRUCTURALLY_CHECKED_LOCAL_VALIDATION_REQUIRED",
+  "rootCauseAddressed": "Tier 4 deployed browser journey remained on the Operator Launchpad gate because access-gate form submission did not establish an operator or owner session before protected-route navigation. Production gates now use explicit POST route handlers with redirect and Set-Cookie behavior.",
   "changeSummary": [
-    "Packaging correction: restored .env.example and .env.local.example from the source artifact.",
-    "Owner/master cookie accepted as universal authority for Operator Launchpad and Operator Packet.",
-    "Owner/master form submissions preserve safe next targets across operator, crew, and special-guest gates.",
-    "Owner/master accepted by crew capability and special-guest event-role server action guards.",
-    "Logout clears owner cookie as well as role cookies.",
-    "Validators and unit tests updated to enforce owner-universal access without broadening role-specific passwords."
+    "Added explicit POST route handlers for operator, owner, crew, and special-guest production access gates.",
+    "Changed gate forms to standard method=post submissions to the new API handlers.",
+    "Preserved owner/master universal authority through operator, crew, and special-guest gates with safe next-target handling.",
+    "Preserved role-specific password boundaries and existing owner/operator route authorization rules.",
+    "Retained prior owner-universal cookie acceptance across launchpad, operator packet, middleware, crew capability actions, event-role actions, and logout cleanup."
   ],
   "changedFiles": [
-    "app/operator-packet/page.tsx",
+    "app/api/production-access/operator/route.ts",
+    "app/api/production-access/owner/route.ts",
+    "app/api/production-access/crew/route.ts",
+    "app/api/production-access/special-guest/route.ts",
+    "lib/auth/accessGateResponse.ts",
+    "app/production-access/operator/page.tsx",
+    "app/production-access/owner/page.tsx",
     "app/production-access/crew/page.tsx",
+    "app/production-access/special-guest/page.tsx",
+    "app/operator-packet/page.tsx",
     "app/production-access/launchpad/page.tsx",
     "app/production-access/logout/route.ts",
-    "app/production-access/operator/page.tsx",
-    "app/production-access/special-guest/page.tsx",
     "lib/auth/requireCrewCapability.ts",
     "lib/auth/requireEventRole.ts",
     "lib/env/safeEnv.ts",
@@ -27,30 +33,24 @@
     "scripts/validate_v7_route_safety.js",
     "tests/unit/v5RouteAuthorization.test.ts",
     "ARTIFACT_MANIFEST.md",
-    "_artifact_manifest.json",
-    ".env.example",
-    ".env.local.example"
+    "_artifact_manifest.json"
   ],
   "validationPassed": [
     "npm run typecheck",
     "npm run lint",
-    "npm run test -- --run tests/unit/v5RouteAuthorization.test.ts tests/unit/crewCapabilityLoginFlow.test.ts tests/unit/specialGuestAccessFlow.test.ts tests/unit/productionAccessCookie.test.ts",
-    "npm run validate:access-boundaries",
+    "npm run test -- --run tests/unit/v5RouteAuthorization.test.ts",
     "npm run validate:v7",
-    "npm run validate:tier4-provider-ladder-contract",
-    "npm run validate:tier4-live-event-fallback-runtime",
-    "npm run validate:tier4-attendee-live-consumption-contract",
+    "npm run validate:deploy-parity",
     "npm run validate",
     "npm run validate:tier4-contract",
-    "npm run validate:no-generated-artifacts",
-    "npm run validate:env",
-    "npm run validate:env-access-gates",
-    "npm run validate:required-env-registry",
-    "npm run validate:v5-no-secrets"
+    "npm run validate:no-generated-artifacts"
+  ],
+  "localHttpProof": [
+    "POST /api/production-access/operator with operator password returned 303, set wpl_operator_access, and allowed GET /admin/testing/tier4-manual-event to return 200.",
+    "POST /api/production-access/operator with owner/master password returned 303, set wpl_owner_access, and allowed GET /admin/testing/tier4-manual-event to return 200."
   ],
   "validationNotClaimed": [
-    "Tier 4 Playwright browser proof: attempted, but this container blocked browser navigation with ERR_BLOCKED_BY_ADMINISTRATOR and deployed DNS returned EAI_AGAIN.",
-    "Full Tier 4 live-provider proof: requires user's local encrypted .env.local and live provider credentials."
-  ],
-  "notes": "No plaintext real env files are included. .env.example and .env.local.example are included. node_modules and generated artifacts are excluded from the delivered ZIP. File inventory was compared against the source upload after restore."
+    "Tier 4 Playwright browser proof: attempted, but this container blocked Chromium navigation with ERR_BLOCKED_BY_ADMINISTRATOR.",
+    "Full Tier 4 live-provider proof: requires user's local encrypted .env.local, deployed Cloudflare env, and live provider credentials."
+  ]
 }

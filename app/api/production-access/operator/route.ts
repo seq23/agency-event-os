@@ -1,0 +1,36 @@
+import { NextResponse, type NextRequest } from "next/server";
+import { createV5AccessCookie, getV5CookieOptions } from "@/lib/auth/productionAccess";
+import { assertSeparatedProductionPasswords, getEnv, getOperatorLaunchpadPassword, getV5AccessCookieNames, getV5AccessCookieSecret } from "@/lib/env";
+import { missingAccessEnv } from "@/lib/env/safeEnv";
+import { logAccessAttempt } from "@/services/access/accessAuditService";
+import { ownerOverrideResponseIfMatched, redirectTo, safeAccessRedirectTarget } from "@/lib/auth/accessGateResponse";
+
+export const dynamic = "force-dynamic";
+
+export async function POST(request: NextRequest) {
+  if (missingAccessEnv().length) return redirectTo(request, "/production-access/setup-error");
+  const formData = await request.formData();
+  const password = String(formData.get("password") ?? "");
+  const safeNext = safeAccessRedirectTarget(String(formData.get("next") ?? "/production-access/launchpad"), "/production-access/launchpad");
+  const env = getEnv();
+  assertSeparatedProductionPasswords(env);
+
+  const ownerOverride = await ownerOverrideResponseIfMatched({ request, password, route: "/production-access/operator", next: safeNext, fallback: "/production-access/launchpad" });
+  if (ownerOverride) return ownerOverride;
+
+  if (!password || password !== getOperatorLaunchpadPassword(env)) {
+    await logAccessAttempt({ status: "access_denied", accessKind: "operator", role: "executive_producer", reason: "invalid_password", route: "/production-access/operator" });
+    return redirectTo(request, "/production-access/operator?error=invalid");
+  }
+
+  await logAccessAttempt({ status: "access_granted", accessKind: "operator", eventId: "event-summit", role: "executive_producer", route: safeNext });
+  const { operatorCookieName } = getV5AccessCookieNames(env);
+  const cookie = await createV5AccessCookie({ kind: "operator", role: "executive_producer", issuedAt: Date.now(), expiresAt: Date.now() + 1000 * 60 * 60 * 8 }, getV5AccessCookieSecret(env));
+  const response = redirectTo(request, safeNext);
+  response.cookies.set(operatorCookieName, cookie, getV5CookieOptions(60 * 60 * 8));
+  return response;
+}
+
+export async function GET(request: NextRequest) {
+  return NextResponse.redirect(new URL("/production-access/operator", request.url), 303);
+}

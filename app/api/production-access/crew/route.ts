@@ -1,0 +1,53 @@
+import { NextResponse, type NextRequest } from "next/server";
+import { createV5AccessCookie, getV5CookieOptions } from "@/lib/auth/productionAccess";
+import { getCrewAccessPassword, getEnv, getV5AccessCookieNames, getV5AccessCookieSecret } from "@/lib/env";
+import { missingAccessEnv } from "@/lib/env/safeEnv";
+import { ownerOverrideResponseIfMatched, redirectTo, safeAccessRedirectTarget } from "@/lib/auth/accessGateResponse";
+import { resolveCrewAccess } from "@/services/access/eventAccessResolver";
+import { logAccessAttempt } from "@/services/access/accessAuditService";
+import type { V4CrewRole } from "@/types/v4";
+
+export const dynamic = "force-dynamic";
+
+const allowedCrewRoles: V4CrewRole[] = ["crew", "technical_director", "show_caller", "moderator", "va", "support"];
+
+function normalizeCrewRole(value: FormDataEntryValue | null): V4CrewRole {
+  const role = String(value || "crew");
+  if (allowedCrewRoles.includes(role as V4CrewRole)) return role as V4CrewRole;
+  return "crew";
+}
+
+export async function POST(request: NextRequest) {
+  if (missingAccessEnv().length) return redirectTo(request, "/production-access/setup-error");
+  const formData = await request.formData();
+  const password = String(formData.get("password") ?? "");
+  const eventCode = String(formData.get("eventCode") ?? "");
+  const crewRole = normalizeCrewRole(formData.get("crewRole"));
+  const safeNext = safeAccessRedirectTarget(String(formData.get("next") ?? ""), eventCode ? `/crew/events/${eventCode}` : "/crew/events/demo");
+  const env = getEnv();
+
+  const ownerOverride = await ownerOverrideResponseIfMatched({ request, password, route: "/production-access/crew", next: safeNext, fallback: eventCode ? `/crew/events/${eventCode}` : "/crew/events/demo" });
+  if (ownerOverride) return ownerOverride;
+
+  if (!password || password !== getCrewAccessPassword(env)) {
+    await logAccessAttempt({ status: "access_denied", accessKind: "crew", role: crewRole, reason: "invalid_password", route: "/production-access/crew" });
+    return redirectTo(request, "/production-access/crew?error=invalid");
+  }
+
+  const access = resolveCrewAccess(eventCode || undefined, crewRole);
+  if (!access.ok) {
+    await logAccessAttempt({ status: "access_denied", accessKind: "crew", eventId: access.eventId, role: crewRole, reason: access.reason, route: "/production-access/crew" });
+    return redirectTo(request, "/production-access/crew?error=invalid_event");
+  }
+
+  await logAccessAttempt({ status: "access_granted", accessKind: "crew", eventId: access.eventId, role: access.role || crewRole, route: access.destination });
+  const { crewCookieName } = getV5AccessCookieNames(env);
+  const cookie = await createV5AccessCookie({ kind: "crew", eventId: access.eventId, role: crewRole, issuedAt: Date.now(), expiresAt: Date.now() + 1000 * 60 * 60 * 8 }, getV5AccessCookieSecret(env));
+  const response = redirectTo(request, access.destination || `/crew/events/${access.eventId || "demo"}`);
+  response.cookies.set(crewCookieName, cookie, getV5CookieOptions(60 * 60 * 8));
+  return response;
+}
+
+export async function GET(request: NextRequest) {
+  return NextResponse.redirect(new URL("/production-access/crew", request.url), 303);
+}

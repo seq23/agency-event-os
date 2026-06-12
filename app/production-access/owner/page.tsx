@@ -43,7 +43,7 @@ export default function OwnerAccessPage({ searchParams }: { searchParams?: { err
             Use this only for owner-level show control, billing, settings, admin testing, and full event workspace access.
             Operator, crew, speaker, sponsor, client, and VIP access do not grant this authority.
           </p>
-          <form action={enterOwner} className="mt-6 space-y-5">
+          <form action="/api/production-access/owner" method="post" className="mt-6 space-y-5">
             <input type="hidden" name="next" value={searchParams?.next || "/app"} />
             <div>
               <label htmlFor="owner-password" className="text-sm font-black">Owner master password <span className="text-brand-orange">*</span></label>

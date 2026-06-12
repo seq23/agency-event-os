@@ -103,3 +103,18 @@ npm run validate:v6-audit
 ```
 
 Full validation remains local-updater owned unless dependencies are installed and `npm run validate` passes in the execution environment.
+
+## West Peek Live local env restore policy
+
+Real secret values are intentionally not stored inside baseline ZIP artifacts. Use `npm run env:restore` or any `*:with-env` command to restore `.env.local` from an approved local-only private source. See `ENV_RESTORE_POLICY.md`.
+
+Supported private source locations:
+
+- `AGENCY_EVENT_OS_ENV_GPG_PATH=/absolute/path/to/agency-event-os.env.local.gpg`
+- `AGENCY_EVENT_OS_ENV_LOCAL_PATH=/absolute/path/to/.env.local.backup`
+- `AGENCY_EVENT_OS_ENV_BACKUP=/absolute/path/to/.env.local.backup`
+- `~/.config/agency-event-os/agency-event-os.env.local.gpg`
+- `~/agency-event-os.env.local.gpg`
+- `~/agency-event-os.env.local.backup`
+
+Do not commit `.env.local`.

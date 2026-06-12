@@ -17,3 +17,10 @@ tsconfig.tsbuildinfo
 .open-next
 .wrangler
 .runtime-data
+.env.*
+!.env.example
+!.env.local.example
+!.env.preview.example
+!.env.production.example
+logs/
+reports/

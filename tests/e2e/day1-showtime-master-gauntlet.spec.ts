@@ -67,7 +67,7 @@ function readLocalEnvValue(key: string) {
 }
 
 function liveKitWebhookSignature(body: string) {
-  const secret = process.env.LIVEKIT_WEBHOOK_SECRET || readLocalEnvValue("LIVEKIT_WEBHOOK_SECRET") || "local-playwright-livekit-webhook-secret-1234567890";
+  const secret = process.env.LIVEKIT_WEBHOOK_SECRET || readLocalEnvValue("LIVEKIT_WEBHOOK_SECRET") || requiredDay1Default("LIVEKIT_WEBHOOK_SECRET");
   return createHmac("sha256", secret).update(body).digest("hex");
 }
 

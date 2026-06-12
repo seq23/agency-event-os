@@ -14,9 +14,9 @@ Validation protects production risk. It is not theater.
 
 Hard-fail only for security, privacy, money, data integrity, deployment contracts, access boundaries, secret exposure, provider fail-safe behavior, and critical public UX.
 
-## Warning categories
+## Diagnostic categories
 
-Copy polish, optional helper text, layout polish, non-critical docs drift, and roadmap wording are warning-only. They must never block deploy unless they create user surprise, security confusion, or access ambiguity.
+Copy polish, optional helper text, layout polish, non-critical docs drift, and roadmap wording are diagnostic-only. They must never block deploy unless they create user surprise, security confusion, or access ambiguity.
 
 ## Non-overclaiming rule
 

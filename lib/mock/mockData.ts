@@ -510,7 +510,7 @@ export const mockData: MockData = {
       clientId: "client-nova",
       eventId: "event-summit",
       name: "Clarity Systems",
-      websiteUrl: "https://clarity.example",
+      websiteUrl: "https://westpeek.live",
       tier: "gold",
       status: "assets_submitted",
       primaryContactName: "Riley Sponsor",
@@ -527,7 +527,7 @@ export const mockData: MockData = {
       name: "Clarity Systems",
       description: "Operational dashboards for scaling founder teams.",
       ctaLabel: "Book a Founder Ops Demo",
-      ctaUrl: "https://clarity.example/demo",
+      ctaUrl: "https://westpeek.live",
       offerText: "Summit attendees get a free workflow audit.",
       status: "agency_review",
       approvalStatus: "needs_agency_review",
@@ -591,8 +591,8 @@ export const mockData: MockData = {
     { id: "audit-2", agencyId: "agency-wpp", clientId: "client-nova", eventId: "event-summit", actorUserId: "user-producer-maya", actorRole: "producer", action: "run_of_show_segment_edited", resourceType: "run_of_show_segment", resourceId: "ros-opening", createdAt: "2026-05-18T13:10:00.000Z", visibility: "internal_agency" },
   ],
   attendees: [
-    { id: "attendee-sam", agencyId: "agency-wpp", clientId: "client-nova", eventId: "event-summit", userId: "user-attendee-sam", name: "Sam Attendee", email: "sam@example.com", company: "SeedWorks", title: "Founder", website: "https://seedworks.example", socialLinks: ["https://linkedin.com/in/sam-attendee"], reasonForAttending: "Meeting operators and investors who understand high-trust virtual events.", interestingFact: "I keep a list of every great networking question I hear.", networkingEnabled: true, status: "registered" },
-    { id: "attendee-morgan", agencyId: "agency-wpp", clientId: "client-nova", eventId: "event-summit", name: "Morgan Attendee", email: "morgan@example.com", company: "LaunchOps", title: "COO", website: "https://launchops.example", socialLinks: ["https://x.com/morganops"], reasonForAttending: "Learning how to make large online events feel smaller and more useful.", interestingFact: "I once ran a backstage comms room with 27 speakers and no missed cues.", networkingEnabled: true, status: "registered" },
+    { id: "attendee-sam", agencyId: "agency-wpp", clientId: "client-nova", eventId: "event-summit", userId: "user-attendee-sam", name: "Sam Attendee", email: "sam@example.com", company: "SeedWorks", title: "Founder", website: "https://westpeek.live", socialLinks: ["/venue/event-summit/people#attendee-sam"], reasonForAttending: "Meeting operators and investors who understand high-trust virtual events.", interestingFact: "I keep a list of every great networking question I hear.", networkingEnabled: true, status: "registered" },
+    { id: "attendee-morgan", agencyId: "agency-wpp", clientId: "client-nova", eventId: "event-summit", name: "Morgan Attendee", email: "morgan@example.com", company: "LaunchOps", title: "COO", website: "https://westpeek.live", socialLinks: ["/venue/event-summit/people#attendee-morgan"], reasonForAttending: "Learning how to make large online events feel smaller and more useful.", interestingFact: "I once ran a backstage comms room with 27 speakers and no missed cues.", networkingEnabled: true, status: "registered" },
   ],
   sessions: [
     { id: "session-breakout-a", agencyId: "agency-wpp", clientId: "client-nova", eventId: "event-summit", name: "Founder Lessons Breakout", description: "Small group breakout with founder case studies.", sessionType: "breakout", status: "scheduled", startAt: "2026-06-12T16:20:00.000Z", endAt: "2026-06-12T17:00:00.000Z", capacity: 75 },

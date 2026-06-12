@@ -1,7 +1,7 @@
 # West Peek Live — Private Day 1 Owner / Operator Packet
 
 **Audience:** Scooter / private owner-level operator  
-**System:** West Peek Live / Agency Event OS  
+**System:** West Peek Live  
 **Canonical production domain:** https://westpeek.live  
 **Worker fallback URL:** https://west-peek-live.seq-taylor.workers.dev  
 **Repo commit pushed:** `f967934`  
@@ -9,7 +9,7 @@
 **Current status:** local validation passed, headed Playwright passed, Cloudflare build passed, Cloudflare deploy passed, worker postdeploy smoke passed  
 **Canonical-domain note:** use the canonical domain operationally. The worker URL is retained only as a fallback/technical verification URL.
 
-> **Private packet. Do not commit this file to GitHub.**  
+> **Owner packet. Raw secrets must not be committed.**  
 > Do not paste this file into public tickets, public docs, Slack channels, or email threads unless the recipient is explicitly owner-approved.
 
 ---
@@ -18,7 +18,7 @@
 
 | Need | Go here |
 |---|---|
-| Owner/boss access | [Owner / boss master access](#2-owner--boss-master-access) |
+| Owner/boss access | [Owner / Boss Master Gate](#2-owner--boss-master-gate) |
 | Operator launchpad password | [Operator access](#3-operator-access) |
 | Crew password | [Crew access](#4-crew-access) |
 | Speaker/sponsor/client/VIP codes | [Access code matrices](#7-access-code-matrices) |
@@ -35,24 +35,24 @@
 
 | Rule | Meaning |
 |---|---|
-| Treat this as private owner material | It contains passwords and event access codes. |
+| Treat this as private owner material | It contains access routing, env key names, and operational instructions. Raw password values belong only in private env backup / Cloudflare secrets. |
 | Use canonical domain for operations | Use `https://westpeek.live` for owner/operator/crew/guest/public paths. |
 | Keep worker URL as fallback only | Use `https://west-peek-live.seq-taylor.workers.dev` only if canonical routing/DNS needs troubleshooting. |
 | Do not email/post this packet publicly | Share only with owner-approved operators. |
-| Do not commit this packet | This file belongs in private owner storage, not the repo. |
-| Do not paste passwords into public tickets | Reference the role/code name instead. |
+| Do not commit raw secrets | This repo copy is sanitized; private owner storage holds the actual secret values. |
+| Do not paste raw passwords into public tickets | Reference the role/code/env key name instead. |
 
 ---
 
-## 2. Owner / boss master access
+## 2. Owner / Boss Master Gate
 
-Use this only for owner-level control, settings, billing, admin testing, and full workspace access.
+Use this only for owner-level control, settings, billing, admin testing, and full workspace access. This is the canonical Owner / Boss Master Gate for Day 1 operations.
 
 | Item | Value |
 |---|---|
 | Gate | `https://westpeek.live/production-access/owner` |
 | Password key | `OWNER_MASTER_ACCESS_PASSWORD` |
-| Password | `Owner-Command-2026!` |
+| Password source | Private env backup / Cloudflare secret value for `OWNER_MASTER_ACCESS_PASSWORD`; do not store raw password in repo docs. |
 | Use when | Owner settings, billing, admin testing, full workspace access |
 | Do not use for | Regular crew/speaker/sponsor/client/VIP access |
 
@@ -66,7 +66,7 @@ Use this for Day 1 show operation, launchpad, event creation, setup, preview, ru
 |---|---|
 | Gate | `https://westpeek.live/production-access/operator` |
 | Password key | `OPERATOR_LAUNCHPAD_PASSWORD` |
-| Password | `Show-Runner-2026!` |
+| Password source | Private env backup / Cloudflare secret value for `OPERATOR_LAUNCHPAD_PASSWORD`; do not store raw password in repo docs. |
 | Main destination | Operator Launchpad |
 | Use when | Creating events, managing setup, testing routes, preparing show ops |
 | Do not use for | Speaker/sponsor/client role testing unless intentionally validating boundaries |
@@ -81,7 +81,7 @@ Use this for show-day crew surfaces: crew home, call sheet, run-of-show, tasks, 
 |---|---|
 | Gate | `https://westpeek.live/production-access/crew` |
 | Password key | `CREW_ACCESS_PASSWORD` |
-| Password | `Crew-Call-2026!` |
+| Password source | Private env backup / Cloudflare secret value for `CREW_ACCESS_PASSWORD`; do not store raw password in repo docs. |
 | Main destination | Crew event workspace |
 | Use when | Crew needs call sheet, run-of-show, tasks, fallback instructions |
 | Boundary | Crew does not get operator launchpad powers |
@@ -383,3 +383,12 @@ Use the packet like this:
 5. **Use canonical domain first.**
 6. **Use worker URL only as fallback/technical proof.**
 7. **Do not publish or commit this private packet.**
+
+
+## StreamYard / LiveKit Model Lock
+
+Production feed/source: StreamYard
+
+Primary embedded event engine/distribution: LiveKit
+
+Do not collapse StreamYard and LiveKit into the same failure plane. StreamYard feed loss, LiveKit distribution loss, and Daily fallback must remain separately named in operator status and validation reports.

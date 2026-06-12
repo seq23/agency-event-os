@@ -1,9 +1,40 @@
+import fs from "node:fs";
+import path from "node:path";
 import registry from '../../../deployment/env-var-registry.json';
 
 const demoDefaults = registry.demoDefaults as Record<string, string | undefined>;
 
+const localEnvCache = new Map<string, string>();
+let localEnvLoaded = false;
+
+function unquoteEnvValue(value: string) {
+  return value.trim().replace(/^[\"']|[\"']$/g, "");
+}
+
+function loadLocalEnv() {
+  if (localEnvLoaded) return;
+  localEnvLoaded = true;
+  const envPath = path.resolve(process.cwd(), ".env.local");
+  if (!fs.existsSync(envPath)) return;
+  const lines = fs.readFileSync(envPath, "utf8").split(/\r?\n/);
+  for (const rawLine of lines) {
+    const line = rawLine.trim();
+    if (!line || line.startsWith("#") || !line.includes("=")) continue;
+    const index = line.indexOf("=");
+    const key = line.slice(0, index).trim();
+    const value = unquoteEnvValue(line.slice(index + 1));
+    if (key) localEnvCache.set(key, value);
+  }
+}
+
+function localEnvValue(key: string) {
+  loadLocalEnv();
+  return localEnvCache.get(key);
+}
+
+
 export function day1Default(key: string, fallback = '') {
-  return process.env[key] || demoDefaults[key] || fallback;
+  return process.env[key] || localEnvValue(key) || demoDefaults[key] || fallback;
 }
 
 export function requiredDay1Default(key: string) {

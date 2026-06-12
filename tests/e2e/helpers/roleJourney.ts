@@ -1,7 +1,7 @@
 import { createHmac } from "node:crypto";
 import { expect, type Page } from "@playwright/test";
 import { gotoAndAssert } from "./assertNoAppError";
-import { requiredDay1Default } from "./day1AccessDefaults";
+import { day1Default, requiredDay1Default } from "./day1AccessDefaults";
 
 type RouteExpectation = {
   path: string;
@@ -12,7 +12,7 @@ type RouteExpectation = {
 };
 
 
-const DEFAULT_E2E_SECRET = "local-playwright-gauntlet-cookie-secret-1234567890";
+const DEFAULT_E2E_SECRET = "local-playwright-e2e-cookie-secret-1234567890";
 
 function baseUrl() {
   return process.env.PLAYWRIGHT_BASE_URL || "http://127.0.0.1:3000";
@@ -39,7 +39,7 @@ function base64UrlEncode(value: string | Buffer) {
   return Buffer.from(value).toString("base64url");
 }
 
-function createV5AccessCookie(payload: Record<string, unknown>, secret = process.env.V5_ACCESS_COOKIE_SECRET || DEFAULT_E2E_SECRET) {
+function createV5AccessCookie(payload: Record<string, unknown>, secret = process.env.V5_ACCESS_COOKIE_SECRET || day1Default("V5_ACCESS_COOKIE_SECRET", DEFAULT_E2E_SECRET)) {
   const body = base64UrlEncode(JSON.stringify(payload));
   const signature = createHmac("sha256", secret).update(body).digest("base64url");
   return `v5.${body}.${signature}`;

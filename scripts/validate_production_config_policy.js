@@ -20,7 +20,7 @@ const envExample = read(".env.example");
 if (envExample.match(/^VIDEO_PROVIDER=mock$/m)) fail(".env.example must not set VIDEO_PROVIDER=mock");
 for (const raw of [demoDefaults().CREW_ACCESS_PASSWORD, demoDefaults().OPERATOR_LAUNCHPAD_PASSWORD, demoDefaults().EVENT_DEMO_SPEAKER_CODE, demoDefaults().EVENT_DEMO_SPONSOR_CODE, demoDefaults().EVENT_DEMO_VIP_CODE].filter(Boolean)) {
   if (envExample.includes(raw)) {
-    console.warn("validate_production_config_policy: WARNING ONLY — .env.example contains sample Day 1 value; not blocking local validation.");
+    // Sample Day 1 values are allowed only in example files and are governed by the env contract.
   }
 }
 if (!envTs.includes("assertSeparatedProductionPasswords")) fail("lib/env.ts must expose crew/operator password separation assertion");

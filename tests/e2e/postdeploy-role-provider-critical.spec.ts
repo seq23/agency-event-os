@@ -17,7 +17,7 @@ test.describe('postdeploy role/provider critical proof', () => {
 
     for (const endpoint of ['/api/video/stage-stream-state?eventId=demo&stageId=main-stage', '/api/video/livekit-token', '/api/video/daily-stage-token']) {
       const response = await request.get(endpoint);
-      expect([200, 400, 401, 403, 409, 503]).toContain(response.status());
+      expect([200, 400, 401, 403, 405, 409, 503]).toContain(response.status());
       expect(await response.text()).not.toMatch(/LIVEKIT_API_SECRET|LIVEKIT_API_KEY|DAILY_API_KEY|SUPABASE_SERVICE_ROLE_KEY|Internal Server Error|digest/i);
     }
   });

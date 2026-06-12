@@ -134,6 +134,7 @@ Purpose: every Markdown document is classified so active documentation stays int
 | `docs/runbooks/validation-operations.md` | ACTIVE | Current active operator/proof/runbook surface or validator-referenced source. | None |
 | `docs/testing/PREDEPLOY_PLAYWRIGHT_E2E.md` | ACTIVE_VALIDATOR_REFERENCED | Current active operator/proof/runbook surface or validator-referenced source. | None |
 | `VALIDATOR_ADMISSION_REGISTER.md` | ACTIVE | Validator admission authority and operator register. | None |
+| `POSTDEPLOY_DEPLOYMENT_PATCH_SUMMARY_2026-06-11.md` | ACTIVE | Postdeploy deployment command and deployed-safe browser scope patch summary. | None |
 | `FINAL_TIER_PATCH_SUMMARY_2026-06-11.md` | ACTIVE | Final tier / master addendum compliance, testing, provider proof, or delivery summary artifact. | None |
 | `LIVE_PROVIDER_EVIDENCE_TEMPLATE.md` | ACTIVE | Final tier / master addendum compliance, testing, provider proof, or delivery summary artifact. | None |
 | `MASTER_ADDENDUM_COMPLIANCE_LEDGER.md` | ACTIVE | Final tier / master addendum compliance, testing, provider proof, or delivery summary artifact. | None |

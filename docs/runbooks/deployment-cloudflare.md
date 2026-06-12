@@ -34,3 +34,10 @@ POSTDEPLOY_BASE_URL="https://westpeek.live" npm run postdeploy:full
 ```
 
 Local success is not deployed proof.
+
+## Cloudflare dashboard command rule
+
+Cloudflare deploys must not run plain `next build` followed by `npx wrangler deploy`. The repo default `npm run build` is now Cloudflare-aware and emits `.open-next` output for dashboard builds. Manual operators may still run `npm run cf:build` followed by `npm run cf:deploy`.
+
+`postdeploy:browser` is scoped to deployed-safe browser proof only. Local credentialed/operator journey gauntlets remain local validation lanes unless matching deployed test credentials and real provider proof are intentionally supplied.
+

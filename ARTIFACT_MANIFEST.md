@@ -47,3 +47,9 @@ NODE_OPTIONS="--max-old-space-size=3072" npm run test:everything:tier2:with-env
 ```
 
 Then run Tier 3 only after deploy/base URL/provider credentials are available.
+
+## 2026-06-11 Postdeploy deploy patch
+
+- Added `scripts/build_cloudflare_or_next.js` so dashboard `npm run build` produces `.open-next` worker output without OpenNext recursion.
+- Scoped `postdeploy:browser` to deployed-safe tests only.
+- Added `POSTDEPLOY_DEPLOYMENT_PATCH_SUMMARY_2026-06-11.md`.

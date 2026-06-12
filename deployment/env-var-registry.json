@@ -162,6 +162,7 @@
     "WEST_PEEK_LIVE_PROVIDER_PROOF"
   ],
   "internalRuntimeEnv": [
+    "AGENCY_EVENT_OS_NEXT_BUILD_ONLY",
     "CI",
     "NEXT_PHASE",
     "NODE_ENV",

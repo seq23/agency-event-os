@@ -7,7 +7,7 @@
     "audit:cloudflare-secrets": "node scripts/audit_cloudflare_secret_parity.js",
     "audit:speed-networking:e2e": "node scripts/audit_speed_networking_e2e.js",
     "audit:warnings": "node scripts/audit_warning_quality.js",
-    "build": "next build",
+    "build": "node scripts/build_cloudflare_or_next.js",
     "build:event-config-package": "node scripts/build_event_config_package.js",
     "build:recoverable": "node scripts/run_recoverable_build.js build --clean",
     "cf:build": "opennextjs-cloudflare build",
@@ -28,7 +28,7 @@
     "env:trace": "node scripts/env-parity-trace.mjs",
     "gauntlet:playwright:local": "bash scripts/run_local_headed_playwright_gauntlet.sh",
     "lint": "next lint",
-    "postdeploy:browser": "PLAYWRIGHT_DEPLOYED=1 playwright test",
+    "postdeploy:browser": "PLAYWRIGHT_DEPLOYED=1 PLAYWRIGHT_SKIP_WEBSERVER=1 playwright test tests/e2e/deployed-outcome-smoke.spec.ts tests/e2e/postdeploy-role-provider-critical.spec.ts --trace on --workers=1",
     "postdeploy:click-audit": "node scripts/post_deploy_click_audit.js",
     "postdeploy:full": "node scripts/run_postdeploy_strict.js",
     "postdeploy:full:legacy": "npm run postdeploy:smoke && npm run postdeploy:click-audit && npm run postdeploy:role-flow && npm run postdeploy:video-provider && npm run postdeploy:browser",
@@ -175,7 +175,8 @@
     "test:everything:tier1:with-env": "node scripts/run-with-temp-env.mjs -- npm run test:everything:tier1",
     "test:everything:tier2:with-env": "node scripts/run-with-temp-env.mjs -- npm run test:everything:tier2",
     "test:everything:tier3:with-env": "node scripts/run-with-temp-env.mjs -- npm run test:everything:tier3",
-    "validate:final-tier:with-env": "node scripts/run-with-temp-env.mjs -- npm run validate:final-tier"
+    "validate:final-tier:with-env": "node scripts/run-with-temp-env.mjs -- npm run validate:final-tier",
+    "build:next": "next build"
   },
   "dependencies": {
     "@hookform/resolvers": "3.9.0",

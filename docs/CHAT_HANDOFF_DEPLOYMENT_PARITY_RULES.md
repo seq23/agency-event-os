@@ -142,3 +142,10 @@ This blocks deploys when required production config is missing, when `VIDEO_PROV
 - OPERATOR_LAUNCHPAD_PASSWORD gates the Operator Launchpad and high-trust show-control diagnostics.
 - V5_OPERATOR_COOKIE_NAME stores the operator-gate cookie name.
 - CREW_ACCESS_PASSWORD and OPERATOR_LAUNCHPAD_PASSWORD must never match.
+
+## Cloudflare dashboard command rule
+
+Cloudflare deploys must not run plain `next build` followed by `npx wrangler deploy`. The repo default `npm run build` is now Cloudflare-aware and emits `.open-next` output for dashboard builds. Manual operators may still run `npm run cf:build` followed by `npm run cf:deploy`.
+
+`postdeploy:browser` is scoped to deployed-safe browser proof only. Local credentialed/operator journey gauntlets remain local validation lanes unless matching deployed test credentials and real provider proof are intentionally supplied.
+

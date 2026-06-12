@@ -54,10 +54,19 @@ if [[ ! -f "$TIER4_STREAMYARD_LIVE_EVIDENCE_PATH" ]]; then
   exit 2
 fi
 
-if grep -Eiq 'LIVEKIT_API_SECRET|LIVEKIT_WEBHOOK_SECRET|SUPABASE_SERVICE_ROLE_KEY|RESEND_API_KEY|DAILY_API_KEY|ZOOM_MEETING_SDK_SECRET|V5_ACCESS_COOKIE_SECRET|rtmps?://|stream[[:space:]_-]*key|Bearer[[:space:]]+[A-Za-z0-9._-]+' "$TIER4_STREAMYARD_LIVE_EVIDENCE_PATH"; then
-  echo "streamyard_livekit_real_provider_smoke: FAIL — evidence file appears to contain secret/provider material. Redact before continuing."
+if grep -Eiq 'LIVEKIT_API_SECRET|LIVEKIT_WEBHOOK_SECRET|SUPABASE_SERVICE_ROLE_KEY|RESEND_API_KEY|DAILY_API_KEY|ZOOM_MEETING_SDK_SECRET|V5_ACCESS_COOKIE_SECRET|rtmps?://|Bearer[[:space:]]+[A-Za-z0-9._~+/=-]{16,}' "$TIER4_STREAMYARD_LIVE_EVIDENCE_PATH"; then
+  echo "streamyard_livekit_real_provider_smoke: FAIL — evidence file appears to contain unredacted secret/provider material. Redact before continuing."
   exit 1
 fi
+
+node -e '
+const fs=require("fs");
+const raw=fs.readFileSync(process.env.TIER4_STREAMYARD_LIVE_EVIDENCE_PATH,"utf8");
+if (/"streamKey"\s*:\s*"(?!\[REDACTED_STREAM_KEY\])[^"]+"/i.test(raw)) {
+  console.error("streamyard_livekit_real_provider_smoke: FAIL — evidence file contains an unredacted streamKey value.");
+  process.exit(1);
+}
+'
 
 node -e '
 const fs=require("fs");
@@ -80,6 +89,8 @@ npm run probe:streamyard-livekit:mock
 
 POSTDEPLOY_BASE_URL="$BASE_URL" \
 PLAYWRIGHT_BASE_URL="$BASE_URL" \
+TIER4_EVENT_ID="${TIER4_EVENT_ID:-${STREAMYARD_E2E_EVENT_ID:-}}" \
+STREAMYARD_E2E_EVENT_ID="${STREAMYARD_E2E_EVENT_ID:-${TIER4_EVENT_ID:-}}" \
 PLAYWRIGHT_DEPLOYED=1 \
 PLAYWRIGHT_SKIP_WEBSERVER=1 \
 STREAMYARD_REAL_PROVIDER_SMOKE=1 \

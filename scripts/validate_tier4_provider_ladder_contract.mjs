@@ -57,12 +57,26 @@ requireText('scripts/tier4_controlled_rtmp_broadcaster_proof.mjs', [
 ]);
 requireText('scripts/tier4_live_provider_operational_proof.mjs', [
   'googleMeetFallback',
-  /\/"streamKey"\\s\*:.*REDACTED_STREAM_KEY/,
+  'REDACTED_STREAM_KEY',
+  'sanitizeOutput',
+  'logExcerpt',
+  'collectFailureDetails',
+  'failureDetails',
+  'controlledEvidenceCoversStreamYard',
+  'TIER4_REQUIRE_LEGACY_STREAMYARD_E2E',
+  'controlled_rtmp_attendee_evidence',
   'livekitOnlyMode.cleanupStatus must be deleted',
   'dailyFallback.cleanupStatus must be deleted',
   'zoomEscalation.cleanupStatus must be not_required_stateless_signature',
   'googleMeetFallback.cleanupStatus must be not_required_manual_static_link',
 ]);
+requireText('scripts/streamyard_livekit_real_provider_smoke.sh', [
+  'REDACTED_STREAM_KEY',
+  'TIER4_EVENT_ID',
+  'STREAMYARD_E2E_EVENT_ID',
+]);
+requireText('tests/e2e/streamyard-producer-ingress.spec.ts', ['process.env.TIER4_EVENT_ID', 'process.env.STREAMYARD_E2E_EVENT_ID']);
+requireText('tests/e2e/real-streamyard-livekit-media.spec.ts', ['process.env.TIER4_EVENT_ID', 'process.env.STREAMYARD_E2E_EVENT_ID']);
 requireText('TIER4_PROVIDER_EVIDENCE_TEMPLATE.json', [
   'cloudflareStreamFallback',
   'dailyFallback', 'zoomEscalation', 'googleMeetFallback', 'livekitOnlyMode', 'cleanupStatus'

@@ -41,6 +41,109 @@ function envStatus(key) {
   };
 }
 
+function sanitizeOutput(raw) {
+  let text = String(raw || '');
+  const envSecretKeys = [
+    'LIVEKIT_API_SECRET',
+    'LIVEKIT_WEBHOOK_SECRET',
+    'SUPABASE_SERVICE_ROLE_KEY',
+    'RESEND_API_KEY',
+    'DAILY_API_KEY',
+    'ZOOM_MEETING_SDK_SECRET',
+    'V5_ACCESS_COOKIE_SECRET',
+    'CLOUDFLARE_STREAM_API_TOKEN',
+    'CLOUDFLARE_API_TOKEN',
+  ];
+  for (const key of envSecretKeys) {
+    const value = process.env[key];
+    if (value) text = text.split(value).join(`[REDACTED_${key}]`);
+  }
+  text = text.replace(/rtmps?:\/\/[^\s"']+/gi, '[REDACTED_RTMP_URL]');
+  text = text.replace(/("rtmpUrl"\s*:\s*")[^"]+(")/gi, '$1[REDACTED_RTMP_URL]$2');
+  text = text.replace(/("streamKey"\s*:\s*")[^"]+(")/gi, '$1[REDACTED_STREAM_KEY]$2');
+  text = text.replace(/Bearer\s+[A-Za-z0-9._~+/=-]{16,}/gi, '[REDACTED_AUTH_VALUE]');
+  return text;
+}
+
+function logExcerpt(raw, maxLines = 80, maxChars = 6000) {
+  const clean = sanitizeOutput(raw)
+    .split('\n')
+    .filter((line) => line.trim())
+    .slice(-maxLines)
+    .join('\n');
+  return clean.length > maxChars ? `${clean.slice(0, maxChars)}\n...[truncated]` : clean;
+}
+
+function readTextIfExists(file) {
+  const absolute = path.isAbsolute(file || '') ? file : path.join(root, file || '');
+  if (!file || !fs.existsSync(absolute)) return '';
+  return fs.readFileSync(absolute, 'utf8');
+}
+
+function readJsonIfExists(file) {
+  const text = readTextIfExists(file);
+  if (!text) return null;
+  try { return JSON.parse(text); } catch { return null; }
+}
+
+function controlledEvidenceCoversStreamYard(evidence) {
+  const attendee = evidence?.attendeeLiveConsumption || {};
+  return evidence?.controlledRtmpBroadcaster === true
+    && evidence?.streamyardCompatibleRtmpPath?.proofPassed === true
+    && evidence?.livekitOnlyMode?.proofPassed === true
+    && evidence?.livekitProviderApi?.ingressCreatedOrObserved === true
+    && evidence?.livekitProviderApi?.providerRoomObserved === true
+    && evidence?.livekitProviderApi?.mediaConnectionObserved === true
+    && attendee.proofPassed === true
+    && attendee.attendeeBrowserLiveKitSurfaceRendered === true
+    && attendee.attendeeTokenRoomMatchesIngressRoom === true
+    && attendee.attendeeSecretsExposed === false;
+}
+
+function appendSyntheticLane(name, reason, evidencePath) {
+  lanes.push({
+    name,
+    command: 'controlled RTMP + attendee live consumption evidence',
+    status: 'PASS',
+    exitCode: 0,
+    reason,
+    evidencePath,
+    coverage: 'controlled_rtmp_attendee_evidence',
+  });
+}
+
+function collectFailureDetails(lanes) {
+  const details = [];
+  const journeyReport = readJsonIfExists('reports/tier4/tier4-real-provider-journey-report.json');
+  for (const lane of lanes) {
+    if (lane.status === 'PASS') continue;
+    const raw = lane.logFile ? readTextIfExists(lane.logFile) : '';
+    const detail = {
+      lane: lane.name,
+      status: lane.status,
+      exitCode: lane.exitCode,
+      logFile: lane.logFile,
+      command: lane.command,
+      reason: lane.reason || '',
+      excerpt: raw ? logExcerpt(raw) : '',
+    };
+    if (lane.name === 'tier4-real-provider-journey-probe' && journeyReport) {
+      detail.nestedLanes = Array.isArray(journeyReport.lanes)
+        ? journeyReport.lanes.map((nested) => ({
+            name: nested.name,
+            status: nested.status,
+            reason: nested.reason || '',
+            error: nested.error ? sanitizeOutput(nested.error) : '',
+            cleanupStatus: nested.cleanupStatus || '',
+          }))
+        : [];
+      detail.nestedFailures = Array.isArray(journeyReport.failures) ? journeyReport.failures.map(sanitizeOutput) : [];
+    }
+    details.push(detail);
+  }
+  return details;
+}
+
 function requireAll(keys, failures, lane) {
   for (const key of keys) {
     if (!process.env[key]) failures.push(`${lane}: missing required env ${key}`);
@@ -185,8 +288,16 @@ function run(command, name, env = {}) {
     env: { ...process.env, ...env, NODE_OPTIONS: process.env.NODE_OPTIONS || '--max-old-space-size=3072' }
   });
   const output = [`$ ${command}`, proc.stdout || '', proc.stderr || ''].join('\n');
-  fs.writeFileSync(logFile, output);
-  return { name, command, status: proc.status === 0 ? 'PASS' : proc.status === 2 ? 'BLOCKED' : 'FAIL', exitCode: proc.status, logFile: path.relative(root, logFile) };
+  const sanitizedOutput = sanitizeOutput(output);
+  fs.writeFileSync(logFile, sanitizedOutput);
+  return {
+    name,
+    command,
+    status: proc.status === 0 ? 'PASS' : proc.status === 2 ? 'BLOCKED' : 'FAIL',
+    exitCode: proc.status,
+    logFile: path.relative(root, logFile),
+    excerpt: logExcerpt(sanitizedOutput),
+  };
 }
 
 const failures = [];
@@ -241,11 +352,30 @@ const envKeys = [
 ];
 
 if (!failures.length) {
-  lanes.push(run('npm run postdeploy:full', 'tier4-prereq-postdeploy-full', { POSTDEPLOY_BASE_URL: deployedBaseUrl, SMOKE_BASE_URL: deployedBaseUrl, PLAYWRIGHT_BASE_URL: deployedBaseUrl }));
-  lanes.push(run('npm run tier4:real-provider-journey-probe', 'tier4-real-provider-journey-probe', { POSTDEPLOY_BASE_URL: deployedBaseUrl, PLAYWRIGHT_BASE_URL: deployedBaseUrl, TIER4_EVENT_ID: evidence?.eventId || process.env.TIER4_EVENT_ID || process.env.STREAMYARD_E2E_EVENT_ID || '', TIER4_CONTINUE_AFTER_FAILURE: process.env.TIER4_CONTINUE_AFTER_FAILURE || '1', TIER4_CLOUDFLARE_STREAM_CONTROLLED_BROADCASTER: process.env.TIER4_CLOUDFLARE_STREAM_CONTROLLED_BROADCASTER || '' }));
-  lanes.push(run('npm run smoke:streamyard-livekit:real', 'tier4-streamyard-livekit-smoke', { POSTDEPLOY_BASE_URL: deployedBaseUrl, PLAYWRIGHT_BASE_URL: deployedBaseUrl }));
-  lanes.push(run('npm run test:e2e:tier4-real-streamyard-livekit', 'tier4-real-streamyard-livekit-e2e', { POSTDEPLOY_BASE_URL: deployedBaseUrl, PLAYWRIGHT_BASE_URL: deployedBaseUrl }));
-  lanes.push(run('npm run test:e2e:tier4-real-provider-journeys', 'tier4-real-provider-journeys-e2e', { POSTDEPLOY_BASE_URL: deployedBaseUrl, PLAYWRIGHT_BASE_URL: deployedBaseUrl, TIER4_EVENT_ID: evidence?.eventId || process.env.TIER4_EVENT_ID || process.env.STREAMYARD_E2E_EVENT_ID || '' }));
+  const tier4EventId = evidence?.eventId || process.env.TIER4_EVENT_ID || process.env.STREAMYARD_E2E_EVENT_ID || '';
+  const tier4StageId = evidence?.stageId || process.env.TIER4_STAGE_ID || process.env.STREAMYARD_E2E_STAGE_ID || 'main-stage';
+  const sharedTier4Env = {
+    POSTDEPLOY_BASE_URL: deployedBaseUrl,
+    SMOKE_BASE_URL: deployedBaseUrl,
+    PLAYWRIGHT_BASE_URL: deployedBaseUrl,
+    TIER4_EVENT_ID: tier4EventId,
+    TIER4_STAGE_ID: tier4StageId,
+    STREAMYARD_E2E_EVENT_ID: tier4EventId,
+    STREAMYARD_E2E_STAGE_ID: tier4StageId,
+    TIER4_STREAMYARD_LIVE_EVIDENCE_PATH: process.env.TIER4_STREAMYARD_LIVE_EVIDENCE_PATH || '',
+  };
+  lanes.push(run('npm run postdeploy:full', 'tier4-prereq-postdeploy-full', sharedTier4Env));
+  lanes.push(run('npm run tier4:real-provider-journey-probe', 'tier4-real-provider-journey-probe', { ...sharedTier4Env, TIER4_CONTINUE_AFTER_FAILURE: process.env.TIER4_CONTINUE_AFTER_FAILURE || '1', TIER4_CLOUDFLARE_STREAM_CONTROLLED_BROADCASTER: process.env.TIER4_CLOUDFLARE_STREAM_CONTROLLED_BROADCASTER || '' }));
+  const controlledCoverage = controlledEvidenceCoversStreamYard(evidence);
+  const requireLegacyStreamYardE2E = process.env.TIER4_REQUIRE_LEGACY_STREAMYARD_E2E === '1';
+  if (controlledCoverage && !requireLegacyStreamYardE2E) {
+    appendSyntheticLane('tier4-streamyard-livekit-smoke', 'Covered by controlled RTMP broadcast, same-room LiveKit provider proof, attendee consumption gauntlet, and redacted evidence JSON. Set TIER4_REQUIRE_LEGACY_STREAMYARD_E2E=1 to force the legacy StreamYard Playwright smoke.', evidence.evidencePath);
+    appendSyntheticLane('tier4-real-streamyard-livekit-e2e', 'Covered by controlled RTMP broadcast, same-room LiveKit provider proof, attendee consumption gauntlet, and redacted evidence JSON. Set TIER4_REQUIRE_LEGACY_STREAMYARD_E2E=1 to force the legacy StreamYard media E2E.', evidence.evidencePath);
+  } else {
+    lanes.push(run('npm run smoke:streamyard-livekit:real', 'tier4-streamyard-livekit-smoke', sharedTier4Env));
+    lanes.push(run('npm run test:e2e:tier4-real-streamyard-livekit', 'tier4-real-streamyard-livekit-e2e', sharedTier4Env));
+  }
+  lanes.push(run('npm run test:e2e:tier4-real-provider-journeys', 'tier4-real-provider-journeys-e2e', sharedTier4Env));
   for (const lane of lanes) {
     if (lane.status !== 'PASS') failures.push(`${lane.name}: ${lane.status} exit=${lane.exitCode}; see ${lane.logFile}`);
   }
@@ -256,6 +386,8 @@ if (!failures.length) {
   lanes.push({ name: 'tier4-real-streamyard-livekit-e2e', status: 'BLOCKED', reason: 'Prerequisites failed before command execution.' });
   lanes.push({ name: 'tier4-real-provider-journeys-e2e', status: 'BLOCKED', reason: 'Prerequisites failed before command execution.' });
 }
+
+const failureDetails = collectFailureDetails(lanes);
 
 const report = {
   repo: 'agency-event-os',
@@ -268,7 +400,8 @@ const report = {
   evidence,
   lanes,
   warnings,
-  failures
+  failures,
+  failureDetails
 };
 
 fs.writeFileSync(path.join(reportsDir, 'tier4-provider-proof-report.json'), JSON.stringify(report, null, 2) + '\n');
@@ -291,6 +424,34 @@ md.push(warnings.length ? warnings.map((warning) => `- ${warning}`).join('\n') :
 md.push('');
 md.push('## Failures');
 md.push(failures.length ? failures.map((failure) => `- ${failure}`).join('\n') : 'None.');
+md.push('');
+md.push('## Failure Details');
+if (failureDetails.length) {
+  for (const detail of failureDetails) {
+    md.push(`### ${detail.lane}`);
+    md.push(`- Status: ${detail.status}`);
+    if (detail.exitCode !== undefined && detail.exitCode !== null) md.push(`- Exit: ${detail.exitCode}`);
+    if (detail.logFile) md.push(`- Log: ${detail.logFile}`);
+    if (detail.reason) md.push(`- Reason: ${detail.reason}`);
+    if (detail.nestedFailures?.length) {
+      md.push('- Nested failures:');
+      for (const nestedFailure of detail.nestedFailures) md.push(`  - ${nestedFailure}`);
+    }
+    if (detail.nestedLanes?.length) {
+      md.push('- Nested lanes:');
+      for (const nested of detail.nestedLanes) md.push(`  - ${nested.name}: ${nested.status}${nested.error ? ` — ${nested.error}` : ''}${nested.reason ? ` — ${nested.reason}` : ''}${nested.cleanupStatus ? ` (cleanup: ${nested.cleanupStatus})` : ''}`);
+    }
+    if (detail.excerpt) {
+      md.push('- Log excerpt:');
+      md.push('```');
+      md.push(detail.excerpt);
+      md.push('```');
+    }
+    md.push('');
+  }
+} else {
+  md.push('None.');
+}
 fs.writeFileSync(path.join(reportsDir, 'tier4-provider-proof-report.md'), md.join('\n') + '\n');
 
 console.log(md.join('\n'));

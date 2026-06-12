@@ -179,9 +179,25 @@ async function runBrowserAttendeeProof({ eventId, attendeeCookie, operatorCookie
   });
   const screenshotPath = path.join(reportsDir, 'tier4-attendee-live-stage.png');
   try {
+    const tokenResponsePromise = page.waitForResponse((res) => res.url().includes('/api/video/livekit-token'), { timeout: 30000 }).catch(() => undefined);
     const response = await page.goto(`${baseUrl}/venue/${encodeURIComponent(eventId)}/stage`, { waitUntil: 'domcontentloaded', timeout: 45000 });
     await page.waitForLoadState('networkidle', { timeout: 15000 }).catch(() => undefined);
-    await page.waitForSelector('[data-testid="attendee-livekit-room-surface"]', { timeout: 25000 }).catch(() => undefined);
+    await page.waitForSelector('[data-testid="stage-player"][data-active-stream-source="LIVEKIT_INGRESS"][data-stream-status="LIVEKIT_INGRESS_LIVE"]', { timeout: 25000 }).catch(() => undefined);
+    await page.waitForSelector('[data-testid="attendee-livekit-room-surface"][data-livekit-consumption-state="token-issued"]', { timeout: 30000 }).catch(() => undefined);
+    const observedTokenResponse = await tokenResponsePromise;
+    if (observedTokenResponse) {
+      const text = await observedTokenResponse.text().catch(() => '');
+      let json;
+      try { json = text ? JSON.parse(text) : undefined; } catch {}
+      const observed = {
+        status: observedTokenResponse.status(),
+        ok: Boolean(json?.ok),
+        error: json?.error || undefined,
+        hasToken: Boolean(json?.result?.token?.token),
+        hasLivekitUrl: Boolean(json?.result?.livekitUrl)
+      };
+      if (!browserSignals.livekitTokenResponses.some((entry) => entry.status === observed.status && entry.ok === observed.ok && entry.hasToken === observed.hasToken && entry.hasLivekitUrl === observed.hasLivekitUrl)) browserSignals.livekitTokenResponses.push(observed);
+    }
     await page.waitForTimeout(1500).catch(() => undefined);
     const bodyText = await page.locator('body').innerText({ timeout: 10000 }).catch(() => '');
     assertNoSecrets('attendee browser body', bodyText);
@@ -192,9 +208,12 @@ async function runBrowserAttendeeProof({ eventId, attendeeCookie, operatorCookie
       streamStatus: el.getAttribute('data-stream-status'),
     })).catch(() => undefined) : undefined;
     const livekitSurfaceState = livekitSurface > 0 ? await page.locator('[data-testid="attendee-livekit-room-surface"]').first().getAttribute('data-livekit-consumption-state').catch(() => undefined) : undefined;
+    const browserLivekitTokenIssued = browserSignals.livekitTokenResponses.some((entry) => entry.status === 200 && entry.ok === true && entry.hasToken === true && entry.hasLivekitUrl === true);
+    const livekitSurfaceTokenIssued = livekitSurfaceState === 'token-issued';
+    const stagePlayerLiveKitLive = stagePlayerAttrs?.activeStreamSource === 'LIVEKIT_INGRESS' && stagePlayerAttrs?.streamStatus === 'LIVEKIT_INGRESS_LIVE';
     const pageLooksLive = /Live stage connected|Connecting to LiveKit Ingress feed|Stage is getting ready|Main stage/i.test(bodyText);
     await page.screenshot({ path: screenshotPath, fullPage: true }).catch(() => undefined);
-    return { ok: Boolean(response?.ok() && stagePlayer > 0 && livekitSurface > 0 && pageLooksLive), status: response?.status(), stagePlayerFound: stagePlayer > 0, livekitSurfaceFound: livekitSurface > 0, stagePlayerAttrs, livekitSurfaceState, browserSetup, browserSignals, screenshot: path.relative(root, screenshotPath), bodySnippet: bodyText.slice(0, 240) };
+    return { ok: Boolean(response?.ok() && stagePlayer > 0 && stagePlayerLiveKitLive && livekitSurface > 0 && livekitSurfaceTokenIssued && browserLivekitTokenIssued && pageLooksLive), status: response?.status(), stagePlayerFound: stagePlayer > 0, stagePlayerLiveKitLive, livekitSurfaceFound: livekitSurface > 0, livekitSurfaceTokenIssued, browserLivekitTokenIssued, stagePlayerAttrs, livekitSurfaceState, browserSetup, browserSignals, screenshot: path.relative(root, screenshotPath), bodySnippet: bodyText.slice(0, 240) };
   } finally {
     await browser.close().catch(() => undefined);
   }
@@ -269,6 +288,11 @@ async function main() {
     attendeeStageRendered: pageHtml.response.status === 200,
     attendeeBrowserReachedLiveStage: browserProof.ok === true,
     attendeeBrowserLiveKitSurfaceRendered: browserProof.livekitSurfaceFound === true,
+    attendeeBrowserLiveKitSurfaceTokenIssued: browserProof.livekitSurfaceTokenIssued === true,
+    attendeeBrowserLiveKitTokenIssued: browserProof.browserLivekitTokenIssued === true,
+    attendeeBrowserStagePlayerLiveKitLive: browserProof.stagePlayerLiveKitLive === true,
+    attendeeBrowserLiveKitSurfaceState: browserProof.livekitSurfaceState,
+    attendeeBrowserStagePlayerAttrs: browserProof.stagePlayerAttrs,
     attendeeBrowserScreenshot: browserProof.screenshot,
     attendeeLiveTokenIssuedWhenPermitted: tokenOk.response.status === 200 && Boolean(tokenOk.json?.result?.token?.token),
     attendeeTokenRoomMatchesIngressRoom: tokenOk.json?.result?.token?.roomId === `${eventId}-${stageId}`.replace(/[^a-zA-Z0-9_-]+/g, '-').toLowerCase(),

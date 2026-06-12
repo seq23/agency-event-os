@@ -17,6 +17,12 @@ requireText('scripts/tier4_attendee_live_consumption_gauntlet.mjs', [
   'runBrowserAttendeeProof',
   'attendeeBrowserReachedLiveStage',
   'attendeeBrowserLiveKitSurfaceRendered',
+  'attendeeBrowserLiveKitSurfaceTokenIssued',
+  'attendeeBrowserLiveKitTokenIssued',
+  'attendeeBrowserStagePlayerLiveKitLive',
+  "livekitSurfaceState === 'token-issued'",
+  'browserLivekitTokenIssued',
+  'stagePlayerLiveKitLive',
   'attendeeTokenRoomMatchesIngressRoom',
   'attendeeLiveTokenIssuedWhenPermitted',
   'livekitParticipantRemoval',
@@ -36,7 +42,7 @@ requireText('services/video/livekitRoomNaming.ts', ['normalizeLiveKitRoomName'])
 requireText('services/video/livekitIngressService.ts', ['normalizeLiveKitRoomName(input.eventId, stageId)']);
 requireText('services/video/livekitRoomUiService.ts', ['normalizeLiveKitRoomName(input.eventId, input.roomId || "main-stage")']);
 requireText('services/video/livekitParticipantAdmin.ts', ['RemoveParticipant', 'normalizeLiveKitRoomName', 'roomAdmin']);
-requireText('components/video/LiveKitIngressStagePlayer.tsx', ['data-testid="attendee-livekit-room-surface"', 'data-livekit-consumption-state="token-issued"']);
+requireText('components/video/LiveKitIngressStagePlayer.tsx', ['data-testid="attendee-livekit-room-surface"', 'data-livekit-consumption-state={consumptionState}', 'token-issued', 'token-error', 'loading']);
 requireText('components/video/StagePlayer.tsx', ['data-testid="stage-player"', 'data-active-stream-source']);
 requireText('app/api/tier4/attendee-live-session/route.ts', [
   'requireLiveEventControlAccessForRequest',

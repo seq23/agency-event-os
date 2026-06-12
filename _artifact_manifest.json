@@ -1,6 +1,29 @@
 {
   "repo": "agency-event-os",
-  "generatedAt": "2026-06-12T15:48:00Z",
-  "fileCount": 1087,
-  "notes": "Hostile live-event fallback runtime pass: app-level show-day ladder, attendee provider masking, backend owner/showrunner/crew controls/logs, rollback controls, and validator."
+  "generatedAt": "2026-06-12T19:38:44Z",
+  "artifact": "agency-event-os-main_BASELINE_06-12-26_tier4_attendee_surface_hostile_pass.zip",
+  "sourceArtifact": "agency-event-os-main_BASELINE_06-12-26_tier4_attendee_surface_final.zip",
+  "status": "STRUCTURALLY_CHECKED_LOCAL_VALIDATION_REQUIRED",
+  "changedFiles": [
+    "scripts/tier4_attendee_live_consumption_gauntlet.mjs",
+    "scripts/validate_tier4_attendee_live_consumption_contract.mjs",
+    "scripts/validate_stage_player_ux_contract.js",
+    "HOSTILE_REVIEW_TIER4_ATTENDEE_SURFACE_FINAL_2026-06-12.md",
+    "ARTIFACT_MANIFEST.md",
+    "_artifact_manifest.json"
+  ],
+  "validationPassed": [
+    "node --check scripts/tier4_attendee_live_consumption_gauntlet.mjs",
+    "node --check scripts/validate_tier4_attendee_live_consumption_contract.mjs",
+    "node --check scripts/validate_stage_player_ux_contract.js",
+    "npm run validate:stage-player-ux",
+    "npm run validate:tier4-attendee-live-consumption-contract",
+    "npm run validate:tier4-live-event-fallback-runtime",
+    "npm run validate:tier4-provider-ladder-contract"
+  ],
+  "validationNotClaimed": [
+    "npm run validate after final hostile pass; dependency install timed out in sandbox",
+    "deployed Tier 4 live-provider proof; requires local encrypted env/provider credentials"
+  ],
+  "notes": "Hostile pass closed surface-count-only proof weakness: attendee browser success now requires stage LIVEKIT_INGRESS_LIVE, token-issued surface state, and browser-observed LiveKit token response with token + URL."
 }

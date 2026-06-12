@@ -1,8 +1,7 @@
 # Validation Matrix — agency-event-os
 
----
-
-## Master Addendum Validation Overlay — 2026-06-11
+Status: ACTIVE
+Date: 2026-06-12
 
 Machine-readable matrix: `_repo_validation_matrix.json`.
 
@@ -18,12 +17,11 @@ Tier 1 CI/static path:
 npm run validate:everything -- --tier=1
 ```
 
-Current container proof: Tier 1 validate:everything PASS in container after exact doc/secret/model fixes; build/Playwright/postdeploy/real StreamYard→LiveKit not run.
+Current container proof: Tier 1 contract validators may run without provider credentials. Build/Playwright/postdeploy/real StreamYard→LiveKit are not proven unless the named tier command has actually run.
 
 Postdeploy and live provider lanes are separate proof layers and must not be implied by local/static validation.
 
-
-## Zero-Noise Validation Contract — 2026-06-12
+## Zero-Noise Validation Contract
 
 This repo no longer uses advisory severities as release signals. Every validator is assigned into one of two operating states:
 
@@ -32,16 +30,100 @@ This repo no longer uses advisory severities as release signals. Every validator
 | HARD FAIL | Real product, security, build, browser, provider, deploy, or governance risk | Blocks the selected tier/profile until fixed |
 | INFO / NO VALIDATION | Diagnostic, trace, helper, or non-proof script | Does not block release; cannot be reported as a warning |
 
-Every validation row must define: owner, tier, severity, proof layer, blocker policy, and simplification disposition. Random phrase-hunt checks are not allowed to block release unless the validation matrix maps the phrase to a real product/security/deploy risk.
-
-
-## Tier 3 Prerequisite State — 2026-06-12
-
 `BLOCKED UNTIL PREREQUISITE` is not an advisory warning and not a repo failure. It is a deterministic external-proof state used only when a selected validation lane requires a deployed URL, provider account, real credential, or operator-confirmed action that is not present in the command environment.
+
+## Tier 1 — Static/source/contract
+
+Proves static source contracts only.
+
+Representative commands:
+
+```bash
+npm run validate:final-tier-contract
+npm run validate:tier4-contract
+npm run validate:everything -- --tier=1
+```
+
+## Tier 2 — Local runtime/browser
+
+Proves local runtime/browser/self-spawn layers only.
+
+```bash
+npm run validate:everything -- --tier=2
+```
+
+## Tier 3 — Deployed safe postdeploy proof
+
+Tier 3 proves deployed runtime and safe provider boundaries.
+
+It does not prove real live provider operations.
+
+```bash
+POSTDEPLOY_BASE_URL="https://<fresh-deployment-url>" \
+PLAYWRIGHT_BASE_URL="https://<fresh-deployment-url>" \
+npm run validate:everything -- --tier=3
+```
 
 Rules:
 
-- Missing deployed URL/provider/operator proof is reported as `BLOCKED`, not `FAIL`.
-- Once prerequisites are supplied, the same validator becomes a hard blocker if the proof fails.
-- Tier 3 cannot be called COMPLETE while any deployed/provider lane is blocked.
-- Tier 1/Tier 2 remain local repo proof and must not imply deployed/provider proof.
+- Missing deployed URL is `BLOCKED`, not an app failure.
+- Once the deployed URL is supplied, failed commands are hard blockers.
+- Passing Tier 3 means deployed-safe postdeploy proof only.
+- COMPLETE remains blocked when real providers are in scope until Tier 4 passes or lanes are explicitly accepted as out of scope.
+
+## Tier 4 — Real live-provider operational proof
+
+Tier 4 proves real credential-dependent provider/user journeys:
+
+- real StreamYard Custom RTMP or controlled broadcaster into LiveKit
+- real LiveKit ingress/media/webhook state evidence
+- real Supabase persistence/readback where configured
+- real Daily fallback where configured
+- real Zoom signature readiness where configured
+- real Resend approved test send where configured
+- role-boundary checks around private/provider surfaces
+- no-secret evidence bundle scan
+- cleanup/retention record
+
+```bash
+POSTDEPLOY_BASE_URL="https://<fresh-deployment-url>" \
+PLAYWRIGHT_BASE_URL="https://<fresh-deployment-url>" \
+TIER4_LIVE_PROVIDER_OPERATIONAL_PROOF=1 \
+STREAMYARD_REAL_PROVIDER_SMOKE=1 \
+STREAMYARD_OPERATOR_CONFIRMED_BROADCAST=1 \
+TIER4_STREAMYARD_LIVE_EVIDENCE_PATH="reports/tier4/streamyard-livekit-evidence.json" \
+npm run validate:everything -- --tier=4
+```
+
+Focused live-provider command:
+
+```bash
+npm run tier4:live-provider-operational-proof
+```
+
+Rules:
+
+- Missing credentials/evidence/operator confirmation are `BLOCKED`, not false passes.
+- Once prerequisites are supplied, provider failures are hard blockers.
+- Tier 4 evidence must be redacted and must not contain provider secrets, stream keys, service-role keys, cookies, or bearer tokens.
+- Only Tier 4 can support `TIER 4 PASSED — REAL LIVE PROVIDER OPERATIONAL PROOF`.
+
+## Completion boundary
+
+Allowed proof labels:
+
+- TIER 1 PASSED — STATIC/SOURCE ONLY
+- TIER 2 PASSED — LOCAL BUILD/BROWSER ONLY
+- TIER 3 PASSED — DEPLOYED SAFE POSTDEPLOY PROOF ONLY
+- TIER 4 PASSED — REAL LIVE PROVIDER OPERATIONAL PROOF
+- BLOCKED — TIER 4 LIVE PROVIDER EVIDENCE REQUIRED
+- PARTIAL — STATIC/LOCAL/POSTDEPLOY PASSED, LIVE PROVIDER FINAL TIER UNPROVEN
+
+Forbidden:
+
+- COMPLETE from Tier 1
+- COMPLETE from Tier 2
+- COMPLETE from Tier 3 when real provider proof is required
+- COMPLETE from mocked provider tests
+- COMPLETE from postdeploy smoke without Tier 4 provider proof
+- COMPLETE while any Tier 4 provider lane is unproven

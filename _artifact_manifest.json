@@ -1,41 +1,53 @@
 {
-  "artifact": "agency-event-os-main_BASELINE_05-22-26_19b3afe.zip",
+  "artifact": "agency-event-os-main_BASELINE_06-12-26_b405d3f.zip",
   "repo": "agency-event-os",
-  "sourceBaseline": "agency-event-os-main_BASELINE_05-21-26_19b3afe.zip",
+  "sourceBaseline": "agency-event-os-main_BASELINE_06-12-26_b405d3f.zip",
   "status": "STRUCTURALLY CHECKED \u2014 LOCAL VALIDATION REQUIRED",
-  "scope": "Day 1 env/password/code registry cleanup pass",
-  "changedAreas": [
-    "deployment/env-var-registry.json demoDefaults",
-    "deployment/cloudflare-required-secrets.json generated from registry defaults",
-    "lib/env/safeEnv.ts registry-derived defaults",
-    "Playwright/package scripts registry-derived Day 1 env runner",
-    "E2E helper defaults from registry",
-    "private env sync helper",
-    "operator packet/docs Day 1 values"
+  "scope": "Tier 4 data trace hardening: real credential/provider journey proof gates, event/stage propagation, operator-scoped request context, evidence scan hygiene, and Zoom route authorization hardening",
+  "changedFiles": [
+    ".env.example",
+    ".env.local.example",
+    "ARTIFACT_MANIFEST.md",
+    "ENVIRONMENT_VARIABLES.md",
+    "REAL_PROVIDER_LANE_MATRIX.md",
+    "TIER4_LIVE_PROVIDER_OPERATIONAL_PROOF.md",
+    "TIER4_PROVIDER_EVIDENCE_TEMPLATE.json",
+    "_artifact_manifest.json",
+    "_env_contract.json",
+    "_repo_validation_matrix.json",
+    "_validator_admission_register.json",
+    "deployment/env-var-registry.json",
+    "package.json",
+    "app/api/video/zoom-signature/route.ts",
+    "scripts/tier4_live_provider_operational_proof.mjs",
+    "scripts/tier4_real_provider_journey_probe.mjs",
+    "scripts/validate-tier4-hostile-coverage.mjs",
+    "tests/e2e/tier4-real-provider-journeys.spec.ts",
+    "VALIDATOR_ADMISSION_REGISTER.md",
+    "scripts/streamyard_livekit_real_provider_smoke.sh",
+    "tests/e2e/real-streamyard-livekit-media.spec.ts",
+    "tests/e2e/streamyard-producer-ingress.spec.ts",
+    "TIER4_DATA_TRACE_REVIEW_2026-06-12.md"
   ],
   "sandboxValidation": [
-    "legacy invented value scan: PASS",
-    "new hardcoded values outside allowed registry/docs/example surfaces: PASS",
-    "package scripts contain no Day 1 hardcoded values: PASS",
-    "node --check on changed JS scripts: PASS",
-    "validate_required_env_registry: PASS",
-    "validate_cloudflare_required_secrets_manifest: PASS",
-    "validate_production_config_policy: PASS",
-    "validate_env_does_not_crash_access_gates: PASS",
-    "validate_v7_day1_packet: PASS",
-    "validate_day1_streamyard_model_contract: PASS",
-    "validate_no_generated_artifacts: PASS"
+    "node --check Tier 4 changed JS scripts: PASS",
+    "tier4:live-provider-operational-proof without env: EXPECTED BLOCKED exit 2",
+    "tier4:real-provider-journey-probe without env: EXPECTED BLOCKED exit 2",
+    "validate:deploy-parity: PASS",
+    "validate:tier4-contract: PASS",
+    "validate:final-tier-contract: PASS",
+    "validate:validator-admission: PASS",
+    "validate:no-generated-artifacts: PASS",
+    "bash -n scripts/streamyard_livekit_real_provider_smoke.sh: PASS",
+    "evidence template no-secret scan false-positive check: PASS",
+    "Tier 4 data trace review: completed, fixable issues patched"
   ],
   "notRun": [
-    "npm run typecheck \u2014 not run successfully in sandbox because uploaded ZIP workspace has no node_modules/Next/Vitest type dependencies",
-    "npm run lint \u2014 not run in sandbox for same dependency reason",
-    "npm run test \u2014 not run in sandbox for same dependency reason",
-    "Playwright E2E \u2014 not run in sandbox"
+    "TypeScript compile/build not run because node_modules is absent in sandbox",
+    "Playwright not run",
+    "Cloudflare/OpenNext build not run",
+    "Tier 3 deployed not run",
+    "Tier 4 live provider proof not run because real credentials/provider evidence are external prerequisites"
   ],
-  "notes": [
-    "Master gauntlet now opens speaker teleprompter, submits speaker material, and verifies operator approval queue visibility.",
-    "Speaker materials can enter via self-serve teleprompter form, hello@/manual intake, or crew/operator handoff into one producer review queue."
-  ],
-  "latestPass": "speaker teleprompter/material queue gauntlet patch",
-  "updatedAt": "2026-05-22T05:50:10Z"
+  "updatedAt": "2026-06-12T12:35:00Z"
 }

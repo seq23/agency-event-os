@@ -165,7 +165,7 @@
     "validate:video-provider": "npm run test -- --run tests/unit/videoProvider.test.ts",
     "validate:whitelabel-video": "node scripts/validate_whitelabel_video.js",
     "validate:final-tier-contract": "node scripts/validate-final-tier-contract.mjs",
-    "validate:final-tier": "node scripts/run-test-everything-aggregate.mjs --tier=3",
+    "validate:final-tier": "node scripts/run-test-everything-aggregate.mjs --tier=4",
     "test:everything:tier1": "node scripts/run-test-everything-aggregate.mjs --tier=1",
     "test:everything:tier2": "node scripts/run-test-everything-aggregate.mjs --tier=2",
     "test:everything:tier3": "node scripts/run-test-everything-aggregate.mjs --tier=3",
@@ -176,7 +176,15 @@
     "test:everything:tier2:with-env": "node scripts/run-with-temp-env.mjs -- npm run test:everything:tier2",
     "test:everything:tier3:with-env": "node scripts/run-with-temp-env.mjs -- npm run test:everything:tier3",
     "validate:final-tier:with-env": "node scripts/run-with-temp-env.mjs -- npm run validate:final-tier",
-    "build:next": "next build"
+    "build:next": "next build",
+    "tier4:live-provider-operational-proof": "node scripts/tier4_live_provider_operational_proof.mjs",
+    "validate:tier4-contract": "node scripts/validate-tier4-contract.mjs && npm run validate:tier4-hostile-coverage",
+    "test:e2e:tier4-real-streamyard-livekit": "PLAYWRIGHT_SKIP_WEBSERVER=1 PLAYWRIGHT_DEPLOYED=1 playwright test tests/e2e/real-streamyard-livekit-media.spec.ts --trace on --workers=1",
+    "test:everything:tier4": "node scripts/run-test-everything-aggregate.mjs --tier=4",
+    "test:everything:tier4:with-env": "node scripts/run-with-temp-env.mjs -- npm run test:everything:tier4",
+    "tier4:real-provider-journey-probe": "node scripts/tier4_real_provider_journey_probe.mjs",
+    "test:e2e:tier4-real-provider-journeys": "PLAYWRIGHT_SKIP_WEBSERVER=1 PLAYWRIGHT_DEPLOYED=1 playwright test tests/e2e/tier4-real-provider-journeys.spec.ts --trace on --workers=1",
+    "validate:tier4-hostile-coverage": "node scripts/validate-tier4-hostile-coverage.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "3.9.0",

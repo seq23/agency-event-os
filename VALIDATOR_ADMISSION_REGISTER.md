@@ -165,6 +165,10 @@ Every validation/test/smoke/audit/deploy package script is assigned below. Advis
 | `test:everything:tier3:with-env` | orchestrator_entrypoint | HARD FAIL | Repo owner / release operator | temporary env final provider failure harvest | `test:everything:tier3` | HARD FAIL blocks only when the script is selected by the active tier/profile; INFO rows are diagnostic. |
 | `validate:final-tier:with-env` | registered_proof_lane | HARD FAIL | Repo owner / release operator | temporary env final release gate | `validate:final-tier` | HARD FAIL blocks only when the script is selected by the active tier/profile; INFO rows are diagnostic. |
 
+| `tier4:real-provider-journey-probe` | registered_proof_lane | HARD FAIL | Repo owner / release operator | provider_runtime | `validate:everything` | HARD FAIL blocks only when the script is selected by the active tier/profile; INFO rows are diagnostic. |
+| `test:e2e:tier4-real-provider-journeys` | registered_proof_lane | HARD FAIL | Repo owner / release operator | browser_e2e | `validate:everything` | HARD FAIL blocks only when the script is selected by the active tier/profile; INFO rows are diagnostic. |
+| `validate:tier4-hostile-coverage` | registered_proof_lane | HARD FAIL | Repo owner / release operator | governance | `validate:everything` | HARD FAIL blocks only when the script is selected by the active tier/profile; INFO rows are diagnostic. |
+
 ## Simplification Pass — 2026-06-12
 
 - Advisory severity states are retired. Validators are now either `HARD FAIL` or `INFO / NO VALIDATION`.

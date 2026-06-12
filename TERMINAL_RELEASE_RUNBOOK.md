@@ -72,7 +72,7 @@ Tier 2: local build/browser/self-spawn proof.
 NODE_OPTIONS="--max-old-space-size=3072" npm run test:everything:tier2
 ```
 
-Tier 3: final gate. For provider-backed repos this means deployed runtime, postdeploy proof, and real provider proof. Missing provider evidence is a failure/blocker, not a pass.
+Tier 3: deployed-safe postdeploy gate. It proves deployed runtime and safe provider boundaries, not real live provider operations. Tier 4: final live-provider gate using real credentials, provider evidence, operator confirmation, cleanup, and no-secret evidence scan.
 
 ```bash
 NODE_OPTIONS="--max-old-space-size=3072" npm run test:everything:tier3
@@ -98,9 +98,13 @@ gh run view <RUN_ID> --log-failed
 
 Run postdeploy smoke and deployed E2E against the fresh deployment URL. Do not rely on localhost defaults. Use explicit base URL env vars.
 
-## Step 8 — final provider proof
+## Step 8 — deployed postdeploy proof
 
-Run Tier 3 after deploy with the required provider secrets, OAuth state, provider accounts, and manual evidence steps in place. The result is not COMPLETE unless Tier 3 passes or every blocked provider lane is explicitly owner-accepted as out of scope.
+Run Tier 3 after deploy with an explicit deployed URL. This proves deployed-safe postdeploy behavior only.
+
+## Step 9 — final live-provider proof
+
+Run Tier 4 with real provider credentials, operator evidence, provider accounts, and cleanup/no-secret evidence review in place. The result is not COMPLETE unless Tier 4 passes or every blocked provider lane is explicitly owner-accepted as out of scope.
 
 ## Step 9 — cleanup
 
@@ -204,7 +208,7 @@ npm run env:remove
 
 ## Completion rule
 
-Passing Tier 1 or Tier 2 is not COMPLETE for provider-backed repos. COMPLETE requires Tier 3 provider/deployed proof or an explicitly accepted BLOCKED/NOT APPLICABLE lane.
+Passing Tier 1 or Tier 2 is not COMPLETE for provider-backed repos. Passing Tier 3 is deployed-safe proof only. COMPLETE requires Tier 4 live-provider operational proof or an explicitly accepted BLOCKED/NOT APPLICABLE lane.
 
 ## Agency Event OS local env restore policy
 
@@ -223,9 +227,9 @@ Do not commit `.env.local`.
 
 ## Tier 3 deployed/provider prerequisite repair — 2026-06-11
 
-Tier 3 validators now distinguish repo/app failures from unavailable external proof.
+Tier 3 and Tier 4 validators now distinguish repo/app failures from unavailable external proof.
 
 - Postdeploy checks require an explicit non-local deployed base URL (`POSTDEPLOY_BASE_URL`, `SMOKE_BASE_URL`, `PLAYWRIGHT_BASE_URL`, or `NEXT_PUBLIC_APP_URL`).
-- Real StreamYard/LiveKit proof requires a deployed base URL plus operator acknowledgement env for the controlled real-provider test.
+- Real StreamYard/LiveKit proof lives in Tier 4 and requires a deployed base URL, real provider credentials, operator confirmation, and a redacted evidence JSON path.
 - Missing Tier 3 prerequisites are reported as `BLOCKED`, not as app failures or false passes.
 - Once prerequisites are supplied, failed commands remain hard blockers.

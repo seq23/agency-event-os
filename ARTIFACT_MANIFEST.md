@@ -1,55 +1,101 @@
 # Artifact Manifest — agency-event-os
 
-Artifact: `agency-event-os-main_BASELINE_06-11-26_zero-warning-validation-matrix.zip`
+Artifact: `agency-event-os-main_BASELINE_06-12-26_b405d3f.zip`
 Repo: `agency-event-os`
 Packaged root: repository root
 Artifact type: full baseline snapshot ZIP
-Status: STRUCTURALLY CHECKED — LOCAL TIER 2 VALIDATION REQUIRED
+Status: STRUCTURALLY CHECKED — LOCAL VALIDATION REQUIRED
 
 ## Change summary
 
-- Added explicit zero-advisory-noise validation contract to the repo validation matrix.
-- Assigned every validation/test/smoke/audit/deploy package script to owner, tier/profile, severity, proof layer, and blocker policy through `_validator_admission_register.json`.
-- Retired warning severities from `_repo_validation_matrix.json` and `_validator_admission_register.json`; active states are now `HARD FAIL` or `INFO / NO VALIDATION`.
-- Simplified validator behavior so diagnostic checks do not block release by copy/label noise unless the matrix maps them to real product/security/deploy risk.
-- Sanitized the Day 1 owner/operator packet, added the canonical `Owner / Boss Master Gate`, and removed raw owner/operator/crew password values from the committed packet.
-- Updated docs consolidation policy with an active-doc simplification contract and no-sprawl rule.
-- Restored reports service files required by typecheck/unit reports tests.
-- Updated no-secrets validation to avoid generated-build false blockers and to route generated artifact cleanup through `validate:no-generated-artifacts`.
+- Executed against the Tier 4 hostile review report.
+- Added server-side authorization to `/api/video/zoom-signature` so Zoom SDK signatures are not public/provider-open.
+- Added `scripts/tier4_real_provider_journey_probe.mjs` for deployed real-provider proof across LiveKit ingress, Supabase write/readback, Daily fallback, Zoom gated signature, Resend approved test email, deployment identity, and private provider role boundaries.
+- Expanded `scripts/tier4_live_provider_operational_proof.mjs` so Tier 4 now runs the real-provider journey probe plus StreamYard/LiveKit smoke and E2E lanes.
+- Expanded Tier 4 evidence requirements so COMPLETE is blocked unless deployment identity, LiveKit provider API proof, Supabase persistence proof, and role-boundary proof are present.
+- Added Tier 4 real-provider user-journey Playwright coverage for private provider API denial and attendee no-secret exposure.
+- Added `validate:tier4-hostile-coverage` and admitted the new validator/test/probe scripts into the validator admission register and validation matrix.
+- Updated Tier 4 env docs/examples for event/stage IDs, Zoom meeting number, Supabase proof table, Resend send approval, and failure-harvest control.
+
+## Changed files
+
+- `.env.example`
+- `.env.local.example`
+- `ARTIFACT_MANIFEST.md`
+- `ENVIRONMENT_VARIABLES.md`
+- `REAL_PROVIDER_LANE_MATRIX.md`
+- `TIER4_LIVE_PROVIDER_OPERATIONAL_PROOF.md`
+- `TIER4_PROVIDER_EVIDENCE_TEMPLATE.json`
+- `TIER4_DATA_TRACE_REVIEW_2026-06-12.md`
+- `_artifact_manifest.json`
+- `_env_contract.json`
+- `_repo_validation_matrix.json`
+- `_validator_admission_register.json`
+- `deployment/env-var-registry.json`
+- `package.json`
+- `app/api/video/zoom-signature/route.ts`
+- `scripts/tier4_live_provider_operational_proof.mjs`
+- `scripts/tier4_real_provider_journey_probe.mjs`
+- `scripts/validate-tier4-hostile-coverage.mjs`
+- `scripts/streamyard_livekit_real_provider_smoke.sh`
+- `tests/e2e/real-streamyard-livekit-media.spec.ts`
+- `tests/e2e/streamyard-producer-ingress.spec.ts`
+- `tests/e2e/tier4-real-provider-journeys.spec.ts`
+- `VALIDATOR_ADMISSION_REGISTER.md`
+
+## Data trace review added
+
+- Added `TIER4_DATA_TRACE_REVIEW_2026-06-12.md`.
+- Patched Tier 4 pre-test issues found during data trace:
+  - Playwright isolated request context no longer used for operator-scoped provider API proof.
+  - Tier 4 event/stage IDs are propagated consistently from evidence into all Tier 4 lanes.
+  - Evidence no-secret scan no longer rejects safe explanatory wording from the template.
+  - Public provider API denial must happen before provider execution with `401`/`403`, not generic `500`/`502`.
+  - `V5_ACCESS_COOKIE_SECRET` is now an explicit Tier 4 prerequisite.
+  - StreamYard producer smoke no longer hard-codes demo during real-provider mode.
 
 ## Validation performed in sandbox
 
-- Reopened ZIP successfully.
-- Confirmed expected root files and patched files exist.
-- Parsed `_repo_validation_matrix.json` and `_validator_admission_register.json` successfully.
-- Confirmed no active repo warning strings remain outside ignored/generated folders.
-- Ran and passed:
-  - `npm run test:everything:tier1` — 13/13 passed before final packaging.
-  - `npm run validate:v7`
-  - `npm run validate:v5-no-secrets`
-  - `npm run validate:brand`
-  - `npm run validate:validator-admission`
-  - `npm run validate:docs-consolidation`
-  - `npm run validate:final-tier-contract`
+- `node --check scripts/tier4_live_provider_operational_proof.mjs` — PASS
+- `node --check scripts/tier4_real_provider_journey_probe.mjs` — PASS
+- `evidence template no-secret scan false-positive check — PASS`
+- `bash -n scripts/streamyard_livekit_real_provider_smoke.sh — PASS`
+- `node --check scripts/validate-tier4-hostile-coverage.mjs` — PASS
+- `npm run tier4:live-provider-operational-proof` without Tier 4 env — EXPECTED BLOCKED exit 2, confirmed fail-closed behavior
+- `npm run tier4:real-provider-journey-probe` without Tier 4 env — EXPECTED BLOCKED exit 2, confirmed fail-closed behavior
+- `npm run validate:deploy-parity` — PASS
+- `npm run validate:tier4-contract` — PASS
+- `npm run validate:final-tier-contract` — PASS
+- `npm run validate:validator-admission` — PASS
+- `npm run validate:no-generated-artifacts` — PASS
 
 ## Validation not claimed
 
-- Full Tier 2 with local env was not run in sandbox.
-- Cloudflare/OpenNext build was not rerun in sandbox after this pass.
-- Deployed Tier 3/provider proof was not run.
+- TypeScript compile was not run because `node_modules/` is not present in the sandbox ZIP working copy.
+- Full build was not run.
+- Local Playwright was not run.
+- Cloudflare/OpenNext build was not run.
+- Deployed Tier 3 was not run.
+- Real live-provider Tier 4 was not run because real credentials, deployed URL, StreamYard operator action, and provider evidence are external prerequisites.
 
 ## Expected local sequence
 
-After applying the ZIP locally, run:
+After applying the ZIP locally:
 
 ```bash
-NODE_OPTIONS="--max-old-space-size=3072" npm run test:everything:tier2:with-env
+NODE_OPTIONS="--max-old-space-size=3072" npm run validate:deploy-parity
+NODE_OPTIONS="--max-old-space-size=3072" npm run validate:tier4-contract
+NODE_OPTIONS="--max-old-space-size=3072" npm run validate:validator-admission
 ```
 
-Then run Tier 3 only after deploy/base URL/provider credentials are available.
+After deploy, run Tier 3:
 
-## 2026-06-11 Postdeploy deploy patch
+```bash
+POSTDEPLOY_BASE_URL="https://<fresh-deployment-url>" PLAYWRIGHT_BASE_URL="https://<fresh-deployment-url>" NODE_OPTIONS="--max-old-space-size=3072" npm run test:everything:tier3:with-env
+```
 
-- Added `scripts/build_cloudflare_or_next.js` so dashboard `npm run build` produces `.open-next` worker output without OpenNext recursion.
-- Scoped `postdeploy:browser` to deployed-safe tests only.
-- Added `POSTDEPLOY_DEPLOYMENT_PATCH_SUMMARY_2026-06-11.md`.
+For final real-provider proof, run Tier 4 only after real credentials/operator evidence exist:
+
+```bash
+POSTDEPLOY_BASE_URL="https://<fresh-deployment-url>" PLAYWRIGHT_BASE_URL="https://<fresh-deployment-url>" TIER4_LIVE_PROVIDER_OPERATIONAL_PROOF=1 STREAMYARD_REAL_PROVIDER_SMOKE=1 STREAMYARD_OPERATOR_CONFIRMED_BROADCAST=1 TIER4_STREAMYARD_LIVE_EVIDENCE_PATH="reports/tier4/streamyard-livekit-evidence.json" TIER4_EVENT_ID="tier4-YYYY-MM-DD-001" TIER4_STAGE_ID="main-stage" TIER4_RESEND_SEND_APPROVED=1 NODE_OPTIONS="--max-old-space-size=3072" npm run tier4:live-provider-operational-proof
+```

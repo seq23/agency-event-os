@@ -1,0 +1,71 @@
+{
+  "providerLane": "streamyard-livekit",
+  "deployedBaseUrl": "https://REPLACE_WITH_FRESH_DEPLOYED_URL",
+  "eventId": "tier4-YYYY-MM-DD-001",
+  "stageId": "main-stage",
+  "operatorConfirmedBroadcast": true,
+  "streamyardBroadcastStartedAt": "YYYY-MM-DDTHH:mm:ss.sssZ",
+  "streamyardBroadcastEndedAt": "YYYY-MM-DDTHH:mm:ss.sssZ",
+  "livekitIngressIdRedacted": "REDACTED_OR_TRUNCATED_ID_ONLY",
+  "livekitRoomNameRedacted": "REDACTED_OR_NON_SECRET_ROOM_NAME",
+  "appReportedStates": [
+    "READY_FOR_STREAMYARD",
+    "LIVEKIT_INGRESS_LIVE",
+    "SWITCHING_TO_DAILY"
+  ],
+  "deploymentIdentity": {
+    "deployedRuntimeVerified": true,
+    "baseUrlMatchedCommand": true,
+    "cloudflareDeploymentIdRedacted": "OPTIONAL_REDACTED_ID_OR_NOT_AVAILABLE",
+    "githubActionsStatusVerified": "PASS_OR_NOT_APPLICABLE_WITH_REASON"
+  },
+  "livekitProviderApi": {
+    "ingressCreatedOrObserved": true,
+    "providerRoomObserved": true,
+    "mediaConnectionObserved": true,
+    "webhookOrStateTransitionObserved": true,
+    "cleanupStatus": "deleted_or_retained_with_reason"
+  },
+  "supabaseProductionPersistence": {
+    "writeReadbackVerified": true,
+    "createdRecordIdRedacted": "REDACTED_OR_TRUNCATED_ID_ONLY",
+    "refreshReentryVerified": true,
+    "noDemoFallback": true,
+    "cleanupStatus": "deleted_or_retained_with_reason"
+  },
+  "roleBoundaryProof": {
+    "privateProviderControlsDeniedToPublic": true,
+    "attendeeCannotAccessProviderSecrets": true,
+    "eventScopedAccessVerified": true,
+    "forbiddenRoleMatrixPassed": true
+  },
+  "dailyFallback": {
+    "configured": false,
+    "proofPassed": false,
+    "roomCreated": false,
+    "tokenIssued": false,
+    "cleanupStatus": "not_configured_or_deleted_or_retained_with_reason"
+  },
+  "zoomEscalation": {
+    "configured": false,
+    "proofPassed": false,
+    "unauthenticatedDenied": true,
+    "authorizedSignatureIssued": false,
+    "routeAuthorizationGated": true
+  },
+  "resendEmail": {
+    "configured": false,
+    "proofPassed": false,
+    "approvedRecipientOnly": true,
+    "providerMessageIdRedacted": "NOT_SENT_OR_REDACTED_ID_ONLY"
+  },
+  "operatorEvidenceFiles": [
+    "reports/tier4/operator-streamyard-live.png"
+  ],
+  "attendeeEvidenceFiles": [
+    "reports/tier4/attendee-stage-live.png"
+  ],
+  "secretsExposed": false,
+  "cleanupStatus": "deleted_or_retained_with_reason",
+  "notes": "Do not store raw RTMP stream keys, provider API keys, service-role keys, bearer tokens, cookies, webhook secrets, or real recipient PII in this evidence file."
+}

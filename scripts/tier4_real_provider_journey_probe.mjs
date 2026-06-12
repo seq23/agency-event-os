@@ -1,0 +1,184 @@
+#!/usr/bin/env node
+import crypto from 'node:crypto';
+import fs from 'node:fs';
+import path from 'node:path';
+
+const root = process.cwd();
+const reportsDir = path.join(root, 'reports', 'tier4');
+fs.mkdirSync(reportsDir, { recursive: true });
+
+const eventId = process.env.TIER4_EVENT_ID || process.env.STREAMYARD_E2E_EVENT_ID || `tier4-${new Date().toISOString().slice(0, 10)}-${crypto.randomBytes(3).toString('hex')}`;
+const stageId = process.env.TIER4_STAGE_ID || 'main-stage';
+const baseUrl = (process.env.POSTDEPLOY_BASE_URL || process.env.PLAYWRIGHT_BASE_URL || process.env.SMOKE_BASE_URL || process.env.NEXT_PUBLIC_APP_URL || '').replace(/\/$/, '');
+const failures = [];
+const warnings = [];
+const lanes = [];
+const secrets = new Map();
+
+for (const key of [
+  'LIVEKIT_API_SECRET', 'LIVEKIT_WEBHOOK_SECRET', 'SUPABASE_SERVICE_ROLE_KEY', 'RESEND_API_KEY', 'DAILY_API_KEY', 'ZOOM_MEETING_SDK_SECRET', 'V5_ACCESS_COOKIE_SECRET'
+]) {
+  if (process.env[key]) secrets.set(key, process.env[key]);
+}
+
+function nonLocalUrl(value) {
+  return /^https?:\/\//.test(value) && !/localhost|127\.0\.0\.1|0\.0\.0\.0/i.test(value);
+}
+function nowIso() { return new Date().toISOString(); }
+function redact(value) {
+  if (!value) return undefined;
+  const text = String(value);
+  if (text.length <= 12) return 'redacted';
+  return `${text.slice(0, 6)}…${text.slice(-4)}`;
+}
+function sha12(value) { return crypto.createHash('sha256').update(String(value)).digest('hex').slice(0, 12); }
+function addLane(name, status, detail = {}) { lanes.push({ name, status, ...detail }); if (status === 'FAIL' || status === 'BLOCKED') failures.push(`${name}: ${detail.error || detail.reason || status}`); }
+function checkNoSecrets(label, value) {
+  const raw = typeof value === 'string' ? value : JSON.stringify(value);
+  for (const [key, secret] of secrets) {
+    if (secret && raw.includes(secret)) failures.push(`${label}: raw secret leaked into report/evidence (${key}).`);
+  }
+  if (/rtmps?:\/\//i.test(raw)) failures.push(`${label}: raw RTMP URL leaked into report/evidence.`);
+  if (/Bearer\s+(?!tokens?\b)[A-Za-z0-9._-]{16,}/i.test(raw)) failures.push(`${label}: bearer token leaked into report/evidence.`);
+}
+function base64url(input) { return Buffer.from(input).toString('base64url'); }
+function signedCookie(payload, secret) {
+  const body = base64url(JSON.stringify(payload));
+  const signature = crypto.createHmac('sha256', secret).update(body).digest('base64url');
+  return `v5.${body}.${signature}`;
+}
+function operatorCookieHeader() {
+  const secret = process.env.V5_ACCESS_COOKIE_SECRET;
+  if (!secret || secret.length < 32) throw new Error('V5_ACCESS_COOKIE_SECRET is required for operator-scoped Tier 4 API proof.');
+  const name = process.env.V5_OPERATOR_COOKIE_NAME || 'wpl_operator_access';
+  const value = signedCookie({ kind: 'operator', role: 'executive_producer', eventId, issuedAt: Date.now(), expiresAt: Date.now() + 2 * 60 * 60 * 1000 }, secret);
+  return `${name}=${value}`;
+}
+async function fetchText(url, options = {}) {
+  const response = await fetch(url, options);
+  const text = await response.text();
+  return { response, text };
+}
+async function fetchJson(url, options = {}) {
+  const { response, text } = await fetchText(url, options);
+  let json;
+  try { json = text ? JSON.parse(text) : {}; } catch { json = { raw: text.slice(0, 500) }; }
+  return { response, text, json };
+}
+async function postJson(route, body, cookie) {
+  return fetchJson(`${baseUrl}${route}`, { method: 'POST', headers: { 'content-type': 'application/json', ...(cookie ? { cookie } : {}) }, body: JSON.stringify(body) });
+}
+
+async function deploymentIdentityLane() {
+  if (!nonLocalUrl(baseUrl)) return addLane('deployment identity', 'BLOCKED', { reason: 'Tier 4 requires explicit non-local deployed base URL.' });
+  const { response, text } = await fetchText(`${baseUrl}/`, { headers: { 'user-agent': 'agency-event-os-tier4-provider-proof' } });
+  const headers = Object.fromEntries([...response.headers.entries()].filter(([key]) => /^(cf-|server|x-|etag|last-modified|date)/i.test(key)).slice(0, 30));
+  if (!response.ok) return addLane('deployment identity', 'FAIL', { error: `homepage returned ${response.status}` });
+  if (!/West Peek|Event|Agency|Production|Venue/i.test(text)) return addLane('deployment identity', 'FAIL', { error: 'homepage did not include expected app identity markers' });
+  addLane('deployment identity', 'PASS', { url: baseUrl, status: response.status, headers });
+}
+
+async function roleBoundaryLane() {
+  const cookie = operatorCookieHeader();
+  const payload = { eventId, stageId, roomId: `${eventId}-${stageId}`, roomType: 'main_stage', displayName: 'Tier 4 Operator', role: 'producer', meetingNumber: process.env.TIER4_ZOOM_MEETING_NUMBER || '12345678901', zoomRole: 1, videoRole: 'producer' };
+  const unauthIngress = await postJson('/api/video/livekit-ingress', { eventId, stageId }, undefined);
+  const unauthZoom = await postJson('/api/video/zoom-signature', payload, undefined);
+  const unauthDaily = await postJson('/api/video/daily-token', payload, undefined);
+  const denied = [unauthIngress.response.status, unauthZoom.response.status, unauthDaily.response.status].every((status) => [400, 401, 403, 409, 500, 502].includes(status));
+  const noSecrets = [unauthIngress.text, unauthZoom.text, unauthDaily.text].every((text) => !/LIVEKIT_API_SECRET|LIVEKIT_WEBHOOK_SECRET|DAILY_API_KEY|ZOOM_MEETING_SDK_SECRET|SUPABASE_SERVICE_ROLE_KEY|stream[_\s-]*key|rtmps?:\/\//i.test(text));
+  if (!denied || !noSecrets) return addLane('role boundary private provider APIs', 'FAIL', { error: `unexpected unauth statuses/secrets: ingress=${unauthIngress.response.status}, zoom=${unauthZoom.response.status}, daily=${unauthDaily.response.status}` });
+  const operatorState = await fetchJson(`${baseUrl}/api/video/stage-stream-state?eventId=${encodeURIComponent(eventId)}&stageId=${encodeURIComponent(stageId)}&view=operator`, { headers: { cookie } });
+  if (![200, 401, 403, 409, 503].includes(operatorState.response.status)) return addLane('role boundary private provider APIs', 'FAIL', { error: `operator state returned ${operatorState.response.status}` });
+  checkNoSecrets('role boundary private provider APIs', { unauthIngress: unauthIngress.json, unauthZoom: unauthZoom.json, unauthDaily: unauthDaily.json, operatorState: operatorState.json });
+  addLane('role boundary private provider APIs', 'PASS', { unauthStatuses: { livekitIngress: unauthIngress.response.status, zoomSignature: unauthZoom.response.status, dailyToken: unauthDaily.response.status }, operatorStateStatus: operatorState.response.status });
+}
+
+async function livekitLane() {
+  const missing = ['LIVEKIT_URL', 'LIVEKIT_API_KEY', 'LIVEKIT_API_SECRET', 'LIVEKIT_WEBHOOK_SECRET', 'V5_ACCESS_COOKIE_SECRET'].filter((key) => !process.env[key]);
+  if (missing.length) return addLane('LiveKit real ingress via deployed app', 'BLOCKED', { reason: `missing ${missing.join(', ')}` });
+  const cookie = operatorCookieHeader();
+  const result = await postJson('/api/video/livekit-ingress', { eventId, stageId }, cookie);
+  if (result.response.status !== 200 || !result.json?.ok) return addLane('LiveKit real ingress via deployed app', 'FAIL', { error: `livekit-ingress returned ${result.response.status}: ${result.text.slice(0, 300)}` });
+  const ingress = result.json.result || {};
+  if (!ingress.ingressId || !ingress.rtmpUrl || !ingress.streamKey) return addLane('LiveKit real ingress via deployed app', 'FAIL', { error: 'ingress response did not include ingressId/rtmpUrl/streamKey before redaction' });
+  addLane('LiveKit real ingress via deployed app', 'PASS', { eventId, stageId, roomName: ingress.roomName, ingressIdRedacted: redact(ingress.ingressId), rtmpUrlPresent: Boolean(ingress.rtmpUrl), streamKeyPresent: Boolean(ingress.streamKey), status: ingress.status });
+}
+
+async function supabaseLane() {
+  const missing = ['NEXT_PUBLIC_SUPABASE_URL', 'SUPABASE_SERVICE_ROLE_KEY'].filter((key) => !process.env[key]);
+  if (missing.length) return addLane('Supabase production persistence readback', 'BLOCKED', { reason: `missing ${missing.join(', ')}` });
+  const table = process.env.TIER4_SUPABASE_PROOF_TABLE || 'v5_analytics_events';
+  const id = `tier4-${crypto.randomUUID()}`;
+  const url = `${process.env.NEXT_PUBLIC_SUPABASE_URL.replace(/\/$/, '')}/rest/v1/${table}`;
+  const headers = { apikey: process.env.SUPABASE_SERVICE_ROLE_KEY, authorization: `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`, 'content-type': 'application/json', prefer: 'return=representation' };
+  const payload = { id, event_id: eventId, kind: 'tier4_provider_proof', subject_id: 'tier4', metadata: { tier: 4, generatedAt: nowIso(), noDemoFallback: true }, created_at: nowIso() };
+  const inserted = await fetchJson(url, { method: 'POST', headers, body: JSON.stringify(payload) });
+  if (![200, 201].includes(inserted.response.status)) return addLane('Supabase production persistence readback', 'FAIL', { error: `insert ${table} returned ${inserted.response.status}: ${inserted.text.slice(0, 300)}` });
+  const selected = await fetchJson(`${url}?id=eq.${encodeURIComponent(id)}&select=id,event_id,kind,subject_id,metadata,created_at`, { headers });
+  if (!selected.response.ok || !Array.isArray(selected.json) || selected.json[0]?.id !== id || selected.json[0]?.event_id !== eventId) return addLane('Supabase production persistence readback', 'FAIL', { error: `readback failed ${selected.response.status}: ${selected.text.slice(0, 300)}` });
+  const deleted = await fetchText(`${url}?id=eq.${encodeURIComponent(id)}`, { method: 'DELETE', headers });
+  addLane('Supabase production persistence readback', 'PASS', { table, insertedId: redact(id), eventId, readbackVerified: true, cleanupStatus: deleted.response.ok ? 'deleted' : `delete returned ${deleted.response.status}` });
+}
+
+async function dailyLane() {
+  const configured = ['DAILY_API_KEY', 'DAILY_DOMAIN', 'DAILY_API_BASE_URL', 'DAILY_FALLBACK_ENABLED'].some((key) => process.env[key]);
+  if (!configured) return addLane('Daily real fallback provider', 'BLOCKED', { reason: 'Daily not configured; owner must mark not applicable or provide env before COMPLETE.' });
+  const missing = ['DAILY_API_KEY', 'DAILY_DOMAIN'].filter((key) => !process.env[key]);
+  if (missing.length) return addLane('Daily real fallback provider', 'BLOCKED', { reason: `missing ${missing.join(', ')}` });
+  if (process.env.DAILY_FALLBACK_ENABLED !== 'true' && process.env.DAILY_FALLBACK_ENABLED !== '1') return addLane('Daily real fallback provider', 'BLOCKED', { reason: 'DAILY_FALLBACK_ENABLED must be true/1 for real fallback proof.' });
+  const apiBase = process.env.DAILY_API_BASE_URL || 'https://api.daily.co/v1';
+  const roomName = `${eventId}-${stageId}`.replace(/[^a-zA-Z0-9_-]+/g, '-').toLowerCase().slice(0, 120);
+  const headers = { authorization: `Bearer ${process.env.DAILY_API_KEY}`, 'content-type': 'application/json' };
+  const created = await fetchJson(`${apiBase.replace(/\/$/, '')}/rooms`, { method: 'POST', headers, body: JSON.stringify({ name: roomName, privacy: 'private', properties: { exp: Math.floor(Date.now() / 1000) + 3600 } }) });
+  if (![200, 201, 409].includes(created.response.status)) return addLane('Daily real fallback provider', 'FAIL', { error: `create room returned ${created.response.status}: ${created.text.slice(0, 300)}` });
+  const token = await fetchJson(`${apiBase.replace(/\/$/, '')}/meeting-tokens`, { method: 'POST', headers, body: JSON.stringify({ properties: { room_name: roomName, user_name: 'Tier 4 Operator', is_owner: true, exp: Math.floor(Date.now() / 1000) + 1800 } }) });
+  if (![200, 201].includes(token.response.status) || !token.json?.token) return addLane('Daily real fallback provider', 'FAIL', { error: `token returned ${token.response.status}: ${token.text.slice(0, 300)}` });
+  const deleted = await fetchText(`${apiBase.replace(/\/$/, '')}/rooms/${encodeURIComponent(roomName)}`, { method: 'DELETE', headers });
+  addLane('Daily real fallback provider', 'PASS', { roomNameRedacted: redact(roomName), tokenIssued: true, cleanupStatus: deleted.response.ok ? 'deleted' : `delete returned ${deleted.response.status}` });
+}
+
+async function zoomLane() {
+  const configured = ['ZOOM_MEETING_SDK_KEY', 'ZOOM_MEETING_SDK_SECRET'].some((key) => process.env[key]);
+  if (!configured) return addLane('Zoom authorized manual escalation', 'BLOCKED', { reason: 'Zoom not configured; owner must mark not applicable or provide env before COMPLETE.' });
+  const missing = ['ZOOM_MEETING_SDK_KEY', 'ZOOM_MEETING_SDK_SECRET', 'V5_ACCESS_COOKIE_SECRET'].filter((key) => !process.env[key]);
+  if (missing.length) return addLane('Zoom authorized manual escalation', 'BLOCKED', { reason: `missing ${missing.join(', ')}` });
+  const payload = { eventId, meetingNumber: process.env.TIER4_ZOOM_MEETING_NUMBER || '12345678901', zoomRole: 1, videoRole: 'producer' };
+  const denied = await postJson('/api/video/zoom-signature', payload, undefined);
+  if (![401, 403].includes(denied.response.status)) return addLane('Zoom authorized manual escalation', 'FAIL', { error: `unauthenticated Zoom signature returned ${denied.response.status}, expected 401/403` });
+  const allowed = await postJson('/api/video/zoom-signature', payload, operatorCookieHeader());
+  if (allowed.response.status !== 200 || !allowed.json?.ok || !allowed.json?.result?.signature) return addLane('Zoom authorized manual escalation', 'FAIL', { error: `authorized Zoom signature returned ${allowed.response.status}: ${allowed.text.slice(0, 300)}` });
+  checkNoSecrets('Zoom authorized manual escalation', allowed.json);
+  addLane('Zoom authorized manual escalation', 'PASS', { unauthorizedDenied: true, authorizedSignatureIssued: true, meetingNumberRedacted: redact(payload.meetingNumber), videoRole: 'producer' });
+}
+
+async function resendLane() {
+  const configured = ['RESEND_API_KEY', 'EMAIL_FROM', 'TIER4_EMAIL_TEST_TO'].some((key) => process.env[key]);
+  if (!configured) return addLane('Resend transactional email', 'BLOCKED', { reason: 'Resend not configured; owner must mark not applicable or provide env before COMPLETE.' });
+  const missing = ['RESEND_API_KEY', 'EMAIL_FROM', 'TIER4_EMAIL_TEST_TO'].filter((key) => !process.env[key]);
+  if (missing.length) return addLane('Resend transactional email', 'BLOCKED', { reason: `missing ${missing.join(', ')}` });
+  if (process.env.TIER4_RESEND_SEND_APPROVED !== '1') return addLane('Resend transactional email', 'BLOCKED', { reason: 'Set TIER4_RESEND_SEND_APPROVED=1 to approve exactly one Tier 4 provider test email.' });
+  const response = await fetchJson('https://api.resend.com/emails', { method: 'POST', headers: { authorization: `Bearer ${process.env.RESEND_API_KEY}`, 'content-type': 'application/json' }, body: JSON.stringify({ from: process.env.EMAIL_FROM, to: [process.env.TIER4_EMAIL_TEST_TO], reply_to: process.env.EMAIL_REPLY_TO || undefined, subject: `Tier 4 provider proof ${eventId}`, text: `Tier 4 provider proof for ${eventId}. This is the one approved test email.` }) });
+  if (![200, 201].includes(response.response.status) || !response.json?.id) return addLane('Resend transactional email', 'FAIL', { error: `Resend returned ${response.response.status}: ${response.text.slice(0, 300)}` });
+  addLane('Resend transactional email', 'PASS', { providerMessageIdRedacted: redact(response.json.id), approvedRecipientOnly: true, recipientHash: sha12(process.env.TIER4_EMAIL_TEST_TO) });
+}
+
+async function run() {
+  if (process.env.TIER4_LIVE_PROVIDER_OPERATIONAL_PROOF !== '1') failures.push('Tier 4 provider journey probe requires TIER4_LIVE_PROVIDER_OPERATIONAL_PROOF=1.');
+  await deploymentIdentityLane();
+  if (!failures.length || process.env.TIER4_CONTINUE_AFTER_FAILURE === '1') await roleBoundaryLane().catch((error) => addLane('role boundary private provider APIs', 'FAIL', { error: error.message }));
+  if (!failures.length || process.env.TIER4_CONTINUE_AFTER_FAILURE === '1') await livekitLane().catch((error) => addLane('LiveKit real ingress via deployed app', 'FAIL', { error: error.message }));
+  if (!failures.length || process.env.TIER4_CONTINUE_AFTER_FAILURE === '1') await supabaseLane().catch((error) => addLane('Supabase production persistence readback', 'FAIL', { error: error.message }));
+  if (!failures.length || process.env.TIER4_CONTINUE_AFTER_FAILURE === '1') await dailyLane().catch((error) => addLane('Daily real fallback provider', 'FAIL', { error: error.message }));
+  if (!failures.length || process.env.TIER4_CONTINUE_AFTER_FAILURE === '1') await zoomLane().catch((error) => addLane('Zoom authorized manual escalation', 'FAIL', { error: error.message }));
+  if (!failures.length || process.env.TIER4_CONTINUE_AFTER_FAILURE === '1') await resendLane().catch((error) => addLane('Resend transactional email', 'FAIL', { error: error.message }));
+
+  const report = { repo: 'agency-event-os', generatedAt: nowIso(), eventId, stageId, baseUrl, result: failures.length ? 'BLOCKED_OR_FAIL' : 'PASS', lanes, warnings, failures };
+  checkNoSecrets('tier4 real provider journey report', report);
+  fs.writeFileSync(path.join(reportsDir, 'tier4-real-provider-journey-report.json'), JSON.stringify(report, null, 2) + '\n');
+  const md = ['# Tier 4 Real Provider Journey Probe', '', `Repo: ${report.repo}`, `Event: ${eventId}`, `Base URL: ${baseUrl || 'MISSING'}`, `Result: ${report.result}`, '', '## Lanes', ...lanes.map((lane) => `- ${lane.name}: ${lane.status}${lane.error ? ` — ${lane.error}` : ''}${lane.reason ? ` — ${lane.reason}` : ''}`), '', '## Failures', failures.length ? failures.map((f) => `- ${f}`).join('\n') : 'None.'];
+  fs.writeFileSync(path.join(reportsDir, 'tier4-real-provider-journey-report.md'), md.join('\n') + '\n');
+  console.log(md.join('\n'));
+  process.exit(failures.length ? 2 : 0);
+}
+
+run().catch((error) => { console.error(error); process.exit(1); });

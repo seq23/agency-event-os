@@ -37,6 +37,10 @@ requireText('scripts/tier4_controlled_rtmp_broadcaster_proof.mjs', [
   'TIER4_CONTROLLED_MEDIA_EVIDENCE_RUN_ID',
   'attendeeBrowserReachedLiveStage',
   'attendeeTokenRoomMatchesIngressRoom',
+  'sanitizeProofPayload',
+  'attendeeSecretsExposed: attendeeReport.attendeeSecretsExposed === true',
+  '[REDACTED_STREAM_KEY]',
+  'controlledLiveKitProofPassed',
 ]);
 requireText('services/video/livekitRoomNaming.ts', ['normalizeLiveKitRoomName']);
 requireText('services/video/livekitIngressService.ts', ['normalizeLiveKitRoomName(input.eventId, stageId)']);

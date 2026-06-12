@@ -51,9 +51,13 @@ requireText('scripts/tier4_controlled_rtmp_broadcaster_proof.mjs', [
   'googleMeetFallback',
   'livekitOnlyMode',
   'cleanupStatus',
+  'controlledLiveKitProofPassed',
+  '[REDACTED_STREAM_KEY]',
+  'sanitizeProofPayload',
 ]);
 requireText('scripts/tier4_live_provider_operational_proof.mjs', [
   'googleMeetFallback',
+  /\/"streamKey"\\s\*:.*REDACTED_STREAM_KEY/,
   'livekitOnlyMode.cleanupStatus must be deleted',
   'dailyFallback.cleanupStatus must be deleted',
   'zoomEscalation.cleanupStatus must be not_required_stateless_signature',

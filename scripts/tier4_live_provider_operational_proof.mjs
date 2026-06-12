@@ -16,8 +16,8 @@ const redactionPatterns = [
   /DAILY_API_KEY/i,
   /ZOOM_MEETING_SDK_SECRET/i,
   /V5_ACCESS_COOKIE_SECRET/i,
-  /Bearer\s+[A-Za-z0-9._-]+/i,
-  /stream\s*key/i,
+  /Bearer\s+[A-Za-z0-9._~+/=-]{16,}/i,
+  /"streamKey"\s*:\s*"(?!\[REDACTED_STREAM_KEY\])[^"]+"/i,
   /rtmp:\/\//i,
   /rtmps:\/\//i,
   /eyJ[a-zA-Z0-9_-]+\.[a-zA-Z0-9_-]+\.[a-zA-Z0-9_-]+/

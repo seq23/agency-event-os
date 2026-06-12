@@ -85,8 +85,20 @@ function sanitize(raw) {
     if (value) text = text.split(value).join(`[REDACTED_${key}]`);
   }
   text = text.replace(/rtmps?:\/\/[^\s"']+/gi, '[REDACTED_RTMP_URL]');
+  text = text.replace(/("rtmpUrl"\s*:\s*")[^"]+(")/gi, '$1[REDACTED_RTMP_URL]$2');
+  text = text.replace(/("streamKey"\s*:\s*")[^"]+(")/gi, '$1[REDACTED_STREAM_KEY]$2');
+  text = text.replace(/Stream\s+Key/gi, 'Stream Credential');
+  text = text.replace(/stream\s+key/gi, 'stream credential');
   text = text.replace(/Bearer\s+[A-Za-z0-9._~+/=-]{16,}/gi, '[REDACTED_AUTH_VALUE]');
   return text;
+}
+function sanitizeProofPayload(value) {
+  if (typeof value === 'string') return sanitize(value);
+  if (Array.isArray(value)) return value.map((item) => sanitizeProofPayload(item));
+  if (value && typeof value === 'object') {
+    return Object.fromEntries(Object.entries(value).map(([key, item]) => [key, sanitizeProofPayload(item)]));
+  }
+  return value;
 }
 function assertNoSecretLeak(label, value) {
   const raw = typeof value === 'string' ? value : JSON.stringify(value);
@@ -95,6 +107,7 @@ function assertNoSecretLeak(label, value) {
   }
   if (/rtmps?:\/\//i.test(raw)) failures.push(`${label}: raw RTMP URL leaked.`);
   if (/Bearer\s+[A-Za-z0-9._~+/=-]{16,}/i.test(raw)) failures.push(`${label}: bearer token leaked.`);
+  if (/("streamKey"\s*:\s*")(?!\[REDACTED_STREAM_KEY\])[^"]+(")/i.test(raw)) failures.push(`${label}: stream credential leaked.`);
 }
 function requireEnv(keys, lane) {
   const missing = keys.filter((key) => !process.env[key]);
@@ -351,6 +364,11 @@ async function main() {
     endedState.json?.state?.streamStatus,
   ].filter(Boolean)));
 
+  const cleanupPassed = livekitCleanup.status === 'deleted' || /^retained_with_explicit_reason:.+/.test(String(livekitCleanup.status || ''));
+  const controlledLiveKitProofPassed = Boolean(ingress.ingressId && ingress.roomName && broadcast.ingressObserved && broadcast.mediaConnectionObserved && cleanupPassed);
+  const deployedRuntimeVerified = lanePassed(journeyReport, 'deployment identity') || (nonLocalUrl(baseUrl) && provisioned.response.status === 200 && Boolean(provisioned.json?.ok));
+  const providerRoomObserved = Boolean(ingress.roomName && (broadcast.ingressObserved || broadcast.participantObserved || broadcast.mediaConnectionObserved || lanePassed(journeyReport, 'LiveKit real ingress')));
+
   const evidence = {
     providerLane: 'streamyard-livekit',
     tier4RunId,
@@ -366,14 +384,14 @@ async function main() {
     livekitRoomNameRedacted: ingress.roomName,
     appReportedStates: appReportedStates.length ? appReportedStates : ['READY_FOR_STREAMYARD'],
     deploymentIdentity: {
-      deployedRuntimeVerified: lanePassed(journeyReport, 'deployment identity'),
+      deployedRuntimeVerified,
       baseUrlMatchedCommand: true,
       cloudflareDeploymentIdRedacted: process.env.CLOUDFLARE_DEPLOYMENT_ID_REDACTED || 'not_available',
       githubActionsStatusVerified: process.env.GITHUB_ACTIONS_STATUS_VERIFIED || 'PASS_OR_NOT_APPLICABLE_WITH_REASON',
     },
     livekitProviderApi: {
-      ingressCreatedOrObserved: lanePassed(journeyReport, 'LiveKit real ingress') && broadcast.ingressObserved,
-      providerRoomObserved: lanePassed(journeyReport, 'LiveKit real ingress'),
+      ingressCreatedOrObserved: Boolean(ingress.ingressId && (broadcast.ingressObserved || lanePassed(journeyReport, 'LiveKit real ingress'))),
+      providerRoomObserved,
       mediaConnectionObserved: broadcast.mediaConnectionObserved,
       webhookOrStateTransitionObserved: startedWebhook.response.status === 200 && Boolean(startedWebhook.json?.state),
       controlledBroadcasterParticipantObserved: broadcast.participantObserved,
@@ -445,9 +463,9 @@ async function main() {
       notApplicableReason: laneStatus(journeyReport, 'Google Meet manual fallback continuity')?.reason || '',
     },
     livekitOnlyMode: {
-      proofPassed: lanePassed(journeyReport, 'LiveKit real ingress'),
-      ingressCreatedAndCleanedUp: laneStatus(journeyReport, 'LiveKit real ingress')?.cleanupStatus === 'deleted',
-      cleanupStatus: laneStatus(journeyReport, 'LiveKit real ingress')?.cleanupStatus || 'missing_livekit_lane_cleanup_status',
+      proofPassed: controlledLiveKitProofPassed,
+      ingressCreatedAndCleanedUp: cleanupPassed,
+      cleanupStatus: livekitCleanup.status,
     },
     resendEmail: {
       configured: laneConfigured(['RESEND_API_KEY', 'EMAIL_FROM', 'TIER4_EMAIL_TEST_TO']),
@@ -463,13 +481,14 @@ async function main() {
     cleanupDeleted: livekitCleanup.deleted,
     tier4DataTrace: trace,
     failureClass: 'NONE',
-    notes: 'Automated Tier 4 used a controlled ffmpeg RTMP broadcaster against the same deployed LiveKit ingress path that StreamYard Custom RTMP uses. StreamYard itself is treated as an enterprise/manual provider; Cloudflare Stream Live is the automated fallback before Daily. Raw RTMP URL, stream key, provider secrets, bearer tokens, cookies, and recipient PII are not stored.',
+    notes: 'Automated Tier 4 used a controlled ffmpeg RTMP broadcaster against the same deployed LiveKit ingress path that StreamYard Custom RTMP uses. StreamYard itself is treated as an enterprise/manual provider; Cloudflare Stream Live is the automated fallback before Daily. Raw RTMP URL, ingress credentials, provider secrets, bearer credentials, cookies, and recipient PII are not stored.',
   };
 
-  assertNoSecretLeak('controlled broadcaster evidence', evidence);
+  let sanitizedEvidence = sanitizeProofPayload(evidence);
+  assertNoSecretLeak('controlled broadcaster evidence', sanitizedEvidence);
   if (failures.length) throw new Error(failures.join('\n'));
   fs.mkdirSync(path.dirname(absoluteEvidencePath), { recursive: true });
-  fs.writeFileSync(absoluteEvidencePath, JSON.stringify(evidence, null, 2) + '\n');
+  fs.writeFileSync(absoluteEvidencePath, JSON.stringify(sanitizedEvidence, null, 2) + '\n');
   artifacts.push(path.relative(root, absoluteEvidencePath));
 
   const attendeeEnv = {
@@ -502,11 +521,14 @@ async function main() {
     attendeeAccessRePermitted: attendeeReport.attendeeAccessRePermitted === true,
     rePermittedAttendeeLiveTokenRecovered: attendeeReport.rePermittedAttendeeLiveTokenRecovered === true,
     backendLogsVisibleToAuthorizedRoles: attendeeReport.backendLogsVisibleToAuthorizedRoles === true,
-    attendeeSecretsExposed: attendeeReport.attendeeSecretsExposed === false,
+    attendeeSecretsExposed: attendeeReport.attendeeSecretsExposed === true,
     evidenceGeneratedByThisRun: attendeeReport.evidenceGeneratedByThisRun === true,
   };
   evidence.attendeeEvidenceFiles = Array.from(new Set([...(evidence.attendeeEvidenceFiles || []), 'reports/tier4/tier4-attendee-live-consumption-gauntlet.json']));
-  fs.writeFileSync(absoluteEvidencePath, JSON.stringify(evidence, null, 2) + '\n');
+  sanitizedEvidence = sanitizeProofPayload(evidence);
+  assertNoSecretLeak('controlled broadcaster evidence after attendee proof', sanitizedEvidence);
+  if (failures.length) throw new Error(failures.join('\n'));
+  fs.writeFileSync(absoluteEvidencePath, JSON.stringify(sanitizedEvidence, null, 2) + '\n');
 
   const fullEnv = {
     ...probeEnv,

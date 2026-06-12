@@ -217,3 +217,40 @@ Do not commit `.env.local`.
 - Purpose: prevent both deployed app code and Tier 4 proof harnesses from using a `wss://` LiveKit client URL for server-side Twirp `fetch()` calls.
 - Required trace: Tier 4 controlled proof reports classify failures as harness/env/provider/deployed-app failures and retain sanitized phase trace.
 
+
+## Tier 4 LiveKit Ingress Cleanup Lane
+
+Controlled Tier 4 proof now auto-deletes its LiveKit ingress after the provider/media proof is captured. The normal command remains:
+
+```bash
+npm run env:run -- -- bash -lc 'set -a; . ./.env.local; set +a; POSTDEPLOY_BASE_URL="https://<fresh-deployment-url>" PLAYWRIGHT_BASE_URL="https://<fresh-deployment-url>" SMOKE_BASE_URL="https://<fresh-deployment-url>" TIER4_CONTROLLED_RTMP_BROADCASTER=1 TIER4_LIVE_PROVIDER_OPERATIONAL_PROOF=1 TIER4_RESEND_SEND_APPROVED=1 NODE_OPTIONS="--max-old-space-size=3072" npm run tier4:auto-controlled-livekit-proof'
+```
+
+The auto proof must write cleanup evidence:
+
+- `cleanupStatus: deleted`
+- `cleanupAttempted: true`
+- `cleanupDeleted: true`
+- `tier4DataTrace` entries for `livekit_ingress_cleanup_start` and `livekit_ingress_cleanup_result`
+
+If an ingress must be retained, it is not allowed as a silent default. The operator must set `TIER4_CONTROLLED_RTMP_RETAIN_INGRESS=1` and provide `TIER4_CONTROLLED_RTMP_RETAIN_REASON`.
+
+If provider quota is already exhausted by stale Tier 4 ingress objects, run the cleanup utility before re-running Tier 4:
+
+```bash
+npm run env:run -- -- bash -lc 'set -a; . ./.env.local; set +a; TIER4_LIVEKIT_CLEANUP_APPROVED=1 npm run tier4:cleanup-livekit-ingress'
+```
+
+The cleanup utility deletes only safe Tier 4 auto ingress objects by default. To delete specific ingress ids, use `TIER4_LIVEKIT_CLEANUP_INGRESS_IDS="IN_x,IN_y"` with `TIER4_LIVEKIT_CLEANUP_APPROVED=1`.
+
+## Tier 4 Expanded Provider Ladder Data Trace — 2026-06-12
+
+Tier 4 is not only StreamYard/LiveKit. The live-provider proof must trace the full production fallback ladder:
+
+1. LiveKit-only deployed app ingress creation and cleanup via `Ingress/DeleteIngress`.
+2. StreamYard-compatible controlled RTMP path through LiveKit ingress, with cleanup.
+3. Daily fallback room creation, token issuance, and mandatory room deletion.
+4. Zoom fallback authorization proof through the deployed signature route; no provider resource is created, so cleanup status must be `not_required_stateless_signature`.
+5. Google Meet manual continuity proof through `GOOGLE_MEET_MANAGED_FALLBACK_URL` or `GOOGLE_MEET_EMERGENCY_URL`; if intentionally out of scope, `TIER4_GOOGLE_MEET_NOT_APPLICABLE_REASON` must be explicit.
+
+A Tier 4 report that omits Daily, Zoom, or Google Meet is incomplete for this product promise. Cleanup must be machine-readable, not narrative-only.

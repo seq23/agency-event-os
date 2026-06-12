@@ -82,3 +82,4 @@ For final real-provider proof, run Tier 4 only after real credentials/operator e
 ```bash
 POSTDEPLOY_BASE_URL="https://<fresh-deployment-url>" PLAYWRIGHT_BASE_URL="https://<fresh-deployment-url>" TIER4_LIVE_PROVIDER_OPERATIONAL_PROOF=1 STREAMYARD_REAL_PROVIDER_SMOKE=1 STREAMYARD_OPERATOR_CONFIRMED_BROADCAST=1 TIER4_STREAMYARD_LIVE_EVIDENCE_PATH="reports/tier4/streamyard-livekit-evidence.json" TIER4_EVENT_ID="tier4-YYYY-MM-DD-001" TIER4_STAGE_ID="main-stage" TIER4_RESEND_SEND_APPROVED=1 NODE_OPTIONS="--max-old-space-size=3072" npm run tier4:live-provider-operational-proof
 ```
+- `scripts/validate_tier4_provider_ladder_contract.mjs` — validates expanded Tier 4 provider ladder data trace and cleanup semantics.

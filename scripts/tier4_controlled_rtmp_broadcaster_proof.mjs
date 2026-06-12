@@ -11,11 +11,14 @@ fs.mkdirSync(reportsDir, { recursive: true });
 const baseUrl = (process.env.POSTDEPLOY_BASE_URL || process.env.PLAYWRIGHT_BASE_URL || process.env.SMOKE_BASE_URL || process.env.NEXT_PUBLIC_APP_URL || '').replace(/\/$/, '');
 const eventId = process.env.TIER4_EVENT_ID || process.env.STREAMYARD_E2E_EVENT_ID || `tier4-auto-${new Date().toISOString().slice(0, 10)}-${crypto.randomBytes(3).toString('hex')}`;
 const stageId = process.env.TIER4_STAGE_ID || process.env.STREAMYARD_E2E_STAGE_ID || 'main-stage';
+const providerLadderEventId = process.env.TIER4_PROVIDER_LADDER_EVENT_ID || `${eventId}-provider-ladder`;
 const evidencePath = process.env.TIER4_STREAMYARD_LIVE_EVIDENCE_PATH || 'reports/tier4/streamyard-livekit-evidence.json';
 const absoluteEvidencePath = path.isAbsolute(evidencePath) ? evidencePath : path.join(root, evidencePath);
 const ffmpegBin = process.env.TIER4_FFMPEG_BIN || 'ffmpeg';
 const broadcastSeconds = Number.parseInt(process.env.TIER4_CONTROLLED_RTMP_SECONDS || '20', 10);
 const pollTimeoutMs = Number.parseInt(process.env.TIER4_CONTROLLED_RTMP_POLL_TIMEOUT_MS || '45000', 10);
+const retainIngress = process.env.TIER4_CONTROLLED_RTMP_RETAIN_INGRESS === '1';
+const retainIngressReason = process.env.TIER4_CONTROLLED_RTMP_RETAIN_REASON || '';
 const failures = [];
 const warnings = [];
 const artifacts = [];
@@ -60,6 +63,7 @@ function classifyFailure(message) {
   const text = String(message || '');
   if (/Fetch API cannot load:\s*wss:\/\//i.test(text)) return 'DEPLOYED_APP_FAILURE_LIVEKIT_TWIRP_WSS_URL';
   if (/missing .*LIVEKIT|missing .*SUPABASE|missing .*V5|missing .*RESEND|set TIER4_|ffmpeg is not available/i.test(text)) return 'ENV_OR_OPERATOR_GATE_BLOCK';
+  if (/resource_exhausted|object limit|quota|concurrent ingress/i.test(text)) return 'REAL_PROVIDER_RESOURCE_QUOTA_OR_CLEANUP_FAILURE';
   if (/livekit.*failed|ingress|roomservice|twirp/i.test(text)) return 'PROVIDER_OR_APP_LIVEKIT_FAILURE';
   if (/postdeploy|playwright|probe|test:e2e|tier4:/i.test(text)) return 'TIER4_HARNESS_OR_TEST_FAILURE';
   return 'UNKNOWN_TIER4_FAILURE';
@@ -149,6 +153,22 @@ async function livekitTwirp(method, body, roomName) {
   try { json = text ? JSON.parse(text) : {}; } catch { json = { raw: text.slice(0, 500) }; }
   return { response, text, json };
 }
+async function cleanupLiveKitIngress({ ingressId, roomName, reason = 'auto_cleanup_after_tier4_controlled_rtmp_proof' }) {
+  if (!ingressId) return { status: 'not_attempted_missing_ingress_id', attempted: false, deleted: false };
+  if (retainIngress) {
+    if (!retainIngressReason.trim()) throw new Error('TIER4_CONTROLLED_RTMP_RETAIN_INGRESS=1 requires TIER4_CONTROLLED_RTMP_RETAIN_REASON.');
+    pushTrace('livekit_ingress_cleanup_retained', { ingressIdRedacted: redact(ingressId), reason: retainIngressReason });
+    return { status: `retained_with_explicit_reason:${retainIngressReason}`, attempted: false, deleted: false, retainedReason: retainIngressReason };
+  }
+  pushTrace('livekit_ingress_cleanup_start', { ingressIdRedacted: redact(ingressId), reason });
+  const deleted = await livekitTwirp('Ingress/DeleteIngress', { ingress_id: ingressId }, roomName);
+  const body = sanitize(deleted.text || JSON.stringify(deleted.json || {})).slice(0, 500);
+  pushTrace('livekit_ingress_cleanup_result', { status: deleted.response.status, ok: deleted.response.ok, body });
+  if (!deleted.response.ok) {
+    throw new Error(`LiveKit ingress cleanup failed (${deleted.response.status}): ${body}`);
+  }
+  return { status: 'deleted', attempted: true, deleted: true, ingressIdRedacted: redact(ingressId) };
+}
 async function sendSignedWebhook(event, roomName, ingressId) {
   const body = JSON.stringify({ event, eventId, stageId, ingressInfo: { roomName, ingressId } });
   const token = createLiveKitServerToken({ roomName });
@@ -235,6 +255,7 @@ async function runCommand(command, env = {}) {
 async function main() {
   pushTrace('env_contract_start', { baseUrl, eventId, stageId, livekitApi: livekitApiBaseIdentity(process.env.LIVEKIT_URL) });
   if (process.env.TIER4_CONTROLLED_RTMP_BROADCASTER !== '1') failures.push('Set TIER4_CONTROLLED_RTMP_BROADCASTER=1 to run the automated controlled RTMP broadcaster proof.');
+  if (retainIngress && !retainIngressReason.trim()) failures.push('TIER4_CONTROLLED_RTMP_RETAIN_INGRESS=1 requires TIER4_CONTROLLED_RTMP_RETAIN_REASON.');
   if (!nonLocalUrl(baseUrl)) failures.push('controlled RTMP broadcaster: set a non-local deployed base URL via POSTDEPLOY_BASE_URL, PLAYWRIGHT_BASE_URL, SMOKE_BASE_URL, or NEXT_PUBLIC_APP_URL.');
   requireEnv(['LIVEKIT_URL', 'LIVEKIT_API_KEY', 'LIVEKIT_API_SECRET', 'LIVEKIT_WEBHOOK_SECRET', 'V5_ACCESS_COOKIE_SECRET'], 'controlled RTMP broadcaster');
   requireEnv(['NEXT_PUBLIC_SUPABASE_URL', 'SUPABASE_SERVICE_ROLE_KEY'], 'Supabase production persistence');
@@ -254,6 +275,13 @@ async function main() {
 
   pushTrace('env_contract_passed', { livekitApi: livekitApiBaseIdentity(process.env.LIVEKIT_URL) });
   const cookie = operatorCookieHeader();
+  let ingress = null;
+  let broadcast = null;
+  let startedWebhook = null;
+  let endedWebhook = null;
+  let liveState = null;
+  let endedState = null;
+  let livekitCleanup = { status: 'not_attempted_missing_ingress_id', attempted: false, deleted: false };
   pushTrace('deployed_app_livekit_ingress_request', { route: '/api/video/livekit-ingress', method: 'POST' });
   const provisioned = await postJson('/api/video/livekit-ingress', { eventId, stageId }, cookie);
   pushTrace('deployed_app_livekit_ingress_response', { status: provisioned.response.status, ok: Boolean(provisioned.json?.ok), body: redactRouteBody(provisioned.text) });
@@ -262,25 +290,31 @@ async function main() {
     markFailureClass(classifyFailure(routeError));
     throw new Error(routeError);
   }
-  const ingress = provisioned.json.result || {};
+  ingress = provisioned.json.result || {};
   if (!ingress.ingressId || !ingress.rtmpUrl || !ingress.streamKey || !ingress.roomName) throw new Error('deployed livekit-ingress route did not return ingressId, rtmpUrl, streamKey, and roomName.');
 
+  try {
   pushTrace('controlled_rtmp_broadcast_start', { seconds: broadcastSeconds });
-  const broadcast = await runControlledBroadcast({ rtmpUrl: ingress.rtmpUrl, streamKey: ingress.streamKey, roomName: ingress.roomName, ingressId: ingress.ingressId });
+  broadcast = await runControlledBroadcast({ rtmpUrl: ingress.rtmpUrl, streamKey: ingress.streamKey, roomName: ingress.roomName, ingressId: ingress.ingressId });
   pushTrace('controlled_rtmp_broadcast_result', { ingressObserved: broadcast.ingressObserved, mediaConnectionObserved: broadcast.mediaConnectionObserved, participantObserved: broadcast.participantObserved, exitCode: broadcast.exitCode });
   if (!broadcast.ingressObserved) failures.push('controlled RTMP broadcaster: LiveKit ingress was not observed through provider API.');
   if (!broadcast.mediaConnectionObserved) failures.push('controlled RTMP broadcaster: LiveKit media connection was not observed.');
 
   pushTrace('deployed_app_signed_webhook_ingress_started_request');
-  const startedWebhook = await sendSignedWebhook('ingress_started', ingress.roomName, ingress.ingressId);
+  startedWebhook = await sendSignedWebhook('ingress_started', ingress.roomName, ingress.ingressId);
   pushTrace('deployed_app_signed_webhook_ingress_started_response', { status: startedWebhook.response.status, ok: Boolean(startedWebhook.json?.ok) });
   if (startedWebhook.response.status !== 200 || !startedWebhook.json?.ok) failures.push(`controlled RTMP broadcaster: signed ingress_started webhook returned ${startedWebhook.response.status}.`);
-  const liveState = await fetchJson(`${baseUrl}/api/video/stage-stream-state?eventId=${encodeURIComponent(eventId)}&stageId=${encodeURIComponent(stageId)}&view=attendee`);
+  liveState = await fetchJson(`${baseUrl}/api/video/stage-stream-state?eventId=${encodeURIComponent(eventId)}&stageId=${encodeURIComponent(stageId)}&view=attendee`);
   pushTrace('deployed_app_signed_webhook_ingress_ended_request');
-  const endedWebhook = await sendSignedWebhook('ingress_ended', ingress.roomName, ingress.ingressId);
+  endedWebhook = await sendSignedWebhook('ingress_ended', ingress.roomName, ingress.ingressId);
   pushTrace('deployed_app_signed_webhook_ingress_ended_response', { status: endedWebhook.response.status, ok: Boolean(endedWebhook.json?.ok) });
   if (endedWebhook.response.status !== 200 || !endedWebhook.json?.ok) warnings.push(`controlled RTMP broadcaster: signed ingress_ended webhook returned ${endedWebhook.response.status}; cleanup state may remain live.`);
-  const endedState = await fetchJson(`${baseUrl}/api/video/stage-stream-state?eventId=${encodeURIComponent(eventId)}&stageId=${encodeURIComponent(stageId)}&view=attendee`);
+  endedState = await fetchJson(`${baseUrl}/api/video/stage-stream-state?eventId=${encodeURIComponent(eventId)}&stageId=${encodeURIComponent(stageId)}&view=attendee`);
+  } finally {
+    if (ingress?.ingressId && !livekitCleanup.attempted) {
+      livekitCleanup = await cleanupLiveKitIngress({ ingressId: ingress.ingressId, roomName: ingress.roomName });
+    }
+  }
 
   if (failures.length) throw new Error(failures.join('\n'));
 
@@ -289,8 +323,9 @@ async function main() {
     PLAYWRIGHT_BASE_URL: baseUrl,
     SMOKE_BASE_URL: baseUrl,
     TIER4_LIVE_PROVIDER_OPERATIONAL_PROOF: '1',
-    TIER4_EVENT_ID: eventId,
-    STREAMYARD_E2E_EVENT_ID: eventId,
+    TIER4_EVENT_ID: providerLadderEventId,
+    STREAMYARD_E2E_EVENT_ID: providerLadderEventId,
+    TIER4_PARENT_CONTROLLED_RTMP_EVENT_ID: eventId,
     TIER4_STAGE_ID: stageId,
     STREAMYARD_E2E_STAGE_ID: stageId,
     TIER4_CONTINUE_AFTER_FAILURE: process.env.TIER4_CONTINUE_AFTER_FAILURE || '',
@@ -318,6 +353,7 @@ async function main() {
     controlledRtmpBroadcaster: true,
     deployedBaseUrl: baseUrl,
     eventId,
+    providerLadderEventId,
     stageId,
     operatorConfirmedBroadcast: true,
     streamyardBroadcastStartedAt: broadcast.startedAt,
@@ -338,7 +374,9 @@ async function main() {
       webhookOrStateTransitionObserved: startedWebhook.response.status === 200 && Boolean(startedWebhook.json?.state),
       controlledBroadcasterParticipantObserved: broadcast.participantObserved,
       controlledBroadcasterParticipantIdentityRedacted: broadcast.participantIdentityRedacted,
-      cleanupStatus: process.env.TIER4_CONTROLLED_RTMP_CLEANUP_STATUS || 'retained_for_tier4_rerun_or_manual_cleanup',
+      cleanupStatus: livekitCleanup.status,
+      cleanupAttempted: livekitCleanup.attempted,
+      cleanupDeleted: livekitCleanup.deleted,
     },
     supabaseProductionPersistence: {
       writeReadbackVerified: lanePassed(journeyReport, 'Supabase production persistence'),
@@ -366,6 +404,20 @@ async function main() {
       unauthenticatedDenied: lanePassed(journeyReport, 'Zoom authorized manual escalation'),
       authorizedSignatureIssued: Boolean(laneStatus(journeyReport, 'Zoom authorized manual escalation')?.authorizedSignatureIssued),
       routeAuthorizationGated: lanePassed(journeyReport, 'Zoom authorized manual escalation'),
+      cleanupStatus: laneStatus(journeyReport, 'Zoom authorized manual escalation')?.cleanupStatus || 'not_required_stateless_signature',
+    },
+    googleMeetFallback: {
+      configured: laneConfigured(['GOOGLE_MEET_MANAGED_FALLBACK_URL', 'GOOGLE_MEET_EMERGENCY_URL']),
+      proofPassed: lanePassed(journeyReport, 'Google Meet manual fallback continuity'),
+      manualOnly: laneStatus(journeyReport, 'Google Meet manual fallback continuity')?.manualOnly === true,
+      crewConfirmationRequired: laneStatus(journeyReport, 'Google Meet manual fallback continuity')?.crewConfirmationRequired === true,
+      cleanupStatus: laneStatus(journeyReport, 'Google Meet manual fallback continuity')?.cleanupStatus || 'not_configured_or_not_required_manual_static_link',
+      notApplicableReason: laneStatus(journeyReport, 'Google Meet manual fallback continuity')?.reason || '',
+    },
+    livekitOnlyMode: {
+      proofPassed: lanePassed(journeyReport, 'LiveKit real ingress'),
+      ingressCreatedAndCleanedUp: laneStatus(journeyReport, 'LiveKit real ingress')?.cleanupStatus === 'deleted',
+      cleanupStatus: laneStatus(journeyReport, 'LiveKit real ingress')?.cleanupStatus || 'missing_livekit_lane_cleanup_status',
     },
     resendEmail: {
       configured: laneConfigured(['RESEND_API_KEY', 'EMAIL_FROM', 'TIER4_EMAIL_TEST_TO']),
@@ -376,7 +428,9 @@ async function main() {
     operatorEvidenceFiles: [broadcast.logFile, 'reports/tier4/tier4-real-provider-journey-report.md'],
     attendeeEvidenceFiles: ['reports/tier4/tier4-real-provider-journey-report.json'],
     secretsExposed: false,
-    cleanupStatus: process.env.TIER4_CONTROLLED_RTMP_CLEANUP_STATUS || 'retained_for_tier4_rerun_or_manual_cleanup',
+    cleanupStatus: livekitCleanup.status,
+    cleanupAttempted: livekitCleanup.attempted,
+    cleanupDeleted: livekitCleanup.deleted,
     tier4DataTrace: trace,
     failureClass: 'NONE',
     notes: 'Automated Tier 4 used a controlled ffmpeg RTMP broadcaster against the same deployed LiveKit ingress path that StreamYard Custom RTMP uses. Raw RTMP URL, stream key, provider secrets, bearer tokens, cookies, and recipient PII are not stored.',
@@ -415,6 +469,9 @@ async function main() {
     artifacts,
     warnings,
     failureClass: 'NONE',
+    cleanupStatus: livekitCleanup.status,
+    cleanupAttempted: livekitCleanup.attempted,
+    cleanupDeleted: livekitCleanup.deleted,
     trace,
   };
   fs.writeFileSync(path.join(reportsDir, 'tier4-controlled-rtmp-broadcaster-proof.json'), JSON.stringify(summary, null, 2) + '\n');

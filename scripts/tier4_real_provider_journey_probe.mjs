@@ -13,6 +13,7 @@ const baseUrl = (process.env.POSTDEPLOY_BASE_URL || process.env.PLAYWRIGHT_BASE_
 const failures = [];
 const warnings = [];
 const lanes = [];
+const trace = [];
 const secrets = new Map();
 
 for (const key of [
@@ -32,7 +33,13 @@ function redact(value) {
   return `${text.slice(0, 6)}…${text.slice(-4)}`;
 }
 function sha12(value) { return crypto.createHash('sha256').update(String(value)).digest('hex').slice(0, 12); }
-function addLane(name, status, detail = {}) { lanes.push({ name, status, ...detail }); if (status === 'FAIL' || status === 'BLOCKED') failures.push(`${name}: ${detail.error || detail.reason || status}`); }
+function pushTrace(phase, detail = {}) { trace.push({ phase, at: nowIso(), ...detail }); }
+function addLane(name, status, detail = {}) {
+  const lane = { name, status, ...detail };
+  lanes.push(lane);
+  pushTrace('provider_lane_result', { name, status, cleanupStatus: detail.cleanupStatus, providerResourceCreated: detail.providerResourceCreated, error: detail.error, reason: detail.reason });
+  if (status === 'FAIL' || status === 'BLOCKED') failures.push(`${name}: ${detail.error || detail.reason || status}`);
+}
 function checkNoSecrets(label, value) {
   const raw = typeof value === 'string' ? value : JSON.stringify(value);
   for (const [key, secret] of secrets) {
@@ -93,15 +100,62 @@ async function roleBoundaryLane() {
   addLane('role boundary private provider APIs', 'PASS', { unauthStatuses: { livekitIngress: unauthIngress.response.status, zoomSignature: unauthZoom.response.status, dailyToken: unauthDaily.response.status }, operatorStateStatus: operatorState.response.status });
 }
 
+
+function livekitApiBaseUrl(livekitUrl) {
+  const trimmed = String(livekitUrl || '').replace(/\/$/, '');
+  if (trimmed.startsWith('wss://')) return `https://${trimmed.slice('wss://'.length)}`;
+  if (trimmed.startsWith('ws://')) return `http://${trimmed.slice('ws://'.length)}`;
+  return trimmed;
+}
+function createLiveKitServerToken(roomName) {
+  const now = Math.floor(Date.now() / 1000);
+  const header = base64url(JSON.stringify({ alg: 'HS256', typ: 'JWT' }));
+  const payload = base64url(JSON.stringify({
+    iss: process.env.LIVEKIT_API_KEY,
+    sub: 'agency-event-os-tier4-provider-ladder-probe',
+    iat: now,
+    nbf: now,
+    exp: now + 300,
+    video: { roomAdmin: true, ingressAdmin: true, room: roomName },
+  }));
+  const signature = crypto.createHmac('sha256', process.env.LIVEKIT_API_SECRET).update(`${header}.${payload}`).digest('base64url');
+  return `${header}.${payload}.${signature}`;
+}
+async function livekitTwirp(method, body, roomName) {
+  const response = await fetch(`${livekitApiBaseUrl(process.env.LIVEKIT_URL)}/twirp/livekit.${method}`, {
+    method: 'POST',
+    headers: { authorization: `Bearer ${createLiveKitServerToken(roomName)}`, 'content-type': 'application/json' },
+    body: JSON.stringify(body || {}),
+  });
+  const text = await response.text();
+  let json;
+  try { json = text ? JSON.parse(text) : {}; } catch { json = { raw: text.slice(0, 500) }; }
+  return { response, text, json };
+}
+async function cleanupLiveKitIngress(ingressId, roomName) {
+  if (!ingressId) return { cleanupStatus: 'not_attempted_missing_ingress_id', cleanupAttempted: false, cleanupDeleted: false };
+  const deleted = await livekitTwirp('Ingress/DeleteIngress', { ingress_id: ingressId }, roomName);
+  if (!deleted.response.ok) {
+    return { cleanupStatus: `delete returned ${deleted.response.status}`, cleanupAttempted: true, cleanupDeleted: false, cleanupError: deleted.text.slice(0, 300) };
+  }
+  return { cleanupStatus: 'deleted', cleanupAttempted: true, cleanupDeleted: true };
+}
+
 async function livekitLane() {
   const missing = ['LIVEKIT_URL', 'LIVEKIT_API_KEY', 'LIVEKIT_API_SECRET', 'LIVEKIT_WEBHOOK_SECRET', 'V5_ACCESS_COOKIE_SECRET'].filter((key) => !process.env[key]);
   if (missing.length) return addLane('LiveKit real ingress via deployed app', 'BLOCKED', { reason: `missing ${missing.join(', ')}` });
   const cookie = operatorCookieHeader();
+  pushTrace('livekit_ingress_create_start', { route: '/api/video/livekit-ingress' });
   const result = await postJson('/api/video/livekit-ingress', { eventId, stageId }, cookie);
+  pushTrace('livekit_ingress_create_result', { status: result.response.status, ok: Boolean(result.json?.ok) });
   if (result.response.status !== 200 || !result.json?.ok) return addLane('LiveKit real ingress via deployed app', 'FAIL', { error: `livekit-ingress returned ${result.response.status}: ${result.text.slice(0, 300)}` });
   const ingress = result.json.result || {};
   if (!ingress.ingressId || !ingress.rtmpUrl || !ingress.streamKey) return addLane('LiveKit real ingress via deployed app', 'FAIL', { error: 'ingress response did not include ingressId/rtmpUrl/streamKey before redaction' });
-  addLane('LiveKit real ingress via deployed app', 'PASS', { eventId, stageId, roomName: ingress.roomName, ingressIdRedacted: redact(ingress.ingressId), rtmpUrlPresent: Boolean(ingress.rtmpUrl), streamKeyPresent: Boolean(ingress.streamKey), status: ingress.status });
+  pushTrace('livekit_ingress_cleanup_start', { ingressIdRedacted: redact(ingress.ingressId), roomName: ingress.roomName });
+  const cleanup = await cleanupLiveKitIngress(ingress.ingressId, ingress.roomName);
+  pushTrace('livekit_ingress_cleanup_result', { cleanupStatus: cleanup.cleanupStatus, cleanupAttempted: cleanup.cleanupAttempted, cleanupDeleted: cleanup.cleanupDeleted });
+  if (cleanup.cleanupStatus !== 'deleted' || cleanup.cleanupDeleted !== true) return addLane('LiveKit real ingress via deployed app', 'FAIL', { eventId, stageId, roomName: ingress.roomName, ingressIdRedacted: redact(ingress.ingressId), providerResourceCreated: true, ...cleanup, error: `LiveKit ingress cleanup required cleanupStatus=deleted; got ${cleanup.cleanupStatus}` });
+  addLane('LiveKit real ingress via deployed app', 'PASS', { eventId, stageId, roomName: ingress.roomName, ingressIdRedacted: redact(ingress.ingressId), rtmpUrlPresent: Boolean(ingress.rtmpUrl), streamKeyPresent: Boolean(ingress.streamKey), status: ingress.status, providerResourceCreated: true, ...cleanup });
 }
 
 async function supabaseLane() {
@@ -127,14 +181,33 @@ async function dailyLane() {
   if (missing.length) return addLane('Daily real fallback provider', 'BLOCKED', { reason: `missing ${missing.join(', ')}` });
   if (process.env.DAILY_FALLBACK_ENABLED !== 'true' && process.env.DAILY_FALLBACK_ENABLED !== '1') return addLane('Daily real fallback provider', 'BLOCKED', { reason: 'DAILY_FALLBACK_ENABLED must be true/1 for real fallback proof.' });
   const apiBase = process.env.DAILY_API_BASE_URL || 'https://api.daily.co/v1';
+  if (!apiBase.startsWith('https://')) return addLane('Daily real fallback provider', 'FAIL', { error: 'DAILY_API_BASE_URL must start with https:// for real provider proof.' });
   const roomName = `${eventId}-${stageId}`.replace(/[^a-zA-Z0-9_-]+/g, '-').toLowerCase().slice(0, 120);
   const headers = { authorization: `Bearer ${process.env.DAILY_API_KEY}`, 'content-type': 'application/json' };
-  const created = await fetchJson(`${apiBase.replace(/\/$/, '')}/rooms`, { method: 'POST', headers, body: JSON.stringify({ name: roomName, privacy: 'private', properties: { exp: Math.floor(Date.now() / 1000) + 3600 } }) });
-  if (![200, 201, 409].includes(created.response.status)) return addLane('Daily real fallback provider', 'FAIL', { error: `create room returned ${created.response.status}: ${created.text.slice(0, 300)}` });
-  const token = await fetchJson(`${apiBase.replace(/\/$/, '')}/meeting-tokens`, { method: 'POST', headers, body: JSON.stringify({ properties: { room_name: roomName, user_name: 'Tier 4 Operator', is_owner: true, exp: Math.floor(Date.now() / 1000) + 1800 } }) });
-  if (![200, 201].includes(token.response.status) || !token.json?.token) return addLane('Daily real fallback provider', 'FAIL', { error: `token returned ${token.response.status}: ${token.text.slice(0, 300)}` });
-  const deleted = await fetchText(`${apiBase.replace(/\/$/, '')}/rooms/${encodeURIComponent(roomName)}`, { method: 'DELETE', headers });
-  addLane('Daily real fallback provider', 'PASS', { roomNameRedacted: redact(roomName), tokenIssued: true, cleanupStatus: deleted.response.ok ? 'deleted' : `delete returned ${deleted.response.status}` });
+  let roomCreated = false;
+  let tokenIssued = false;
+  let cleanupStatus = 'not_attempted_room_not_created';
+  try {
+    pushTrace('daily_room_create_start', { roomNameHash: sha12(roomName) });
+    const created = await fetchJson(`${apiBase.replace(/\/$/, '')}/rooms`, { method: 'POST', headers, body: JSON.stringify({ name: roomName, privacy: 'private', properties: { exp: Math.floor(Date.now() / 1000) + 3600 } }) });
+    pushTrace('daily_room_create_result', { status: created.response.status, ok: [200, 201, 409].includes(created.response.status) });
+    if (![200, 201, 409].includes(created.response.status)) return addLane('Daily real fallback provider', 'FAIL', { cleanupStatus, cleanupAttempted: false, cleanupDeleted: false, error: `create room returned ${created.response.status}: ${created.text.slice(0, 300)}` });
+    roomCreated = true;
+    pushTrace('daily_token_create_start', { roomNameHash: sha12(roomName) });
+    const token = await fetchJson(`${apiBase.replace(/\/$/, '')}/meeting-tokens`, { method: 'POST', headers, body: JSON.stringify({ properties: { room_name: roomName, user_name: 'Tier 4 Operator', is_owner: true, exp: Math.floor(Date.now() / 1000) + 1800 } }) });
+    pushTrace('daily_token_create_result', { status: token.response.status, ok: [200, 201].includes(token.response.status), tokenIssued: Boolean(token.json?.token) });
+    if (![200, 201].includes(token.response.status) || !token.json?.token) return addLane('Daily real fallback provider', 'FAIL', { roomNameRedacted: redact(roomName), providerResourceCreated: true, cleanupStatus, cleanupAttempted: false, cleanupDeleted: false, error: `token returned ${token.response.status}: ${token.text.slice(0, 300)}` });
+    tokenIssued = true;
+  } finally {
+    if (roomCreated) {
+      pushTrace('daily_room_cleanup_start', { roomNameHash: sha12(roomName) });
+      const deleted = await fetchText(`${apiBase.replace(/\/$/, '')}/rooms/${encodeURIComponent(roomName)}`, { method: 'DELETE', headers });
+      cleanupStatus = deleted.response.ok ? 'deleted' : `delete returned ${deleted.response.status}`;
+      pushTrace('daily_room_cleanup_result', { status: deleted.response.status, cleanupStatus, cleanupDeleted: deleted.response.ok });
+    }
+  }
+  if (cleanupStatus !== 'deleted') return addLane('Daily real fallback provider', 'FAIL', { roomNameRedacted: redact(roomName), tokenIssued, providerResourceCreated: roomCreated, cleanupAttempted: roomCreated, cleanupDeleted: false, cleanupStatus, error: `Daily cleanup required cleanupStatus=deleted; got ${cleanupStatus}` });
+  addLane('Daily real fallback provider', 'PASS', { roomNameRedacted: redact(roomName), tokenIssued, providerResourceCreated: true, cleanupAttempted: true, cleanupDeleted: true, cleanupStatus });
 }
 
 async function zoomLane() {
@@ -143,12 +216,36 @@ async function zoomLane() {
   const missing = ['ZOOM_MEETING_SDK_KEY', 'ZOOM_MEETING_SDK_SECRET', 'V5_ACCESS_COOKIE_SECRET'].filter((key) => !process.env[key]);
   if (missing.length) return addLane('Zoom authorized manual escalation', 'BLOCKED', { reason: `missing ${missing.join(', ')}` });
   const payload = { eventId, meetingNumber: process.env.TIER4_ZOOM_MEETING_NUMBER || '12345678901', zoomRole: 1, videoRole: 'producer' };
+  pushTrace('zoom_unauth_signature_start', { route: '/api/video/zoom-signature' });
   const denied = await postJson('/api/video/zoom-signature', payload, undefined);
+  pushTrace('zoom_unauth_signature_result', { status: denied.response.status });
   if (![401, 403].includes(denied.response.status)) return addLane('Zoom authorized manual escalation', 'FAIL', { error: `unauthenticated Zoom signature returned ${denied.response.status}, expected 401/403` });
+  pushTrace('zoom_auth_signature_start', { route: '/api/video/zoom-signature' });
   const allowed = await postJson('/api/video/zoom-signature', payload, operatorCookieHeader());
+  pushTrace('zoom_auth_signature_result', { status: allowed.response.status, signatureIssued: Boolean(allowed.json?.result?.signature) });
   if (allowed.response.status !== 200 || !allowed.json?.ok || !allowed.json?.result?.signature) return addLane('Zoom authorized manual escalation', 'FAIL', { error: `authorized Zoom signature returned ${allowed.response.status}: ${allowed.text.slice(0, 300)}` });
   checkNoSecrets('Zoom authorized manual escalation', allowed.json);
-  addLane('Zoom authorized manual escalation', 'PASS', { unauthorizedDenied: true, authorizedSignatureIssued: true, meetingNumberRedacted: redact(payload.meetingNumber), videoRole: 'producer' });
+  addLane('Zoom authorized manual escalation', 'PASS', { unauthorizedDenied: true, authorizedSignatureIssued: true, meetingNumberRedacted: redact(payload.meetingNumber), videoRole: 'producer', providerResourceCreated: false, cleanupStatus: 'not_required_stateless_signature', cleanupAttempted: false, cleanupDeleted: false });
+}
+
+
+async function googleMeetLane() {
+  const meetUrl = process.env.GOOGLE_MEET_MANAGED_FALLBACK_URL || process.env.GOOGLE_MEET_EMERGENCY_URL || '';
+  const notApplicableReason = process.env.TIER4_GOOGLE_MEET_NOT_APPLICABLE_REASON || '';
+  if (!meetUrl) {
+    if (notApplicableReason.trim()) return addLane('Google Meet manual fallback continuity', 'NOT_APPLICABLE', { reason: notApplicableReason, manualOnly: true, providerResourceCreated: false, cleanupStatus: 'not_required_not_applicable', cleanupAttempted: false, cleanupDeleted: false });
+    return addLane('Google Meet manual fallback continuity', 'BLOCKED', { reason: 'missing GOOGLE_MEET_MANAGED_FALLBACK_URL or GOOGLE_MEET_EMERGENCY_URL; set TIER4_GOOGLE_MEET_NOT_APPLICABLE_REASON only if this fallback is intentionally out of scope.' });
+  }
+  let parsed;
+  try { parsed = new URL(meetUrl); } catch { return addLane('Google Meet manual fallback continuity', 'FAIL', { error: 'Google Meet fallback URL is not a valid URL.' }); }
+  const allowedHost = /(^|\.)google\.com$/i.test(parsed.hostname) || /(^|\.)meet\.google\.com$/i.test(parsed.hostname);
+  if (parsed.protocol !== 'https:' || !allowedHost) return addLane('Google Meet manual fallback continuity', 'FAIL', { error: 'Google Meet fallback URL must be an https google.com/meet.google.com URL.' });
+  pushTrace('google_meet_url_check_start', { urlHostHash: sha12(parsed.hostname), urlPathHash: sha12(parsed.pathname) });
+  const checked = await fetchText(meetUrl, { method: 'GET', redirect: 'manual', headers: { 'user-agent': 'agency-event-os-tier4-google-meet-continuity' } }).catch((error) => ({ response: { status: 'FETCH_ERROR', ok: false }, text: error.message }));
+  pushTrace('google_meet_url_check_result', { status: checked.response.status });
+  const acceptable = checked.response.status === 'FETCH_ERROR' ? false : Number(checked.response.status) < 500;
+  if (!acceptable) return addLane('Google Meet manual fallback continuity', 'FAIL', { error: `Google Meet continuity URL returned ${checked.response.status}` });
+  addLane('Google Meet manual fallback continuity', 'PASS', { manualOnly: true, urlHostHash: sha12(parsed.hostname), urlPathHash: sha12(parsed.pathname), httpStatus: checked.response.status, crewConfirmationRequired: true, providerResourceCreated: false, cleanupStatus: 'not_required_manual_static_link', cleanupAttempted: false, cleanupDeleted: false });
 }
 
 async function resendLane() {
@@ -170,9 +267,10 @@ async function run() {
   if (!failures.length || process.env.TIER4_CONTINUE_AFTER_FAILURE === '1') await supabaseLane().catch((error) => addLane('Supabase production persistence readback', 'FAIL', { error: error.message }));
   if (!failures.length || process.env.TIER4_CONTINUE_AFTER_FAILURE === '1') await dailyLane().catch((error) => addLane('Daily real fallback provider', 'FAIL', { error: error.message }));
   if (!failures.length || process.env.TIER4_CONTINUE_AFTER_FAILURE === '1') await zoomLane().catch((error) => addLane('Zoom authorized manual escalation', 'FAIL', { error: error.message }));
+  if (!failures.length || process.env.TIER4_CONTINUE_AFTER_FAILURE === '1') await googleMeetLane().catch((error) => addLane('Google Meet manual fallback continuity', 'FAIL', { error: error.message }));
   if (!failures.length || process.env.TIER4_CONTINUE_AFTER_FAILURE === '1') await resendLane().catch((error) => addLane('Resend transactional email', 'FAIL', { error: error.message }));
 
-  const report = { repo: 'agency-event-os', generatedAt: nowIso(), eventId, stageId, baseUrl, result: failures.length ? 'BLOCKED_OR_FAIL' : 'PASS', lanes, warnings, failures };
+  const report = { repo: 'agency-event-os', generatedAt: nowIso(), eventId, stageId, baseUrl, result: failures.length ? 'BLOCKED_OR_FAIL' : 'PASS', lanes, trace, warnings, failures };
   checkNoSecrets('tier4 real provider journey report', report);
   fs.writeFileSync(path.join(reportsDir, 'tier4-real-provider-journey-report.json'), JSON.stringify(report, null, 2) + '\n');
   const md = ['# Tier 4 Real Provider Journey Probe', '', `Repo: ${report.repo}`, `Event: ${eventId}`, `Base URL: ${baseUrl || 'MISSING'}`, `Result: ${report.result}`, '', '## Lanes', ...lanes.map((lane) => `- ${lane.name}: ${lane.status}${lane.error ? ` — ${lane.error}` : ''}${lane.reason ? ` — ${lane.reason}` : ''}`), '', '## Failures', failures.length ? failures.map((f) => `- ${f}`).join('\n') : 'None.'];

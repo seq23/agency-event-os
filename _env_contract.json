@@ -111,7 +111,6 @@
     "TIER4_AUTO_EMAIL_TO_SELF",
     "TIER4_CONTINUE_AFTER_FAILURE",
     "TIER4_CONTROLLED_RTMP_BROADCASTER",
-    "TIER4_CONTROLLED_RTMP_CLEANUP_STATUS",
     "TIER4_CONTROLLED_RTMP_POLL_TIMEOUT_MS",
     "TIER4_CONTROLLED_RTMP_SECONDS",
     "TIER4_EMAIL_TEST_TO",
@@ -122,7 +121,11 @@
     "TIER4_STAGE_ID",
     "TIER4_STREAMYARD_LIVE_EVIDENCE_PATH",
     "TIER4_SUPABASE_PROOF_TABLE",
-    "TIER4_ZOOM_MEETING_NUMBER"
+    "TIER4_ZOOM_MEETING_NUMBER",
+    "TIER4_CONTROLLED_RTMP_RETAIN_INGRESS",
+    "TIER4_CONTROLLED_RTMP_RETAIN_REASON",
+    "TIER4_LIVEKIT_CLEANUP_APPROVED",
+    "TIER4_LIVEKIT_CLEANUP_INGRESS_IDS"
   ],
   "cloudflareSecretEnv": [
     "AGENCY_EVENT_OS_RUNTIME_STORE",
@@ -252,5 +255,9 @@
       "~/agency-event-os.env.local.backup"
     ],
     "repoPolicy": "Real secret vaults are intentionally external to baseline ZIP artifacts; wrapper restores from local private path, runs the command, and removes .env.local if it created it."
-  }
+  },
+  "optionalDevEnv": [
+    "GOOGLE_MEET_MANAGED_FALLBACK_URL",
+    "TIER4_GOOGLE_MEET_NOT_APPLICABLE_REASON"
+  ]
 }

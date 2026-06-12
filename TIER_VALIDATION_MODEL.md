@@ -147,3 +147,29 @@ Do not collapse these tiers. The separation prevents normal postdeploy validatio
 - Purpose: prevent both deployed app code and Tier 4 proof harnesses from using a `wss://` LiveKit client URL for server-side Twirp `fetch()` calls.
 - Required trace: Tier 4 controlled proof reports classify failures as harness/env/provider/deployed-app failures and retain sanitized phase trace.
 
+
+## Tier 4 cleanup / teardown requirement
+
+Tier 4 is not complete until live-provider resources have either been deleted or retained with an explicit reason. For the StreamYard → LiveKit lane, this means LiveKit ingress cleanup is a required contract lane.
+
+Default controlled Tier 4 behavior:
+
+- create/observe LiveKit ingress
+- run controlled RTMP proof
+- send deployed app webhook/state proof
+- delete the generated LiveKit ingress with `Ingress/DeleteIngress`
+- record `cleanupStatus: deleted`, `cleanupAttempted: true`, and `cleanupDeleted: true`
+
+Retained provider resources are allowed only with `TIER4_CONTROLLED_RTMP_RETAIN_INGRESS=1` plus `TIER4_CONTROLLED_RTMP_RETAIN_REASON`. Silent retention is not Tier 4 complete.
+
+## Tier 4 Expanded Provider Ladder Data Trace — 2026-06-12
+
+Tier 4 is not only StreamYard/LiveKit. The live-provider proof must trace the full production fallback ladder:
+
+1. LiveKit-only deployed app ingress creation and cleanup via `Ingress/DeleteIngress`.
+2. StreamYard-compatible controlled RTMP path through LiveKit ingress, with cleanup.
+3. Daily fallback room creation, token issuance, and mandatory room deletion.
+4. Zoom fallback authorization proof through the deployed signature route; no provider resource is created, so cleanup status must be `not_required_stateless_signature`.
+5. Google Meet manual continuity proof through `GOOGLE_MEET_MANAGED_FALLBACK_URL` or `GOOGLE_MEET_EMERGENCY_URL`; if intentionally out of scope, `TIER4_GOOGLE_MEET_NOT_APPLICABLE_REASON` must be explicit.
+
+A Tier 4 report that omits Daily, Zoom, or Google Meet is incomplete for this product promise. Cleanup must be machine-readable, not narrative-only.

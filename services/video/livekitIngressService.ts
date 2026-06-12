@@ -80,6 +80,22 @@ interface LiveKitIngressInfo {
   room_name?: string;
 }
 
+interface LiveKitIngressListResponse {
+  items?: LiveKitIngressInfo[];
+  ingress?: LiveKitIngressInfo[];
+}
+
+async function findExistingLiveKitIngress(livekitUrl: string, token: string, input: { roomName: string; ingressId: string }) {
+  const listed = await livekitTwirp<LiveKitIngressListResponse>({
+    livekitUrl,
+    token,
+    method: "Ingress/ListIngress",
+    body: { room_name: input.roomName },
+  });
+  const items = listed.items || listed.ingress || [];
+  return items.find((item) => item.ingress_id === input.ingressId) || null;
+}
+
 async function createLiveKitRtmpIngress(livekitUrl: string, token: string, input: { eventId: string; stageId: string; roomName: string }) {
   return livekitTwirp<LiveKitIngressInfo>({
     livekitUrl,
@@ -107,18 +123,21 @@ export async function provisionStreamYardLiveKitIngress(input: { eventId: string
   }
 
   try {
-    if (!current.livekitIngressId || !current.livekitIngressUrl || !current.livekitStreamKey) {
-      const token = createLiveKitServerToken({ apiKey: livekit.livekitApiKey, apiSecret: livekit.livekitApiSecret, roomName });
-      await ensureLiveKitRoom(livekit.livekitUrl, token, roomName);
-      const ingress = await createLiveKitRtmpIngress(livekit.livekitUrl, token, { eventId: input.eventId, stageId, roomName });
-      if (!ingress.ingress_id || !ingress.url || !ingress.stream_key) throw new Error("LiveKit did not return ingress_id, url, and stream_key.");
-      const updated = await applyStageStreamSignal({ eventId: input.eventId, stageId, signal: "generate_credentials", reason: "LiveKit RTMP ingress created for StreamYard production." });
-      const state = { ...updated, livekitRoomName: roomName, livekitIngressId: ingress.ingress_id, livekitIngressUrl: ingress.url, livekitStreamKey: ingress.stream_key, updatedAt: new Date().toISOString() };
-      await getRuntimeStore().setStageStreamState(stageStreamKey(input.eventId, stageId), state);
-      return { ok: true, eventId: input.eventId, stageId, roomName, ingressId: ingress.ingress_id, rtmpUrl: ingress.url, streamKey: ingress.stream_key, status: "READY_FOR_STREAMYARD", message: "Ready for StreamYard Connection. Paste the RTMP URL and Stream Key into StreamYard Custom RTMP." };
+    const token = createLiveKitServerToken({ apiKey: livekit.livekitApiKey, apiSecret: livekit.livekitApiSecret, roomName });
+    if (current.livekitIngressId && current.livekitIngressUrl && current.livekitStreamKey) {
+      const existingIngress = await findExistingLiveKitIngress(livekit.livekitUrl, token, { roomName, ingressId: current.livekitIngressId });
+      if (existingIngress) {
+        return { ok: true, eventId: input.eventId, stageId, roomName, ingressId: current.livekitIngressId, rtmpUrl: current.livekitIngressUrl, streamKey: current.livekitStreamKey, status: "READY_FOR_STREAMYARD", message: "Existing StreamYard RTMP credentials are ready and were verified against LiveKit. Reuse these credentials unless the producer intentionally regenerates ingress." };
+      }
     }
 
-    return { ok: true, eventId: input.eventId, stageId, roomName, ingressId: current.livekitIngressId, rtmpUrl: current.livekitIngressUrl, streamKey: current.livekitStreamKey, status: "READY_FOR_STREAMYARD", message: "Existing StreamYard RTMP credentials are ready. Reuse these credentials unless the producer intentionally regenerates ingress." };
+    await ensureLiveKitRoom(livekit.livekitUrl, token, roomName);
+    const ingress = await createLiveKitRtmpIngress(livekit.livekitUrl, token, { eventId: input.eventId, stageId, roomName });
+    if (!ingress.ingress_id || !ingress.url || !ingress.stream_key) throw new Error("LiveKit did not return ingress_id, url, and stream_key.");
+    const updated = await applyStageStreamSignal({ eventId: input.eventId, stageId, signal: "generate_credentials", reason: "LiveKit RTMP ingress created for StreamYard production." });
+    const state = { ...updated, livekitRoomName: roomName, livekitIngressId: ingress.ingress_id, livekitIngressUrl: ingress.url, livekitStreamKey: ingress.stream_key, updatedAt: new Date().toISOString() };
+    await getRuntimeStore().setStageStreamState(stageStreamKey(input.eventId, stageId), state);
+    return { ok: true, eventId: input.eventId, stageId, roomName, ingressId: ingress.ingress_id, rtmpUrl: ingress.url, streamKey: ingress.stream_key, status: "READY_FOR_STREAMYARD", message: "Ready for StreamYard Connection. Paste the RTMP URL and Stream Key into StreamYard Custom RTMP." };
   } catch (error) {
     return { ok: false, eventId: input.eventId, stageId, roomName, status: "ERROR_SAFE", message: error instanceof Error ? error.message : "LiveKit ingress provisioning failed safely." };
   }

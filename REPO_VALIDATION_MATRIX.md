@@ -135,3 +135,29 @@ Forbidden:
 - Purpose: prevent both deployed app code and Tier 4 proof harnesses from using a `wss://` LiveKit client URL for server-side Twirp `fetch()` calls.
 - Required trace: Tier 4 controlled proof reports classify failures as harness/env/provider/deployed-app failures and retain sanitized phase trace.
 
+
+## Tier 4 cleanup lane — LiveKit ingress resources
+
+Tier 4 cleanup is an explicit validation lane, not narrative evidence.
+
+Required proof:
+
+- controlled Tier 4 creates or observes real LiveKit ingress through the deployed app route
+- controlled RTMP proof captures provider/media observation before cleanup
+- controlled Tier 4 calls LiveKit `Ingress/DeleteIngress` for the generated ingress unless explicitly retained
+- evidence records `cleanupStatus`, `cleanupAttempted`, and `cleanupDeleted`
+- `validate:tier4-cleanup-contract` blocks if cleanup is not represented in the harness, evidence template, matrix, and runbook
+
+Provider quota failures such as `resource_exhausted`, `total ingress object limit exceeded`, or `concurrent ingress` are classified as real provider cleanup/quota failures. They are not app smoke failures and they are not allowed to be hidden inside generic Tier 4 failure language.
+
+## Tier 4 Expanded Provider Ladder Data Trace — 2026-06-12
+
+Tier 4 is not only StreamYard/LiveKit. The live-provider proof must trace the full production fallback ladder:
+
+1. LiveKit-only deployed app ingress creation and cleanup via `Ingress/DeleteIngress`.
+2. StreamYard-compatible controlled RTMP path through LiveKit ingress, with cleanup.
+3. Daily fallback room creation, token issuance, and mandatory room deletion.
+4. Zoom fallback authorization proof through the deployed signature route; no provider resource is created, so cleanup status must be `not_required_stateless_signature`.
+5. Google Meet manual continuity proof through `GOOGLE_MEET_MANAGED_FALLBACK_URL` or `GOOGLE_MEET_EMERGENCY_URL`; if intentionally out of scope, `TIER4_GOOGLE_MEET_NOT_APPLICABLE_REASON` must be explicit.
+
+A Tier 4 report that omits Daily, Zoom, or Google Meet is incomplete for this product promise. Cleanup must be machine-readable, not narrative-only.

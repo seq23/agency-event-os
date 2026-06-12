@@ -111,16 +111,39 @@ function inspectEvidence(file, failures) {
   if (livekitProof.ingressCreatedOrObserved !== true) failures.push('StreamYard/LiveKit: livekitProviderApi.ingressCreatedOrObserved must be true.');
   if (livekitProof.providerRoomObserved !== true) failures.push('StreamYard/LiveKit: livekitProviderApi.providerRoomObserved must be true.');
   if (livekitProof.mediaConnectionObserved !== true) failures.push('StreamYard/LiveKit: livekitProviderApi.mediaConnectionObserved must be true.');
+  const cleanupStatus = String(livekitProof.cleanupStatus || evidence.cleanupStatus || '');
+  const retainedWithReason = /^retained_with_explicit_reason:.+/.test(cleanupStatus);
+  if (evidence.controlledRtmpBroadcaster === true) {
+    if (cleanupStatus !== 'deleted' && !retainedWithReason) failures.push('StreamYard/LiveKit: controlled RTMP proof must cleanup LiveKit ingress with cleanupStatus=deleted or retained_with_explicit_reason:<reason>.');
+    if (cleanupStatus === 'deleted' && livekitProof.cleanupDeleted !== true) failures.push('StreamYard/LiveKit: livekitProviderApi.cleanupDeleted must be true when cleanupStatus=deleted.');
+    if (cleanupStatus === 'deleted' && evidence.cleanupDeleted !== true) failures.push('StreamYard/LiveKit: evidence.cleanupDeleted must be true when cleanupStatus=deleted.');
+    if (cleanupStatus === 'deleted' && livekitProof.cleanupAttempted !== true) failures.push('StreamYard/LiveKit: livekitProviderApi.cleanupAttempted must be true when cleanupStatus=deleted.');
+  }
   const supabaseProof = evidence.supabaseProductionPersistence || {};
   if (supabaseProof.writeReadbackVerified !== true) failures.push('StreamYard/LiveKit: supabaseProductionPersistence.writeReadbackVerified must be true.');
   if (supabaseProof.noDemoFallback !== true) failures.push('StreamYard/LiveKit: supabaseProductionPersistence.noDemoFallback must be true.');
   const roleProof = evidence.roleBoundaryProof || {};
   if (roleProof.privateProviderControlsDeniedToPublic !== true) failures.push('StreamYard/LiveKit: roleBoundaryProof.privateProviderControlsDeniedToPublic must be true.');
   if (roleProof.eventScopedAccessVerified !== true) failures.push('StreamYard/LiveKit: roleBoundaryProof.eventScopedAccessVerified must be true.');
-  for (const laneName of ['dailyFallback', 'zoomEscalation', 'resendEmail']) {
+  for (const laneName of ['dailyFallback', 'zoomEscalation', 'googleMeetFallback', 'resendEmail']) {
     const lane = evidence[laneName];
     if (lane && lane.configured === true && lane.proofPassed !== true) failures.push(`StreamYard/LiveKit: ${laneName}.proofPassed must be true when configured.`);
   }
+  const dailyProof = evidence.dailyFallback || {};
+  if (dailyProof.configured === true) {
+    if (dailyProof.cleanupStatus !== 'deleted') failures.push('StreamYard/LiveKit: dailyFallback.cleanupStatus must be deleted when Daily fallback is configured and tested.');
+    if (dailyProof.tokenIssued !== true) failures.push('StreamYard/LiveKit: dailyFallback.tokenIssued must be true when Daily fallback is configured.');
+  }
+  const zoomProof = evidence.zoomEscalation || {};
+  if (zoomProof.configured === true && zoomProof.cleanupStatus !== 'not_required_stateless_signature') failures.push('StreamYard/LiveKit: zoomEscalation.cleanupStatus must be not_required_stateless_signature because Zoom SDK signature proof creates no provider resource.');
+  const googleProof = evidence.googleMeetFallback || {};
+  if (googleProof.configured === true) {
+    if (googleProof.manualOnly !== true) failures.push('StreamYard/LiveKit: googleMeetFallback.manualOnly must be true.');
+    if (googleProof.cleanupStatus !== 'not_required_manual_static_link') failures.push('StreamYard/LiveKit: googleMeetFallback.cleanupStatus must be not_required_manual_static_link when configured.');
+  }
+  const livekitOnlyProof = evidence.livekitOnlyMode || {};
+  if (livekitOnlyProof.proofPassed !== true) failures.push('StreamYard/LiveKit: livekitOnlyMode.proofPassed must be true.');
+  if (livekitOnlyProof.cleanupStatus !== 'deleted') failures.push('StreamYard/LiveKit: livekitOnlyMode.cleanupStatus must be deleted.');
   return { ...evidence, evidencePath: path.relative(root, absolute) };
 }
 
@@ -162,6 +185,9 @@ const zoomEnabled = optionalLaneEnabled(['ZOOM_MEETING_SDK_KEY', 'ZOOM_MEETING_S
 if (zoomEnabled) requireAll(['ZOOM_MEETING_SDK_KEY', 'ZOOM_MEETING_SDK_SECRET'], failures, 'Zoom fallback');
 else warnings.push('Zoom Tier 4 lane not configured; must be explicitly accepted as not applicable before COMPLETE if Zoom is a production fallback.');
 
+const googleMeetEnabled = optionalLaneEnabled(['GOOGLE_MEET_MANAGED_FALLBACK_URL', 'GOOGLE_MEET_EMERGENCY_URL']);
+if (!googleMeetEnabled && !process.env.TIER4_GOOGLE_MEET_NOT_APPLICABLE_REASON) warnings.push('Google Meet fallback Tier 4 lane not configured; provide GOOGLE_MEET_MANAGED_FALLBACK_URL/GOOGLE_MEET_EMERGENCY_URL or TIER4_GOOGLE_MEET_NOT_APPLICABLE_REASON.');
+
 const resendEnabled = optionalLaneEnabled(['RESEND_API_KEY', 'EMAIL_FROM', 'EMAIL_REPLY_TO', 'TIER4_EMAIL_TEST_TO']);
 if (resendEnabled) requireAll(['RESEND_API_KEY', 'EMAIL_FROM', 'TIER4_EMAIL_TEST_TO'], failures, 'Resend transactional email');
 else warnings.push('Resend Tier 4 lane not configured; must be explicitly accepted as not applicable before COMPLETE if transactional email is production-critical.');
@@ -173,6 +199,7 @@ const envKeys = [
   'NEXT_PUBLIC_SUPABASE_URL', 'NEXT_PUBLIC_SUPABASE_ANON_KEY', 'SUPABASE_SERVICE_ROLE_KEY',
   'DAILY_API_KEY', 'DAILY_DOMAIN', 'DAILY_API_BASE_URL', 'DAILY_FALLBACK_ENABLED',
   'ZOOM_MEETING_SDK_KEY', 'ZOOM_MEETING_SDK_SECRET',
+  'GOOGLE_MEET_MANAGED_FALLBACK_URL', 'GOOGLE_MEET_EMERGENCY_URL', 'TIER4_GOOGLE_MEET_NOT_APPLICABLE_REASON',
   'RESEND_API_KEY', 'EMAIL_FROM', 'EMAIL_REPLY_TO', 'TIER4_EMAIL_TEST_TO'
 ];
 

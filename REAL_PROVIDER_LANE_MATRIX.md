@@ -24,3 +24,15 @@ A mocked/local provider test may support Tier 2.
 A deployed safe-failure provider route may support Tier 3.
 
 Only Tier 4 may satisfy real live provider operational proof.
+
+## Tier 4 Expanded Provider Ladder Data Trace — 2026-06-12
+
+Tier 4 is not only StreamYard/LiveKit. The live-provider proof must trace the full production fallback ladder:
+
+1. LiveKit-only deployed app ingress creation and cleanup via `Ingress/DeleteIngress`.
+2. StreamYard-compatible controlled RTMP path through LiveKit ingress, with cleanup.
+3. Daily fallback room creation, token issuance, and mandatory room deletion.
+4. Zoom fallback authorization proof through the deployed signature route; no provider resource is created, so cleanup status must be `not_required_stateless_signature`.
+5. Google Meet manual continuity proof through `GOOGLE_MEET_MANAGED_FALLBACK_URL` or `GOOGLE_MEET_EMERGENCY_URL`; if intentionally out of scope, `TIER4_GOOGLE_MEET_NOT_APPLICABLE_REASON` must be explicit.
+
+A Tier 4 report that omits Daily, Zoom, or Google Meet is incomplete for this product promise. Cleanup must be machine-readable, not narrative-only.

@@ -24,7 +24,9 @@
     "providerRoomObserved": true,
     "mediaConnectionObserved": true,
     "webhookOrStateTransitionObserved": true,
-    "cleanupStatus": "deleted_or_retained_with_reason"
+    "cleanupStatus": "deleted",
+    "cleanupAttempted": true,
+    "cleanupDeleted": true
   },
   "supabaseProductionPersistence": {
     "writeReadbackVerified": true,
@@ -44,14 +46,17 @@
     "proofPassed": false,
     "roomCreated": false,
     "tokenIssued": false,
-    "cleanupStatus": "not_configured_or_deleted_or_retained_with_reason"
+    "cleanupStatus": "deleted",
+    "cleanupAttempted": true,
+    "cleanupDeleted": true
   },
   "zoomEscalation": {
     "configured": false,
     "proofPassed": false,
     "unauthenticatedDenied": true,
     "authorizedSignatureIssued": false,
-    "routeAuthorizationGated": true
+    "routeAuthorizationGated": true,
+    "cleanupStatus": "not_required_stateless_signature"
   },
   "resendEmail": {
     "configured": false,
@@ -66,6 +71,21 @@
     "reports/tier4/attendee-stage-live.png"
   ],
   "secretsExposed": false,
-  "cleanupStatus": "deleted_or_retained_with_reason",
-  "notes": "Do not store raw RTMP stream keys, provider API keys, service-role keys, bearer tokens, cookies, webhook secrets, or real recipient PII in this evidence file."
+  "cleanupStatus": "deleted",
+  "notes": "Do not store raw RTMP stream keys, provider API keys, service-role keys, bearer tokens, cookies, webhook secrets, or real recipient PII. Controlled Tier 4 runs must auto-delete their LiveKit ingress or retain it only with TIER4_CONTROLLED_RTMP_RETAIN_INGRESS=1 and a TIER4_CONTROLLED_RTMP_RETAIN_REASON.",
+  "cleanupAttempted": true,
+  "cleanupDeleted": true,
+  "livekitOnlyMode": {
+    "proofPassed": true,
+    "ingressCreatedAndCleanedUp": true,
+    "cleanupStatus": "deleted"
+  },
+  "googleMeetFallback": {
+    "configured": false,
+    "proofPassed": false,
+    "manualOnly": true,
+    "crewConfirmationRequired": true,
+    "cleanupStatus": "not_configured_or_not_required_manual_static_link",
+    "notApplicableReason": "REQUIRED_IF_NOT_CONFIGURED_AND_GOOGLE_MEET_IS_OUT_OF_SCOPE"
+  }
 }

@@ -99,3 +99,26 @@ This command writes:
 - `reports/tier4/tier4-provider-proof-report.md`
 - `reports/tier4/tier4-real-provider-journey-report.json`
 - `reports/tier4/tier4-real-provider-journey-report.md`
+
+## LiveKit ingress cleanup proof
+
+Controlled Tier 4 proof must clean up the generated LiveKit ingress after provider/media observation is captured. Evidence must show:
+
+- `cleanupStatus: deleted` or `retained_with_explicit_reason:<reason>`
+- `livekitProviderApi.cleanupAttempted`
+- `livekitProviderApi.cleanupDeleted`
+- trace phases `livekit_ingress_cleanup_start` and `livekit_ingress_cleanup_result`
+
+If cleanup does not run, Tier 4 remains blocked because LiveKit ingress quota can be exhausted even when the app route and harness are otherwise correct.
+
+## Tier 4 Expanded Provider Ladder Data Trace — 2026-06-12
+
+Tier 4 is not only StreamYard/LiveKit. The live-provider proof must trace the full production fallback ladder:
+
+1. LiveKit-only deployed app ingress creation and cleanup via `Ingress/DeleteIngress`.
+2. StreamYard-compatible controlled RTMP path through LiveKit ingress, with cleanup.
+3. Daily fallback room creation, token issuance, and mandatory room deletion.
+4. Zoom fallback authorization proof through the deployed signature route; no provider resource is created, so cleanup status must be `not_required_stateless_signature`.
+5. Google Meet manual continuity proof through `GOOGLE_MEET_MANAGED_FALLBACK_URL` or `GOOGLE_MEET_EMERGENCY_URL`; if intentionally out of scope, `TIER4_GOOGLE_MEET_NOT_APPLICABLE_REASON` must be explicit.
+
+A Tier 4 report that omits Daily, Zoom, or Google Meet is incomplete for this product promise. Cleanup must be machine-readable, not narrative-only.

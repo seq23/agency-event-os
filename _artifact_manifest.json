@@ -1,46 +1,22 @@
 {
-  "artifact": "agency-event-os-main_BASELINE_06-12-26_b405d3f.zip",
   "repo": "agency-event-os",
-  "sourceBaseline": "agency-event-os-main_BASELINE_06-12-26_b405d3f.zip",
-  "status": "STRUCTURALLY CHECKED \u2014 LOCAL VALIDATION REQUIRED",
-  "scope": "Tier 4 hostile review execution: real credential/provider journey proof gates and Zoom route authorization hardening",
-  "changedFiles": [
-    ".env.example",
-    ".env.local.example",
-    "ARTIFACT_MANIFEST.md",
-    "ENVIRONMENT_VARIABLES.md",
-    "REAL_PROVIDER_LANE_MATRIX.md",
-    "TIER4_LIVE_PROVIDER_OPERATIONAL_PROOF.md",
-    "TIER4_PROVIDER_EVIDENCE_TEMPLATE.json",
-    "_artifact_manifest.json",
-    "_env_contract.json",
-    "_repo_validation_matrix.json",
-    "_validator_admission_register.json",
-    "deployment/env-var-registry.json",
-    "package.json",
-    "app/api/video/zoom-signature/route.ts",
-    "scripts/tier4_live_provider_operational_proof.mjs",
-    "scripts/tier4_real_provider_journey_probe.mjs",
-    "scripts/validate-tier4-hostile-coverage.mjs",
-    "tests/e2e/tier4-real-provider-journeys.spec.ts",
-    "VALIDATOR_ADMISSION_REGISTER.md"
+  "artifact": "Tier 4 LiveKit ingress cleanup contract fix",
+  "generatedAt": "2026-06-12T14:40:00Z",
+  "changes": [
+    "Auto-delete controlled Tier 4 LiveKit ingress via Ingress/DeleteIngress",
+    "Add safe stale-ingress cleanup utility with approval gate",
+    "Add validate:tier4-cleanup-contract and wire it into validation",
+    "Update validation matrix/model/runbook/evidence template for explicit cleanup lane",
+    "Document provider quota/resource cleanup failure class"
   ],
-  "sandboxValidation": [
-    "node --check Tier 4 changed JS scripts: PASS",
-    "tier4:live-provider-operational-proof without env: EXPECTED BLOCKED exit 2",
-    "tier4:real-provider-journey-probe without env: EXPECTED BLOCKED exit 2",
-    "validate:deploy-parity: PASS",
-    "validate:tier4-contract: PASS",
-    "validate:final-tier-contract: PASS",
-    "validate:validator-admission: PASS",
-    "validate:no-generated-artifacts: PASS"
-  ],
-  "notRun": [
-    "TypeScript compile/build not run because node_modules is absent in sandbox",
-    "Playwright not run",
-    "Cloudflare/OpenNext build not run",
-    "Tier 3 deployed not run",
-    "Tier 4 live provider proof not run because real credentials/provider evidence are external prerequisites"
-  ],
-  "updatedAt": "2026-06-12T12:30:00Z"
+  "validation": [
+    "node scripts/validate_tier4_cleanup_contract.mjs PASS",
+    "node scripts/validate_livekit_twirp_url_contract.js PASS",
+    "node scripts/validate-tier4-contract.mjs PASS",
+    "node scripts/validate-tier4-hostile-coverage.mjs PASS",
+    "node scripts/validate-final-tier-contract.mjs PASS",
+    "node scripts/validate_structure.js PASS",
+    "node scripts/validate_no_generated_artifacts.js PASS",
+    "full npm run validate not run in sandbox; local updater required"
+  ]
 }

@@ -178,8 +178,17 @@ Do not commit `.env.local`.
 
 | TIER4_CONTROLLED_RTMP_POLL_TIMEOUT_MS | Local/test-only provider polling timeout for controlled RTMP proof. |
 
-| TIER4_CONTROLLED_RTMP_CLEANUP_STATUS | Local/test-only evidence cleanup note for controlled RTMP proof. |
+| TIER4_CONTROLLED_RTMP_RETAIN_INGRESS | Local/test-only override. Set to `1` only when intentionally retaining a LiveKit ingress after Tier 4 proof. Requires `TIER4_CONTROLLED_RTMP_RETAIN_REASON`. |
+
+| TIER4_CONTROLLED_RTMP_RETAIN_REASON | Local/test-only required reason when retaining a controlled Tier 4 LiveKit ingress. Silent retention is not allowed. |
+
+| TIER4_LIVEKIT_CLEANUP_APPROVED | Local/test-only cleanup guard. Set to `1` to approve deletion of stale Tier 4 LiveKit ingress objects through `tier4:cleanup-livekit-ingress`. |
+
+| TIER4_LIVEKIT_CLEANUP_INGRESS_IDS | Optional comma-separated LiveKit ingress ids for explicit cleanup. Default cleanup deletes only safe `tier4-auto-` ingress resources. |
 
 | CLOUDFLARE_DEPLOYMENT_ID_REDACTED | Local/test-only optional redacted deployment id for Tier 4 evidence. |
 
 | GITHUB_ACTIONS_STATUS_VERIFIED | Local/test-only optional deploy status marker for Tier 4 evidence. |
+
+| `TIER4_GOOGLE_MEET_NOT_APPLICABLE_REASON` | Explicit owner disposition when Google Meet is intentionally out of scope for Tier 4. |
+| `GOOGLE_MEET_MANAGED_FALLBACK_URL` | Optional Google Meet manual fallback continuity URL for Tier 4 proof. |

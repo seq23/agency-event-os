@@ -139,3 +139,15 @@ Supported private source locations:
 - `~/agency-event-os.env.local.backup`
 
 Do not commit `.env.local`.
+
+### Tier 4 LiveKit cleanup guardrail
+
+The controlled Tier 4 LiveKit proof now auto-deletes generated LiveKit ingress resources after proof capture. This prevents LiveKit Cloud ingress quota exhaustion from blocking future Tier 4 runs.
+
+Stale Tier 4 ingress cleanup:
+
+```bash
+npm run env:run -- -- bash -lc 'set -a; . ./.env.local; set +a; TIER4_LIVEKIT_CLEANUP_APPROVED=1 npm run tier4:cleanup-livekit-ingress'
+```
+
+Cleanup proof is enforced by `validate:tier4-cleanup-contract` and is part of the validation matrix.

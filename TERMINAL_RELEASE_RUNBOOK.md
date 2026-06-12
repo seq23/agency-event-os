@@ -254,3 +254,19 @@ Tier 3 and Tier 4 validators now distinguish repo/app failures from unavailable 
 - Purpose: prevent both deployed app code and Tier 4 proof harnesses from using a `wss://` LiveKit client URL for server-side Twirp `fetch()` calls.
 - Required trace: Tier 4 controlled proof reports classify failures as harness/env/provider/deployed-app failures and retain sanitized phase trace.
 
+
+## Tier 4 cleanup command
+
+If LiveKit reports ingress quota exhaustion, delete stale Tier 4 ingress objects before another Tier 4 attempt:
+
+```bash
+npm run env:run -- -- bash -lc 'set -a; . ./.env.local; set +a; TIER4_LIVEKIT_CLEANUP_APPROVED=1 npm run tier4:cleanup-livekit-ingress'
+```
+
+For explicit ids:
+
+```bash
+npm run env:run -- -- bash -lc 'set -a; . ./.env.local; set +a; TIER4_LIVEKIT_CLEANUP_APPROVED=1 TIER4_LIVEKIT_CLEANUP_INGRESS_IDS="IN_x,IN_y" npm run tier4:cleanup-livekit-ingress'
+```
+
+The normal `tier4:auto-controlled-livekit-proof` command auto-deletes its LiveKit ingress after proof capture. Retention requires `TIER4_CONTROLLED_RTMP_RETAIN_INGRESS=1` and `TIER4_CONTROLLED_RTMP_RETAIN_REASON`.

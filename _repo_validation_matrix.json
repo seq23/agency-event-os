@@ -663,6 +663,39 @@
       "matrixContract": "assigned: owner+tier+proofLayer+blockerPolicy+prerequisites",
       "name": "Tier 4 real provider user journey E2E",
       "command": "npm run test:e2e:tier4-real-provider-journeys"
+    },
+    {
+      "name": "Tier 4 LiveKit ingress cleanup contract",
+      "command": "npm run validate:tier4-cleanup-contract",
+      "tier": "tier4",
+      "severity": "HARD FAIL",
+      "category": "real provider cleanup",
+      "proofLayer": "STATIC CLEANUP CONTRACT GUARD",
+      "requiresDeployedBaseUrl": false,
+      "requiredEnvAll": [],
+      "blockerPolicy": "Patch harness, evidence template, and docs until LiveKit ingress cleanup is explicit and validated.",
+      "productionRisk": "LiveKit ingress quota can be exhausted by stale Tier 4 resources even when app and provider routes are otherwise correct.",
+      "whatItProves": "Tier 4 harness contains DeleteIngress cleanup, evidence includes cleanupStatus/cleanupAttempted/cleanupDeleted, and cleanup utility exists.",
+      "whatItDoesNotProve": "Does not delete real provider ingress objects; run tier4:cleanup-livekit-ingress with env approval for live cleanup."
+    },
+    {
+      "name": "Tier 4 LiveKit stale ingress cleanup utility",
+      "command": "npm run env:run -- -- bash -lc 'set -a; . ./.env.local; set +a; TIER4_LIVEKIT_CLEANUP_APPROVED=1 npm run tier4:cleanup-livekit-ingress'",
+      "tier": "tier4",
+      "severity": "OPERATOR APPROVAL REQUIRED",
+      "category": "real provider cleanup",
+      "proofLayer": "LIVE PROVIDER CLEANUP REPORT",
+      "requiresDeployedBaseUrl": false,
+      "requiredEnvAll": [
+        "LIVEKIT_URL",
+        "LIVEKIT_API_KEY",
+        "LIVEKIT_API_SECRET",
+        "TIER4_LIVEKIT_CLEANUP_APPROVED"
+      ],
+      "blockerPolicy": "Do not re-run Tier 4 create-ingress proof while LiveKit ingress quota is exhausted.",
+      "productionRisk": "Deleting wrong ingress could disrupt a real event; default utility only deletes safe tier4-auto ingress objects unless explicit ids are supplied.",
+      "whatItProves": "Stale Tier 4 LiveKit ingress objects were listed and deleted using provider API without exposing secrets.",
+      "whatItDoesNotProve": "Does not validate app behavior; it only restores provider quota capacity."
     }
   ],
   "validatorAdmissionRegister": "_validator_admission_register.json",

@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { loginAsOperator } from './helpers/roleJourney';
+import { loginAsMasterOperator } from './helpers/roleJourney';
 
 const tier4Enabled = () => process.env.TIER4_LIVE_PROVIDER_OPERATIONAL_PROOF === '1';
 const eventId = () => process.env.TIER4_EVENT_ID || process.env.STREAMYARD_E2E_EVENT_ID || 'tier4-manual-event';
@@ -29,16 +29,17 @@ test.describe('Tier 4 real-provider user journeys', () => {
       expect(text).not.toMatch(/LIVEKIT_API_SECRET|LIVEKIT_WEBHOOK_SECRET|DAILY_API_KEY|ZOOM_MEETING_SDK_SECRET|SUPABASE_SERVICE_ROLE_KEY|stream[_\s-]*key|rtmps?:\/\//i);
     }
 
-    await loginAsOperator(page, `/admin/testing/${payload.eventId}`);
+    await loginAsMasterOperator(page, `/admin/testing/${payload.eventId}`);
     await expect(page.locator('body')).toContainText(/LiveKit|StreamYard|Daily|Zoom|fallback|Testing Console/i);
 
-    const ingress = await request.post('/api/video/livekit-ingress', { data: { eventId: payload.eventId, stageId: payload.stageId } });
-    expect([200, 409], 'operator-scoped LiveKit ingress should either provision or return provider-safe blocked state').toContain(ingress.status());
+    const authedRequest = page.context().request;
+    const ingress = await authedRequest.post('/api/video/livekit-ingress', { data: { eventId: payload.eventId, stageId: payload.stageId } });
+    expect([200, 409], 'master-operator-scoped LiveKit ingress should either provision or return provider-safe blocked state').toContain(ingress.status());
     const ingressText = await ingress.text();
     expect(ingressText).not.toMatch(/LIVEKIT_API_SECRET|LIVEKIT_WEBHOOK_SECRET|SUPABASE_SERVICE_ROLE_KEY/i);
 
-    const state = await request.get(`/api/video/stage-stream-state?eventId=${encodeURIComponent(payload.eventId)}&stageId=${encodeURIComponent(payload.stageId)}&view=operator`);
-    expect([200, 401, 403, 409, 503]).toContain(state.status());
+    const state = await authedRequest.get(`/api/video/stage-stream-state?eventId=${encodeURIComponent(payload.eventId)}&stageId=${encodeURIComponent(payload.stageId)}&view=operator`);
+    expect([200, 409, 503]).toContain(state.status());
     expect(await state.text()).not.toMatch(/LIVEKIT_API_SECRET|LIVEKIT_WEBHOOK_SECRET|SUPABASE_SERVICE_ROLE_KEY/i);
   });
 

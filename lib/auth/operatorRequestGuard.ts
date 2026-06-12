@@ -4,10 +4,16 @@ import { getEnv, getV5AccessCookieNames, getV5AccessCookieSecret } from "@/lib/e
 
 export async function requireOperatorAccessForRequest() {
   const env = getEnv();
-  const { operatorCookieName } = getV5AccessCookieNames(env);
-  const payload = await readV5AccessCookie(cookies().get(operatorCookieName)?.value, getV5AccessCookieSecret(env));
-  if (!payload || payload.kind !== "operator") {
+  const { operatorCookieName, ownerCookieName } = getV5AccessCookieNames(env);
+  const secret = getV5AccessCookieSecret(env);
+  const cookieStore = cookies();
+  const owner = await readV5AccessCookie(cookieStore.get(ownerCookieName)?.value, secret);
+  if (owner?.kind === "owner") {
+    return { ok: true as const, payload: owner, actorRole: "owner" as const };
+  }
+  const operator = await readV5AccessCookie(cookieStore.get(operatorCookieName)?.value, secret);
+  if (!operator || operator.kind !== "operator") {
     return { ok: false as const, error: "Operator access required." };
   }
-  return { ok: true as const, payload };
+  return { ok: true as const, payload: operator, actorRole: "operator" as const };
 }

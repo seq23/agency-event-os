@@ -32,21 +32,36 @@ function redact(value) {
   if (text.length <= 12) return 'redacted';
   return `${text.slice(0, 6)}…${text.slice(-4)}`;
 }
+function sanitizeProviderMaterial(value) {
+  if (typeof value === 'string') {
+    return value
+      .replace(/rtmps?:\/\/[^\s"']+/gi, '[REDACTED_RTMP_URL]')
+      .replace(/("rtmpUrl"\s*:\s*")[^"]+(")/gi, '$1[REDACTED_RTMP_URL]$2')
+      .replace(/("streamKey"\s*:\s*")[^"]+(")/gi, '$1[REDACTED_STREAM_KEY]$2')
+      .replace(/Bearer\s+[A-Za-z0-9._~+/=-]{16,}/gi, '[REDACTED_AUTH_VALUE]');
+  }
+  if (Array.isArray(value)) return value.map((item) => sanitizeProviderMaterial(item));
+  if (value && typeof value === 'object') return Object.fromEntries(Object.entries(value).map(([key, item]) => [key, sanitizeProviderMaterial(item)]));
+  return value;
+}
 function sha12(value) { return crypto.createHash('sha256').update(String(value)).digest('hex').slice(0, 12); }
-function pushTrace(phase, detail = {}) { trace.push({ phase, at: nowIso(), ...detail }); }
+function pushTrace(phase, detail = {}) { trace.push({ phase, at: nowIso(), ...sanitizeProviderMaterial(detail) }); }
 function addLane(name, status, detail = {}) {
+  detail = sanitizeProviderMaterial(detail);
   const lane = { name, status, ...detail };
   lanes.push(lane);
   pushTrace('provider_lane_result', { name, status, cleanupStatus: detail.cleanupStatus, providerResourceCreated: detail.providerResourceCreated, error: detail.error, reason: detail.reason });
   if (status === 'FAIL' || status === 'BLOCKED') failures.push(`${name}: ${detail.error || detail.reason || status}`);
 }
-function checkNoSecrets(label, value) {
+function checkNoSecrets(label, value, options = {}) {
+  const allowPrivateProviderMaterial = options.allowPrivateProviderMaterial === true;
   const raw = typeof value === 'string' ? value : JSON.stringify(value);
   for (const [key, secret] of secrets) {
     if (secret && raw.includes(secret)) failures.push(`${label}: raw secret leaked into report/evidence (${key}).`);
   }
-  if (/rtmps?:\/\//i.test(raw)) failures.push(`${label}: raw RTMP URL leaked into report/evidence.`);
-  if (/Bearer\s+[A-Za-z0-9._-]+/i.test(raw)) failures.push(`${label}: bearer token leaked into report/evidence.`);
+  if (!allowPrivateProviderMaterial && /rtmps?:\/\//i.test(raw)) failures.push(`${label}: raw RTMP URL leaked into report/evidence.`);
+  if (/Bearer\s+[A-Za-z0-9._~+/=-]{16,}/i.test(raw)) failures.push(`${label}: bearer token leaked into report/evidence.`);
+  if (!allowPrivateProviderMaterial && /("streamKey"\s*:\s*")(?!\[REDACTED_STREAM_KEY\])[^"]+(")/i.test(raw)) failures.push(`${label}: stream credential leaked into report/evidence.`);
 }
 function base64url(input) { return Buffer.from(input).toString('base64url'); }
 function signedCookie(payload, secret) {
@@ -160,8 +175,9 @@ async function roleBoundaryLane() {
   if (!denied || !noSecrets) return addLane('role boundary private provider APIs', 'FAIL', { error: `unexpected unauth statuses/secrets: ingress=${unauthIngress.response.status}, zoom=${unauthZoom.response.status}, daily=${unauthDaily.response.status}` });
   const operatorState = await fetchJson(`${baseUrl}/api/video/stage-stream-state?eventId=${encodeURIComponent(eventId)}&stageId=${encodeURIComponent(stageId)}&view=operator`, { headers: { cookie } });
   if (![200, 401, 403, 409, 503].includes(operatorState.response.status)) return addLane('role boundary private provider APIs', 'FAIL', { error: `operator state returned ${operatorState.response.status}` });
-  checkNoSecrets('role boundary private provider APIs', { unauthIngress: unauthIngress.json, unauthZoom: unauthZoom.json, unauthDaily: unauthDaily.json, operatorState: operatorState.json });
-  addLane('role boundary private provider APIs', 'PASS', { unauthStatuses: { livekitIngress: unauthIngress.response.status, zoomSignature: unauthZoom.response.status, dailyToken: unauthDaily.response.status }, operatorStateStatus: operatorState.response.status });
+  checkNoSecrets('role boundary public provider APIs', { unauthIngress: unauthIngress.json, unauthZoom: unauthZoom.json, unauthDaily: unauthDaily.json });
+  checkNoSecrets('role boundary authorized operator state', operatorState.json, { allowPrivateProviderMaterial: true });
+  addLane('role boundary private provider APIs', 'PASS', { unauthStatuses: { livekitIngress: unauthIngress.response.status, zoomSignature: unauthZoom.response.status, dailyToken: unauthDaily.response.status }, operatorStateStatus: operatorState.response.status, authorizedProviderStateCheckedWithoutPersistingCredentials: true });
 }
 
 

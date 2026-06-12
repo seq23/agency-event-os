@@ -41,6 +41,9 @@ requireText('scripts/tier4_real_provider_journey_probe.mjs', [
   'provider_lane_result',
   'exerciseEveryConfiguredRung',
   'DAILY_API_BASE_URL must start with https://',
+  'sanitizeProviderMaterial',
+  'allowPrivateProviderMaterial',
+  'authorizedProviderStateCheckedWithoutPersistingCredentials',
 ]);
 requireText('scripts/tier4_controlled_rtmp_broadcaster_proof.mjs', [
   'providerLadderEventId',
@@ -62,6 +65,8 @@ requireText('scripts/tier4_live_provider_operational_proof.mjs', [
   'logExcerpt',
   'collectFailureDetails',
   'failureDetails',
+  'proofSummary',
+  'buildProofSummary',
   'controlledEvidenceCoversStreamYard',
   'TIER4_REQUIRE_LEGACY_STREAMYARD_E2E',
   'controlled_rtmp_attendee_evidence',
@@ -77,6 +82,9 @@ requireText('scripts/streamyard_livekit_real_provider_smoke.sh', [
 ]);
 requireText('tests/e2e/streamyard-producer-ingress.spec.ts', ['process.env.TIER4_EVENT_ID', 'process.env.STREAMYARD_E2E_EVENT_ID']);
 requireText('tests/e2e/real-streamyard-livekit-media.spec.ts', ['process.env.TIER4_EVENT_ID', 'process.env.STREAMYARD_E2E_EVENT_ID']);
+requireText('tests/e2e/tier4-real-provider-journeys.spec.ts', ['loginAsMasterOperator', 'page.context().request', 'master-operator-scoped LiveKit ingress']);
+requireText('tests/e2e/helpers/roleJourney.ts', ['loginAsMasterOperator', 'OWNER_MASTER_ACCESS_PASSWORD']);
+requireText('lib/auth/operatorRequestGuard.ts', ['ownerCookieName', 'actorRole: "owner"']);
 requireText('TIER4_PROVIDER_EVIDENCE_TEMPLATE.json', [
   'cloudflareStreamFallback',
   'dailyFallback', 'zoomEscalation', 'googleMeetFallback', 'livekitOnlyMode', 'cleanupStatus'
@@ -89,6 +97,7 @@ requireText('TIER4_E2E_DATA_TRACE_FINAL_REVIEW_2026-06-12.md', ['LiveKit Twirp U
 
 const pkg = JSON.parse(read('package.json'));
 if (!pkg.scripts?.['validate:tier4-provider-ladder-contract']) failures.push('package.json missing validate:tier4-provider-ladder-contract');
+if (!pkg.scripts?.['tier4:auto-controlled-livekit-proof:headed']) failures.push('package.json missing tier4:auto-controlled-livekit-proof:headed');
 if (!String(pkg.scripts?.['validate:tier4-contract'] || '').includes('validate:tier4-provider-ladder-contract')) failures.push('validate:tier4-contract must include validate:tier4-provider-ladder-contract.');
 if (!String(pkg.scripts?.['validate:deploy-parity'] || '').includes('validate:tier4-provider-ladder-contract')) failures.push('validate:deploy-parity must include validate:tier4-provider-ladder-contract.');
 

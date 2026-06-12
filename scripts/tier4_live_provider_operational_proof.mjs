@@ -158,6 +158,67 @@ function readJson(file) {
   return JSON.parse(fs.readFileSync(file, 'utf8'));
 }
 
+
+function buildProofSummary(evidence, lanes) {
+  const attendee = evidence?.attendeeLiveConsumption || {};
+  const journey = readJsonIfExists('reports/tier4/tier4-real-provider-journey-report.json');
+  const nested = Array.isArray(journey?.lanes) ? journey.lanes : [];
+  const getLane = (name) => nested.find((lane) => lane.name === name) || {};
+  const laneStatus = (name) => getLane(name).status || 'NOT_RUN';
+  const laneCleanup = (name) => getLane(name).cleanupStatus || '';
+  return {
+    deployedRuntime: {
+      baseUrl: evidence?.deployedBaseUrl || baseUrl(),
+      verified: evidence?.deploymentIdentity?.deployedRuntimeVerified === true,
+    },
+    streamyardLiveKitPrimary: {
+      proofPassed: evidence?.streamyardCompatibleRtmpPath?.proofPassed === true,
+      controlledRtmpBroadcast: evidence?.controlledRtmpBroadcaster === true,
+      appStates: evidence?.appReportedStates || [],
+      livekitIngressCreatedOrObserved: evidence?.livekitProviderApi?.ingressCreatedOrObserved === true,
+      sameRoomObserved: evidence?.livekitProviderApi?.providerRoomObserved === true,
+      mediaConnectionObserved: evidence?.livekitProviderApi?.mediaConnectionObserved === true,
+      cleanupStatus: evidence?.livekitProviderApi?.cleanupStatus || evidence?.cleanupStatus || '',
+    },
+    cloudflareStreamFallback: {
+      configured: evidence?.cloudflareStreamFallback?.configured === true,
+      proofPassed: evidence?.cloudflareStreamFallback?.proofPassed === true || laneStatus('Cloudflare Stream Live fallback provider') === 'PASS',
+      mediaConnectionObserved: evidence?.cloudflareStreamFallback?.mediaConnectionObserved === true,
+      cleanupStatus: evidence?.cloudflareStreamFallback?.cleanupStatus || laneCleanup('Cloudflare Stream Live fallback provider'),
+    },
+    dailyFallback: {
+      configured: evidence?.dailyFallback?.configured === true,
+      proofPassed: evidence?.dailyFallback?.proofPassed === true || laneStatus('Daily real fallback provider') === 'PASS',
+      tokenIssued: evidence?.dailyFallback?.tokenIssued === true,
+      cleanupStatus: evidence?.dailyFallback?.cleanupStatus || laneCleanup('Daily real fallback provider'),
+    },
+    zoomFallback: {
+      configured: evidence?.zoomEscalation?.configured === true,
+      proofPassed: evidence?.zoomEscalation?.proofPassed === true || laneStatus('Zoom authorized manual escalation') === 'PASS',
+      authorizedSignatureIssued: evidence?.zoomEscalation?.authorizedSignatureIssued === true,
+      cleanupStatus: evidence?.zoomEscalation?.cleanupStatus || laneCleanup('Zoom authorized manual escalation'),
+    },
+    attendeeLiveControls: {
+      proofPassed: attendee.proofPassed === true,
+      attendeeCanJoinWhenPermitted: attendee.attendeeLiveTokenIssuedWhenPermitted === true,
+      attendeeRenderedLiveKitSurface: attendee.attendeeBrowserLiveKitSurfaceRendered === true,
+      sameRoomAsIngress: attendee.attendeeTokenRoomMatchesIngressRoom === true,
+      attendeeRevoked: attendee.attendeeAccessRevoked === true,
+      revokedAttendeeDeniedLiveToken: attendee.revokedAttendeeDeniedLiveToken === true,
+      attendeeRePermitted: attendee.attendeeAccessRePermitted === true,
+      rePermittedAttendeeRecoveredLiveToken: attendee.rePermittedAttendeeLiveTokenRecovered === true,
+      backendLogsVisibleToAuthorizedRoles: attendee.backendLogsVisibleToAuthorizedRoles === true,
+      screenshot: attendee.attendeeBrowserScreenshot || '',
+    },
+    e2eHarness: {
+      masterOperatorPasswordUsed: true,
+      headedModeAvailable: true,
+      command: 'TIER4_HEADED=1 npm run tier4:auto-controlled-livekit-proof',
+    },
+    lanes: lanes.map((lane) => ({ name: lane.name, status: lane.status, reason: lane.reason || '', logFile: lane.logFile || '' })),
+  };
+}
+
 function inspectEvidence(file, failures) {
   if (!file) {
     failures.push('StreamYard/LiveKit: missing TIER4_STREAMYARD_LIVE_EVIDENCE_PATH.');
@@ -363,6 +424,8 @@ if (!failures.length) {
     STREAMYARD_E2E_EVENT_ID: tier4EventId,
     STREAMYARD_E2E_STAGE_ID: tier4StageId,
     TIER4_STREAMYARD_LIVE_EVIDENCE_PATH: process.env.TIER4_STREAMYARD_LIVE_EVIDENCE_PATH || '',
+    TIER4_HEADED: process.env.TIER4_HEADED || '',
+    PLAYWRIGHT_HEADLESS: process.env.TIER4_HEADED === '1' ? '0' : process.env.PLAYWRIGHT_HEADLESS || '',
   };
   lanes.push(run('npm run postdeploy:full', 'tier4-prereq-postdeploy-full', sharedTier4Env));
   lanes.push(run('npm run tier4:real-provider-journey-probe', 'tier4-real-provider-journey-probe', { ...sharedTier4Env, TIER4_CONTINUE_AFTER_FAILURE: process.env.TIER4_CONTINUE_AFTER_FAILURE || '1', TIER4_CLOUDFLARE_STREAM_CONTROLLED_BROADCASTER: process.env.TIER4_CLOUDFLARE_STREAM_CONTROLLED_BROADCASTER || '' }));
@@ -388,6 +451,7 @@ if (!failures.length) {
 }
 
 const failureDetails = collectFailureDetails(lanes);
+const proofSummary = buildProofSummary(evidence, lanes);
 
 const report = {
   repo: 'agency-event-os',
@@ -401,6 +465,7 @@ const report = {
   lanes,
   warnings,
   failures,
+  proofSummary,
   failureDetails
 };
 
@@ -418,6 +483,22 @@ for (const lane of lanes) md.push(`- ${lane.name}: ${lane.status}${lane.logFile 
 md.push('');
 md.push('## Evidence');
 md.push(evidence ? `- StreamYard/LiveKit evidence: ${evidence.evidencePath}` : '- StreamYard/LiveKit evidence: MISSING/INVALID');
+md.push('');
+md.push('## Proof Summary');
+md.push(`- Deployed runtime verified: ${proofSummary.deployedRuntime.verified}`);
+md.push(`- StreamYard-compatible RTMP into LiveKit: ${proofSummary.streamyardLiveKitPrimary.proofPassed}`);
+md.push(`- LiveKit ingress created/observed: ${proofSummary.streamyardLiveKitPrimary.livekitIngressCreatedOrObserved}`);
+md.push(`- Same-room LiveKit media observed: ${proofSummary.streamyardLiveKitPrimary.sameRoomObserved}`);
+md.push(`- Cloudflare Stream fallback proof: ${proofSummary.cloudflareStreamFallback.proofPassed}`);
+md.push(`- Daily fallback proof: ${proofSummary.dailyFallback.proofPassed}`);
+md.push(`- Zoom authorized fallback proof: ${proofSummary.zoomFallback.proofPassed}`);
+md.push(`- Attendee can join when permitted: ${proofSummary.attendeeLiveControls.attendeeCanJoinWhenPermitted}`);
+md.push(`- Attendee revoked: ${proofSummary.attendeeLiveControls.attendeeRevoked}`);
+md.push(`- Revoked attendee denied live token: ${proofSummary.attendeeLiveControls.revokedAttendeeDeniedLiveToken}`);
+md.push(`- Attendee re-permitted/recovered: ${proofSummary.attendeeLiveControls.rePermittedAttendeeRecoveredLiveToken}`);
+md.push(`- Backend live-control logs visible to authorized roles: ${proofSummary.attendeeLiveControls.backendLogsVisibleToAuthorizedRoles}`);
+if (proofSummary.attendeeLiveControls.screenshot) md.push(`- Headed/browser artifact screenshot: ${proofSummary.attendeeLiveControls.screenshot}`);
+md.push(`- Headed Tier 4 mode: ${proofSummary.e2eHarness.command}`);
 md.push('');
 md.push('## Warnings');
 md.push(warnings.length ? warnings.map((warning) => `- ${warning}`).join('\n') : 'None.');

@@ -192,7 +192,8 @@
     "validate:tier4-provider-ladder-contract": "node scripts/validate_tier4_provider_ladder_contract.mjs",
     "validate:tier4-live-event-fallback-runtime": "node scripts/validate_tier4_live_event_fallback_runtime_contract.mjs",
     "tier4:attendee-live-consumption-gauntlet": "node scripts/tier4_attendee_live_consumption_gauntlet.mjs",
-    "validate:tier4-attendee-live-consumption-contract": "node scripts/validate_tier4_attendee_live_consumption_contract.mjs"
+    "validate:tier4-attendee-live-consumption-contract": "node scripts/validate_tier4_attendee_live_consumption_contract.mjs",
+    "tier4:auto-controlled-livekit-proof:headed": "TIER4_HEADED=1 PLAYWRIGHT_HEADLESS=0 node scripts/tier4_controlled_rtmp_broadcaster_proof.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "3.9.0",

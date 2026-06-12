@@ -102,10 +102,27 @@ export async function grantSpecialGuestAccess(page: Page, role: "client" | "spea
   }]);
 }
 
+function masterOperatorPassword() {
+  return process.env.E2E_OWNER_PASSWORD
+    || process.env.OWNER_MASTER_ACCESS_PASSWORD
+    || process.env.E2E_OPERATOR_PASSWORD
+    || process.env.OPERATOR_LAUNCHPAD_PASSWORD
+    || requiredDay1Default("OPERATOR_LAUNCHPAD_PASSWORD");
+}
+
 export async function loginAsOperator(page: Page, nextPath?: string) {
   const target = nextPath ? `/production-access/operator?next=${encodeURIComponent(nextPath)}` : "/production-access/operator";
   await gotoAndAssert(page, target);
-  await page.getByLabel(/operator launchpad password/i).fill(process.env.E2E_OPERATOR_PASSWORD || requiredDay1Default("OPERATOR_LAUNCHPAD_PASSWORD"));
+  await page.getByLabel(/operator launchpad password/i).fill(process.env.E2E_OPERATOR_PASSWORD || process.env.OPERATOR_LAUNCHPAD_PASSWORD || requiredDay1Default("OPERATOR_LAUNCHPAD_PASSWORD"));
+  await page.getByRole("button", { name: /enter operator launchpad/i }).click();
+  await page.waitForLoadState("networkidle").catch(() => undefined);
+  if (nextPath) await gotoAndAssert(page, nextPath);
+}
+
+export async function loginAsMasterOperator(page: Page, nextPath?: string) {
+  const target = nextPath ? `/production-access/operator?next=${encodeURIComponent(nextPath)}` : "/production-access/operator";
+  await gotoAndAssert(page, target);
+  await page.getByLabel(/operator launchpad password/i).fill(masterOperatorPassword());
   await page.getByRole("button", { name: /enter operator launchpad/i }).click();
   await page.waitForLoadState("networkidle").catch(() => undefined);
   if (nextPath) await gotoAndAssert(page, nextPath);

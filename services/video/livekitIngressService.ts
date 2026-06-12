@@ -20,7 +20,10 @@ function normalizeRoomName(eventId: string, stageId: string) {
 }
 
 function apiBaseUrl(livekitUrl: string) {
-  return livekitUrl.replace(/\/$/, "");
+  const trimmed = livekitUrl.replace(/\/$/, "");
+  if (trimmed.startsWith("wss://")) return `https://${trimmed.slice("wss://".length)}`;
+  if (trimmed.startsWith("ws://")) return `http://${trimmed.slice("ws://".length)}`;
+  return trimmed;
 }
 
 function base64UrlEncode(input: string | Buffer) {

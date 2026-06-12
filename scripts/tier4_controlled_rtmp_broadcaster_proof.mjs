@@ -23,6 +23,7 @@ const failures = [];
 const warnings = [];
 const artifacts = [];
 const trace = [];
+const tier4RunId = process.env.TIER4_RUN_ID || `tier4-run-${crypto.randomBytes(6).toString('hex')}`;
 let failureClass = 'UNKNOWN';
 const secretValues = new Map();
 
@@ -352,6 +353,7 @@ async function main() {
 
   const evidence = {
     providerLane: 'streamyard-livekit',
+    tier4RunId,
     controlledRtmpBroadcaster: true,
     deployedBaseUrl: baseUrl,
     eventId,
@@ -470,11 +472,48 @@ async function main() {
   fs.writeFileSync(absoluteEvidencePath, JSON.stringify(evidence, null, 2) + '\n');
   artifacts.push(path.relative(root, absoluteEvidencePath));
 
+  const attendeeEnv = {
+    ...probeEnv,
+    TIER4_EVENT_ID: eventId,
+    TIER4_ATTENDEE_EVENT_ID: eventId,
+    TIER4_STAGE_ID: stageId,
+    TIER4_STREAMYARD_LIVE_EVIDENCE_PATH: evidencePath,
+    TIER4_CONTROLLED_MEDIA_EVIDENCE_RUN_ID: tier4RunId,
+    NODE_OPTIONS: process.env.NODE_OPTIONS || '--max-old-space-size=3072',
+  };
+  pushTrace('tier4_attendee_live_consumption_gauntlet_start');
+  const attendeeConsumption = await runCommand('npm run tier4:attendee-live-consumption-gauntlet', attendeeEnv);
+  pushTrace('tier4_attendee_live_consumption_gauntlet_result', { status: attendeeConsumption.status });
+  fs.writeFileSync(path.join(reportsDir, 'tier4-attendee-live-consumption-gauntlet.log'), sanitize(`${attendeeConsumption.stdout}\n${attendeeConsumption.stderr}`));
+  artifacts.push('reports/tier4/tier4-attendee-live-consumption-gauntlet.log');
+  if (attendeeConsumption.status !== 0) throw new Error(`tier4:attendee-live-consumption-gauntlet failed. See reports/tier4/tier4-attendee-live-consumption-gauntlet.log`);
+  const attendeeReport = JSON.parse(fs.readFileSync(path.join(reportsDir, 'tier4-attendee-live-consumption-gauntlet.json'), 'utf8'));
+  evidence.attendeeLiveConsumption = {
+    proofPassed: attendeeReport.result === 'PASS',
+    attendeeStageRendered: attendeeReport.attendeeStageRendered === true,
+    attendeeBrowserReachedLiveStage: attendeeReport.attendeeBrowserReachedLiveStage === true,
+    attendeeBrowserLiveKitSurfaceRendered: attendeeReport.attendeeBrowserLiveKitSurfaceRendered === true,
+    attendeeTokenRoomMatchesIngressRoom: attendeeReport.attendeeTokenRoomMatchesIngressRoom === true,
+    controlledRtmpMediaObserved: attendeeReport.controlledRtmpMediaObserved === true,
+    attendeeLiveTokenIssuedWhenPermitted: attendeeReport.attendeeLiveTokenIssuedWhenPermitted === true,
+    attendeeAccessRevoked: attendeeReport.attendeeAccessRevoked === true,
+    livekitParticipantRemovalAttempted: attendeeReport.livekitParticipantRemoval?.attempted === true || attendeeReport.livekitParticipantRemoval?.status === 'not_configured',
+    revokedAttendeeDeniedLiveToken: attendeeReport.revokedAttendeeDeniedLiveToken === true,
+    attendeeAccessRePermitted: attendeeReport.attendeeAccessRePermitted === true,
+    rePermittedAttendeeLiveTokenRecovered: attendeeReport.rePermittedAttendeeLiveTokenRecovered === true,
+    backendLogsVisibleToAuthorizedRoles: attendeeReport.backendLogsVisibleToAuthorizedRoles === true,
+    attendeeSecretsExposed: attendeeReport.attendeeSecretsExposed === false,
+    evidenceGeneratedByThisRun: attendeeReport.evidenceGeneratedByThisRun === true,
+  };
+  evidence.attendeeEvidenceFiles = Array.from(new Set([...(evidence.attendeeEvidenceFiles || []), 'reports/tier4/tier4-attendee-live-consumption-gauntlet.json']));
+  fs.writeFileSync(absoluteEvidencePath, JSON.stringify(evidence, null, 2) + '\n');
+
   const fullEnv = {
     ...probeEnv,
     STREAMYARD_REAL_PROVIDER_SMOKE: '1',
     STREAMYARD_OPERATOR_CONFIRMED_BROADCAST: '1',
     TIER4_STREAMYARD_LIVE_EVIDENCE_PATH: evidencePath,
+    TIER4_CONTROLLED_MEDIA_EVIDENCE_RUN_ID: tier4RunId,
     NODE_OPTIONS: process.env.NODE_OPTIONS || '--max-old-space-size=3072',
   };
   pushTrace('tier4_live_provider_operational_proof_start');
@@ -488,6 +527,7 @@ async function main() {
 
   const summary = {
     repo: 'agency-event-os',
+    tier4RunId,
     generatedAt: nowIso(),
     result: 'PASS',
     baseUrl,
@@ -512,6 +552,7 @@ main().catch((error) => {
   pushTrace('tier4_blocked_or_failed', { failureClass, message: sanitize(message).slice(0, 1000) });
   const report = {
     repo: 'agency-event-os',
+    tier4RunId,
     generatedAt: nowIso(),
     result: 'BLOCKED_OR_FAIL',
     baseUrl,

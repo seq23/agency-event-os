@@ -226,3 +226,19 @@ Show-day ladder order is now explicit and must be exercised in Tier 4:
 5. Google Meet fallback, proven by valid HTTPS Meet continuity URL or explicit not-applicable disposition; no provider cleanup is required because it is a manual/static continuity link.
 
 Tier 4 must attempt every configured rung and fail only after the full ladder trace is written.
+
+## Validator Admission: Tier 4 Attendee Live Consumption
+
+Admitted validator: `validate:tier4-attendee-live-consumption-contract`
+
+This validator is admitted because it prevents the prior class of failure where provider/operator proof could pass while the final attendee consumption and live access-control outcome remained unproven.
+
+## 2026-06-12 hostile attendee live-consumption review addendum
+
+- Added same-room LiveKit ingress/attendee token proof.
+- Added browser-stage proof to Tier 4 attendee consumption gauntlet.
+- Added explicit generated-evidence run id matching.
+- Added owner/showrunner/crew authorization and backend logging for permit/revoke/re-permit controls.
+- Added best-effort LiveKit participant removal during revocation.
+- Added hostile review artifact: `HOSTILE_CODE_REVIEW_TIER4_ATTENDEE_LIVE_CONSUMPTION_2026-06-12.md`.
+

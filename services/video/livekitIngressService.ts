@@ -2,6 +2,7 @@ import { createHmac } from "crypto";
 import { getLiveKitEnv } from "@/lib/env";
 import { applyStageStreamSignal, getOrCreateStageStreamState, stageStreamKey } from "@/services/video/stageStreamStateService";
 import { getRuntimeStore } from "@/services/runtime/runtimeStoreFactory";
+import { normalizeLiveKitRoomName } from "@/services/video/livekitRoomNaming";
 
 export interface LiveKitIngressProvisioningResult {
   ok: boolean;
@@ -13,10 +14,6 @@ export interface LiveKitIngressProvisioningResult {
   streamKey?: string;
   status: "GENERATING_CREDENTIALS" | "READY_FOR_STREAMYARD" | "ERROR_SAFE";
   message: string;
-}
-
-function normalizeRoomName(eventId: string, stageId: string) {
-  return `${eventId}-${stageId}`.replace(/[^a-zA-Z0-9_-]+/g, "-").toLowerCase();
 }
 
 export function normalizeLiveKitApiBaseUrl(livekitUrl: string) {
@@ -115,7 +112,7 @@ async function createLiveKitRtmpIngress(livekitUrl: string, token: string, input
 export async function provisionStreamYardLiveKitIngress(input: { eventId: string; stageId?: string; actorRole?: string }): Promise<LiveKitIngressProvisioningResult> {
   const stageId = input.stageId || "main-stage";
   const livekit = getLiveKitEnv();
-  const roomName = normalizeRoomName(input.eventId, stageId);
+  const roomName = normalizeLiveKitRoomName(input.eventId, stageId);
   const current = await getOrCreateStageStreamState(input.eventId, stageId);
 
   if (!livekit.livekitUrl || !livekit.livekitApiKey || !livekit.livekitApiSecret) {

@@ -131,3 +131,13 @@ Validation not claimed:
 
 - Deployed postdeploy validation was not run from sandbox.
 - Real Tier 4 provider validation was not run from sandbox because provider credentials/live deployment are local/external.
+
+## 2026-06-12 hostile attendee live-consumption review addendum
+
+- Added same-room LiveKit ingress/attendee token proof.
+- Added browser-stage proof to Tier 4 attendee consumption gauntlet.
+- Added explicit generated-evidence run id matching.
+- Added owner/showrunner/crew authorization and backend logging for permit/revoke/re-permit controls.
+- Added best-effort LiveKit participant removal during revocation.
+- Added hostile review artifact: `HOSTILE_CODE_REVIEW_TIER4_ATTENDEE_LIVE_CONSUMPTION_2026-06-12.md`.
+

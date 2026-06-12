@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { buildResilientVideoJoinResult } from "@/services/video/livekitRoomUiService";
-import { canAttendeePublishLive } from "@/services/venue/attendeeLivePermissionService";
+import { canAttendeeJoinLive, canAttendeePublishLive } from "@/services/venue/attendeeLivePermissionService";
 import { authorizeVideoTokenRequest } from "@/lib/auth/videoTokenRequestGuard";
 import { getCurrentAttendeeIdentity } from "@/services/attendees/attendeeSessionService";
 import type { LiveKitJoinRequest } from "@/types/livekitRoomUi";
@@ -27,7 +27,10 @@ export async function POST(request: Request) {
     if (!identity) return NextResponse.json({ ok: false, error: "Registered attendee session required for attendee video token." }, { status: 403 });
     displayName = identity.displayName;
     profileId = identity.attendeeId;
-    publishPermission = await canAttendeePublishLive({ eventId: body.eventId, roomKind: body.roomType === "main_stage" ? "main_stage" : body.roomType === "breakout" ? "breakout" : "session", roomId: body.roomId, attendeeId: identity.attendeeId });
+    const roomKind = body.roomType === "main_stage" ? "main_stage" : body.roomType === "breakout" ? "breakout" : "session";
+    const joinPermission = await canAttendeeJoinLive({ eventId: body.eventId, roomKind, roomId: body.roomId, attendeeId: identity.attendeeId });
+    if (!joinPermission.canJoin) return NextResponse.json({ ok: false, error: joinPermission.reason, accessStatus: joinPermission.status }, { status: 403 });
+    publishPermission = await canAttendeePublishLive({ eventId: body.eventId, roomKind, roomId: body.roomId, attendeeId: identity.attendeeId });
   }
 
   const result = await buildResilientVideoJoinResult({

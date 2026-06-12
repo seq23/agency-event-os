@@ -73,7 +73,7 @@ export function StagePlayer({ initialState, eventId, stageId = "main-stage", vie
     : <LiveKitIngressStagePlayer eventId={eventId} roomId={stageId} displayName={displayName} muted={preferences.muted} volume={preferences.volume} onIngressDropAfterLive={(reason) => requestServerFallback("attendee_livekit_disconnect_after_started", reason)} />;
 
   return (
-    <div className="relative rounded-3xl bg-slate-950">
+    <div className="relative rounded-3xl bg-slate-950" data-testid="stage-player" data-active-stream-source={state.activeStreamSource} data-stream-status={state.streamStatus}>
       {switching ? <StageSwitchingOverlay message={backendViewer ? `${state.activeStreamSource.replaceAll("_", " ")} transition in progress...` : attendeeOverlayMessage(state)} /> : null}
       {player}
       <div className="flex items-center justify-between gap-3 rounded-b-3xl border-t border-white/10 bg-slate-950 px-4 py-3 text-xs text-slate-300">

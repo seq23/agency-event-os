@@ -186,3 +186,7 @@ Show-day ladder order is now explicit and must be exercised in Tier 4:
 5. Google Meet fallback, proven by valid HTTPS Meet continuity URL or explicit not-applicable disposition; no provider cleanup is required because it is a manual/static continuity link.
 
 Tier 4 must attempt every configured rung and fail only after the full ladder trace is written.
+
+## Tier 4 End-User Outcome Spine: Attendee Live Consumption
+
+Live provider proof is incomplete unless the attendee consumption path is proven. For this repo, Tier 4 must prove: controlled RTMP media into LiveKit, attendee live-stage entry, attendee live token when permitted, live access revocation, live access re-permission, backend owner/showrunner/crew logs, and no attendee/public exposure of provider secrets.

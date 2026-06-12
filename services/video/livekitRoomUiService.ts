@@ -1,6 +1,7 @@
 import type { LiveKitJoinRequest, LiveKitJoinResult, LiveKitRoomUiState } from "@/types/livekitRoomUi";
 import type { VideoRoomType } from "@/types/video";
 import { buildDefaultTokenPermissions, createVideoRoom, createVideoRoomToken, getVideoFallbackPolicy } from "@/services/video";
+import { normalizeLiveKitRoomName } from "@/services/video/livekitRoomNaming";
 
 export function mapRoomSurfaceToVideoRoomType(surface: LiveKitJoinRequest["roomType"]): VideoRoomType {
   if (surface === "main_stage") return "main_stage";
@@ -27,8 +28,17 @@ export async function buildLiveKitJoinResult(input: LiveKitJoinRequest): Promise
     recordingEnabled: input.roomType === "main_stage",
   });
 
+  const livekitUrl = typeof room.metadata.livekitUrl === "string" ? room.metadata.livekitUrl : undefined;
+  const ingressBackedRoomName = input.roomType === "main_stage" ? normalizeLiveKitRoomName(input.eventId, input.roomId || "main-stage") : undefined;
+  const tokenRoom = ingressBackedRoomName ? {
+    ...room,
+    id: ingressBackedRoomName,
+    providerRoomId: ingressBackedRoomName,
+    joinUrl: livekitUrl ? `${livekitUrl.replace("wss://", "https://")}/rooms/${ingressBackedRoomName}` : room.joinUrl,
+    backstageUrl: livekitUrl ? `${livekitUrl.replace("wss://", "https://")}/rooms/${ingressBackedRoomName}/backstage` : room.backstageUrl,
+  } : room;
   const token = await createVideoRoomToken("livekit", {
-    roomId: room.providerRoomId ?? room.id,
+    roomId: tokenRoom.providerRoomId ?? tokenRoom.id,
     eventId: input.eventId,
     displayName: input.displayName,
     profileId: input.profileId,
@@ -38,9 +48,9 @@ export async function buildLiveKitJoinResult(input: LiveKitJoinRequest): Promise
   });
 
   return {
-    room,
+    room: tokenRoom,
     token,
-    livekitUrl: typeof room.metadata.livekitUrl === "string" ? room.metadata.livekitUrl : undefined,
+    livekitUrl,
     connectionState: "token_ready",
   };
 }

@@ -33,3 +33,7 @@ Agency Event OS cannot be called COMPLETE until every HARD FAIL lane below has p
 - GITHUB ACTIONS RUN STATUS
 - SUPABASE LIVE PERSISTENCE
 - HEADED VISUAL HUMAN REVIEW
+
+## Required Tier 4 E2E: Attendee Live Consumption
+
+The live event outcome requires an attendee live-consumption gauntlet. A provider ladder test alone is not sufficient. The gauntlet must prove attendee entry, live token consumption, permit/revoke/re-permit, backend logs, refresh/re-entry-ready persistence surfaces, and no secret exposure.

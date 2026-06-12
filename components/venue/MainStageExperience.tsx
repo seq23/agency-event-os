@@ -7,7 +7,7 @@ import { SessionFullState } from "@/components/venue/SessionFullState";
 import { StagePlayer } from "@/components/video/StagePlayer";
 import { AttendeeStageJoinControls } from "@/components/venue/AttendeeStageJoinControls";
 import { getPublicStageStreamState } from "@/services/video/stageStreamStateService";
-import { getAttendeeLiveControlState } from "@/services/venue/attendeeLivePermissionService";
+import { getAttendeeLiveCapability, getAttendeeLiveControlState } from "@/services/venue/attendeeLivePermissionService";
 import { createInitialRoomFallbackState, getRoomFallbackState } from "@/services/video/roomFallbackService";
 import { getCurrentAttendeeIdentity } from "@/services/attendees/attendeeSessionService";
 import { MyAgendaPanel } from "@/components/venue/MyAgendaPanel";
@@ -18,6 +18,7 @@ export async function MainStageExperience({ model }: { model: VirtualVenueModel 
   const stageStreamState = await getPublicStageStreamState(model.eventId, "main-stage");
   const attendeeLiveControl = await getAttendeeLiveControlState(model.eventId, "main_stage", "main-stage");
   const identity = await getCurrentAttendeeIdentity(model.eventId).catch(() => undefined);
+  const attendeeLiveCapability = identity?.attendeeId ? await getAttendeeLiveCapability(model.eventId, "main_stage", "main-stage", identity.attendeeId).catch(() => undefined) : undefined;
   const liveSession = model.liveNow[0] || model.sessions[0];
   return (
     <div className="space-y-6">
@@ -32,7 +33,7 @@ export async function MainStageExperience({ model }: { model: VirtualVenueModel 
             <StagePlayer initialState={stageStreamState} eventId={model.eventId} stageId="main-stage" viewerRole="attendee" displayName={identity?.displayName || "Registered attendee"} profileId={identity?.attendeeId} />
           </div>
           <div className="mt-5">
-            <AttendeeStageJoinControls eventId={model.eventId} roomId="main-stage" control={attendeeLiveControl} attendeeId={identity?.attendeeId} />
+            <AttendeeStageJoinControls eventId={model.eventId} roomId="main-stage" control={attendeeLiveControl} capability={attendeeLiveCapability} attendeeId={identity?.attendeeId} />
           </div>
         </section>
         <MainStageLiveChat model={model} />

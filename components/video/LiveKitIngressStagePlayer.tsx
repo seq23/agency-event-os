@@ -57,10 +57,12 @@ export function LiveKitIngressStagePlayer({ eventId, roomId, displayName, onIngr
   if (!token || !serverUrl) return <div className="flex aspect-video items-center justify-center rounded-3xl bg-slate-900 p-8 text-center text-white"><p>{bufferOpen ? "Stage is getting ready. Live stream will begin shortly." : "Connecting to LiveKit Ingress feed..."}</p></div>;
 
   return (
-    <LiveKitRoom token={token} serverUrl={serverUrl} connect audio={!muted} video={false} onConnected={() => setStartedOnce(true)} onDisconnected={() => { if (startedOnce && !bufferOpen && !fallbackTriggered.current) { fallbackTriggered.current = true; onIngressDropAfterLive("LiveKit disconnected after stream had started."); } }} onError={(e) => { if (startedOnce && !bufferOpen && !fallbackTriggered.current) { fallbackTriggered.current = true; onIngressDropAfterLive(e.message); } else setError(e.message); }} className="rounded-3xl border border-white/10 bg-black/40 p-4">
-      <IngressTrackView />
-      <RoomAudioRenderer />
-      <p className="sr-only">Preferred muted state: {muted ? "muted" : "sound on"}; preferred volume: {volume}</p>
-    </LiveKitRoom>
+    <div data-testid="attendee-livekit-room-surface" data-livekit-consumption-state="token-issued" data-room-id={roomId}>
+      <LiveKitRoom token={token} serverUrl={serverUrl} connect audio={!muted} video={false} onConnected={() => setStartedOnce(true)} onDisconnected={() => { if (startedOnce && !bufferOpen && !fallbackTriggered.current) { fallbackTriggered.current = true; onIngressDropAfterLive("LiveKit disconnected after stream had started."); } }} onError={(e) => { if (startedOnce && !bufferOpen && !fallbackTriggered.current) { fallbackTriggered.current = true; onIngressDropAfterLive(e.message); } else setError(e.message); }} className="rounded-3xl border border-white/10 bg-black/40 p-4">
+        <IngressTrackView />
+        <RoomAudioRenderer />
+        <p className="sr-only">Preferred muted state: {muted ? "muted" : "sound on"}; preferred volume: {volume}</p>
+      </LiveKitRoom>
+    </div>
   );
 }

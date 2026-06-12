@@ -38,6 +38,7 @@ export type StageStreamSignal =
   | "manual_switch_to_google_meet"
   | "operator_mark_show_ended"
   | "operator_reset_primary"
+  | "attendee_access_decision"
   | "operator_rollback_to_livekit"
   | "operator_rollback_to_cloudflare_stream"
   | "operator_rollback_to_daily";

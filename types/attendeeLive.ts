@@ -6,6 +6,7 @@ export interface AttendeeLiveCapability {
   attendeeId: string;
   roomKind: AttendeeLiveRoomKind;
   roomId: string;
+  canJoinLiveStream: boolean;
   canPublishCamera: boolean;
   canPublishMicrophone: boolean;
   canShareScreen: boolean;
@@ -24,6 +25,7 @@ export interface AttendeeLiveControlState {
   globalMicrophoneEnabled: boolean;
   globalScreenShareEnabled: boolean;
   requestRequired: boolean;
+  attendeeJoinRequiresApproval: boolean;
   emergencyPublishingDisabled: boolean;
   updatedAt: string;
 }

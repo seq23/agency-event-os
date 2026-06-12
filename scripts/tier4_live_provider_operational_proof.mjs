@@ -157,6 +157,22 @@ function inspectEvidence(file, failures) {
   const livekitOnlyProof = evidence.livekitOnlyMode || {};
   if (livekitOnlyProof.proofPassed !== true) failures.push('StreamYard/LiveKit: livekitOnlyMode.proofPassed must be true.');
   if (livekitOnlyProof.cleanupStatus !== 'deleted') failures.push('StreamYard/LiveKit: livekitOnlyMode.cleanupStatus must be deleted.');
+  const attendeeProof = evidence.attendeeLiveConsumption || {};
+  for (const [key, expected] of Object.entries({
+    proofPassed: true,
+    attendeeStageRendered: true,
+    controlledRtmpMediaObserved: true,
+    attendeeLiveTokenIssuedWhenPermitted: true,
+    attendeeAccessRevoked: true,
+    revokedAttendeeDeniedLiveToken: true,
+    attendeeAccessRePermitted: true,
+    rePermittedAttendeeLiveTokenRecovered: true,
+    backendLogsVisibleToAuthorizedRoles: true,
+    attendeeSecretsExposed: false,
+    evidenceGeneratedByThisRun: true,
+  })) {
+    if (attendeeProof[key] !== expected) failures.push(`StreamYard/LiveKit: attendeeLiveConsumption.${key} must be ${expected}.`);
+  }
   return { ...evidence, evidencePath: path.relative(root, absolute) };
 }
 

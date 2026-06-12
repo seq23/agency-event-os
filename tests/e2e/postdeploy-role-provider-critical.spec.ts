@@ -1,6 +1,10 @@
 import { expect, test } from '@playwright/test';
 
-const postdeploy = () => process.env.PLAYWRIGHT_DEPLOYED === '1' || Boolean(process.env.POSTDEPLOY_BASE_URL || process.env.PLAYWRIGHT_BASE_URL?.startsWith('https://'));
+const explicitBaseUrl = () => process.env.POSTDEPLOY_BASE_URL || process.env.SMOKE_BASE_URL || process.env.PLAYWRIGHT_BASE_URL || process.env.NEXT_PUBLIC_APP_URL || '';
+const postdeploy = () => {
+  const baseUrl = explicitBaseUrl();
+  return /^https?:\/\//.test(baseUrl) && !/localhost|127\.0\.0\.1/.test(baseUrl);
+};
 
 test.describe('postdeploy role/provider critical proof', () => {
   test('deployed public, access, venue, and provider routes fail safely or render usefully', async ({ page, request }) => {

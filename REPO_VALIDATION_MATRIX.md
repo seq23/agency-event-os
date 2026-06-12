@@ -33,3 +33,15 @@ This repo no longer uses advisory severities as release signals. Every validator
 | INFO / NO VALIDATION | Diagnostic, trace, helper, or non-proof script | Does not block release; cannot be reported as a warning |
 
 Every validation row must define: owner, tier, severity, proof layer, blocker policy, and simplification disposition. Random phrase-hunt checks are not allowed to block release unless the validation matrix maps the phrase to a real product/security/deploy risk.
+
+
+## Tier 3 Prerequisite State — 2026-06-12
+
+`BLOCKED UNTIL PREREQUISITE` is not an advisory warning and not a repo failure. It is a deterministic external-proof state used only when a selected validation lane requires a deployed URL, provider account, real credential, or operator-confirmed action that is not present in the command environment.
+
+Rules:
+
+- Missing deployed URL/provider/operator proof is reported as `BLOCKED`, not `FAIL`.
+- Once prerequisites are supplied, the same validator becomes a hard blocker if the proof fails.
+- Tier 3 cannot be called COMPLETE while any deployed/provider lane is blocked.
+- Tier 1/Tier 2 remain local repo proof and must not imply deployed/provider proof.

@@ -9,8 +9,8 @@ fi
 
 BASE_URL="${POSTDEPLOY_BASE_URL:-${PLAYWRIGHT_BASE_URL:-}}"
 if [[ -z "$BASE_URL" ]]; then
-  echo "streamyard_livekit_real_provider_smoke: FAIL — set POSTDEPLOY_BASE_URL or PLAYWRIGHT_BASE_URL."
-  exit 1
+  echo "streamyard_livekit_real_provider_smoke: BLOCKED — set POSTDEPLOY_BASE_URL or PLAYWRIGHT_BASE_URL."
+  exit 2
 fi
 
 missing=()
@@ -18,8 +18,8 @@ for key in LIVEKIT_URL LIVEKIT_API_KEY LIVEKIT_API_SECRET LIVEKIT_WEBHOOK_SECRET
   if [[ -z "${!key:-}" ]]; then missing+=("$key"); fi
 done
 if [[ ${#missing[@]} -gt 0 ]]; then
-  echo "streamyard_livekit_real_provider_smoke: FAIL — missing required env: ${missing[*]}"
-  exit 1
+  echo "streamyard_livekit_real_provider_smoke: BLOCKED — missing required env: ${missing[*]}"
+  exit 2
 fi
 
 echo "This smoke does not prove media flow until a real StreamYard Custom RTMP broadcast or controlled RTMP test broadcaster sends video/audio into the generated LiveKit ingress."

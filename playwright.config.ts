@@ -2,7 +2,7 @@ import { defineConfig, devices } from "@playwright/test";
 import fs from "node:fs";
 import envRegistry from "./deployment/env-var-registry.json";
 
-const baseURL = process.env.PLAYWRIGHT_BASE_URL || "http://127.0.0.1:3000";
+const baseURL = process.env.PLAYWRIGHT_BASE_URL || process.env.POSTDEPLOY_BASE_URL || process.env.SMOKE_BASE_URL || process.env.NEXT_PUBLIC_APP_URL || "http://127.0.0.1:3000";
 const systemChromium = process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH || "/usr/bin/chromium";
 const executablePath = fs.existsSync(systemChromium) ? systemChromium : undefined;
 const disableVideo = process.env.PLAYWRIGHT_DISABLE_VIDEO === "1" || process.env.PLAYWRIGHT_DISABLE_VIDEO === "true";

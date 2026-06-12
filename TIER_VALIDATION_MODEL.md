@@ -92,3 +92,12 @@ Forbidden:
 - COMPLETE from mocked provider tests
 - COMPLETE from postdeploy smoke without provider proof
 - COMPLETE when any final-tier provider lane is UNPROVEN
+
+## Tier 3 deployed/provider prerequisite repair — 2026-06-11
+
+Tier 3 validators now distinguish repo/app failures from unavailable external proof.
+
+- Postdeploy checks require an explicit non-local deployed base URL (`POSTDEPLOY_BASE_URL`, `SMOKE_BASE_URL`, `PLAYWRIGHT_BASE_URL`, or `NEXT_PUBLIC_APP_URL`).
+- Real StreamYard/LiveKit proof requires a deployed base URL plus operator acknowledgement env for the controlled real-provider test.
+- Missing Tier 3 prerequisites are reported as `BLOCKED`, not as app failures or false passes.
+- Once prerequisites are supplied, failed commands remain hard blockers.

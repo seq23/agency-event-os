@@ -4,7 +4,7 @@ Status: ACTIVE
 
 ## Simplified Validation Authority
 
-Every validation/test/smoke/audit/deploy package script is assigned below. Advisory severity states are retired. Each row is either `HARD FAIL` or `INFO / NO VALIDATION`.
+Every validation/test/smoke/audit/deploy package script is assigned below. Advisory severity states are retired. Each row is either `HARD FAIL`, `INFO / NO VALIDATION`, or a Tier 3 `BLOCKED UNTIL ...` prerequisite state. `BLOCKED` is not a warning; it is missing external deployed/provider/operator evidence.
 
 | Script | Admission | Severity | Owner | Category | Parent / Matrix Authority | Blocker policy |
 |---|---|---|---|---|---|---|
@@ -172,3 +172,8 @@ Every validation/test/smoke/audit/deploy package script is assigned below. Advis
 - Validators that only check copy labels or doc phrasing must be `INFO / NO VALIDATION` unless the matrix names a real operational risk.
 - Generated artifacts are checked by `validate:no-generated-artifacts`; secret scanning does not fail merely because build output exists.
 - Docs consolidation is enforced through `docs/ACTIVE_DOCS.md`, `docs/DOCS_CONSOLIDATION_MAP.md`, and `docs/archive/ARCHIVE_INDEX.md`.
+
+
+## Tier 3 blocked prerequisite policy
+
+Postdeploy and real-provider validators must not fake failure against localhost when the required deployed URL or operator-confirmed provider proof is absent. They report `BLOCKED` until the required external proof inputs are present. After those inputs are present, any command failure is a hard blocker.

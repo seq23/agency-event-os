@@ -12,13 +12,13 @@ function resolveBaseUrl() {
 const baseUrl = resolveBaseUrl();
 
 if (!baseUrl) {
-  console.error("run_postdeploy_strict: FAIL — set POSTDEPLOY_BASE_URL, SMOKE_BASE_URL, PLAYWRIGHT_BASE_URL, or NEXT_PUBLIC_APP_URL.");
-  process.exit(1);
+  console.error("run_postdeploy_strict: BLOCKED — set POSTDEPLOY_BASE_URL, SMOKE_BASE_URL, PLAYWRIGHT_BASE_URL, or NEXT_PUBLIC_APP_URL.");
+  process.exit(2);
 }
 
 if (!/^https?:\/\//.test(baseUrl)) {
-  console.error(`run_postdeploy_strict: FAIL — invalid base URL: ${baseUrl}`);
-  process.exit(1);
+  console.error(`run_postdeploy_strict: BLOCKED — invalid base URL: ${baseUrl}`);
+  process.exit(2);
 }
 
 const env = {

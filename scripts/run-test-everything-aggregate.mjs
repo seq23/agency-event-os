@@ -43,6 +43,25 @@ const shouldRunTier = (value) => normalizeTier(value) <= requestedTier;
 const slug = (text) => String(text || 'task').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 80) || 'task';
 const excludedCommand = (command) => /run-test-everything-aggregate|test:everything|validate:everything|validate-everything\.mjs|run-test-operations-orchestrator\.mjs/.test(command);
 
+const envValue = (name) => process.env[name] || '';
+const anyEnvPresent = (names = []) => names.some((name) => Boolean(envValue(name)));
+const allEnvPresent = (names = []) => names.every((name) => Boolean(envValue(name)));
+const deployedBaseUrl = () => process.env.POSTDEPLOY_BASE_URL || process.env.SMOKE_BASE_URL || process.env.PLAYWRIGHT_BASE_URL || process.env.NEXT_PUBLIC_APP_URL || '';
+const isExplicitDeployedBaseUrl = (value = deployedBaseUrl()) => /^https?:\/\//.test(value) && !/localhost|127\.0\.0\.1/.test(value);
+const taskBlockReason = (task) => {
+  if (task.requiresDeployedBaseUrl && !isExplicitDeployedBaseUrl()) {
+    return 'requires explicit deployed base URL via POSTDEPLOY_BASE_URL, SMOKE_BASE_URL, PLAYWRIGHT_BASE_URL, or NEXT_PUBLIC_APP_URL';
+  }
+  if (Array.isArray(task.requiredEnvAny) && task.requiredEnvAny.length && !anyEnvPresent(task.requiredEnvAny)) {
+    return `requires one of env vars: ${task.requiredEnvAny.join(', ')}`;
+  }
+  if (Array.isArray(task.requiredEnvAll) && task.requiredEnvAll.length && !allEnvPresent(task.requiredEnvAll)) {
+    const missing = task.requiredEnvAll.filter((name) => !envValue(name));
+    return `requires env vars: ${missing.join(', ')}`;
+  }
+  return '';
+};
+
 const tasks = [];
 const seen = new Set();
 for (const row of rows) {
@@ -60,6 +79,10 @@ for (const row of rows) {
     severity: row.severity || row.failureSeverity || 'UNSPECIFIED',
     category: row.category || 'uncategorized',
     proofLayer: row.proofLayer || row.proves || row.whatItProves || '',
+    blockerPolicy: row.blockerPolicy || row.failureHandling || '',
+    requiresDeployedBaseUrl: Boolean(row.requiresDeployedBaseUrl),
+    requiredEnvAny: Array.isArray(row.requiredEnvAny) ? row.requiredEnvAny : [],
+    requiredEnvAll: Array.isArray(row.requiredEnvAll) ? row.requiredEnvAll : [],
     source: '_repo_validation_matrix.json'
   });
 }
@@ -90,6 +113,13 @@ const run = (task, index) => new Promise((resolve) => {
   ].join('\n');
   out.write(header);
   process.stdout.write(`\n${header}`);
+  const blockedReason = taskBlockReason(task);
+  if (blockedReason) {
+    const message = `BLOCKED — ${blockedReason}. This is unmet deploy/provider/operator evidence, not a repo execution failure.\n`;
+    out.end(`\n${message}`);
+    process.stdout.write(`\n${message}`);
+    return resolve({ ...task, status: 'BLOCKED', exitCode: 2, logFile, durationMs: 0, blockedReason });
+  }
   if (dryRun) {
     out.end('\nDRY RUN — command not executed.\n');
     return resolve({ ...task, status: 'DRY_RUN', exitCode: 0, logFile, durationMs: 0 });
@@ -109,7 +139,7 @@ const run = (task, index) => new Promise((resolve) => {
     const footer = `\n${''.padEnd(80, '=')}\nFINISHED_AT: ${new Date().toISOString()}\nEXIT_CODE: ${code}\nSIGNAL: ${signal || ''}\nTIMED_OUT: ${timedOut}\nDURATION_MS: ${durationMs}\n`;
     out.end(footer);
     process.stdout.write(footer);
-    resolve({ ...task, status: timedOut ? 'TIMEOUT' : code === 0 ? 'PASS' : 'FAIL', exitCode: code ?? 1, signal, timedOut, logFile, durationMs });
+    resolve({ ...task, status: timedOut ? 'TIMEOUT' : code === 0 ? 'PASS' : code === 2 ? 'BLOCKED' : 'FAIL', exitCode: code ?? 1, signal, timedOut, logFile, durationMs, blockedReason: code === 2 ? 'command reported missing prerequisite' : undefined });
   });
 });
 
@@ -121,6 +151,7 @@ for (let i = 0; i < tasks.length; i += 1) {
 
 const endedAt = new Date();
 const failed = results.filter((r) => r.status === 'FAIL' || r.status === 'TIMEOUT');
+const blocked = results.filter((r) => r.status === 'BLOCKED');
 const passed = results.filter((r) => r.status === 'PASS');
 const report = {
   repo: pkg.name || path.basename(root),
@@ -132,6 +163,7 @@ const report = {
   total: results.length,
   passed: passed.length,
   failed: failed.length,
+  blocked: blocked.length,
   logsDir,
   results: results.map((r) => ({ ...r, logFile: path.relative(root, r.logFile) }))
 };
@@ -146,6 +178,7 @@ const md = [
   `Total tasks: ${report.total}`,
   `Passed: ${report.passed}`,
   `Failed/timeouts: ${report.failed}`,
+  `Blocked prerequisites: ${report.blocked}`,
   `Logs directory: ${path.relative(root, logsDir)}`,
   ``,
   `## Failures`,

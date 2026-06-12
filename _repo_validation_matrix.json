@@ -242,28 +242,36 @@
       "command": "npm run postdeploy:full",
       "tier": "tier3",
       "category": "postdeploy",
-      "severity": "HARD FAIL",
+      "severity": "BLOCKED UNTIL DEPLOYED URL",
       "productionRisk": "deployed runtime broken",
       "proofLayer": "POSTDEPLOY E2E PASSED",
       "doesNotProve": "real StreamYard media unless real provider lane run",
-      "blockerPolicy": "HARD FAIL blocks the selected validation tier.",
+      "blockerPolicy": "BLOCKED when deployed base URL is absent; HARD FAIL only after deployed URL is supplied and command fails.",
       "owner": "Repo owner / release operator",
       "simplificationDisposition": "KEEP",
-      "matrixContract": "assigned: owner+tier+proofLayer+blockerPolicy"
+      "matrixContract": "assigned: owner+tier+proofLayer+blockerPolicy+prerequisites",
+      "requiresDeployedBaseUrl": true,
+      "failureHandling": "BLOCKED when deployed base URL is absent; HARD FAIL only after deployed URL is supplied and command fails.",
+      "ownerDecisionNeeded": "YES \u2014 provide deployed base URL to execute this Tier 3 proof."
     },
     {
       "name": "real StreamYard to LiveKit provider smoke",
       "command": "npm run smoke:streamyard-livekit:real",
       "tier": "tier3",
       "category": "real provider proof",
-      "severity": "HARD FAIL",
+      "severity": "BLOCKED UNTIL REAL PROVIDER OPERATOR PROOF",
       "productionRisk": "core live media promise unproven",
       "proofLayer": "POSTDEPLOY E2E PASSED + manual provider confirmation",
       "doesNotProve": "future production broadcast without repeated run",
-      "blockerPolicy": "HARD FAIL blocks the selected validation tier.",
+      "blockerPolicy": "BLOCKED until deployed base URL and required real provider/operator confirmation env are supplied; HARD FAIL only after prerequisites are supplied and proof fails.",
       "owner": "Repo owner / release operator",
       "simplificationDisposition": "KEEP",
-      "matrixContract": "assigned: owner+tier+proofLayer+blockerPolicy"
+      "matrixContract": "assigned: owner+tier+proofLayer+blockerPolicy+prerequisites",
+      "requiresDeployedBaseUrl": true,
+      "requiredEnvAll": [
+        "STREAMYARD_REAL_PROVIDER_SMOKE"
+      ],
+      "ownerDecisionNeeded": "YES \u2014 operator must run controlled StreamYard/LiveKit provider proof."
     },
     {
       "name": "E2E required coverage matrix",
@@ -368,28 +376,37 @@
       "command": "npm run test:e2e:postdeploy-critical",
       "tier": "tier3",
       "category": "postdeploy e2e",
-      "severity": "HARD FAIL",
+      "severity": "BLOCKED UNTIL DEPLOYED URL",
       "productionRisk": "deployed role/provider surfaces broken",
       "proofLayer": "POSTDEPLOY E2E PASSED",
       "doesNotProve": "real StreamYard media",
-      "blockerPolicy": "HARD FAIL blocks the selected validation tier.",
+      "blockerPolicy": "BLOCKED when deployed base URL is absent; HARD FAIL only after deployed URL is supplied and command fails.",
       "owner": "Repo owner / release operator",
       "simplificationDisposition": "KEEP",
-      "matrixContract": "assigned: owner+tier+proofLayer+blockerPolicy"
+      "matrixContract": "assigned: owner+tier+proofLayer+blockerPolicy+prerequisites",
+      "requiresDeployedBaseUrl": true,
+      "failureHandling": "BLOCKED when deployed base URL is absent; HARD FAIL only after deployed URL is supplied and command fails.",
+      "ownerDecisionNeeded": "YES \u2014 provide deployed base URL to execute this Tier 3 proof."
     },
     {
       "name": "Agency real StreamYard LiveKit media",
       "command": "npm run test:e2e:real-streamyard-livekit",
       "tier": "tier3",
       "category": "real provider proof",
-      "severity": "HARD FAIL",
+      "severity": "BLOCKED UNTIL REAL PROVIDER OPERATOR PROOF",
       "productionRisk": "core live media promise unproven",
       "proofLayer": "POSTDEPLOY E2E PASSED + manual provider confirmation",
       "doesNotProve": "future broadcast availability",
-      "blockerPolicy": "HARD FAIL blocks the selected validation tier.",
+      "blockerPolicy": "BLOCKED until deployed base URL and required real provider/operator confirmation env are supplied; HARD FAIL only after prerequisites are supplied and proof fails.",
       "owner": "Repo owner / release operator",
       "simplificationDisposition": "KEEP",
-      "matrixContract": "assigned: owner+tier+proofLayer+blockerPolicy"
+      "matrixContract": "assigned: owner+tier+proofLayer+blockerPolicy+prerequisites",
+      "requiresDeployedBaseUrl": true,
+      "requiredEnvAll": [
+        "STREAMYARD_REAL_PROVIDER_SMOKE",
+        "STREAMYARD_OPERATOR_CONFIRMED_BROADCAST"
+      ],
+      "ownerDecisionNeeded": "YES \u2014 operator must run controlled StreamYard/LiveKit provider proof."
     },
     {
       "name": "hostile review and Master Addendum crosscheck",
@@ -410,14 +427,17 @@
       "command": "npm run postdeploy:smoke",
       "tier": "tier3",
       "category": "postdeploy runtime",
-      "severity": "HARD FAIL",
+      "severity": "BLOCKED UNTIL DEPLOYED URL",
       "productionRisk": "deployed runtime smoke missing or defaulting to local context",
       "proofLayer": "POSTDEPLOY E2E PASSED",
       "doesNotProve": "full role/provider journey unless postdeploy critical lanes also pass",
-      "blockerPolicy": "HARD FAIL blocks the selected validation tier.",
+      "blockerPolicy": "BLOCKED when deployed base URL is absent; HARD FAIL only after deployed URL is supplied and command fails.",
       "owner": "Repo owner / release operator",
       "simplificationDisposition": "KEEP",
-      "matrixContract": "assigned: owner+tier+proofLayer+blockerPolicy"
+      "matrixContract": "assigned: owner+tier+proofLayer+blockerPolicy+prerequisites",
+      "requiresDeployedBaseUrl": true,
+      "failureHandling": "BLOCKED when deployed base URL is absent; HARD FAIL only after deployed URL is supplied and command fails.",
+      "ownerDecisionNeeded": "YES \u2014 provide deployed base URL to execute this Tier 3 proof."
     },
     {
       "name": "Ultimate Tier 3 deployed real-provider proof",

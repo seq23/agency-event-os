@@ -30,6 +30,38 @@ Read these files before making repo changes:
 7. scripts/post_deploy_smoke_test.js
 8. package.json scripts
 
+
+## Canonical validation / deploy proof commands
+
+Use these grouped commands before falling back to individual scripts.
+
+### Pre-deploy source/repo proof
+
+```bash
+npm run validate
+```
+
+This is the normal pre-deploy Tier 1-3 source/repo gate for this repo. It includes typecheck, lint, unit tests, V5 hard validation, V7 validation, and deploy-parity/static runtime contracts.
+
+### Post-deploy Tier 3 live-runtime proof
+
+```bash
+POSTDEPLOY_BASE_URL=https://west-peek-live.seq-taylor.workers.dev \
+PLAYWRIGHT_BASE_URL=https://west-peek-live.seq-taylor.workers.dev \
+SMOKE_BASE_URL=https://west-peek-live.seq-taylor.workers.dev \
+npm run postdeploy:full
+```
+
+This replaces the old piecemeal postdeploy sequence. Use individual postdeploy scripts only to isolate a failure.
+
+### Tier 4 automated live-provider proof
+
+```bash
+npm run env:run -- -- bash -lc 'set -a; . ./.env.local; set +a; POSTDEPLOY_BASE_URL=https://west-peek-live.seq-taylor.workers.dev PLAYWRIGHT_BASE_URL=https://west-peek-live.seq-taylor.workers.dev SMOKE_BASE_URL=https://west-peek-live.seq-taylor.workers.dev TIER4_CONTROLLED_RTMP_BROADCASTER=1 TIER4_LIVE_PROVIDER_OPERATIONAL_PROOF=1 TIER4_RESEND_SEND_APPROVED=1 NODE_OPTIONS="--max-old-space-size=3072" npm run tier4:auto-controlled-livekit-proof'
+```
+
+Tier 4 uses `env:run` so `.env.local` is restored only for the command and removed afterward. It uses a controlled ffmpeg RTMP broadcaster through the deployed LiveKit ingress path and writes redacted evidence under `reports/tier4/`.
+
 ## Non-negotiable delivery rule
 
 A ZIP is not deploy-ready until:

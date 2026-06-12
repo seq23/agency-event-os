@@ -3,6 +3,32 @@
 Status: ACTIVE
 Date: 2026-06-12
 
+## Canonical release command map
+
+Use this map before splitting into smaller commands. Split only when a grouped command fails and the failure must be isolated.
+
+```bash
+# PRE-DEPLOY SOURCE/REPO PROOF
+npm run validate
+
+# POST-DEPLOY TIER 3 LIVE-RUNTIME PROOF
+POSTDEPLOY_BASE_URL="https://<fresh-deployment-url>" \
+PLAYWRIGHT_BASE_URL="https://<fresh-deployment-url>" \
+SMOKE_BASE_URL="https://<fresh-deployment-url>" \
+npm run postdeploy:full
+
+# TIER 4 AUTOMATED LIVE-PROVIDER PROOF
+npm run env:run -- -- bash -lc 'set -a; . ./.env.local; set +a; POSTDEPLOY_BASE_URL="https://<fresh-deployment-url>" PLAYWRIGHT_BASE_URL="https://<fresh-deployment-url>" SMOKE_BASE_URL="https://<fresh-deployment-url>" TIER4_CONTROLLED_RTMP_BROADCASTER=1 TIER4_LIVE_PROVIDER_OPERATIONAL_PROOF=1 TIER4_RESEND_SEND_APPROVED=1 NODE_OPTIONS="--max-old-space-size=3072" npm run tier4:auto-controlled-livekit-proof'
+```
+
+Meaning:
+
+- `npm run validate` is the pre-deploy Tier 1-3 source/repo gate: typecheck, lint, unit tests, hard validation, route/UX/operator rules, and deploy-parity/static runtime contracts.
+- `npm run postdeploy:full` is the grouped Tier 3 deployed-safe gate: live smoke, click audit, role flow, video-provider audit, and deployed browser checks.
+- `tier4:auto-controlled-livekit-proof` is the final live-provider gate: restores temporary env, uses controlled RTMP through the deployed LiveKit ingress path, creates redacted evidence, runs provider journey proof, and runs the final Tier 4 proof.
+
+Do not run the older piecemeal postdeploy sequence unless `postdeploy:full` fails. Do not claim Tier 4 COMPLETE from `postdeploy:full`; Tier 4 requires provider proof.
+
 ## Tier 1 — Static/source
 
 Run source-level validation only. Do not claim browser/deploy/provider proof.
@@ -26,6 +52,17 @@ If headed browser review is supported, run the repo's headed gauntlet command fr
 ## Tier 3 — Deployed postdeploy critical proof / safe provider boundary
 
 Tier 3 must use explicit deployed URLs. It proves the deployed app survives public/access/venue/provider routes and fails safely without leaking secrets. It does not prove real live provider operations.
+
+Primary grouped postdeploy command:
+
+```bash
+POSTDEPLOY_BASE_URL="https://<fresh-deployment-url>" \
+PLAYWRIGHT_BASE_URL="https://<fresh-deployment-url>" \
+SMOKE_BASE_URL="https://<fresh-deployment-url>" \
+npm run postdeploy:full
+```
+
+Optional aggregate validator when harvesting all tiered failures:
 
 ```bash
 POSTDEPLOY_BASE_URL="https://<fresh-deployment-url>" \
@@ -61,7 +98,7 @@ Automated controlled RTMP proof (no StreamYard UI required when ffmpeg is availa
 npm run env:run -- -- bash -lc 'set -a; . ./.env.local; set +a; POSTDEPLOY_BASE_URL="https://<fresh-deployment-url>" PLAYWRIGHT_BASE_URL="https://<fresh-deployment-url>" SMOKE_BASE_URL="https://<fresh-deployment-url>" TIER4_CONTROLLED_RTMP_BROADCASTER=1 TIER4_LIVE_PROVIDER_OPERATIONAL_PROOF=1 TIER4_RESEND_SEND_APPROVED=1 NODE_OPTIONS="--max-old-space-size=3072" npm run tier4:auto-controlled-livekit-proof'
 ```
 
-This lane creates/observes the deployed LiveKit ingress, pushes synthetic audio/video through the same RTMP ingest surface a StreamYard Custom RTMP destination uses, writes a redacted evidence JSON, runs the real provider journey probe, then runs the Tier 4 live-provider proof command. It requires local ffmpeg (`TIER4_FFMPEG_BIN` may override the binary path). It does not store RTMP URLs, stream keys, API keys, bearer tokens, cookies, service-role keys, webhook secrets, or raw recipient PII.
+This lane creates/observes the deployed LiveKit ingress, pushes synthetic audio/video through the same RTMP ingest surface a StreamYard Custom RTMP destination uses, writes a redacted evidence JSON, runs the real provider journey probe, then runs the Tier 4 live-provider proof command. It uses `env:run` so `.env.local` is restored only for the command and removed afterward. It requires local ffmpeg (`TIER4_FFMPEG_BIN` may override the binary path). It does not store RTMP URLs, stream keys, API keys, bearer tokens, cookies, service-role keys, webhook secrets, or raw recipient PII.
 
 Focused live-provider proof:
 

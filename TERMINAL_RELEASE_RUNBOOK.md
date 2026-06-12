@@ -96,7 +96,14 @@ gh run view <RUN_ID> --log-failed
 
 ## Step 7 — postdeploy
 
-Run postdeploy smoke and deployed E2E against the fresh deployment URL. Do not rely on localhost defaults. Use explicit base URL env vars.
+Run the grouped Tier 3 postdeploy command against the fresh deployment URL. Do not run piecemeal postdeploy commands unless this grouped command fails. Do not rely on localhost defaults.
+
+```bash
+POSTDEPLOY_BASE_URL="https://<fresh-deployment-url>" \
+PLAYWRIGHT_BASE_URL="https://<fresh-deployment-url>" \
+SMOKE_BASE_URL="https://<fresh-deployment-url>" \
+npm run postdeploy:full
+```
 
 ## Step 8 — deployed postdeploy proof
 
@@ -104,7 +111,13 @@ Run Tier 3 after deploy with an explicit deployed URL. This proves deployed-safe
 
 ## Step 9 — final live-provider proof
 
-Run Tier 4 with real provider credentials, operator evidence, provider accounts, and cleanup/no-secret evidence review in place. The result is not COMPLETE unless Tier 4 passes or every blocked provider lane is explicitly owner-accepted as out of scope.
+Run Tier 4 with restored local env, real provider credentials, provider accounts, automated controlled RTMP proof, cleanup/no-secret evidence review, and generated Tier 4 reports in place. The result is not COMPLETE unless Tier 4 passes or every blocked provider lane is explicitly owner-accepted as out of scope.
+
+Preferred automated lane:
+
+```bash
+npm run env:run -- -- bash -lc 'set -a; . ./.env.local; set +a; POSTDEPLOY_BASE_URL="https://<fresh-deployment-url>" PLAYWRIGHT_BASE_URL="https://<fresh-deployment-url>" SMOKE_BASE_URL="https://<fresh-deployment-url>" TIER4_CONTROLLED_RTMP_BROADCASTER=1 TIER4_LIVE_PROVIDER_OPERATIONAL_PROOF=1 TIER4_RESEND_SEND_APPROVED=1 NODE_OPTIONS="--max-old-space-size=3072" npm run tier4:auto-controlled-livekit-proof'
+```
 
 ## Step 9 — cleanup
 

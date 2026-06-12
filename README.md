@@ -44,6 +44,27 @@ This starter baseline includes:
 - Real analytics ingestion
 - Report export
 
+
+## Release proof command map
+
+Use the grouped commands first; split into smaller scripts only after a failure.
+
+```bash
+# Pre-deploy source/repo proof
+npm run validate
+
+# Post-deploy Tier 3 live-runtime proof
+POSTDEPLOY_BASE_URL="https://<fresh-deployment-url>" \
+PLAYWRIGHT_BASE_URL="https://<fresh-deployment-url>" \
+SMOKE_BASE_URL="https://<fresh-deployment-url>" \
+npm run postdeploy:full
+
+# Tier 4 automated live-provider proof
+npm run env:run -- -- bash -lc 'set -a; . ./.env.local; set +a; POSTDEPLOY_BASE_URL="https://<fresh-deployment-url>" PLAYWRIGHT_BASE_URL="https://<fresh-deployment-url>" SMOKE_BASE_URL="https://<fresh-deployment-url>" TIER4_CONTROLLED_RTMP_BROADCASTER=1 TIER4_LIVE_PROVIDER_OPERATIONAL_PROOF=1 TIER4_RESEND_SEND_APPROVED=1 NODE_OPTIONS="--max-old-space-size=3072" npm run tier4:auto-controlled-livekit-proof'
+```
+
+`npm run validate` plus `npm run postdeploy:full` is the normal Tier 1-3 proof set for this repo workflow. Tier 4 remains separate and must produce live-provider evidence before COMPLETE can be claimed.
+
 ## Validation Status
 
 STRUCTURALLY CHECKED — LOCAL VALIDATION REQUIRED

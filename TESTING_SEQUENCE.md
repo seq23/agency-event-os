@@ -54,6 +54,15 @@ NODE_OPTIONS="--max-old-space-size=3072" \
 npm run validate:everything -- --tier=4
 ```
 
+
+Automated controlled RTMP proof (no StreamYard UI required when ffmpeg is available):
+
+```bash
+npm run env:run -- -- bash -lc 'set -a; . ./.env.local; set +a; POSTDEPLOY_BASE_URL="https://<fresh-deployment-url>" PLAYWRIGHT_BASE_URL="https://<fresh-deployment-url>" SMOKE_BASE_URL="https://<fresh-deployment-url>" TIER4_CONTROLLED_RTMP_BROADCASTER=1 TIER4_LIVE_PROVIDER_OPERATIONAL_PROOF=1 TIER4_RESEND_SEND_APPROVED=1 NODE_OPTIONS="--max-old-space-size=3072" npm run tier4:auto-controlled-livekit-proof'
+```
+
+This lane creates/observes the deployed LiveKit ingress, pushes synthetic audio/video through the same RTMP ingest surface a StreamYard Custom RTMP destination uses, writes a redacted evidence JSON, runs the real provider journey probe, then runs the Tier 4 live-provider proof command. It requires local ffmpeg (`TIER4_FFMPEG_BIN` may override the binary path). It does not store RTMP URLs, stream keys, API keys, bearer tokens, cookies, service-role keys, webhook secrets, or raw recipient PII.
+
 Focused live-provider proof:
 
 ```bash

@@ -39,7 +39,7 @@ function checkNoSecrets(label, value) {
     if (secret && raw.includes(secret)) failures.push(`${label}: raw secret leaked into report/evidence (${key}).`);
   }
   if (/rtmps?:\/\//i.test(raw)) failures.push(`${label}: raw RTMP URL leaked into report/evidence.`);
-  if (/Bearer\s+(?!tokens?\b)[A-Za-z0-9._-]{16,}/i.test(raw)) failures.push(`${label}: bearer token leaked into report/evidence.`);
+  if (/Bearer\s+[A-Za-z0-9._-]+/i.test(raw)) failures.push(`${label}: bearer token leaked into report/evidence.`);
 }
 function base64url(input) { return Buffer.from(input).toString('base64url'); }
 function signedCookie(payload, secret) {

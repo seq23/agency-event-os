@@ -54,7 +54,7 @@ if [[ ! -f "$TIER4_STREAMYARD_LIVE_EVIDENCE_PATH" ]]; then
   exit 2
 fi
 
-if grep -Eiq 'LIVEKIT_API_SECRET|LIVEKIT_WEBHOOK_SECRET|SUPABASE_SERVICE_ROLE_KEY|RESEND_API_KEY|DAILY_API_KEY|ZOOM_MEETING_SDK_SECRET|V5_ACCESS_COOKIE_SECRET|rtmps?://|\"(streamKey|stream_key)\"[[:space:]]*:[[:space:]]*\"[^\"]{8,}\"|Bearer[[:space:]]+([A-Za-z0-9._-]{16,})' "$TIER4_STREAMYARD_LIVE_EVIDENCE_PATH"; then
+if grep -Eiq 'LIVEKIT_API_SECRET|LIVEKIT_WEBHOOK_SECRET|SUPABASE_SERVICE_ROLE_KEY|RESEND_API_KEY|DAILY_API_KEY|ZOOM_MEETING_SDK_SECRET|V5_ACCESS_COOKIE_SECRET|rtmps?://|stream[[:space:]_-]*key|Bearer[[:space:]]+[A-Za-z0-9._-]+' "$TIER4_STREAMYARD_LIVE_EVIDENCE_PATH"; then
   echo "streamyard_livekit_real_provider_smoke: FAIL — evidence file appears to contain secret/provider material. Redact before continuing."
   exit 1
 fi
@@ -84,10 +84,6 @@ PLAYWRIGHT_DEPLOYED=1 \
 PLAYWRIGHT_SKIP_WEBSERVER=1 \
 STREAMYARD_REAL_PROVIDER_SMOKE=1 \
 STREAMYARD_OPERATOR_CONFIRMED_BROADCAST=1 \
-TIER4_EVENT_ID="${TIER4_EVENT_ID:-${STREAMYARD_E2E_EVENT_ID:-}}" \
-STREAMYARD_E2E_EVENT_ID="${STREAMYARD_E2E_EVENT_ID:-${TIER4_EVENT_ID:-}}" \
-TIER4_STAGE_ID="${TIER4_STAGE_ID:-${STREAMYARD_E2E_STAGE_ID:-main-stage}}" \
-STREAMYARD_E2E_STAGE_ID="${STREAMYARD_E2E_STAGE_ID:-${TIER4_STAGE_ID:-main-stage}}" \
 npx playwright test tests/e2e/streamyard-producer-ingress.spec.ts
 
 echo "PASS — real provider smoke completed with operator-confirmed StreamYard broadcast and redacted Tier 4 evidence."

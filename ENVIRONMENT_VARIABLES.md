@@ -106,7 +106,6 @@ Purpose: safe env contract for local, CI, Cloudflare Worker, postdeploy, and pro
 | `POSTDEPLOY_BASE_URL` | Local/test-only control. Do not configure as production runtime secret unless explicitly documented. |
 | `SMOKE_BASE_URL` | Local/test-only control. Do not configure as production runtime secret unless explicitly documented. |
 | `STREAMYARD_E2E_EVENT_ID` | Local/test-only control. Do not configure as production runtime secret unless explicitly documented. |
-| `STREAMYARD_E2E_STAGE_ID` | Local/test-only control. Do not configure as production runtime secret unless explicitly documented. |
 | `STREAMYARD_OPERATOR_CONFIRMED_BROADCAST` | Local/test-only control. Do not configure as production runtime secret unless explicitly documented. |
 | `STREAMYARD_REAL_PROVIDER_SMOKE` | Local/test-only control. Do not configure as production runtime secret unless explicitly documented. |
 | `VALIDATE_ENV_STRICT` | Local/test-only control. Do not configure as production runtime secret unless explicitly documented. |
@@ -168,3 +167,19 @@ Do not commit `.env.local`.
 | `TIER4_SUPABASE_PROOF_TABLE` | Local/operator-run proof control. Supabase table used for production write/readback proof; default is v5_analytics_events. |
 | `TIER4_RESEND_SEND_APPROVED` | Local/operator-run proof control. Must be 1 before Tier 4 sends exactly one approved Resend test email. |
 | `TIER4_CONTINUE_AFTER_FAILURE` | Local/operator-run diagnostic control. Set to 1 only when intentionally harvesting all Tier 4 failures in one run. |
+
+| STREAMYARD_E2E_STAGE_ID | Local/test-only Tier 4 stage identifier. Do not configure as production runtime secret unless explicitly documented. |
+
+| TIER4_CONTROLLED_RTMP_BROADCASTER | Local/test-only guard for the automated controlled RTMP broadcaster Tier 4 proof. |
+
+| TIER4_FFMPEG_BIN | Local/test-only optional ffmpeg binary path for controlled RTMP proof. |
+
+| TIER4_CONTROLLED_RTMP_SECONDS | Local/test-only duration for controlled RTMP proof broadcast. |
+
+| TIER4_CONTROLLED_RTMP_POLL_TIMEOUT_MS | Local/test-only provider polling timeout for controlled RTMP proof. |
+
+| TIER4_CONTROLLED_RTMP_CLEANUP_STATUS | Local/test-only evidence cleanup note for controlled RTMP proof. |
+
+| CLOUDFLARE_DEPLOYMENT_ID_REDACTED | Local/test-only optional redacted deployment id for Tier 4 evidence. |
+
+| GITHUB_ACTIONS_STATUS_VERIFIED | Local/test-only optional deploy status marker for Tier 4 evidence. |

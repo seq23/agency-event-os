@@ -26,7 +26,6 @@ Status: STRUCTURALLY CHECKED — LOCAL VALIDATION REQUIRED
 - `REAL_PROVIDER_LANE_MATRIX.md`
 - `TIER4_LIVE_PROVIDER_OPERATIONAL_PROOF.md`
 - `TIER4_PROVIDER_EVIDENCE_TEMPLATE.json`
-- `TIER4_DATA_TRACE_REVIEW_2026-06-12.md`
 - `_artifact_manifest.json`
 - `_env_contract.json`
 - `_repo_validation_matrix.json`
@@ -37,29 +36,13 @@ Status: STRUCTURALLY CHECKED — LOCAL VALIDATION REQUIRED
 - `scripts/tier4_live_provider_operational_proof.mjs`
 - `scripts/tier4_real_provider_journey_probe.mjs`
 - `scripts/validate-tier4-hostile-coverage.mjs`
-- `scripts/streamyard_livekit_real_provider_smoke.sh`
-- `tests/e2e/real-streamyard-livekit-media.spec.ts`
-- `tests/e2e/streamyard-producer-ingress.spec.ts`
 - `tests/e2e/tier4-real-provider-journeys.spec.ts`
 - `VALIDATOR_ADMISSION_REGISTER.md`
-
-## Data trace review added
-
-- Added `TIER4_DATA_TRACE_REVIEW_2026-06-12.md`.
-- Patched Tier 4 pre-test issues found during data trace:
-  - Playwright isolated request context no longer used for operator-scoped provider API proof.
-  - Tier 4 event/stage IDs are propagated consistently from evidence into all Tier 4 lanes.
-  - Evidence no-secret scan no longer rejects safe explanatory wording from the template.
-  - Public provider API denial must happen before provider execution with `401`/`403`, not generic `500`/`502`.
-  - `V5_ACCESS_COOKIE_SECRET` is now an explicit Tier 4 prerequisite.
-  - StreamYard producer smoke no longer hard-codes demo during real-provider mode.
 
 ## Validation performed in sandbox
 
 - `node --check scripts/tier4_live_provider_operational_proof.mjs` — PASS
 - `node --check scripts/tier4_real_provider_journey_probe.mjs` — PASS
-- `evidence template no-secret scan false-positive check — PASS`
-- `bash -n scripts/streamyard_livekit_real_provider_smoke.sh — PASS`
 - `node --check scripts/validate-tier4-hostile-coverage.mjs` — PASS
 - `npm run tier4:live-provider-operational-proof` without Tier 4 env — EXPECTED BLOCKED exit 2, confirmed fail-closed behavior
 - `npm run tier4:real-provider-journey-probe` without Tier 4 env — EXPECTED BLOCKED exit 2, confirmed fail-closed behavior

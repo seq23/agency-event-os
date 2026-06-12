@@ -3,7 +3,7 @@
   "repo": "agency-event-os",
   "sourceBaseline": "agency-event-os-main_BASELINE_06-12-26_b405d3f.zip",
   "status": "STRUCTURALLY CHECKED \u2014 LOCAL VALIDATION REQUIRED",
-  "scope": "Tier 4 data trace hardening: real credential/provider journey proof gates, event/stage propagation, operator-scoped request context, evidence scan hygiene, and Zoom route authorization hardening",
+  "scope": "Tier 4 hostile review execution: real credential/provider journey proof gates and Zoom route authorization hardening",
   "changedFiles": [
     ".env.example",
     ".env.local.example",
@@ -23,11 +23,7 @@
     "scripts/tier4_real_provider_journey_probe.mjs",
     "scripts/validate-tier4-hostile-coverage.mjs",
     "tests/e2e/tier4-real-provider-journeys.spec.ts",
-    "VALIDATOR_ADMISSION_REGISTER.md",
-    "scripts/streamyard_livekit_real_provider_smoke.sh",
-    "tests/e2e/real-streamyard-livekit-media.spec.ts",
-    "tests/e2e/streamyard-producer-ingress.spec.ts",
-    "TIER4_DATA_TRACE_REVIEW_2026-06-12.md"
+    "VALIDATOR_ADMISSION_REGISTER.md"
   ],
   "sandboxValidation": [
     "node --check Tier 4 changed JS scripts: PASS",
@@ -37,10 +33,7 @@
     "validate:tier4-contract: PASS",
     "validate:final-tier-contract: PASS",
     "validate:validator-admission: PASS",
-    "validate:no-generated-artifacts: PASS",
-    "bash -n scripts/streamyard_livekit_real_provider_smoke.sh: PASS",
-    "evidence template no-secret scan false-positive check: PASS",
-    "Tier 4 data trace review: completed, fixable issues patched"
+    "validate:no-generated-artifacts: PASS"
   ],
   "notRun": [
     "TypeScript compile/build not run because node_modules is absent in sandbox",
@@ -49,5 +42,5 @@
     "Tier 3 deployed not run",
     "Tier 4 live provider proof not run because real credentials/provider evidence are external prerequisites"
   ],
-  "updatedAt": "2026-06-12T12:35:00Z"
+  "updatedAt": "2026-06-12T12:30:00Z"
 }

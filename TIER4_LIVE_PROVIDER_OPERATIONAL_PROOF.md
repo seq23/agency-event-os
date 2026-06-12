@@ -21,6 +21,19 @@ Tier 4 may:
 
 Tier 4 is not a routine postdeploy smoke. It is the final operational proof lane.
 
+
+## Automated controlled RTMP broadcaster lane
+
+When the goal is to avoid manual StreamYard UI operation, Tier 4 may use the automated controlled RTMP broadcaster lane:
+
+```bash
+npm run tier4:auto-controlled-livekit-proof
+```
+
+This lane requires `TIER4_CONTROLLED_RTMP_BROADCASTER=1`, local ffmpeg, deployed base URL env, LiveKit env, V5 access env, Supabase env, and approved Resend recipient env when Resend is configured. It provisions/observes the deployed LiveKit ingress path, pushes synthetic audio/video through RTMP, records provider/API/state evidence without secrets, writes `reports/tier4/streamyard-livekit-evidence.json`, and then runs the normal Tier 4 live-provider proof runner.
+
+This does not prove the StreamYard web UI itself. It proves the same Custom RTMP ingest path StreamYard uses by substituting a controlled broadcaster. Use manual StreamYard only when the requirement is specifically to prove StreamYard's UI/operator workflow.
+
 ## Required evidence packet
 
 The StreamYard/LiveKit lane requires `TIER4_STREAMYARD_LIVE_EVIDENCE_PATH` pointing to JSON with this shape:

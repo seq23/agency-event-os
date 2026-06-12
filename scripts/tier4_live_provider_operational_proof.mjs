@@ -16,8 +16,8 @@ const redactionPatterns = [
   /DAILY_API_KEY/i,
   /ZOOM_MEETING_SDK_SECRET/i,
   /V5_ACCESS_COOKIE_SECRET/i,
-  /Bearer\s+(?!tokens?\b)[A-Za-z0-9._-]{16,}/i,
-  /(?:streamKey|stream_key)\s*["':=]+\s*["'][^"']{8,}/i,
+  /Bearer\s+[A-Za-z0-9._-]+/i,
+  /stream\s*key/i,
   /rtmp:\/\//i,
   /rtmps:\/\//i,
   /eyJ[a-zA-Z0-9_-]+\.[a-zA-Z0-9_-]+\.[a-zA-Z0-9_-]+/
@@ -149,17 +149,8 @@ requireAll(['STREAMYARD_REAL_PROVIDER_SMOKE', 'STREAMYARD_OPERATOR_CONFIRMED_BRO
 if (process.env.STREAMYARD_REAL_PROVIDER_SMOKE && process.env.STREAMYARD_REAL_PROVIDER_SMOKE !== '1') failures.push('StreamYard/LiveKit: STREAMYARD_REAL_PROVIDER_SMOKE must be 1.');
 if (process.env.STREAMYARD_OPERATOR_CONFIRMED_BROADCAST && process.env.STREAMYARD_OPERATOR_CONFIRMED_BROADCAST !== '1') failures.push('StreamYard/LiveKit: STREAMYARD_OPERATOR_CONFIRMED_BROADCAST must be 1.');
 requireAll(['LIVEKIT_URL', 'LIVEKIT_API_KEY', 'LIVEKIT_API_SECRET', 'LIVEKIT_WEBHOOK_SECRET'], failures, 'LiveKit');
-requireAll(['V5_ACCESS_COOKIE_SECRET'], failures, 'Tier 4 role-boundary proof');
 
 const evidence = inspectEvidence(process.env.TIER4_STREAMYARD_LIVE_EVIDENCE_PATH, failures);
-const tier4EventId = evidence?.eventId || process.env.TIER4_EVENT_ID || process.env.STREAMYARD_E2E_EVENT_ID || '';
-const tier4StageId = evidence?.stageId || process.env.TIER4_STAGE_ID || process.env.STREAMYARD_E2E_STAGE_ID || 'main-stage';
-const tier4EventEnv = {
-  TIER4_EVENT_ID: tier4EventId,
-  STREAMYARD_E2E_EVENT_ID: tier4EventId,
-  TIER4_STAGE_ID: tier4StageId,
-  STREAMYARD_E2E_STAGE_ID: tier4StageId
-};
 
 requireAll(['NEXT_PUBLIC_SUPABASE_URL', 'NEXT_PUBLIC_SUPABASE_ANON_KEY', 'SUPABASE_SERVICE_ROLE_KEY'], failures, 'Supabase production persistence');
 
@@ -178,7 +169,7 @@ else warnings.push('Resend Tier 4 lane not configured; must be explicitly accept
 const envKeys = [
   'POSTDEPLOY_BASE_URL', 'SMOKE_BASE_URL', 'PLAYWRIGHT_BASE_URL', 'NEXT_PUBLIC_APP_URL',
   'TIER4_LIVE_PROVIDER_OPERATIONAL_PROOF', 'STREAMYARD_REAL_PROVIDER_SMOKE', 'STREAMYARD_OPERATOR_CONFIRMED_BROADCAST',
-  'LIVEKIT_URL', 'LIVEKIT_API_KEY', 'LIVEKIT_API_SECRET', 'LIVEKIT_WEBHOOK_SECRET', 'LIVEKIT_INGRESS_RTMP_BASE_URL', 'V5_ACCESS_COOKIE_SECRET',
+  'LIVEKIT_URL', 'LIVEKIT_API_KEY', 'LIVEKIT_API_SECRET', 'LIVEKIT_WEBHOOK_SECRET', 'LIVEKIT_INGRESS_RTMP_BASE_URL',
   'NEXT_PUBLIC_SUPABASE_URL', 'NEXT_PUBLIC_SUPABASE_ANON_KEY', 'SUPABASE_SERVICE_ROLE_KEY',
   'DAILY_API_KEY', 'DAILY_DOMAIN', 'DAILY_API_BASE_URL', 'DAILY_FALLBACK_ENABLED',
   'ZOOM_MEETING_SDK_KEY', 'ZOOM_MEETING_SDK_SECRET',
@@ -186,12 +177,11 @@ const envKeys = [
 ];
 
 if (!failures.length) {
-  const deployedEnv = { POSTDEPLOY_BASE_URL: deployedBaseUrl, SMOKE_BASE_URL: deployedBaseUrl, PLAYWRIGHT_BASE_URL: deployedBaseUrl, ...tier4EventEnv };
-  lanes.push(run('npm run postdeploy:full', 'tier4-prereq-postdeploy-full', deployedEnv));
-  lanes.push(run('npm run tier4:real-provider-journey-probe', 'tier4-real-provider-journey-probe', deployedEnv));
-  lanes.push(run('npm run smoke:streamyard-livekit:real', 'tier4-streamyard-livekit-smoke', deployedEnv));
-  lanes.push(run('npm run test:e2e:tier4-real-streamyard-livekit', 'tier4-real-streamyard-livekit-e2e', deployedEnv));
-  lanes.push(run('npm run test:e2e:tier4-real-provider-journeys', 'tier4-real-provider-journeys-e2e', deployedEnv));
+  lanes.push(run('npm run postdeploy:full', 'tier4-prereq-postdeploy-full', { POSTDEPLOY_BASE_URL: deployedBaseUrl, SMOKE_BASE_URL: deployedBaseUrl, PLAYWRIGHT_BASE_URL: deployedBaseUrl }));
+  lanes.push(run('npm run tier4:real-provider-journey-probe', 'tier4-real-provider-journey-probe', { POSTDEPLOY_BASE_URL: deployedBaseUrl, PLAYWRIGHT_BASE_URL: deployedBaseUrl, TIER4_EVENT_ID: evidence?.eventId || process.env.TIER4_EVENT_ID || process.env.STREAMYARD_E2E_EVENT_ID || '' }));
+  lanes.push(run('npm run smoke:streamyard-livekit:real', 'tier4-streamyard-livekit-smoke', { POSTDEPLOY_BASE_URL: deployedBaseUrl, PLAYWRIGHT_BASE_URL: deployedBaseUrl }));
+  lanes.push(run('npm run test:e2e:tier4-real-streamyard-livekit', 'tier4-real-streamyard-livekit-e2e', { POSTDEPLOY_BASE_URL: deployedBaseUrl, PLAYWRIGHT_BASE_URL: deployedBaseUrl }));
+  lanes.push(run('npm run test:e2e:tier4-real-provider-journeys', 'tier4-real-provider-journeys-e2e', { POSTDEPLOY_BASE_URL: deployedBaseUrl, PLAYWRIGHT_BASE_URL: deployedBaseUrl, TIER4_EVENT_ID: evidence?.eventId || process.env.TIER4_EVENT_ID || process.env.STREAMYARD_E2E_EVENT_ID || '' }));
   for (const lane of lanes) {
     if (lane.status !== 'PASS') failures.push(`${lane.name}: ${lane.status} exit=${lane.exitCode}; see ${lane.logFile}`);
   }

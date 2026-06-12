@@ -184,7 +184,8 @@
     "test:everything:tier4:with-env": "node scripts/run-with-temp-env.mjs -- npm run test:everything:tier4",
     "tier4:real-provider-journey-probe": "node scripts/tier4_real_provider_journey_probe.mjs",
     "test:e2e:tier4-real-provider-journeys": "PLAYWRIGHT_SKIP_WEBSERVER=1 PLAYWRIGHT_DEPLOYED=1 playwright test tests/e2e/tier4-real-provider-journeys.spec.ts --trace on --workers=1",
-    "validate:tier4-hostile-coverage": "node scripts/validate-tier4-hostile-coverage.mjs"
+    "validate:tier4-hostile-coverage": "node scripts/validate-tier4-hostile-coverage.mjs",
+    "tier4:auto-controlled-livekit-proof": "node scripts/tier4_controlled_rtmp_broadcaster_proof.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "3.9.0",

@@ -13,9 +13,12 @@ async function hasOperatorLaunchpadAccess() {
   if (missing.length) return { ok: false as const, missing };
   try {
     const env = getEnv();
-    const { operatorCookieName } = safeAccessCookieNames();
-    const payload = await readV5AccessCookie(cookies().get(operatorCookieName)?.value, getV5AccessCookieSecret(env));
-    return { ok: Boolean(payload && (payload.kind === "operator" || payload.kind === "owner")), missing: [] as string[] };
+    const { operatorCookieName, ownerCookieName } = safeAccessCookieNames();
+    const secret = getV5AccessCookieSecret(env);
+    const ownerPayload = await readV5AccessCookie(cookies().get(ownerCookieName)?.value, secret);
+    if (ownerPayload?.kind === "owner") return { ok: true as const, missing: [] as string[] };
+    const operatorPayload = await readV5AccessCookie(cookies().get(operatorCookieName)?.value, secret);
+    return { ok: Boolean(operatorPayload?.kind === "operator"), missing: [] as string[] };
   } catch {
     return { ok: false as const, missing: [] as string[] };
   }

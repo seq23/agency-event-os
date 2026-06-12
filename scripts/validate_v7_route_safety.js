@@ -29,7 +29,8 @@ for (const [name, content] of [['crew', crew], ['operator', operator], ['special
   if (!content.includes('export const dynamic = "force-dynamic"')) throw new Error(`${name} gate must be force-dynamic so Cloudflare runtime env is read at request time.`);
 }
 for (const [name, content] of [['launchpad', launchpad], ['operator packet', packet]]) {
-  if (!content.includes('readV5AccessCookie') || !content.includes('payload.kind === "operator"')) throw new Error(`${name} must require a valid operator access cookie.`);
+  if (!content.includes('readV5AccessCookie') || !content.includes('operatorPayload?.kind === "operator"')) throw new Error(`${name} must require a valid operator access cookie.`);
+  if (!content.includes('ownerPayload?.kind === "owner"')) throw new Error(`${name} must accept a valid owner master cookie as universal authority.`);
   if (!content.includes('redirect("/production-access/operator')) throw new Error(`${name} must redirect unauthenticated users to the operator gate.`);
   if (!content.includes('BrandedSetupError')) throw new Error(`${name} must fail safely when access config is missing.`);
   if (!content.includes('export const dynamic = "force-dynamic"')) throw new Error(`${name} must be force-dynamic.`);

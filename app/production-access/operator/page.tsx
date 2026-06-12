@@ -15,21 +15,23 @@ async function enterOperator(formData: FormData) {
   "use server";
   if (missingAccessEnv().length) redirect("/production-access/setup-error");
   const password = String(formData.get("password") ?? "");
+  const next = String(formData.get("next") ?? "/production-access/launchpad");
+  const safeNext = next.startsWith("/") && !next.startsWith("//") ? next : "/production-access/launchpad";
   const env = getEnv();
   assertSeparatedProductionPasswords(env);
-  await grantOwnerOverrideIfMatched({ password, route: "/production-access/operator", next: "/production-access/launchpad" });
+  await grantOwnerOverrideIfMatched({ password, route: "/production-access/operator", next: safeNext });
   if (!password || password !== getOperatorLaunchpadPassword(env)) {
     await logAccessAttempt({ status: "access_denied", accessKind: "operator", role: "executive_producer", reason: "invalid_password", route: "/production-access/operator" });
     redirect("/production-access/operator?error=invalid");
   }
-  await logAccessAttempt({ status: "access_granted", accessKind: "operator", eventId: "event-summit", role: "executive_producer", route: "/production-access/launchpad" });
+  await logAccessAttempt({ status: "access_granted", accessKind: "operator", eventId: "event-summit", role: "executive_producer", route: safeNext });
   const { operatorCookieName } = getV5AccessCookieNames(env);
   const cookie = await createV5AccessCookie({ kind: "operator", role: "executive_producer", issuedAt: Date.now(), expiresAt: Date.now() + 1000 * 60 * 60 * 8 }, getV5AccessCookieSecret(env));
   cookies().set(operatorCookieName, cookie, getV5CookieOptions(60 * 60 * 8));
-  redirect("/production-access/launchpad");
+  redirect(safeNext);
 }
 
-export default function OperatorAccessPage({ searchParams }: { searchParams?: { error?: string } }) {
+export default function OperatorAccessPage({ searchParams }: { searchParams?: { error?: string; next?: string } }) {
   const missing = missingAccessEnv();
   if (missing.length) return <BrandedSetupError title="Operator access is not configured yet." message="The launchpad uses a separate high-trust operator password so crew access never unlocks admin diagnostics by accident." missingVariables={missing} defaultValues={accessDefaultLines()} />;
   return (
@@ -41,6 +43,7 @@ export default function OperatorAccessPage({ searchParams }: { searchParams?: { 
         <h1 className="mt-3 text-4xl font-black tracking-tight">Operator Launchpad access</h1>
         <p className="mt-4 text-sm leading-6 text-brand-muted">Use the separate operator launchpad password from the Day 1 Operator Packet or your secure production vault. This public gate never displays the password.</p>
         <form action={enterOperator} className="mt-6 space-y-5">
+          <input type="hidden" name="next" value={searchParams?.next || "/production-access/launchpad"} />
           <div>
             <label htmlFor="operator-password" className="text-sm font-black">Operator launchpad password <span className="text-brand-orange">*</span></label>
             <p className="mt-1 text-xs text-brand-muted">This comes from OPERATOR_LAUNCHPAD_PASSWORD and must be different from CREW_ACCESS_PASSWORD.</p>

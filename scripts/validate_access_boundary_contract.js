@@ -18,8 +18,9 @@ if (!productionAccess.includes('kind: "owner"')) fail("V5 access cookie payload 
 if (!crew.includes("getCrewAccessPassword") || crew.includes('redirect("/production-access/launchpad")')) fail("crew gate must use crew password and must not redirect directly to launchpad");
 if (!operator.includes("getOperatorLaunchpadPassword") || !operator.includes('kind: "operator"')) fail("operator gate must use operator password and set operator cookie");
 if (!owner.includes("getOwnerMasterPassword") || !owner.includes('kind: "owner"')) fail("owner gate must use owner password and set owner cookie");
-if (!launchpad.includes('payload.kind === "operator"')) fail("launchpad must require operator cookie");
-if (launchpad.includes('payload.kind === "crew"')) fail("launchpad must not accept crew cookie");
+if (!launchpad.includes('operatorPayload?.kind === "operator"')) fail("launchpad must accept operator cookie");
+if (!launchpad.includes('ownerPayload?.kind === "owner"')) fail("launchpad must accept owner master cookie as universal authority");
+if (launchpad.includes('payload.kind === "crew"') || launchpad.includes('crewPayload?.kind === "crew"')) fail("launchpad must not accept crew cookie");
 if (!routeAuth.includes("canOperatorAccessPath")) fail("route authorization must include operator access path helper");
 if (!routeAuth.includes("canOwnerAccessPath")) fail("route authorization must include owner access path helper");
 if (!middleware.includes("readOperatorAccess") || !middleware.includes("canOperatorAccessPath")) fail("middleware must check operator access separately");

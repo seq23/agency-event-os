@@ -19,7 +19,9 @@ async function enterGuest(formData: FormData) {
   if (missingAccessEnv().includes("V5_ACCESS_COOKIE_SECRET")) redirect("/production-access/setup-error");
   const eventCode = String(formData.get("eventCode") ?? "");
   const roleCode = String(formData.get("roleCode") ?? "");
-  await grantOwnerOverrideIfMatched({ password: roleCode, route: "/production-access/special-guest", next: "/app" });
+  const next = String(formData.get("next") ?? "/app");
+  const safeNext = next.startsWith("/") && !next.startsWith("//") ? next : "/app";
+  await grantOwnerOverrideIfMatched({ password: roleCode, route: "/production-access/special-guest", next: safeNext });
   const access = await resolveSpecialGuestAccess(eventCode, roleCode);
   if (!access.ok || !access.destination || !access.eventId || !access.role) {
     await logAccessAttempt({ status: "access_denied", accessKind: "special_guest", eventId: access.eventId, role: String(access.role || "unknown"), reason: access.reason, route: "/production-access/special-guest" });
@@ -34,7 +36,7 @@ async function enterGuest(formData: FormData) {
   redirect(access.destination);
 }
 
-export default function SpecialGuestAccessPage({ searchParams }: { searchParams?: { error?: string } }) {
+export default function SpecialGuestAccessPage({ searchParams }: { searchParams?: { error?: string; next?: string } }) {
   const missing = missingAccessEnv().filter((item) => item === "V5_ACCESS_COOKIE_SECRET");
   if (missing.length) return <BrandedSetupError title="Special guest access is not configured yet." message="Special guest login needs a cookie secret to create role-scoped access cookies. This page now fails safely with setup instructions instead of throwing a server digest page." missingVariables={missing} defaultValues={accessDefaultLines()} />;
   return (
@@ -50,6 +52,7 @@ export default function SpecialGuestAccessPage({ searchParams }: { searchParams?
           <p>Use the role-scoped password from the Day 1 Operator Packet or your secure production vault. This public gate never displays speaker, sponsor, VIP, or client passwords.</p>
         </div>
         <form action={enterGuest} className="mt-6 space-y-5">
+          <input type="hidden" name="next" value={searchParams?.next || "/app"} />
           <div>
             <label htmlFor="special-event-code" className="text-sm font-black">Event code <span className="text-brand-orange">*</span></label>
             <p className="mt-1 text-xs text-brand-muted">Use the event code from your production contact. For the demo, use demo.</p>

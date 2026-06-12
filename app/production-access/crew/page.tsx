@@ -26,11 +26,13 @@ async function enterCrew(formData: FormData) {
   "use server";
   if (missingAccessEnv().length) redirect("/production-access/setup-error");
   const password = String(formData.get("password") ?? "");
+  const next = String(formData.get("next") ?? "");
+  const safeNext = next.startsWith("/") && !next.startsWith("//") ? next : "";
   const eventCode = String(formData.get("eventCode") ?? "");
   const crewRole = normalizeCrewRole(formData.get("crewRole"));
   const env = getEnv();
 
-  await grantOwnerOverrideIfMatched({ password, route: "/production-access/crew", next: eventCode ? `/crew/events/${eventCode}` : "/crew/events/demo" });
+  await grantOwnerOverrideIfMatched({ password, route: "/production-access/crew", next: safeNext || (eventCode ? `/crew/events/${eventCode}` : "/crew/events/demo") });
 
   if (!password || password !== getCrewAccessPassword(env)) {
     await logAccessAttempt({ status: "access_denied", accessKind: "crew", role: crewRole, reason: "invalid_password", route: "/production-access/crew" });
@@ -49,7 +51,7 @@ async function enterCrew(formData: FormData) {
   redirect(access.destination || `/crew/events/${access.eventId || "demo"}`);
 }
 
-export default function CrewAccessPage({ searchParams }: { searchParams?: { error?: string } }) {
+export default function CrewAccessPage({ searchParams }: { searchParams?: { error?: string; next?: string } }) {
   const missing = missingAccessEnv();
   if (missing.length) return <BrandedSetupError title="Crew access is not configured yet." message="Crew login needs explicit access variables. This page now fails safely with setup instructions instead of throwing a server digest page." missingVariables={missing} defaultValues={accessDefaultLines()} />;
   return (
@@ -61,6 +63,7 @@ export default function CrewAccessPage({ searchParams }: { searchParams?: { erro
         <h1 className="mt-3 text-4xl font-black tracking-tight">Crew workspace access</h1>
         <p className="mt-4 text-sm leading-6 text-brand-muted">Use the internal crew password from the Day 1 Operator Packet or your secure production vault, then choose the crew role you are operating as today. This public gate never displays the password.</p>
         <form action={enterCrew} className="mt-6 space-y-5">
+          <input type="hidden" name="next" value={searchParams?.next || ""} />
           <div>
             <label htmlFor="crew-password" className="text-sm font-black">Crew password <span className="text-brand-orange">*</span></label>
             <p className="mt-1 text-xs text-brand-muted">Use the internal crew password. In production, this comes from CREW_ACCESS_PASSWORD.</p>

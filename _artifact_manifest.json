@@ -1,29 +1,56 @@
 {
   "repo": "agency-event-os",
-  "generatedAt": "2026-06-12T19:38:44Z",
-  "artifact": "agency-event-os-main_BASELINE_06-12-26_tier4_attendee_surface_hostile_pass.zip",
-  "sourceArtifact": "agency-event-os-main_BASELINE_06-12-26_tier4_attendee_surface_final.zip",
+  "generatedAt": "2026-06-12T22:45:00Z",
+  "artifact": "agency-event-os-main_BASELINE_06-12-26_d7595a6f.zip",
+  "sourceArtifact": "agency-event-os-main_BASELINE_06-12-26_3b7cdfa4.zip",
   "status": "STRUCTURALLY_CHECKED_LOCAL_VALIDATION_REQUIRED",
+  "changeSummary": [
+    "Packaging correction: restored .env.example and .env.local.example from the source artifact.",
+    "Owner/master cookie accepted as universal authority for Operator Launchpad and Operator Packet.",
+    "Owner/master form submissions preserve safe next targets across operator, crew, and special-guest gates.",
+    "Owner/master accepted by crew capability and special-guest event-role server action guards.",
+    "Logout clears owner cookie as well as role cookies.",
+    "Validators and unit tests updated to enforce owner-universal access without broadening role-specific passwords."
+  ],
   "changedFiles": [
-    "scripts/tier4_attendee_live_consumption_gauntlet.mjs",
-    "scripts/validate_tier4_attendee_live_consumption_contract.mjs",
-    "scripts/validate_stage_player_ux_contract.js",
-    "HOSTILE_REVIEW_TIER4_ATTENDEE_SURFACE_FINAL_2026-06-12.md",
+    "app/operator-packet/page.tsx",
+    "app/production-access/crew/page.tsx",
+    "app/production-access/launchpad/page.tsx",
+    "app/production-access/logout/route.ts",
+    "app/production-access/operator/page.tsx",
+    "app/production-access/special-guest/page.tsx",
+    "lib/auth/requireCrewCapability.ts",
+    "lib/auth/requireEventRole.ts",
+    "lib/env/safeEnv.ts",
+    "scripts/validate_access_boundary_contract.js",
+    "scripts/validate_v7_operator_launchpad.js",
+    "scripts/validate_v7_route_safety.js",
+    "tests/unit/v5RouteAuthorization.test.ts",
     "ARTIFACT_MANIFEST.md",
-    "_artifact_manifest.json"
+    "_artifact_manifest.json",
+    ".env.example",
+    ".env.local.example"
   ],
   "validationPassed": [
-    "node --check scripts/tier4_attendee_live_consumption_gauntlet.mjs",
-    "node --check scripts/validate_tier4_attendee_live_consumption_contract.mjs",
-    "node --check scripts/validate_stage_player_ux_contract.js",
-    "npm run validate:stage-player-ux",
-    "npm run validate:tier4-attendee-live-consumption-contract",
+    "npm run typecheck",
+    "npm run lint",
+    "npm run test -- --run tests/unit/v5RouteAuthorization.test.ts tests/unit/crewCapabilityLoginFlow.test.ts tests/unit/specialGuestAccessFlow.test.ts tests/unit/productionAccessCookie.test.ts",
+    "npm run validate:access-boundaries",
+    "npm run validate:v7",
+    "npm run validate:tier4-provider-ladder-contract",
     "npm run validate:tier4-live-event-fallback-runtime",
-    "npm run validate:tier4-provider-ladder-contract"
+    "npm run validate:tier4-attendee-live-consumption-contract",
+    "npm run validate",
+    "npm run validate:tier4-contract",
+    "npm run validate:no-generated-artifacts",
+    "npm run validate:env",
+    "npm run validate:env-access-gates",
+    "npm run validate:required-env-registry",
+    "npm run validate:v5-no-secrets"
   ],
   "validationNotClaimed": [
-    "npm run validate after final hostile pass; dependency install timed out in sandbox",
-    "deployed Tier 4 live-provider proof; requires local encrypted env/provider credentials"
+    "Tier 4 Playwright browser proof: attempted, but this container blocked browser navigation with ERR_BLOCKED_BY_ADMINISTRATOR and deployed DNS returned EAI_AGAIN.",
+    "Full Tier 4 live-provider proof: requires user's local encrypted .env.local and live provider credentials."
   ],
-  "notes": "Hostile pass closed surface-count-only proof weakness: attendee browser success now requires stage LIVEKIT_INGRESS_LIVE, token-issued surface state, and browser-observed LiveKit token response with token + URL."
+  "notes": "No plaintext real env files are included. .env.example and .env.local.example are included. node_modules and generated artifacts are excluded from the delivered ZIP. File inventory was compared against the source upload after restore."
 }

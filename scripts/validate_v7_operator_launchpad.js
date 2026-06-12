@@ -9,5 +9,6 @@ const lower = s.toLowerCase();
 const missing = required.filter((token) => !lower.includes(token.toLowerCase()));
 if (missing.length) throw new Error(`Operator Launchpad missing required tokens: ${missing.join(', ')}`);
 const route = fs.readFileSync('app/production-access/launchpad/page.tsx','utf8');
-if (!route.includes('readV5AccessCookie') || !route.includes('payload.kind === "operator"')) throw new Error('Operator Launchpad route must remain behind operator production gate.');
+if (!route.includes('readV5AccessCookie') || !route.includes('operatorPayload?.kind === "operator"')) throw new Error('Operator Launchpad route must remain behind operator production gate.');
+if (!route.includes('ownerPayload?.kind === "owner"')) throw new Error('Operator Launchpad route must accept owner master cookie as universal authority.');
 console.log('validate_v7_operator_launchpad: PASS');

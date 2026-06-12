@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { canCrewAccessPath, canOperatorAccessPath, canSpecialGuestAccessPath, eventIdFromPath } from "@/lib/auth/v5RouteAuthorization";
+import { canCrewAccessPath, canOperatorAccessPath, canOwnerAccessPath, canSpecialGuestAccessPath, eventIdFromPath } from "@/lib/auth/v5RouteAuthorization";
 import type { V5AccessCookiePayload } from "@/lib/auth/productionAccess";
 import type { V4SpecialGuestRole } from "@/types/v4";
 
@@ -97,15 +97,32 @@ it("allows operator to run Day 1 event operations without owner-only escalation"
 });
 
 
-import {
-  canOperatorAccessPath as __canOperatorAccessPath,
-  canOwnerAccessPath as __canOwnerAccessPath,
-} from "../../lib/auth/v5RouteAuthorization";
-
 describe("owner route authorization", () => {
-  it("owner can access settings while operator cannot escalate to owner settings", () => {
-    expect(__canOwnerAccessPath("/app/settings", { kind: "owner", role: "owner", issuedAt: Date.now(), expiresAt: Date.now() + 1000 })).toBe(true);
-    expect(__canOwnerAccessPath("/billing", { kind: "owner", role: "owner", issuedAt: Date.now(), expiresAt: Date.now() + 1000 })).toBe(true);
-    expect(__canOperatorAccessPath("/app/settings", { kind: "operator", issuedAt: Date.now(), expiresAt: Date.now() + 1000 })).toBe(false);
+  const owner = { kind: "owner" as const, role: "owner" as const, issuedAt: Date.now(), expiresAt: Date.now() + 1000 };
+
+  it("owner can access settings and use universal authority across operator, crew, speaker, sponsor, client, vip/venue, billing, app, and admin gates", () => {
+    for (const route of [
+      "/production-access/launchpad",
+      "/app/settings",
+      "/admin/testing/event-1",
+      "/billing",
+      "/crew/events/event-1",
+      "/speaker/events/event-1",
+      "/sponsor/events/event-1",
+      "/client/acme/events/event-1",
+      "/venue/event-1/stage",
+      "/operator-packet",
+    ]) {
+      expect(canOwnerAccessPath(route, owner), route).toBe(true);
+    }
+  });
+
+  it("operator cannot escalate into owner-only or special guest portals", () => {
+    const operator = { kind: "operator" as const, issuedAt: Date.now(), expiresAt: Date.now() + 1000 };
+    expect(canOperatorAccessPath("/app/settings", operator)).toBe(false);
+    expect(canOperatorAccessPath("/billing", operator)).toBe(false);
+    expect(canOperatorAccessPath("/speaker/events/event-1", operator)).toBe(false);
+    expect(canOperatorAccessPath("/sponsor/events/event-1", operator)).toBe(false);
+    expect(canOperatorAccessPath("/client/acme/events/event-1", operator)).toBe(false);
   });
 });

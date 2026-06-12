@@ -46,5 +46,6 @@ export function safeAccessCookieNames() {
     crewCookieName: process.env.V5_CREW_COOKIE_NAME || process.env.V4_CREW_COOKIE_NAME || 'wpl_crew_access',
     specialGuestCookieName: process.env.V5_SPECIAL_GUEST_COOKIE_NAME || process.env.V4_SPECIAL_GUEST_COOKIE_NAME || 'wpl_guest_access',
     operatorCookieName: process.env.V5_OPERATOR_COOKIE_NAME || 'wpl_operator_access',
+    ownerCookieName: process.env.V5_OWNER_COOKIE_NAME || 'wpl_owner_access',
   };
 }

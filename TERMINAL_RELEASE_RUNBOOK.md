@@ -246,3 +246,11 @@ Tier 3 and Tier 4 validators now distinguish repo/app failures from unavailable 
 - Real StreamYard/LiveKit proof lives in Tier 4 and requires a deployed base URL, real provider credentials, operator confirmation, and a redacted evidence JSON path.
 - Missing Tier 3 prerequisites are reported as `BLOCKED`, not as app failures or false passes.
 - Once prerequisites are supplied, failed commands remain hard blockers.
+
+## LiveKit Twirp URL Contract — 2026-06-12
+
+- Validator: `npm run validate:livekit-twirp-url-contract`
+- Included in: `npm run validate` through `validate:deploy-parity`
+- Purpose: prevent both deployed app code and Tier 4 proof harnesses from using a `wss://` LiveKit client URL for server-side Twirp `fetch()` calls.
+- Required trace: Tier 4 controlled proof reports classify failures as harness/env/provider/deployed-app failures and retain sanitized phase trace.
+

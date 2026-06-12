@@ -181,3 +181,11 @@ Every validation/test/smoke/audit/deploy package script is assigned below. Advis
 ## Tier 3 blocked prerequisite policy
 
 Postdeploy and real-provider validators must not fake failure against localhost when the required deployed URL or operator-confirmed provider proof is absent. They report `BLOCKED` until the required external proof inputs are present. After those inputs are present, any command failure is a hard blocker.
+
+## LiveKit Twirp URL Contract — 2026-06-12
+
+- Validator: `npm run validate:livekit-twirp-url-contract`
+- Included in: `npm run validate` through `validate:deploy-parity`
+- Purpose: prevent both deployed app code and Tier 4 proof harnesses from using a `wss://` LiveKit client URL for server-side Twirp `fetch()` calls.
+- Required trace: Tier 4 controlled proof reports classify failures as harness/env/provider/deployed-app failures and retain sanitized phase trace.
+

@@ -19,7 +19,7 @@ function normalizeRoomName(eventId: string, stageId: string) {
   return `${eventId}-${stageId}`.replace(/[^a-zA-Z0-9_-]+/g, "-").toLowerCase();
 }
 
-function apiBaseUrl(livekitUrl: string) {
+export function normalizeLiveKitApiBaseUrl(livekitUrl: string) {
   const trimmed = livekitUrl.replace(/\/$/, "");
   if (trimmed.startsWith("wss://")) return `https://${trimmed.slice("wss://".length)}`;
   if (trimmed.startsWith("ws://")) return `http://${trimmed.slice("ws://".length)}`;
@@ -51,7 +51,7 @@ function createLiveKitServerToken(input: { apiKey: string; apiSecret: string; ro
 }
 
 async function livekitTwirp<T>(input: { livekitUrl: string; token: string; method: string; body: unknown }): Promise<T> {
-  const response = await fetch(`${apiBaseUrl(input.livekitUrl)}/twirp/livekit.${input.method}`, {
+  const response = await fetch(`${normalizeLiveKitApiBaseUrl(input.livekitUrl)}/twirp/livekit.${input.method}`, {
     method: "POST",
     headers: {
       "authorization": `Bearer ${input.token}`,

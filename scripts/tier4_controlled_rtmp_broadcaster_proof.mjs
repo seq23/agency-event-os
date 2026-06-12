@@ -19,6 +19,8 @@ const pollTimeoutMs = Number.parseInt(process.env.TIER4_CONTROLLED_RTMP_POLL_TIM
 const failures = [];
 const warnings = [];
 const artifacts = [];
+const trace = [];
+let failureClass = 'UNKNOWN';
 const secretValues = new Map();
 
 for (const key of [
@@ -34,6 +36,38 @@ function nowIso() { return new Date().toISOString(); }
 function sleep(ms) { return new Promise((resolve) => setTimeout(resolve, ms)); }
 function base64url(input) { return Buffer.from(input).toString('base64url'); }
 function sha12(value) { return crypto.createHash('sha256').update(String(value)).digest('hex').slice(0, 12); }
+function livekitApiBaseUrl(livekitUrl) {
+  const trimmed = String(livekitUrl || '').replace(/\/$/, '');
+  if (trimmed.startsWith('wss://')) return `https://${trimmed.slice('wss://'.length)}`;
+  if (trimmed.startsWith('ws://')) return `http://${trimmed.slice('ws://'.length)}`;
+  return trimmed;
+}
+function livekitApiBaseIdentity(livekitUrl) {
+  try {
+    const parsed = new URL(livekitApiBaseUrl(livekitUrl));
+    return { protocol: parsed.protocol.replace(':', ''), hostHash: sha12(parsed.host) };
+  } catch {
+    return { protocol: 'invalid', hostHash: 'invalid' };
+  }
+}
+function pushTrace(phase, details = {}) {
+  trace.push({ phase, at: nowIso(), ...details });
+}
+function markFailureClass(nextClass) {
+  if (failureClass === 'UNKNOWN') failureClass = nextClass;
+}
+function classifyFailure(message) {
+  const text = String(message || '');
+  if (/Fetch API cannot load:\s*wss:\/\//i.test(text)) return 'DEPLOYED_APP_FAILURE_LIVEKIT_TWIRP_WSS_URL';
+  if (/missing .*LIVEKIT|missing .*SUPABASE|missing .*V5|missing .*RESEND|set TIER4_|ffmpeg is not available/i.test(text)) return 'ENV_OR_OPERATOR_GATE_BLOCK';
+  if (/livekit.*failed|ingress|roomservice|twirp/i.test(text)) return 'PROVIDER_OR_APP_LIVEKIT_FAILURE';
+  if (/postdeploy|playwright|probe|test:e2e|tier4:/i.test(text)) return 'TIER4_HARNESS_OR_TEST_FAILURE';
+  return 'UNKNOWN_TIER4_FAILURE';
+}
+function redactRouteBody(value) {
+  const text = sanitize(typeof value === 'string' ? value : JSON.stringify(value || {}));
+  return text.slice(0, 1000);
+}
 function redact(value) {
   if (!value) return undefined;
   const text = String(value);
@@ -107,7 +141,8 @@ async function postJson(route, body, cookie) {
 }
 async function livekitTwirp(method, body, roomName) {
   const token = createLiveKitServerToken({ roomName });
-  const url = `${String(process.env.LIVEKIT_URL).replace(/\/$/, '')}/twirp/livekit.${method}`;
+  const url = `${livekitApiBaseUrl(process.env.LIVEKIT_URL)}/twirp/livekit.${method}`;
+  pushTrace('harness_livekit_twirp_request', { method, livekitApi: livekitApiBaseIdentity(process.env.LIVEKIT_URL) });
   const response = await fetch(url, { method: 'POST', headers: { authorization: `Bearer ${token}`, 'content-type': 'application/json' }, body: JSON.stringify(body) });
   const text = await response.text();
   let json;
@@ -198,6 +233,7 @@ async function runCommand(command, env = {}) {
 }
 
 async function main() {
+  pushTrace('env_contract_start', { baseUrl, eventId, stageId, livekitApi: livekitApiBaseIdentity(process.env.LIVEKIT_URL) });
   if (process.env.TIER4_CONTROLLED_RTMP_BROADCASTER !== '1') failures.push('Set TIER4_CONTROLLED_RTMP_BROADCASTER=1 to run the automated controlled RTMP broadcaster proof.');
   if (!nonLocalUrl(baseUrl)) failures.push('controlled RTMP broadcaster: set a non-local deployed base URL via POSTDEPLOY_BASE_URL, PLAYWRIGHT_BASE_URL, SMOKE_BASE_URL, or NEXT_PUBLIC_APP_URL.');
   requireEnv(['LIVEKIT_URL', 'LIVEKIT_API_KEY', 'LIVEKIT_API_SECRET', 'LIVEKIT_WEBHOOK_SECRET', 'V5_ACCESS_COOKIE_SECRET'], 'controlled RTMP broadcaster');
@@ -211,22 +247,38 @@ async function main() {
     if (process.env.TIER4_RESEND_SEND_APPROVED !== '1') failures.push('Resend transactional email: set TIER4_RESEND_SEND_APPROVED=1 to approve exactly one automated Tier 4 test email.');
   }
   checkFfmpeg();
-  if (failures.length) throw new Error(failures.join('\n'));
+  if (failures.length) {
+    markFailureClass('ENV_OR_OPERATOR_GATE_BLOCK');
+    throw new Error(failures.join('\n'));
+  }
 
+  pushTrace('env_contract_passed', { livekitApi: livekitApiBaseIdentity(process.env.LIVEKIT_URL) });
   const cookie = operatorCookieHeader();
+  pushTrace('deployed_app_livekit_ingress_request', { route: '/api/video/livekit-ingress', method: 'POST' });
   const provisioned = await postJson('/api/video/livekit-ingress', { eventId, stageId }, cookie);
-  if (provisioned.response.status !== 200 || !provisioned.json?.ok) throw new Error(`deployed livekit-ingress route returned ${provisioned.response.status}: ${sanitize(provisioned.text).slice(0, 500)}`);
+  pushTrace('deployed_app_livekit_ingress_response', { status: provisioned.response.status, ok: Boolean(provisioned.json?.ok), body: redactRouteBody(provisioned.text) });
+  if (provisioned.response.status !== 200 || !provisioned.json?.ok) {
+    const routeError = `deployed livekit-ingress route returned ${provisioned.response.status}: ${redactRouteBody(provisioned.text)}`;
+    markFailureClass(classifyFailure(routeError));
+    throw new Error(routeError);
+  }
   const ingress = provisioned.json.result || {};
   if (!ingress.ingressId || !ingress.rtmpUrl || !ingress.streamKey || !ingress.roomName) throw new Error('deployed livekit-ingress route did not return ingressId, rtmpUrl, streamKey, and roomName.');
 
+  pushTrace('controlled_rtmp_broadcast_start', { seconds: broadcastSeconds });
   const broadcast = await runControlledBroadcast({ rtmpUrl: ingress.rtmpUrl, streamKey: ingress.streamKey, roomName: ingress.roomName, ingressId: ingress.ingressId });
+  pushTrace('controlled_rtmp_broadcast_result', { ingressObserved: broadcast.ingressObserved, mediaConnectionObserved: broadcast.mediaConnectionObserved, participantObserved: broadcast.participantObserved, exitCode: broadcast.exitCode });
   if (!broadcast.ingressObserved) failures.push('controlled RTMP broadcaster: LiveKit ingress was not observed through provider API.');
   if (!broadcast.mediaConnectionObserved) failures.push('controlled RTMP broadcaster: LiveKit media connection was not observed.');
 
+  pushTrace('deployed_app_signed_webhook_ingress_started_request');
   const startedWebhook = await sendSignedWebhook('ingress_started', ingress.roomName, ingress.ingressId);
+  pushTrace('deployed_app_signed_webhook_ingress_started_response', { status: startedWebhook.response.status, ok: Boolean(startedWebhook.json?.ok) });
   if (startedWebhook.response.status !== 200 || !startedWebhook.json?.ok) failures.push(`controlled RTMP broadcaster: signed ingress_started webhook returned ${startedWebhook.response.status}.`);
   const liveState = await fetchJson(`${baseUrl}/api/video/stage-stream-state?eventId=${encodeURIComponent(eventId)}&stageId=${encodeURIComponent(stageId)}&view=attendee`);
+  pushTrace('deployed_app_signed_webhook_ingress_ended_request');
   const endedWebhook = await sendSignedWebhook('ingress_ended', ingress.roomName, ingress.ingressId);
+  pushTrace('deployed_app_signed_webhook_ingress_ended_response', { status: endedWebhook.response.status, ok: Boolean(endedWebhook.json?.ok) });
   if (endedWebhook.response.status !== 200 || !endedWebhook.json?.ok) warnings.push(`controlled RTMP broadcaster: signed ingress_ended webhook returned ${endedWebhook.response.status}; cleanup state may remain live.`);
   const endedState = await fetchJson(`${baseUrl}/api/video/stage-stream-state?eventId=${encodeURIComponent(eventId)}&stageId=${encodeURIComponent(stageId)}&view=attendee`);
 
@@ -245,7 +297,9 @@ async function main() {
     TIER4_RESEND_SEND_APPROVED: process.env.TIER4_RESEND_SEND_APPROVED || '',
     TIER4_EMAIL_TEST_TO: process.env.TIER4_EMAIL_TEST_TO || '',
   };
+  pushTrace('tier4_real_provider_journey_probe_start');
   const probe = await runCommand('npm run tier4:real-provider-journey-probe', probeEnv);
+  pushTrace('tier4_real_provider_journey_probe_result', { status: probe.status });
   fs.writeFileSync(path.join(reportsDir, 'tier4-controlled-real-provider-journey-probe.log'), sanitize(`${probe.stdout}\n${probe.stderr}`));
   artifacts.push('reports/tier4/tier4-controlled-real-provider-journey-probe.log');
   if (probe.status !== 0) throw new Error(`tier4:real-provider-journey-probe failed before evidence generation. See reports/tier4/tier4-controlled-real-provider-journey-probe.log`);
@@ -323,6 +377,8 @@ async function main() {
     attendeeEvidenceFiles: ['reports/tier4/tier4-real-provider-journey-report.json'],
     secretsExposed: false,
     cleanupStatus: process.env.TIER4_CONTROLLED_RTMP_CLEANUP_STATUS || 'retained_for_tier4_rerun_or_manual_cleanup',
+    tier4DataTrace: trace,
+    failureClass: 'NONE',
     notes: 'Automated Tier 4 used a controlled ffmpeg RTMP broadcaster against the same deployed LiveKit ingress path that StreamYard Custom RTMP uses. Raw RTMP URL, stream key, provider secrets, bearer tokens, cookies, and recipient PII are not stored.',
   };
 
@@ -339,7 +395,9 @@ async function main() {
     TIER4_STREAMYARD_LIVE_EVIDENCE_PATH: evidencePath,
     NODE_OPTIONS: process.env.NODE_OPTIONS || '--max-old-space-size=3072',
   };
+  pushTrace('tier4_live_provider_operational_proof_start');
   const full = await runCommand('npm run tier4:live-provider-operational-proof', fullEnv);
+  pushTrace('tier4_live_provider_operational_proof_result', { status: full.status });
   fs.writeFileSync(path.join(reportsDir, 'tier4-controlled-live-provider-operational-proof.log'), sanitize(`${full.stdout}\n${full.stderr}`));
   artifacts.push('reports/tier4/tier4-controlled-live-provider-operational-proof.log');
   process.stdout.write(full.stdout);
@@ -356,12 +414,17 @@ async function main() {
     evidencePath: path.relative(root, absoluteEvidencePath),
     artifacts,
     warnings,
+    failureClass: 'NONE',
+    trace,
   };
   fs.writeFileSync(path.join(reportsDir, 'tier4-controlled-rtmp-broadcaster-proof.json'), JSON.stringify(summary, null, 2) + '\n');
   console.log('\nPASS — Tier 4 automated controlled RTMP broadcaster proof completed.');
 }
 
 main().catch((error) => {
+  const message = error?.message || String(error);
+  if (failureClass === 'UNKNOWN') markFailureClass(classifyFailure(message));
+  pushTrace('tier4_blocked_or_failed', { failureClass, message: sanitize(message).slice(0, 1000) });
   const report = {
     repo: 'agency-event-os',
     generatedAt: nowIso(),
@@ -369,9 +432,11 @@ main().catch((error) => {
     baseUrl,
     eventId,
     stageId,
-    failures: [...failures, error?.message].filter(Boolean),
+    failureClass,
+    failures: [...failures, message].filter(Boolean).map((item) => sanitize(item)),
     warnings,
     artifacts,
+    trace,
   };
   fs.writeFileSync(path.join(reportsDir, 'tier4-controlled-rtmp-broadcaster-proof.json'), JSON.stringify(report, null, 2) + '\n');
   console.error('tier4_controlled_rtmp_broadcaster_proof: BLOCKED_OR_FAIL');

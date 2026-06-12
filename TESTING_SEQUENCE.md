@@ -209,3 +209,11 @@ Supported private source locations:
 - `~/agency-event-os.env.local.backup`
 
 Do not commit `.env.local`.
+
+## LiveKit Twirp URL Contract — 2026-06-12
+
+- Validator: `npm run validate:livekit-twirp-url-contract`
+- Included in: `npm run validate` through `validate:deploy-parity`
+- Purpose: prevent both deployed app code and Tier 4 proof harnesses from using a `wss://` LiveKit client URL for server-side Twirp `fetch()` calls.
+- Required trace: Tier 4 controlled proof reports classify failures as harness/env/provider/deployed-app failures and retain sanitized phase trace.
+

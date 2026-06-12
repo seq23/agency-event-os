@@ -139,3 +139,11 @@ Tier 3 answers: “Did the deployed app survive and fail safely?”
 Tier 4 answers: “Did the actual provider-backed live event operation work with real credentials and evidence?”
 
 Do not collapse these tiers. The separation prevents normal postdeploy validation from becoming bloated while preserving a hard final gate for true production proof.
+
+## LiveKit Twirp URL Contract — 2026-06-12
+
+- Validator: `npm run validate:livekit-twirp-url-contract`
+- Included in: `npm run validate` through `validate:deploy-parity`
+- Purpose: prevent both deployed app code and Tier 4 proof harnesses from using a `wss://` LiveKit client URL for server-side Twirp `fetch()` calls.
+- Required trace: Tier 4 controlled proof reports classify failures as harness/env/provider/deployed-app failures and retain sanitized phase trace.
+

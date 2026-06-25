@@ -14,12 +14,15 @@ jobs:
   deploy:
     name: Optional manual Cloudflare deploy
     runs-on: ubuntu-latest
+    timeout-minutes: 45
 
     env:
       CI: true
       NODE_OPTIONS: --max-old-space-size=4096
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      POSTDEPLOY_BASE_URL: https://west-peek-live.seq-taylor.workers.dev
+      SMOKE_BASE_URL: https://west-peek-live.seq-taylor.workers.dev
 
     steps:
       - name: Checkout
@@ -45,15 +48,24 @@ jobs:
 
       - name: Install dependencies
         if: steps.secrets.outputs.ready == 'true'
-        run: npm ci
+        run: npm ci --no-audit --no-fund
 
-      - name: Validate Worker target
+      - name: Validate release prepush
         if: steps.secrets.outputs.ready == 'true'
-        shell: bash
-        run: |
-          grep -q '"name"[[:space:]]*:[[:space:]]*"west-peek-live"' wrangler.jsonc
-          echo "Worker target: west-peek-live"
+        run: timeout --signal=TERM 20m npm run release:prepush:container
 
-      - name: Deploy Worker
+      - name: Build Cloudflare worker
         if: steps.secrets.outputs.ready == 'true'
-        run: npx wrangler deploy
+        run: timeout --signal=TERM 15m npm run cf:build:recoverable
+
+      - name: Verify worker artifact
+        if: steps.secrets.outputs.ready == 'true'
+        run: test -f .open-next/worker.js
+
+      - name: Deploy Cloudflare worker
+        if: steps.secrets.outputs.ready == 'true'
+        run: timeout --signal=TERM 5m npm run cf:deploy -- --keep-vars
+
+      - name: Postdeploy smoke
+        if: steps.secrets.outputs.ready == 'true'
+        run: timeout --signal=TERM 5m npm run postdeploy:smoke

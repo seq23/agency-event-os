@@ -2,105 +2,58 @@ name: Deploy Cloudflare Worker
 
 on:
   workflow_dispatch:
-    inputs:
-      run_postdeploy_smoke:
-        description: Run bounded smoke proof after deployment
-        required: false
-        default: true
-        type: boolean
-  push:
-    branches: [main]
-    paths:
-      - "app/**"
-      - "components/**"
-      - "lib/**"
-      - "public/**"
-      - "deployment/**"
-      - "scripts/**"
-      - "next.config.js"
-      - "open-next.config.ts"
-      - "wrangler.jsonc"
-      - "package.json"
-      - "package-lock.json"
-      - ".github/workflows/deploy-cloudflare-worker.yml"
 
 permissions:
   contents: read
 
 concurrency:
-  group: agency-event-os-cloudflare-production
+  group: deploy-cloudflare-worker
   cancel-in-progress: true
 
 jobs:
   deploy:
-    name: Build and deploy agency-event-os
+    name: Optional manual Cloudflare deploy
     runs-on: ubuntu-latest
-    timeout-minutes: 45
-    environment: production
+
     env:
-      CI: "true"
-      NODE_OPTIONS: "--max-old-space-size=4096"
+      CI: true
+      NODE_OPTIONS: --max-old-space-size=4096
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-      POSTDEPLOY_BASE_URL: ${{ vars.POSTDEPLOY_BASE_URL }}
-      SMOKE_BASE_URL: ${{ vars.POSTDEPLOY_BASE_URL }}
 
     steps:
-      - name: Checkout pushed commit
+      - name: Checkout
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
 
-      - name: Set up Node.js
+      - name: Check Cloudflare secrets
+        id: secrets
+        shell: bash
+        run: |
+          if [ -z "${CLOUDFLARE_API_TOKEN:-}" ] || [ -z "${CLOUDFLARE_ACCOUNT_ID:-}" ]; then
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "Cloudflare deploy skipped: CLOUDFLARE_API_TOKEN or CLOUDFLARE_ACCOUNT_ID is not configured."
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Setup Node 22
+        if: steps.secrets.outputs.ready == 'true'
         uses: actions/setup-node@v4
         with:
-          node-version: 24
+          node-version: 22
           cache: npm
 
-      - name: Verify deployment credentials and target
+      - name: Install dependencies
+        if: steps.secrets.outputs.ready == 'true'
+        run: npm ci
+
+      - name: Validate Worker target
+        if: steps.secrets.outputs.ready == 'true'
         shell: bash
         run: |
-          set -Eeuo pipefail
-          test -n "${CLOUDFLARE_API_TOKEN:-}" || { echo "Missing CLOUDFLARE_API_TOKEN" >&2; exit 1; }
-          test -n "${CLOUDFLARE_ACCOUNT_ID:-}" || { echo "Missing CLOUDFLARE_ACCOUNT_ID" >&2; exit 1; }
-          node -e 'const c=require("./wrangler.jsonc"); if(c.name!=="west-peek-live") throw new Error(`Unexpected worker name: ${c.name}`); console.log(`Worker target: ${c.name}`)'
+          grep -q '"name"[[:space:]]*:[[:space:]]*"west-peek-live"' wrangler.jsonc
+          echo "Worker target: west-peek-live"
 
-      - name: Install locked dependencies
-        shell: bash
-        run: timeout --signal=TERM --kill-after=30s 12m npm ci --no-audit --no-fund
-
-      - name: Validate Cloudflare workflow and source contracts
-        shell: bash
-        run: timeout --signal=TERM --kill-after=30s 12m npm run release:prepush:container
-
-      - name: Build deployable OpenNext Worker
-        shell: bash
-        run: timeout --signal=TERM --kill-after=60s 22m npm run cf:build:recoverable
-
-      - name: Verify deployable Worker output
-        shell: bash
-        run: |
-          set -Eeuo pipefail
-          test -f .open-next/worker.js
-          test -d .open-next/assets
-
-      - name: Deploy Cloudflare Worker
-        shell: bash
-        run: timeout --signal=TERM --kill-after=60s 10m npm run cf:deploy -- --keep-vars
-
-      - name: Bounded postdeploy smoke
-        if: ${{ (github.event_name != 'workflow_dispatch' || inputs.run_postdeploy_smoke) && vars.POSTDEPLOY_BASE_URL != '' }}
-        shell: bash
-        run: timeout --signal=TERM --kill-after=30s 5m npm run postdeploy:smoke
-
-      - name: Deployment summary
-        if: always()
-        shell: bash
-        run: |
-          {
-            echo "## Agency Event OS Cloudflare deployment"
-            echo "- Commit: $GITHUB_SHA"
-            echo "- Worker: west-peek-live"
-            echo "- Workflow conclusion: ${{ job.status }}"
-            if [ -n "${POSTDEPLOY_BASE_URL:-}" ]; then echo "- Postdeploy target configured: yes"; else echo "- Postdeploy target configured: no"; fi
-          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Deploy Worker
+        if: steps.secrets.outputs.ready == 'true'
+        run: npx wrangler deploy

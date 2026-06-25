@@ -159,3 +159,5 @@ Purpose: every Markdown document is classified so active documentation stays int
 - Canonical execution sequencing lives in `TESTING_SEQUENCE.md` and `TERMINAL_RELEASE_RUNBOOK.md`.
 - Historical docs remain archived and non-authoritative unless explicitly restored in this map.
 - New docs that duplicate any of the above authorities must be merged or archived instead of expanding the active doc surface.
+
+- `WEST_PEEK_BRAND_SYSTEM.md` — canonical cross-suite visual authority; active and locked.

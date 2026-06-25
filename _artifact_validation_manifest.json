@@ -1,0 +1,13 @@
+{
+  "schema_version": "1.0",
+  "repo": "agency-event-os",
+  "profile": "container",
+  "release_prepush_container": "PASS",
+  "ui_test_parity": "PASS",
+  "browser_suite_contract": "PASS",
+  "artifact_source_parity": "PENDING_ZIP",
+  "reopened_container_validation": "PENDING_ZIP",
+  "local_browser_validation": "NOT_EXECUTED",
+  "required_local_command": "npm run release:prepush:local",
+  "status": "FIRST-COMMAND-READY"
+}

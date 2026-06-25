@@ -1,2 +1,3 @@
 import { PublicEventPage } from "@/components/venue/PublicEventPage";
-export default function SponsorsRoute({ params }: { params: { slug: string } }) { return <PublicEventPage slug={params.slug} />; }
+export default async function SponsorsRoute({ params }: { params: Promise<{ slug: string }> }) {
+  const resolvedParams = await params; return <PublicEventPage slug={resolvedParams.slug} />; }

@@ -32,11 +32,12 @@ async function enterGuest(formData: FormData) {
   const role = access.role as V4SpecialGuestRole;
   await logAccessAttempt({ status: "access_granted", accessKind: "special_guest", eventId: access.eventId, role, route: access.destination });
   const cookie = await createV5AccessCookie({ kind: "special_guest", eventId: access.eventId, clientSlug: access.clientSlug, role, issuedAt: Date.now(), expiresAt: Date.now() + 1000 * 60 * 60 * 12 }, getV5AccessCookieSecret(env));
-  cookies().set(specialGuestCookieName, cookie, getV5CookieOptions(60 * 60 * 12));
+  (await cookies()).set(specialGuestCookieName, cookie, getV5CookieOptions(60 * 60 * 12));
   redirect(access.destination);
 }
 
-export default function SpecialGuestAccessPage({ searchParams }: { searchParams?: { error?: string; next?: string } }) {
+export default async function SpecialGuestAccessPage({ searchParams }: { searchParams?: Promise<{ error?: string; next?: string }> }) {
+  const resolvedSearchParams = searchParams ? await searchParams : undefined;
   const missing = missingAccessEnv().filter((item) => item === "V5_ACCESS_COOKIE_SECRET");
   if (missing.length) return <BrandedSetupError title="Special guest access is not configured yet." message="Special guest login needs a cookie secret to create role-scoped access cookies. This page now fails safely with setup instructions instead of throwing a server digest page." missingVariables={missing} defaultValues={accessDefaultLines()} />;
   return (
@@ -51,8 +52,8 @@ export default function SpecialGuestAccessPage({ searchParams }: { searchParams?
           <p className="font-black text-brand-black">Day 1 access</p>
           <p>Use the role-scoped password from the Day 1 Operator Packet or your secure production vault. This public gate never displays speaker, sponsor, VIP, or client passwords.</p>
         </div>
-        <form action="/api/production-access/special-guest" method="post" className="mt-6 space-y-5">
-          <input type="hidden" name="next" value={searchParams?.next || "/app"} />
+        <form action={enterGuest} className="mt-6 space-y-5">
+          <input type="hidden" name="next" value={resolvedSearchParams?.next || "/app"} />
           <div>
             <label htmlFor="special-event-code" className="text-sm font-black">Event code <span className="text-brand-orange">*</span></label>
             <p className="mt-1 text-xs text-brand-muted">Use the event code from your production contact. For the demo, use demo.</p>
@@ -65,7 +66,7 @@ export default function SpecialGuestAccessPage({ searchParams }: { searchParams?
           </div>
           <button className="w-full rounded-full bg-brand-black px-6 py-3 text-sm font-bold text-white">Continue to assigned portal</button>
         </form>
-        {searchParams?.error ? <p className="mt-4 rounded-2xl bg-amber-50 p-4 text-sm font-bold text-amber-800">That access code did not match a speaker, sponsor, client, or VIP access group for this event.</p> : null}
+        {resolvedSearchParams?.error ? <p className="mt-4 rounded-2xl bg-amber-50 p-4 text-sm font-bold text-amber-800">That access code did not match a speaker, sponsor, client, or VIP access group for this event.</p> : null}
       </section>
       </main>
       <LegalFooter variant="compact" />

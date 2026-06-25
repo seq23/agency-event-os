@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any -- boundary adapters normalize legacy/runtime payloads before typed domain use */
 import { NextResponse } from "next/server";
 import { createDailyStageFallbackToken } from "@/services/video/dailyStageFallbackService";
 import { getPublicStageStreamState } from "@/services/video/stageStreamStateService";

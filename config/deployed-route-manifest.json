@@ -1,0 +1,2603 @@
+{
+  "schemaVersion": "west-peek-route-manifest-v1",
+  "repo": "agency-event-os",
+  "generatedFrom": "source routes and repo product contracts",
+  "routes": [
+    {
+      "id": "accept-invite",
+      "path": "/accept-invite",
+      "authMode": "public",
+      "persona": "public",
+      "criticality": "standard",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/accept-invite"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [],
+      "persistenceRequired": false,
+      "cleanupPolicy": "none"
+    },
+    {
+      "id": "forgot-password",
+      "path": "/forgot-password",
+      "authMode": "public",
+      "persona": "public",
+      "criticality": "standard",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/forgot-password"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [],
+      "persistenceRequired": false,
+      "cleanupPolicy": "none"
+    },
+    {
+      "id": "login",
+      "path": "/login",
+      "authMode": "public",
+      "persona": "public",
+      "criticality": "critical",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/login"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [],
+      "persistenceRequired": false,
+      "cleanupPolicy": "none"
+    },
+    {
+      "id": "signup",
+      "path": "/signup",
+      "authMode": "public",
+      "persona": "public",
+      "criticality": "standard",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/signup"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [],
+      "persistenceRequired": false,
+      "cleanupPolicy": "none"
+    },
+    {
+      "id": "admin-testing-eventid-livekit-room",
+      "path": "/admin/testing/[eventId]/livekit-room",
+      "authMode": "role-specific",
+      "persona": "admin",
+      "criticality": "standard",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/admin/testing/[eventId]/livekit-room"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [
+        "event"
+      ],
+      "persistenceRequired": false,
+      "cleanupPolicy": "exact-run",
+      "role": "admin"
+    },
+    {
+      "id": "admin-testing-eventid",
+      "path": "/admin/testing/[eventId]",
+      "authMode": "role-specific",
+      "persona": "admin",
+      "criticality": "standard",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/admin/testing/[eventId]"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [
+        "event"
+      ],
+      "persistenceRequired": false,
+      "cleanupPolicy": "exact-run",
+      "role": "admin"
+    },
+    {
+      "id": "admin-testing",
+      "path": "/admin/testing",
+      "authMode": "role-specific",
+      "persona": "admin",
+      "criticality": "standard",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/admin/testing"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [],
+      "persistenceRequired": false,
+      "cleanupPolicy": "none",
+      "role": "admin"
+    },
+    {
+      "id": "app-assets",
+      "path": "/app/assets",
+      "authMode": "role-specific",
+      "persona": "operator",
+      "criticality": "standard",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/app/assets"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [],
+      "persistenceRequired": false,
+      "cleanupPolicy": "none",
+      "role": "operator"
+    },
+    {
+      "id": "app-clients-clientid",
+      "path": "/app/clients/[clientId]",
+      "authMode": "role-specific",
+      "persona": "operator",
+      "criticality": "standard",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/app/clients/[clientId]"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [],
+      "persistenceRequired": false,
+      "cleanupPolicy": "none",
+      "role": "operator"
+    },
+    {
+      "id": "app-clients",
+      "path": "/app/clients",
+      "authMode": "role-specific",
+      "persona": "operator",
+      "criticality": "standard",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/app/clients"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [],
+      "persistenceRequired": false,
+      "cleanupPolicy": "none",
+      "role": "operator"
+    },
+    {
+      "id": "app-contractors",
+      "path": "/app/contractors",
+      "authMode": "role-specific",
+      "persona": "operator",
+      "criticality": "standard",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/app/contractors"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [],
+      "persistenceRequired": false,
+      "cleanupPolicy": "none",
+      "role": "operator"
+    },
+    {
+      "id": "app-email",
+      "path": "/app/email",
+      "authMode": "role-specific",
+      "persona": "operator",
+      "criticality": "standard",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/app/email"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [],
+      "persistenceRequired": false,
+      "cleanupPolicy": "none",
+      "role": "operator"
+    },
+    {
+      "id": "app-events-eventid-access",
+      "path": "/app/events/[eventId]/access",
+      "authMode": "role-specific",
+      "persona": "operator",
+      "criticality": "critical",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/app/events/[eventId]/access"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [
+        "event"
+      ],
+      "persistenceRequired": false,
+      "cleanupPolicy": "exact-run",
+      "role": "operator"
+    },
+    {
+      "id": "app-events-eventid-agenda",
+      "path": "/app/events/[eventId]/agenda",
+      "authMode": "role-specific",
+      "persona": "operator",
+      "criticality": "critical",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/app/events/[eventId]/agenda"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [
+        "event"
+      ],
+      "persistenceRequired": false,
+      "cleanupPolicy": "exact-run",
+      "role": "operator"
+    },
+    {
+      "id": "app-events-eventid-analytics",
+      "path": "/app/events/[eventId]/analytics",
+      "authMode": "role-specific",
+      "persona": "operator",
+      "criticality": "critical",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/app/events/[eventId]/analytics"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [
+        "event"
+      ],
+      "persistenceRequired": false,
+      "cleanupPolicy": "exact-run",
+      "role": "operator"
+    },
+    {
+      "id": "app-events-eventid-approval-queue",
+      "path": "/app/events/[eventId]/approval-queue",
+      "authMode": "role-specific",
+      "persona": "operator",
+      "criticality": "critical",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/app/events/[eventId]/approval-queue"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [
+        "event"
+      ],
+      "persistenceRequired": false,
+      "cleanupPolicy": "exact-run",
+      "role": "operator"
+    },
+    {
+      "id": "app-events-eventid-approvals",
+      "path": "/app/events/[eventId]/approvals",
+      "authMode": "role-specific",
+      "persona": "operator",
+      "criticality": "critical",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/app/events/[eventId]/approvals"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [
+        "event"
+      ],
+      "persistenceRequired": false,
+      "cleanupPolicy": "exact-run",
+      "role": "operator"
+    },
+    {
+      "id": "app-events-eventid-assets",
+      "path": "/app/events/[eventId]/assets",
+      "authMode": "role-specific",
+      "persona": "operator",
+      "criticality": "critical",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/app/events/[eventId]/assets"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [
+        "event"
+      ],
+      "persistenceRequired": false,
+      "cleanupPolicy": "exact-run",
+      "role": "operator"
+    },
+    {
+      "id": "app-events-eventid-attendee-flow",
+      "path": "/app/events/[eventId]/attendee-flow",
+      "authMode": "role-specific",
+      "persona": "operator",
+      "criticality": "critical",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/app/events/[eventId]/attendee-flow"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [
+        "event"
+      ],
+      "persistenceRequired": false,
+      "cleanupPolicy": "exact-run",
+      "role": "operator"
+    },
+    {
+      "id": "app-events-eventid-branding",
+      "path": "/app/events/[eventId]/branding",
+      "authMode": "role-specific",
+      "persona": "operator",
+      "criticality": "critical",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/app/events/[eventId]/branding"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [
+        "event"
+      ],
+      "persistenceRequired": false,
+      "cleanupPolicy": "exact-run",
+      "role": "operator"
+    },
+    {
+      "id": "app-events-eventid-builder",
+      "path": "/app/events/[eventId]/builder",
+      "authMode": "role-specific",
+      "persona": "operator",
+      "criticality": "critical",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/app/events/[eventId]/builder"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [
+        "event"
+      ],
+      "persistenceRequired": false,
+      "cleanupPolicy": "exact-run",
+      "role": "operator"
+    },
+    {
+      "id": "app-events-eventid-change-control",
+      "path": "/app/events/[eventId]/change-control",
+      "authMode": "role-specific",
+      "persona": "operator",
+      "criticality": "critical",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/app/events/[eventId]/change-control"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [
+        "event"
+      ],
+      "persistenceRequired": false,
+      "cleanupPolicy": "exact-run",
+      "role": "operator"
+    },
+    {
+      "id": "app-events-eventid-communications",
+      "path": "/app/events/[eventId]/communications",
+      "authMode": "role-specific",
+      "persona": "operator",
+      "criticality": "critical",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/app/events/[eventId]/communications"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [
+        "event"
+      ],
+      "persistenceRequired": false,
+      "cleanupPolicy": "exact-run",
+      "role": "operator"
+    },
+    {
+      "id": "app-events-eventid-crew",
+      "path": "/app/events/[eventId]/crew",
+      "authMode": "role-specific",
+      "persona": "operator",
+      "criticality": "critical",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/app/events/[eventId]/crew"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [
+        "event"
+      ],
+      "persistenceRequired": false,
+      "cleanupPolicy": "exact-run",
+      "role": "operator"
+    },
+    {
+      "id": "app-events-eventid-inbox",
+      "path": "/app/events/[eventId]/inbox",
+      "authMode": "role-specific",
+      "persona": "operator",
+      "criticality": "critical",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/app/events/[eventId]/inbox"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [
+        "event"
+      ],
+      "persistenceRequired": false,
+      "cleanupPolicy": "exact-run",
+      "role": "operator"
+    },
+    {
+      "id": "app-events-eventid-incidents",
+      "path": "/app/events/[eventId]/incidents",
+      "authMode": "role-specific",
+      "persona": "operator",
+      "criticality": "critical",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/app/events/[eventId]/incidents"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [
+        "event"
+      ],
+      "persistenceRequired": false,
+      "cleanupPolicy": "exact-run",
+      "role": "operator"
+    },
+    {
+      "id": "app-events-eventid-overview",
+      "path": "/app/events/[eventId]/overview",
+      "authMode": "role-specific",
+      "persona": "operator",
+      "criticality": "critical",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/app/events/[eventId]/overview"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [
+        "event"
+      ],
+      "persistenceRequired": false,
+      "cleanupPolicy": "exact-run",
+      "role": "operator"
+    },
+    {
+      "id": "app-events-eventid",
+      "path": "/app/events/[eventId]",
+      "authMode": "role-specific",
+      "persona": "operator",
+      "criticality": "critical",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/app/events/[eventId]"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [
+        "event"
+      ],
+      "persistenceRequired": false,
+      "cleanupPolicy": "exact-run",
+      "role": "operator"
+    },
+    {
+      "id": "app-events-eventid-preview",
+      "path": "/app/events/[eventId]/preview",
+      "authMode": "role-specific",
+      "persona": "operator",
+      "criticality": "critical",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/app/events/[eventId]/preview"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [
+        "event"
+      ],
+      "persistenceRequired": false,
+      "cleanupPolicy": "exact-run",
+      "role": "operator"
+    },
+    {
+      "id": "app-events-eventid-producer",
+      "path": "/app/events/[eventId]/producer",
+      "authMode": "role-specific",
+      "persona": "operator",
+      "criticality": "critical",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/app/events/[eventId]/producer"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [
+        "event"
+      ],
+      "persistenceRequired": false,
+      "cleanupPolicy": "exact-run",
+      "role": "operator"
+    },
+    {
+      "id": "app-events-eventid-publish",
+      "path": "/app/events/[eventId]/publish",
+      "authMode": "role-specific",
+      "persona": "operator",
+      "criticality": "critical",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/app/events/[eventId]/publish"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [
+        "event"
+      ],
+      "persistenceRequired": false,
+      "cleanupPolicy": "exact-run",
+      "role": "operator"
+    },
+    {
+      "id": "app-events-eventid-report",
+      "path": "/app/events/[eventId]/report",
+      "authMode": "role-specific",
+      "persona": "operator",
+      "criticality": "critical",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/app/events/[eventId]/report"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [
+        "event"
+      ],
+      "persistenceRequired": false,
+      "cleanupPolicy": "exact-run",
+      "role": "operator"
+    },
+    {
+      "id": "app-events-eventid-run-of-show",
+      "path": "/app/events/[eventId]/run-of-show",
+      "authMode": "role-specific",
+      "persona": "operator",
+      "criticality": "critical",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/app/events/[eventId]/run-of-show"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [
+        "event"
+      ],
+      "persistenceRequired": false,
+      "cleanupPolicy": "exact-run",
+      "role": "operator"
+    },
+    {
+      "id": "app-events-eventid-setup",
+      "path": "/app/events/[eventId]/setup",
+      "authMode": "role-specific",
+      "persona": "operator",
+      "criticality": "critical",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/app/events/[eventId]/setup"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [
+        "event"
+      ],
+      "persistenceRequired": false,
+      "cleanupPolicy": "exact-run",
+      "role": "operator"
+    },
+    {
+      "id": "app-events-eventid-speakers",
+      "path": "/app/events/[eventId]/speakers",
+      "authMode": "role-specific",
+      "persona": "operator",
+      "criticality": "critical",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/app/events/[eventId]/speakers"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [
+        "event"
+      ],
+      "persistenceRequired": false,
+      "cleanupPolicy": "exact-run",
+      "role": "operator"
+    },
+    {
+      "id": "app-events-eventid-sponsors",
+      "path": "/app/events/[eventId]/sponsors",
+      "authMode": "role-specific",
+      "persona": "operator",
+      "criticality": "critical",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/app/events/[eventId]/sponsors"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [
+        "event"
+      ],
+      "persistenceRequired": false,
+      "cleanupPolicy": "exact-run",
+      "role": "operator"
+    },
+    {
+      "id": "app-events-eventid-talent",
+      "path": "/app/events/[eventId]/talent",
+      "authMode": "role-specific",
+      "persona": "operator",
+      "criticality": "critical",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/app/events/[eventId]/talent"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [
+        "event"
+      ],
+      "persistenceRequired": false,
+      "cleanupPolicy": "exact-run",
+      "role": "operator"
+    },
+    {
+      "id": "app-events-eventid-tasks",
+      "path": "/app/events/[eventId]/tasks",
+      "authMode": "role-specific",
+      "persona": "operator",
+      "criticality": "critical",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/app/events/[eventId]/tasks"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [
+        "event"
+      ],
+      "persistenceRequired": false,
+      "cleanupPolicy": "exact-run",
+      "role": "operator"
+    },
+    {
+      "id": "app-events-eventid-timeline",
+      "path": "/app/events/[eventId]/timeline",
+      "authMode": "role-specific",
+      "persona": "operator",
+      "criticality": "critical",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/app/events/[eventId]/timeline"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [
+        "event"
+      ],
+      "persistenceRequired": false,
+      "cleanupPolicy": "exact-run",
+      "role": "operator"
+    },
+    {
+      "id": "app-events-eventid-vendors",
+      "path": "/app/events/[eventId]/vendors",
+      "authMode": "role-specific",
+      "persona": "operator",
+      "criticality": "critical",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/app/events/[eventId]/vendors"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [
+        "event"
+      ],
+      "persistenceRequired": false,
+      "cleanupPolicy": "exact-run",
+      "role": "operator"
+    },
+    {
+      "id": "app-events-eventid-venue",
+      "path": "/app/events/[eventId]/venue",
+      "authMode": "role-specific",
+      "persona": "operator",
+      "criticality": "critical",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/app/events/[eventId]/venue"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [
+        "event"
+      ],
+      "persistenceRequired": false,
+      "cleanupPolicy": "exact-run",
+      "role": "operator"
+    },
+    {
+      "id": "app-events-eventid-video-backstage",
+      "path": "/app/events/[eventId]/video/backstage",
+      "authMode": "role-specific",
+      "persona": "operator",
+      "criticality": "critical",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/app/events/[eventId]/video/backstage"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [
+        "event"
+      ],
+      "persistenceRequired": false,
+      "cleanupPolicy": "exact-run",
+      "role": "operator"
+    },
+    {
+      "id": "app-events-eventid-video-green-room",
+      "path": "/app/events/[eventId]/video/green-room",
+      "authMode": "role-specific",
+      "persona": "operator",
+      "criticality": "critical",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/app/events/[eventId]/video/green-room"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [
+        "event"
+      ],
+      "persistenceRequired": false,
+      "cleanupPolicy": "exact-run",
+      "role": "operator"
+    },
+    {
+      "id": "app-events-eventid-video-main-stage",
+      "path": "/app/events/[eventId]/video/main-stage",
+      "authMode": "role-specific",
+      "persona": "operator",
+      "criticality": "critical",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/app/events/[eventId]/video/main-stage"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [
+        "event"
+      ],
+      "persistenceRequired": false,
+      "cleanupPolicy": "exact-run",
+      "role": "operator"
+    },
+    {
+      "id": "app-events-eventid-video-health",
+      "path": "/app/events/[eventId]/video-health",
+      "authMode": "role-specific",
+      "persona": "operator",
+      "criticality": "critical",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/app/events/[eventId]/video-health"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [
+        "event"
+      ],
+      "persistenceRequired": false,
+      "cleanupPolicy": "exact-run",
+      "role": "operator"
+    },
+    {
+      "id": "app-events-new",
+      "path": "/app/events/new",
+      "authMode": "role-specific",
+      "persona": "operator",
+      "criticality": "critical",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/app/events/new"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [],
+      "persistenceRequired": false,
+      "cleanupPolicy": "none",
+      "role": "operator"
+    },
+    {
+      "id": "app-events",
+      "path": "/app/events",
+      "authMode": "role-specific",
+      "persona": "operator",
+      "criticality": "critical",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/app/events"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [],
+      "persistenceRequired": false,
+      "cleanupPolicy": "none",
+      "role": "operator"
+    },
+    {
+      "id": "app",
+      "path": "/app",
+      "authMode": "role-specific",
+      "persona": "operator",
+      "criticality": "critical",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/app"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [],
+      "persistenceRequired": false,
+      "cleanupPolicy": "none",
+      "role": "operator"
+    },
+    {
+      "id": "app-settings",
+      "path": "/app/settings",
+      "authMode": "role-specific",
+      "persona": "operator",
+      "criticality": "standard",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/app/settings"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [],
+      "persistenceRequired": false,
+      "cleanupPolicy": "none",
+      "role": "operator"
+    },
+    {
+      "id": "app-templates",
+      "path": "/app/templates",
+      "authMode": "role-specific",
+      "persona": "operator",
+      "criticality": "standard",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/app/templates"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [],
+      "persistenceRequired": false,
+      "cleanupPolicy": "none",
+      "role": "operator"
+    },
+    {
+      "id": "app-vendors",
+      "path": "/app/vendors",
+      "authMode": "role-specific",
+      "persona": "operator",
+      "criticality": "standard",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/app/vendors"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [],
+      "persistenceRequired": false,
+      "cleanupPolicy": "none",
+      "role": "operator"
+    },
+    {
+      "id": "billing",
+      "path": "/billing",
+      "authMode": "role-specific",
+      "persona": "operator",
+      "criticality": "standard",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/billing"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [],
+      "persistenceRequired": false,
+      "cleanupPolicy": "none",
+      "role": "operator"
+    },
+    {
+      "id": "client-clientslug-events-eventid-approvals",
+      "path": "/client/[clientSlug]/events/[eventId]/approvals",
+      "authMode": "role-specific",
+      "persona": "client",
+      "criticality": "critical",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/client/[clientSlug]/events/[eventId]/approvals"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [
+        "event"
+      ],
+      "persistenceRequired": false,
+      "cleanupPolicy": "exact-run",
+      "role": "client"
+    },
+    {
+      "id": "client-clientslug-events-eventid-assets",
+      "path": "/client/[clientSlug]/events/[eventId]/assets",
+      "authMode": "role-specific",
+      "persona": "client",
+      "criticality": "critical",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/client/[clientSlug]/events/[eventId]/assets"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [
+        "event"
+      ],
+      "persistenceRequired": false,
+      "cleanupPolicy": "exact-run",
+      "role": "client"
+    },
+    {
+      "id": "client-clientslug-events-eventid",
+      "path": "/client/[clientSlug]/events/[eventId]",
+      "authMode": "role-specific",
+      "persona": "client",
+      "criticality": "critical",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/client/[clientSlug]/events/[eventId]"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [
+        "event"
+      ],
+      "persistenceRequired": false,
+      "cleanupPolicy": "exact-run",
+      "role": "client"
+    },
+    {
+      "id": "client-clientslug-events-eventid-run-of-show",
+      "path": "/client/[clientSlug]/events/[eventId]/run-of-show",
+      "authMode": "role-specific",
+      "persona": "client",
+      "criticality": "critical",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/client/[clientSlug]/events/[eventId]/run-of-show"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [
+        "event"
+      ],
+      "persistenceRequired": false,
+      "cleanupPolicy": "exact-run",
+      "role": "client"
+    },
+    {
+      "id": "client-clientslug-events-eventid-timeline",
+      "path": "/client/[clientSlug]/events/[eventId]/timeline",
+      "authMode": "role-specific",
+      "persona": "client",
+      "criticality": "critical",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/client/[clientSlug]/events/[eventId]/timeline"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [
+        "event"
+      ],
+      "persistenceRequired": false,
+      "cleanupPolicy": "exact-run",
+      "role": "client"
+    },
+    {
+      "id": "client-clientslug",
+      "path": "/client/[clientSlug]",
+      "authMode": "role-specific",
+      "persona": "client",
+      "criticality": "standard",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/client/[clientSlug]"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [],
+      "persistenceRequired": false,
+      "cleanupPolicy": "none",
+      "role": "client"
+    },
+    {
+      "id": "crew-events-eventid-call-sheet",
+      "path": "/crew/events/[eventId]/call-sheet",
+      "authMode": "role-specific",
+      "persona": "crew",
+      "criticality": "critical",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/crew/events/[eventId]/call-sheet"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [
+        "event"
+      ],
+      "persistenceRequired": false,
+      "cleanupPolicy": "exact-run",
+      "role": "crew"
+    },
+    {
+      "id": "crew-events-eventid",
+      "path": "/crew/events/[eventId]",
+      "authMode": "role-specific",
+      "persona": "crew",
+      "criticality": "critical",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/crew/events/[eventId]"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [
+        "event"
+      ],
+      "persistenceRequired": false,
+      "cleanupPolicy": "exact-run",
+      "role": "crew"
+    },
+    {
+      "id": "crew-events-eventid-run-of-show",
+      "path": "/crew/events/[eventId]/run-of-show",
+      "authMode": "role-specific",
+      "persona": "crew",
+      "criticality": "critical",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/crew/events/[eventId]/run-of-show"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [
+        "event"
+      ],
+      "persistenceRequired": false,
+      "cleanupPolicy": "exact-run",
+      "role": "crew"
+    },
+    {
+      "id": "crew-events-eventid-tasks",
+      "path": "/crew/events/[eventId]/tasks",
+      "authMode": "role-specific",
+      "persona": "crew",
+      "criticality": "critical",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/crew/events/[eventId]/tasks"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [
+        "event"
+      ],
+      "persistenceRequired": false,
+      "cleanupPolicy": "exact-run",
+      "role": "crew"
+    },
+    {
+      "id": "crew",
+      "path": "/crew",
+      "authMode": "role-specific",
+      "persona": "crew",
+      "criticality": "standard",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/crew"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [],
+      "persistenceRequired": false,
+      "cleanupPolicy": "none",
+      "role": "crew"
+    },
+    {
+      "id": "events-slug-agenda",
+      "path": "/events/[slug]/agenda",
+      "authMode": "role-specific",
+      "persona": "operator",
+      "criticality": "critical",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/events/[slug]/agenda"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [],
+      "persistenceRequired": false,
+      "cleanupPolicy": "none",
+      "role": "operator"
+    },
+    {
+      "id": "events-slug",
+      "path": "/events/[slug]",
+      "authMode": "role-specific",
+      "persona": "operator",
+      "criticality": "critical",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/events/[slug]"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [],
+      "persistenceRequired": false,
+      "cleanupPolicy": "none",
+      "role": "operator"
+    },
+    {
+      "id": "events-slug-register",
+      "path": "/events/[slug]/register",
+      "authMode": "role-specific",
+      "persona": "operator",
+      "criticality": "critical",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/events/[slug]/register"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [],
+      "persistenceRequired": false,
+      "cleanupPolicy": "none",
+      "role": "operator"
+    },
+    {
+      "id": "events-slug-speakers",
+      "path": "/events/[slug]/speakers",
+      "authMode": "role-specific",
+      "persona": "operator",
+      "criticality": "critical",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/events/[slug]/speakers"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [],
+      "persistenceRequired": false,
+      "cleanupPolicy": "none",
+      "role": "operator"
+    },
+    {
+      "id": "events-slug-sponsors",
+      "path": "/events/[slug]/sponsors",
+      "authMode": "role-specific",
+      "persona": "operator",
+      "criticality": "critical",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/events/[slug]/sponsors"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [],
+      "persistenceRequired": false,
+      "cleanupPolicy": "none",
+      "role": "operator"
+    },
+    {
+      "id": "join",
+      "path": "/join",
+      "authMode": "role-specific",
+      "persona": "operator",
+      "criticality": "standard",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/join"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [],
+      "persistenceRequired": false,
+      "cleanupPolicy": "none",
+      "role": "operator"
+    },
+    {
+      "id": "onboarding",
+      "path": "/onboarding",
+      "authMode": "role-specific",
+      "persona": "operator",
+      "criticality": "standard",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/onboarding"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [],
+      "persistenceRequired": false,
+      "cleanupPolicy": "none",
+      "role": "operator"
+    },
+    {
+      "id": "operator-packet",
+      "path": "/operator-packet",
+      "authMode": "role-specific",
+      "persona": "operator",
+      "criticality": "standard",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/operator-packet"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [],
+      "persistenceRequired": false,
+      "cleanupPolicy": "none",
+      "role": "operator"
+    },
+    {
+      "id": "home",
+      "path": "/",
+      "authMode": "public",
+      "persona": "public",
+      "criticality": "critical",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [],
+      "persistenceRequired": false,
+      "cleanupPolicy": "none"
+    },
+    {
+      "id": "privacy",
+      "path": "/privacy",
+      "authMode": "role-specific",
+      "persona": "operator",
+      "criticality": "standard",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/privacy"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [],
+      "persistenceRequired": false,
+      "cleanupPolicy": "none",
+      "role": "operator"
+    },
+    {
+      "id": "production-access-crew",
+      "path": "/production-access/crew",
+      "authMode": "role-specific",
+      "persona": "crew",
+      "criticality": "standard",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/production-access/crew"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [],
+      "persistenceRequired": false,
+      "cleanupPolicy": "none",
+      "role": "crew"
+    },
+    {
+      "id": "production-access-launchpad",
+      "path": "/production-access/launchpad",
+      "authMode": "role-specific",
+      "persona": "operator",
+      "criticality": "standard",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/production-access/launchpad"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [],
+      "persistenceRequired": false,
+      "cleanupPolicy": "none",
+      "role": "operator"
+    },
+    {
+      "id": "production-access-operator",
+      "path": "/production-access/operator",
+      "authMode": "role-specific",
+      "persona": "operator",
+      "criticality": "standard",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/production-access/operator"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [],
+      "persistenceRequired": false,
+      "cleanupPolicy": "none",
+      "role": "operator"
+    },
+    {
+      "id": "production-access-owner",
+      "path": "/production-access/owner",
+      "authMode": "role-specific",
+      "persona": "owner",
+      "criticality": "standard",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/production-access/owner"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [],
+      "persistenceRequired": false,
+      "cleanupPolicy": "none",
+      "role": "owner"
+    },
+    {
+      "id": "production-access",
+      "path": "/production-access",
+      "authMode": "role-specific",
+      "persona": "operator",
+      "criticality": "standard",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/production-access"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [],
+      "persistenceRequired": false,
+      "cleanupPolicy": "none",
+      "role": "operator"
+    },
+    {
+      "id": "production-access-setup-error",
+      "path": "/production-access/setup-error",
+      "authMode": "role-specific",
+      "persona": "operator",
+      "criticality": "standard",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/production-access/setup-error"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [],
+      "persistenceRequired": false,
+      "cleanupPolicy": "none",
+      "role": "operator"
+    },
+    {
+      "id": "production-access-special-guest",
+      "path": "/production-access/special-guest",
+      "authMode": "role-specific",
+      "persona": "special-guest",
+      "criticality": "standard",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/production-access/special-guest"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [],
+      "persistenceRequired": false,
+      "cleanupPolicy": "none",
+      "role": "special-guest"
+    },
+    {
+      "id": "request-event",
+      "path": "/request-event",
+      "authMode": "role-specific",
+      "persona": "operator",
+      "criticality": "standard",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/request-event"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [],
+      "persistenceRequired": false,
+      "cleanupPolicy": "none",
+      "role": "operator"
+    },
+    {
+      "id": "speaker-events-eventid-backstage",
+      "path": "/speaker/events/[eventId]/backstage",
+      "authMode": "role-specific",
+      "persona": "speaker",
+      "criticality": "critical",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/speaker/events/[eventId]/backstage"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [
+        "event"
+      ],
+      "persistenceRequired": false,
+      "cleanupPolicy": "exact-run",
+      "role": "speaker"
+    },
+    {
+      "id": "speaker-events-eventid-green-room",
+      "path": "/speaker/events/[eventId]/green-room",
+      "authMode": "role-specific",
+      "persona": "speaker",
+      "criticality": "critical",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/speaker/events/[eventId]/green-room"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [
+        "event"
+      ],
+      "persistenceRequired": false,
+      "cleanupPolicy": "exact-run",
+      "role": "speaker"
+    },
+    {
+      "id": "speaker-events-eventid-onboarding",
+      "path": "/speaker/events/[eventId]/onboarding",
+      "authMode": "role-specific",
+      "persona": "speaker",
+      "criticality": "critical",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/speaker/events/[eventId]/onboarding"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [
+        "event"
+      ],
+      "persistenceRequired": false,
+      "cleanupPolicy": "exact-run",
+      "role": "speaker"
+    },
+    {
+      "id": "speaker-events-eventid",
+      "path": "/speaker/events/[eventId]",
+      "authMode": "role-specific",
+      "persona": "speaker",
+      "criticality": "critical",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/speaker/events/[eventId]"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [
+        "event"
+      ],
+      "persistenceRequired": false,
+      "cleanupPolicy": "exact-run",
+      "role": "speaker"
+    },
+    {
+      "id": "speaker-events-eventid-tech-check",
+      "path": "/speaker/events/[eventId]/tech-check",
+      "authMode": "role-specific",
+      "persona": "speaker",
+      "criticality": "critical",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/speaker/events/[eventId]/tech-check"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [
+        "event"
+      ],
+      "persistenceRequired": false,
+      "cleanupPolicy": "exact-run",
+      "role": "speaker"
+    },
+    {
+      "id": "speaker-events-eventid-teleprompter",
+      "path": "/speaker/events/[eventId]/teleprompter",
+      "authMode": "role-specific",
+      "persona": "speaker",
+      "criticality": "critical",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/speaker/events/[eventId]/teleprompter"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [
+        "event"
+      ],
+      "persistenceRequired": false,
+      "cleanupPolicy": "exact-run",
+      "role": "speaker"
+    },
+    {
+      "id": "speaker",
+      "path": "/speaker",
+      "authMode": "role-specific",
+      "persona": "speaker",
+      "criticality": "standard",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/speaker"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [],
+      "persistenceRequired": false,
+      "cleanupPolicy": "none",
+      "role": "speaker"
+    },
+    {
+      "id": "sponsor-events-eventid-booth",
+      "path": "/sponsor/events/[eventId]/booth",
+      "authMode": "role-specific",
+      "persona": "sponsor",
+      "criticality": "critical",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/sponsor/events/[eventId]/booth"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [
+        "event"
+      ],
+      "persistenceRequired": false,
+      "cleanupPolicy": "exact-run",
+      "role": "sponsor"
+    },
+    {
+      "id": "sponsor-events-eventid-leads",
+      "path": "/sponsor/events/[eventId]/leads",
+      "authMode": "role-specific",
+      "persona": "sponsor",
+      "criticality": "critical",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/sponsor/events/[eventId]/leads"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [
+        "event"
+      ],
+      "persistenceRequired": false,
+      "cleanupPolicy": "exact-run",
+      "role": "sponsor"
+    },
+    {
+      "id": "sponsor-events-eventid",
+      "path": "/sponsor/events/[eventId]",
+      "authMode": "role-specific",
+      "persona": "sponsor",
+      "criticality": "critical",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/sponsor/events/[eventId]"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [
+        "event"
+      ],
+      "persistenceRequired": false,
+      "cleanupPolicy": "exact-run",
+      "role": "sponsor"
+    },
+    {
+      "id": "sponsor-events-eventid-ready-room",
+      "path": "/sponsor/events/[eventId]/ready-room",
+      "authMode": "role-specific",
+      "persona": "sponsor",
+      "criticality": "critical",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/sponsor/events/[eventId]/ready-room"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [
+        "event"
+      ],
+      "persistenceRequired": false,
+      "cleanupPolicy": "exact-run",
+      "role": "sponsor"
+    },
+    {
+      "id": "sponsor-events-eventid-report",
+      "path": "/sponsor/events/[eventId]/report",
+      "authMode": "role-specific",
+      "persona": "sponsor",
+      "criticality": "critical",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/sponsor/events/[eventId]/report"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [
+        "event"
+      ],
+      "persistenceRequired": false,
+      "cleanupPolicy": "exact-run",
+      "role": "sponsor"
+    },
+    {
+      "id": "sponsor-events-eventid-setup",
+      "path": "/sponsor/events/[eventId]/setup",
+      "authMode": "role-specific",
+      "persona": "sponsor",
+      "criticality": "critical",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/sponsor/events/[eventId]/setup"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [
+        "event"
+      ],
+      "persistenceRequired": false,
+      "cleanupPolicy": "exact-run",
+      "role": "sponsor"
+    },
+    {
+      "id": "sponsor",
+      "path": "/sponsor",
+      "authMode": "role-specific",
+      "persona": "sponsor",
+      "criticality": "standard",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/sponsor"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [],
+      "persistenceRequired": false,
+      "cleanupPolicy": "none",
+      "role": "sponsor"
+    },
+    {
+      "id": "start-create-event",
+      "path": "/start/create-event",
+      "authMode": "role-specific",
+      "persona": "operator",
+      "criticality": "standard",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/start/create-event"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [],
+      "persistenceRequired": false,
+      "cleanupPolicy": "none",
+      "role": "operator"
+    },
+    {
+      "id": "start",
+      "path": "/start",
+      "authMode": "role-specific",
+      "persona": "operator",
+      "criticality": "standard",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/start"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [],
+      "persistenceRequired": false,
+      "cleanupPolicy": "none",
+      "role": "operator"
+    },
+    {
+      "id": "submit-eventcode-speaker",
+      "path": "/submit/[eventCode]/speaker",
+      "authMode": "role-specific",
+      "persona": "operator",
+      "criticality": "standard",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/submit/[eventCode]/speaker"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [],
+      "persistenceRequired": false,
+      "cleanupPolicy": "none",
+      "role": "operator"
+    },
+    {
+      "id": "submit-eventcode-sponsor",
+      "path": "/submit/[eventCode]/sponsor",
+      "authMode": "role-specific",
+      "persona": "operator",
+      "criticality": "standard",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/submit/[eventCode]/sponsor"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [],
+      "persistenceRequired": false,
+      "cleanupPolicy": "none",
+      "role": "operator"
+    },
+    {
+      "id": "terms",
+      "path": "/terms",
+      "authMode": "role-specific",
+      "persona": "operator",
+      "criticality": "standard",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/terms"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [],
+      "persistenceRequired": false,
+      "cleanupPolicy": "none",
+      "role": "operator"
+    },
+    {
+      "id": "venue-eventid-breakouts",
+      "path": "/venue/[eventId]/breakouts",
+      "authMode": "role-specific",
+      "persona": "attendee",
+      "criticality": "standard",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/venue/[eventId]/breakouts"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [
+        "event"
+      ],
+      "persistenceRequired": false,
+      "cleanupPolicy": "exact-run",
+      "role": "attendee"
+    },
+    {
+      "id": "venue-eventid-expo-boothid",
+      "path": "/venue/[eventId]/expo/[boothId]",
+      "authMode": "role-specific",
+      "persona": "attendee",
+      "criticality": "standard",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/venue/[eventId]/expo/[boothId]"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [
+        "event"
+      ],
+      "persistenceRequired": false,
+      "cleanupPolicy": "exact-run",
+      "role": "attendee"
+    },
+    {
+      "id": "venue-eventid-expo",
+      "path": "/venue/[eventId]/expo",
+      "authMode": "role-specific",
+      "persona": "attendee",
+      "criticality": "standard",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/venue/[eventId]/expo"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [
+        "event"
+      ],
+      "persistenceRequired": false,
+      "cleanupPolicy": "exact-run",
+      "role": "attendee"
+    },
+    {
+      "id": "venue-eventid-help",
+      "path": "/venue/[eventId]/help",
+      "authMode": "role-specific",
+      "persona": "attendee",
+      "criticality": "standard",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/venue/[eventId]/help"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [
+        "event"
+      ],
+      "persistenceRequired": false,
+      "cleanupPolicy": "exact-run",
+      "role": "attendee"
+    },
+    {
+      "id": "venue-eventid-lobby",
+      "path": "/venue/[eventId]/lobby",
+      "authMode": "role-specific",
+      "persona": "attendee",
+      "criticality": "standard",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/venue/[eventId]/lobby"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [
+        "event"
+      ],
+      "persistenceRequired": false,
+      "cleanupPolicy": "exact-run",
+      "role": "attendee"
+    },
+    {
+      "id": "venue-eventid-networking",
+      "path": "/venue/[eventId]/networking",
+      "authMode": "role-specific",
+      "persona": "attendee",
+      "criticality": "standard",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/venue/[eventId]/networking"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [
+        "event"
+      ],
+      "persistenceRequired": false,
+      "cleanupPolicy": "exact-run",
+      "role": "attendee"
+    },
+    {
+      "id": "venue-eventid-people",
+      "path": "/venue/[eventId]/people",
+      "authMode": "role-specific",
+      "persona": "attendee",
+      "criticality": "standard",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/venue/[eventId]/people"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [
+        "event"
+      ],
+      "persistenceRequired": false,
+      "cleanupPolicy": "exact-run",
+      "role": "attendee"
+    },
+    {
+      "id": "venue-eventid-replay",
+      "path": "/venue/[eventId]/replay",
+      "authMode": "role-specific",
+      "persona": "attendee",
+      "criticality": "standard",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/venue/[eventId]/replay"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [
+        "event"
+      ],
+      "persistenceRequired": false,
+      "cleanupPolicy": "exact-run",
+      "role": "attendee"
+    },
+    {
+      "id": "venue-eventid-run-of-show",
+      "path": "/venue/[eventId]/run-of-show",
+      "authMode": "role-specific",
+      "persona": "attendee",
+      "criticality": "standard",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/venue/[eventId]/run-of-show"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [
+        "event"
+      ],
+      "persistenceRequired": false,
+      "cleanupPolicy": "exact-run",
+      "role": "attendee"
+    },
+    {
+      "id": "venue-eventid-sessions-sessionid",
+      "path": "/venue/[eventId]/sessions/[sessionId]",
+      "authMode": "role-specific",
+      "persona": "attendee",
+      "criticality": "standard",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/venue/[eventId]/sessions/[sessionId]"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [
+        "event"
+      ],
+      "persistenceRequired": false,
+      "cleanupPolicy": "exact-run",
+      "role": "attendee"
+    },
+    {
+      "id": "venue-eventid-sessions",
+      "path": "/venue/[eventId]/sessions",
+      "authMode": "role-specific",
+      "persona": "attendee",
+      "criticality": "standard",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/venue/[eventId]/sessions"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [
+        "event"
+      ],
+      "persistenceRequired": false,
+      "cleanupPolicy": "exact-run",
+      "role": "attendee"
+    },
+    {
+      "id": "venue-eventid-stage",
+      "path": "/venue/[eventId]/stage",
+      "authMode": "role-specific",
+      "persona": "attendee",
+      "criticality": "standard",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/venue/[eventId]/stage"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [
+        "event"
+      ],
+      "persistenceRequired": false,
+      "cleanupPolicy": "exact-run",
+      "role": "attendee"
+    }
+  ],
+  "allowedHttpFailures": []
+}

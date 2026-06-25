@@ -1,5 +1,6 @@
 import { ClientDetail } from "@/components/clients/ClientDetail";
 
-export default function ClientDetailPage({ params }: { params: { clientId: string } }) {
-  return <ClientDetail clientId={params.clientId} />;
+export default async function ClientDetailPage({ params }: { params: Promise<{ clientId: string }> }) {
+  const resolvedParams = await params;
+  return <ClientDetail clientId={resolvedParams.clientId} />;
 }

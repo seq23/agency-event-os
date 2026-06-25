@@ -164,7 +164,7 @@ export function evaluateStageFallbackDecision(previous: StageStreamState, signal
       state.fallbackRecommendation = "Show was intentionally ended. Do not activate fallback.";
     } else if (state.hasEverStarted) {
       state.failurePlane = "STREAMYARD_FEED";
-      activateCloudflareFallback(state, reason || "StreamYard-compatible feed stopped after being live.");
+      activateDailyFallback(state, reason || "StreamYard-compatible feed stopped after being live; switch attendees to Daily while production keeps StreamYard context visible to operators.");
     } else {
       state.streamStatus = "READY_FOR_STREAMYARD";
       state.failurePlane = "NONE";
@@ -174,6 +174,8 @@ export function evaluateStageFallbackDecision(previous: StageStreamState, signal
   if (signal === "livekit_room_unreachable" || signal === "livekit_token_failure" || signal === "attendee_livekit_disconnect_after_started") {
     state.failurePlane = "LIVEKIT_DISTRIBUTION";
     activateCloudflareFallback(state, reason || "LiveKit/primary distribution degraded while production is still trying to keep the show moving.");
+    state.producerStudioSource = "STREAMYARD";
+    state.fallbackRecommendation = "Owner/showrunner/crew: keep StreamYard running while the attendee distribution path moves to Cloudflare Stream. Do not expose provider detail to attendees.";
   }
   if (signal === "manual_switch_to_cloudflare_stream") activateCloudflareFallback(state, reason || "Operator selected Cloudflare Stream fallback.");
   if (signal === "cloudflare_stream_live") {

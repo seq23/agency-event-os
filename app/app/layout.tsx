@@ -13,11 +13,11 @@ export default async function AgencyAppLayout({ children }: { children: ReactNod
   if (!user) {
     const env = getEnv();
     const { operatorCookieName, ownerCookieName } = getV5AccessCookieNames(env);
-    const ownerCookie = cookies().get(ownerCookieName)?.value;
+    const ownerCookie = (await cookies()).get(ownerCookieName)?.value;
     const ownerPayload = ownerCookie ? await readV5AccessCookie(ownerCookie, getV5AccessCookieSecret(env)) : null;
     const ownerCanEnterApp = canOwnerAccessPath("/app", ownerPayload || undefined);
 
-    const operatorCookie = cookies().get(operatorCookieName)?.value;
+    const operatorCookie = (await cookies()).get(operatorCookieName)?.value;
     const operatorPayload = operatorCookie ? await readV5AccessCookie(operatorCookie, getV5AccessCookieSecret(env)) : null;
     const operatorCanEnterDay1App = canOperatorAccessPath("/app/events/new", operatorPayload || undefined);
 

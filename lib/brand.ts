@@ -10,7 +10,7 @@ export const brandColors = {
   charcoal: "#171717",
   muted: "#737373",
   line: "#e5e5e5",
-  orange: "#ff6a00",
+  orange: "#f05a1a",
 };
 
 export function formatProductName() {

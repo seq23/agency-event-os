@@ -1,10 +1,11 @@
 import { LiveKitRoomShell } from "@/components/video/LiveKitRoomShell";
 
-export default function MainStageRoomPage({ params }: { params: { eventId: string } }) {
+export default async function MainStageRoomPage({ params }: { params: Promise<{ eventId: string }> }) {
+  const resolvedParams = await params;
   return (
     <LiveKitRoomShell
-      eventId={params.eventId}
-      roomId={`${params.eventId}-main-stage`}
+      eventId={resolvedParams.eventId}
+      roomId={`${resolvedParams.eventId}-main-stage`}
       roomType="main_stage"
       role="host"
       title="Main Stage"

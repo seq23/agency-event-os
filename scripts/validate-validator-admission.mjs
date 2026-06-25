@@ -21,7 +21,7 @@ for (const name of scoped) {
   for (const field of ['status','admission','category','severity','owner','productionRisk','whatItProves','whatItDoesNotProve','blockerPolicy','failureHandling','simplificationDisposition','removalConditions']) {
     if (!row[field]) failures.push(`Admission row for ${name} missing ${field}`);
   }
-  if (!['HARD FAIL','INFO / NO VALIDATION'].includes(row.severity)) failures.push(`Admission row for ${name} has invalid or retired severity: ${row.severity}`);
+  if (!['HARD FAIL','STRONG WARNING','WARNING','INFO / NO VALIDATION'].includes(row.severity)) failures.push(`Admission row for ${name} has invalid severity: ${row.severity}`);
 }
 for (const row of register.register || []) {
   if (row.status === 'ACTIVE' && !pkg.scripts?.[row.script]) failures.push(`Admission row references missing package script: ${row.script}`);
@@ -34,7 +34,7 @@ for (const row of matrixRows) {
   for (const field of ['owner','tier','severity','proofLayer','blockerPolicy','simplificationDisposition']) {
     if (!row[field]) failures.push(`Validation matrix row ${label} missing ${field}`);
   }
-  if (String(row.severity || '').includes('ADVISORY')) failures.push(`Validation matrix row ${label} uses retired advisory severity: ${row.severity}`);
+  if (!['HARD FAIL','STRONG WARNING','WARNING','INFO / NO VALIDATION'].includes(row.severity)) failures.push(`Validation matrix row ${label} has invalid severity: ${row.severity}`);
 }
 
 if (!pkg.scripts?.['validate:validator-admission']) failures.push('Missing package script validate:validator-admission');

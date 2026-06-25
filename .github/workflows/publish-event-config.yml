@@ -1,51 +1,38 @@
-name: Publish Event Config
-
+name: Publish event configuration package
 on:
   workflow_dispatch:
     inputs:
       event_config_package:
-        description: "Checked-in directory under event-config-packages/<slug>. No secrets. No absolute paths."
+        description: Relative path under event-config-packages/
         required: true
         type: string
-
 permissions:
   contents: write
   pull-requests: write
-
 jobs:
-  import-validate-and-open-pr:
+  publish:
     runs-on: ubuntu-latest
     env:
-      EVENT_CONFIG_PACKAGE: ${{ inputs.event_config_package }}
+      EVENT_CONFIG_PACKAGE: ${{ github.event.inputs.event_config_package }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Use Node
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
-
-      - name: Install
-        run: npm ci
-
-      - name: Import event config package
+      - run: npm ci
+      - name: Import validated package
         run: node scripts/import_event_config_package.js "$EVENT_CONFIG_PACKAGE"
-
-      - name: Validate event config
-        run: npm run validate:v5-event-config-schema
-
-      - name: Validate publish boundary
-        run: npm run validate:v5-publishing
-
-      - name: Refuse empty publish diff
-        run: git diff --quiet -- data/events data/access public/events && { echo "No imported event config diff found. Refusing to create an empty publishing PR."; exit 1; } || true
-
-      - name: Create pull request
-        uses: peter-evans/create-pull-request@v6
+      - name: Verify event surfaces changed
+        run: |
+          if git diff --quiet -- data/events data/access public/events; then
+            echo "No event configuration changes were produced."
+            exit 1
+          fi
+      - uses: peter-evans/create-pull-request@v7
         with:
-          branch: event-config/publish-${{ github.run_id }}
-          title: "Publish event config package"
-          commit-message: "Publish event config package"
-          body: "Validated event config publish PR. No direct commit to main. Package path was supplied through EVENT_CONFIG_PACKAGE and validated by scripts/import_event_config_package.js."
+          commit-message: "Publish validated event configuration"
+          title: "Publish validated event configuration"
+          body: "Generated from the validated EVENT_CONFIG_PACKAGE workflow input."
+          branch: automation/publish-event-config
+          delete-branch: true

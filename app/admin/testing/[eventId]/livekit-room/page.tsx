@@ -1,10 +1,11 @@
 import { LiveKitRoomShell } from "@/components/video/LiveKitRoomShell";
 
-export default function TestingLiveKitRoomPage({ params }: { params: { eventId: string } }) {
+export default async function TestingLiveKitRoomPage({ params }: { params: Promise<{ eventId: string }> }) {
+  const resolvedParams = await params;
   return (
     <LiveKitRoomShell
-      eventId={params.eventId}
-      roomId={`${params.eventId}-testing`}
+      eventId={resolvedParams.eventId}
+      roomId={`${resolvedParams.eventId}-testing`}
       roomType="testing"
       role="producer"
       title="LiveKit Testing Room"

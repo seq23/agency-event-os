@@ -1,5 +1,6 @@
 import { CrewInstructionManager } from "@/components/events/CrewInstructionManager";
 
-export default function EventCrewInstructionsPage({ params }: { params: { eventId: string } }) {
-  return <CrewInstructionManager eventId={params.eventId} />;
+export default async function EventCrewInstructionsPage({ params }: { params: Promise<{ eventId: string }> }) {
+  const resolvedParams = await params;
+  return <CrewInstructionManager eventId={resolvedParams.eventId} />;
 }

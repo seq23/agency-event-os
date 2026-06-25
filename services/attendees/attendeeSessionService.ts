@@ -30,7 +30,7 @@ export async function createAttendeeSession(profile: AttendeeProfile) {
     expiresAt: new Date(now + SESSION_DAYS * 24 * 60 * 60 * 1000).toISOString(),
   };
   await getRuntimeStore().upsertAttendeeSession(session);
-  cookies().set(ATTENDEE_SESSION_COOKIE, cookieValue(session.eventId, session.sessionId), {
+  (await cookies()).set(ATTENDEE_SESSION_COOKIE, cookieValue(session.eventId, session.sessionId), {
     httpOnly: true,
     sameSite: "lax",
     secure: process.env.NODE_ENV === "production",
@@ -41,7 +41,7 @@ export async function createAttendeeSession(profile: AttendeeProfile) {
 }
 
 export async function getCurrentAttendeeSession(eventId: string) {
-  const parsed = parseCookie(cookies().get(ATTENDEE_SESSION_COOKIE)?.value);
+  const parsed = parseCookie((await cookies()).get(ATTENDEE_SESSION_COOKIE)?.value);
   if (!parsed || parsed.eventId !== eventId) return undefined;
   const session = await getRuntimeStore().getAttendeeSession(eventId, parsed.sessionId).catch(() => undefined);
   if (!session || session.status !== "active") return undefined;

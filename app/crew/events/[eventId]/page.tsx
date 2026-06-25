@@ -1,9 +1,10 @@
 import { CrewBriefingPanel, CrewInstructionShell } from "@/components/crew/CrewInstructionShell";
 import { crewBriefing, crewTasks } from "@/lib/crew/crewBriefing";
 
-export default function CrewEventHomePage({ params }: { params: { eventId: string } }) {
+export default async function CrewEventHomePage({ params }: { params: Promise<{ eventId: string }> }) {
+  const resolvedParams = await params;
   return (
-    <CrewInstructionShell eventId={params.eventId} active="home" eyebrow="Crew Briefing" title="Crew show-day command">
+    <CrewInstructionShell eventId={resolvedParams.eventId} active="home" eyebrow="Crew Briefing" title="Crew show-day command">
       <section className="rounded-3xl bg-white p-6 shadow-sm">
         <p className="text-sm font-black uppercase tracking-[0.25em] text-brand-orange">What to do now</p>
         <h2 className="mt-2 text-2xl font-black tracking-tight">Start here before touching the venue.</h2>
@@ -12,9 +13,9 @@ export default function CrewEventHomePage({ params }: { params: { eventId: strin
           task list, fallback rules, and escalation path without giving crew access to the Operator Launchpad.
         </p>
         <div className="mt-5 grid gap-3 md:grid-cols-3">
-          <a className="rounded-2xl border border-brand-line p-4 text-sm font-bold hover:border-brand-orange hover:text-brand-orange" href={`/crew/events/${params.eventId}/call-sheet`}>Open Call Sheet</a>
-          <a className="rounded-2xl border border-brand-line p-4 text-sm font-bold hover:border-brand-orange hover:text-brand-orange" href={`/crew/events/${params.eventId}/run-of-show`}>Open Run of Show</a>
-          <a className="rounded-2xl border border-brand-line p-4 text-sm font-bold hover:border-brand-orange hover:text-brand-orange" href={`/crew/events/${params.eventId}/tasks`}>Open Tasks</a>
+          <a className="rounded-2xl border border-brand-line p-4 text-sm font-bold hover:border-brand-orange hover:text-brand-orange" href={`/crew/events/${resolvedParams.eventId}/call-sheet`}>Open Call Sheet</a>
+          <a className="rounded-2xl border border-brand-line p-4 text-sm font-bold hover:border-brand-orange hover:text-brand-orange" href={`/crew/events/${resolvedParams.eventId}/run-of-show`}>Open Run of Show</a>
+          <a className="rounded-2xl border border-brand-line p-4 text-sm font-bold hover:border-brand-orange hover:text-brand-orange" href={`/crew/events/${resolvedParams.eventId}/tasks`}>Open Tasks</a>
         </div>
       </section>
 

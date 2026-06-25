@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
 
   if (error || !data.session) return NextResponse.redirect(new URL("/login?error=auth_callback_failed", url.origin));
 
-  setAuthCookie({
+  await setAuthCookie({
     accessToken: data.session.access_token,
     refreshToken: data.session.refresh_token,
     expiresAt: data.session.expires_at,

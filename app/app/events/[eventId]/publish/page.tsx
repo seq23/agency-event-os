@@ -1,5 +1,6 @@
 import { EventPublishPanel } from "@/components/events/EventPublishPanel";
 
-export default function EventPublishPage({ params }: { params: { eventId: string } }) {
-  return <EventPublishPanel eventId={params.eventId} />;
+export default async function EventPublishPage({ params }: { params: Promise<{ eventId: string }> }) {
+  const resolvedParams = await params;
+  return <EventPublishPanel eventId={resolvedParams.eventId} />;
 }

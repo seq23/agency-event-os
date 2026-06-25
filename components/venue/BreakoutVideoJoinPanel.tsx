@@ -62,7 +62,7 @@ export function BreakoutVideoJoinPanel({ eventId, roomId, displayName, attendeeI
     <div className="mt-6 rounded-3xl border border-white/10 bg-slate-900 p-6">
       <p className="font-black">Breakout video controls</p>
       <p className="mt-2 text-sm text-slate-300">Camera: {cameraAllowed ? "allowed" : "disabled"} · Microphone: {microphoneAllowed ? "allowed" : "disabled"} · Screen share: {screenShareAllowed ? "allowed" : "disabled"}</p>
-      <button type="button" onClick={requestJoin} disabled={status === "loading" || (!cameraAllowed && !microphoneAllowed)} className="mt-4 rounded-full bg-cyan-300 px-5 py-3 text-sm font-black text-slate-950 disabled:cursor-not-allowed disabled:bg-slate-500 disabled:text-slate-200">
+      <button type="button" onClick={requestJoin} disabled={status === "loading" || (!cameraAllowed && !microphoneAllowed)} className="mt-4 rounded-full bg-brand-orange px-5 py-3 text-sm font-black text-slate-950 disabled:cursor-not-allowed disabled:bg-slate-500 disabled:text-slate-200">
         {status === "loading" ? "Preparing breakout video…" : "Join breakout video"}
       </button>
       {error ? <p className="mt-3 rounded-2xl bg-amber-50 p-3 text-sm font-bold text-amber-900">{error}</p> : null}

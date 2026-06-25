@@ -1,5 +1,6 @@
 import { ProductionCommandCenter } from "@/components/production/ProductionCommandCenter";
 
-export default function ProducerPage({ params }: { params: { eventId: string } }) {
-  return <ProductionCommandCenter eventId={params.eventId} />;
+export default async function ProducerPage({ params }: { params: Promise<{ eventId: string }> }) {
+  const resolvedParams = await params;
+  return <ProductionCommandCenter eventId={resolvedParams.eventId} />;
 }

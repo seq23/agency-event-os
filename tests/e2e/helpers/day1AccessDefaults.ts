@@ -27,14 +27,23 @@ function loadLocalEnv() {
   }
 }
 
+function isPlaceholderEnvValue(value: string | undefined) {
+  if (!value) return true;
+  const normalized = value.trim();
+  return !normalized || normalized === 'REPLACE_WITH_LOCAL_SECRET' || normalized === 'REPLACE_WITH_LOCAL_CODE' || normalized.startsWith('REPLACE_WITH_') || normalized === '<32+ character internal cookie secret>';
+}
+
 function localEnvValue(key: string) {
   loadLocalEnv();
-  return localEnvCache.get(key);
+  const value = localEnvCache.get(key);
+  return isPlaceholderEnvValue(value) ? undefined : value;
 }
 
 
-export function day1Default(key: string, fallback = '') {
-  return process.env[key] || localEnvValue(key) || demoDefaults[key] || fallback;
+export function day1Default(key: string, fallback = ''): string {
+  const runtime = process.env[key];
+  if (runtime && !isPlaceholderEnvValue(runtime)) return runtime;
+  return localEnvValue(key) || demoDefaults[key] || fallback;
 }
 
 export function requiredDay1Default(key: string) {

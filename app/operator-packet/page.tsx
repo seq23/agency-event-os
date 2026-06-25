@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { WestPeekProductionsLogo } from "@/components/brand/WestPeekProductionsLogo";
@@ -14,9 +15,9 @@ async function requireOperatorPacketAccess() {
   const env = getEnv();
   const { operatorCookieName, ownerCookieName } = safeAccessCookieNames();
   const secret = getV5AccessCookieSecret(env);
-  const ownerPayload = await readV5AccessCookie(cookies().get(ownerCookieName)?.value, secret);
+  const ownerPayload = await readV5AccessCookie((await cookies()).get(ownerCookieName)?.value, secret);
   if (ownerPayload?.kind === "owner") return { ok: true as const, missing: [] as string[] };
-  const operatorPayload = await readV5AccessCookie(cookies().get(operatorCookieName)?.value, secret);
+  const operatorPayload = await readV5AccessCookie((await cookies()).get(operatorCookieName)?.value, secret);
   return { ok: Boolean(operatorPayload?.kind === "operator"), missing: [] as string[] };
 }
 
@@ -39,7 +40,7 @@ export default async function OperatorPacketRoute() {
           <section className="rounded-3xl bg-brand-ash p-5"><h2 className="font-black">Run-of-show spine</h2><p className="mt-2 text-sm leading-6">Agenda → Run of Show → Call Sheet → Show Caller View → Live Cues → Incidents → Post-Event Report.</p></section>
           <section className="rounded-3xl bg-brand-ash p-5"><h2 className="font-black">Testing/admin spine</h2><p className="mt-2 text-sm leading-6">Testing Console → Route Health → Access Gates → Supabase Runtime → Event Config Package → Video Providers → Post-Deploy Smoke.</p></section>
         </div>
-        <div className="mt-8 flex flex-wrap gap-3"><a className="rounded-full bg-brand-black px-5 py-3 text-sm font-bold text-white" href="/production-access/launchpad">Open Operator Launchpad</a><a className="rounded-full border border-brand-black px-5 py-3 text-sm font-bold" href="/venue/demo/lobby">Preview Demo Venue</a></div>
+        <div className="mt-8 flex flex-wrap gap-3"><Link className="rounded-full bg-brand-black px-5 py-3 text-sm font-bold text-white" href="/production-access/launchpad">Open Operator Launchpad</Link><Link className="rounded-full border border-brand-black px-5 py-3 text-sm font-bold" href="/venue/demo/lobby">Preview Demo Venue</Link></div>
       </article>
     </main>
   );

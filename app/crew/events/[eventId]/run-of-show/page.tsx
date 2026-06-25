@@ -1,9 +1,10 @@
 import { CrewInstructionShell } from "@/components/crew/CrewInstructionShell";
 import { crewRunOfShow } from "@/lib/crew/crewBriefing";
 
-export default function CrewRunOfShowPage({ params }: { params: { eventId: string } }) {
+export default async function CrewRunOfShowPage({ params }: { params: Promise<{ eventId: string }> }) {
+  const resolvedParams = await params;
   return (
-    <CrewInstructionShell eventId={params.eventId} active="run-of-show" eyebrow="Crew Run of Show" title="Crew run of show">
+    <CrewInstructionShell eventId={resolvedParams.eventId} active="run-of-show" eyebrow="Crew Run of Show" title="Crew run of show">
       <section className="rounded-3xl bg-white p-6 shadow-sm" data-testid="crew-run-of-show">
         <h2 className="text-2xl font-black tracking-tight">Live cue spine</h2>
         <div className="mt-5 overflow-hidden rounded-2xl border border-brand-line">

@@ -1,2 +1,3 @@
 import { ApprovalQueue } from "@/components/approvals/ApprovalQueue";
-export default function ApprovalsPage({ params }: { params: { eventId: string } }){ return <ApprovalQueue eventId={params.eventId} />; }
+export default async function ApprovalsPage({ params }: { params: Promise<{ eventId: string }> }) {
+  const resolvedParams = await params; return <ApprovalQueue eventId={resolvedParams.eventId} />; }

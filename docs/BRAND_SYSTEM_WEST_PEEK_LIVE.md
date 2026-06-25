@@ -31,7 +31,7 @@ The wordmark is a text-first lockup:
 | Ash | `#f5f3ef` | Page background |
 | Line | `#e7e3dc` | Borders |
 | Muted | `#73706a` | Secondary text |
-| Orange | `#ff6a00` | `Live!`, CTA accents, active state, live status |
+| Orange | `#f05a1a` | `Live!`, CTA accents, active state, live status |
 
 ## Usage rules
 
@@ -75,3 +75,8 @@ Email templates must use:
 - black/white/orange styling
 - rounded black CTA buttons
 - reply-to identity configured through env
+
+
+## Cross-suite canonical authority
+
+This repo-specific treatment is subordinate to [`WEST_PEEK_BRAND_SYSTEM.md`](../WEST_PEEK_BRAND_SYSTEM.md). The canonical West Peek Orange is `#F05A1A`; black/white remain primary and orange remains an accent.

@@ -8,9 +8,10 @@ const assignments = [
   ["Sponsor / Expo Monitor", "Check sponsor booth surfaces and escalate lead-capture or booth access issues."],
 ];
 
-export default function CrewCallSheetPage({ params }: { params: { eventId: string } }) {
+export default async function CrewCallSheetPage({ params }: { params: Promise<{ eventId: string }> }) {
+  const resolvedParams = await params;
   return (
-    <CrewInstructionShell eventId={params.eventId} active="call-sheet" eyebrow="Crew Call Sheet" title="Call sheet and assignments">
+    <CrewInstructionShell eventId={resolvedParams.eventId} active="call-sheet" eyebrow="Crew Call Sheet" title="Call sheet and assignments">
       <section className="rounded-3xl bg-white p-6 shadow-sm" data-testid="crew-call-sheet">
         <h2 className="text-2xl font-black tracking-tight">Show-day call sheet</h2>
         <div className="mt-5 grid gap-4 md:grid-cols-3">

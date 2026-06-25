@@ -1,0 +1,4711 @@
+{
+  "schema_version": "1.0",
+  "repo": "agency-event-os",
+  "generated_from": "config/deployed-route-manifest.json",
+  "route_count": 112,
+  "rules": {
+    "render_is_not_journey_proof": true,
+    "mutation_requires_readback": true,
+    "negative_authorization_required": true,
+    "mobile_first_class_for_critical_routes": true
+  },
+  "actions": [
+    {
+      "id": "accept-invite",
+      "route": "/accept-invite",
+      "persona": "public",
+      "auth_mode": "public",
+      "criticality": "standard",
+      "action_class": "read-or-navigation",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "error"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization"
+      ],
+      "persistence_required": false,
+      "cleanup_policy": "none",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "forgot-password",
+      "route": "/forgot-password",
+      "persona": "public",
+      "auth_mode": "public",
+      "criticality": "standard",
+      "action_class": "read-or-navigation",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "error"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization"
+      ],
+      "persistence_required": false,
+      "cleanup_policy": "none",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "login",
+      "route": "/login",
+      "persona": "public",
+      "auth_mode": "public",
+      "criticality": "critical",
+      "action_class": "read-or-navigation",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "desktop-browser",
+        "mobile-browser",
+        "safe-failure"
+      ],
+      "persistence_required": false,
+      "cleanup_policy": "none",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "signup",
+      "route": "/signup",
+      "persona": "public",
+      "auth_mode": "public",
+      "criticality": "standard",
+      "action_class": "read-or-navigation",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "error"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization"
+      ],
+      "persistence_required": false,
+      "cleanup_policy": "none",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "admin-testing-eventid-livekit-room",
+      "route": "/admin/testing/[eventId]/livekit-room",
+      "persona": "admin",
+      "auth_mode": "role-specific",
+      "criticality": "standard",
+      "action_class": "read-or-navigation",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "error"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": false,
+      "cleanup_policy": "exact-run",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "admin-testing-eventid",
+      "route": "/admin/testing/[eventId]",
+      "persona": "admin",
+      "auth_mode": "role-specific",
+      "criticality": "standard",
+      "action_class": "read-or-navigation",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "error"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": false,
+      "cleanup_policy": "exact-run",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "admin-testing",
+      "route": "/admin/testing",
+      "persona": "admin",
+      "auth_mode": "role-specific",
+      "criticality": "standard",
+      "action_class": "read-or-navigation",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "error"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": false,
+      "cleanup_policy": "none",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-assets",
+      "route": "/app/assets",
+      "persona": "operator",
+      "auth_mode": "role-specific",
+      "criticality": "standard",
+      "action_class": "mutation-capable",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "mutation",
+        "persistence-readback",
+        "reload-reentry",
+        "negative-authorization",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": true,
+      "cleanup_policy": "none",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-clients-clientid",
+      "route": "/app/clients/[clientId]",
+      "persona": "operator",
+      "auth_mode": "role-specific",
+      "criticality": "standard",
+      "action_class": "read-or-navigation",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "error"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": false,
+      "cleanup_policy": "none",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-clients",
+      "route": "/app/clients",
+      "persona": "operator",
+      "auth_mode": "role-specific",
+      "criticality": "standard",
+      "action_class": "read-or-navigation",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "error"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": false,
+      "cleanup_policy": "none",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-contractors",
+      "route": "/app/contractors",
+      "persona": "operator",
+      "auth_mode": "role-specific",
+      "criticality": "standard",
+      "action_class": "read-or-navigation",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "error"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": false,
+      "cleanup_policy": "none",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-email",
+      "route": "/app/email",
+      "persona": "operator",
+      "auth_mode": "role-specific",
+      "criticality": "standard",
+      "action_class": "mutation-capable",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "mutation",
+        "persistence-readback",
+        "reload-reentry",
+        "negative-authorization",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": true,
+      "cleanup_policy": "none",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-events-eventid-access",
+      "route": "/app/events/[eventId]/access",
+      "persona": "operator",
+      "auth_mode": "role-specific",
+      "criticality": "critical",
+      "action_class": "mutation-capable",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "mutation",
+        "persistence-readback",
+        "reload-reentry",
+        "negative-authorization",
+        "desktop-browser",
+        "mobile-browser",
+        "safe-failure",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": true,
+      "cleanup_policy": "exact-run",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-events-eventid-agenda",
+      "route": "/app/events/[eventId]/agenda",
+      "persona": "operator",
+      "auth_mode": "role-specific",
+      "criticality": "critical",
+      "action_class": "read-or-navigation",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "desktop-browser",
+        "mobile-browser",
+        "safe-failure",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": false,
+      "cleanup_policy": "exact-run",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-events-eventid-analytics",
+      "route": "/app/events/[eventId]/analytics",
+      "persona": "operator",
+      "auth_mode": "role-specific",
+      "criticality": "critical",
+      "action_class": "read-or-navigation",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "desktop-browser",
+        "mobile-browser",
+        "safe-failure",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": false,
+      "cleanup_policy": "exact-run",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-events-eventid-approval-queue",
+      "route": "/app/events/[eventId]/approval-queue",
+      "persona": "operator",
+      "auth_mode": "role-specific",
+      "criticality": "critical",
+      "action_class": "mutation-capable",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "mutation",
+        "persistence-readback",
+        "reload-reentry",
+        "negative-authorization",
+        "desktop-browser",
+        "mobile-browser",
+        "safe-failure",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": true,
+      "cleanup_policy": "exact-run",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-events-eventid-approvals",
+      "route": "/app/events/[eventId]/approvals",
+      "persona": "operator",
+      "auth_mode": "role-specific",
+      "criticality": "critical",
+      "action_class": "mutation-capable",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "mutation",
+        "persistence-readback",
+        "reload-reentry",
+        "negative-authorization",
+        "desktop-browser",
+        "mobile-browser",
+        "safe-failure",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": true,
+      "cleanup_policy": "exact-run",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-events-eventid-assets",
+      "route": "/app/events/[eventId]/assets",
+      "persona": "operator",
+      "auth_mode": "role-specific",
+      "criticality": "critical",
+      "action_class": "mutation-capable",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "mutation",
+        "persistence-readback",
+        "reload-reentry",
+        "negative-authorization",
+        "desktop-browser",
+        "mobile-browser",
+        "safe-failure",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": true,
+      "cleanup_policy": "exact-run",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-events-eventid-attendee-flow",
+      "route": "/app/events/[eventId]/attendee-flow",
+      "persona": "operator",
+      "auth_mode": "role-specific",
+      "criticality": "critical",
+      "action_class": "read-or-navigation",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "desktop-browser",
+        "mobile-browser",
+        "safe-failure",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": false,
+      "cleanup_policy": "exact-run",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-events-eventid-branding",
+      "route": "/app/events/[eventId]/branding",
+      "persona": "operator",
+      "auth_mode": "role-specific",
+      "criticality": "critical",
+      "action_class": "mutation-capable",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "mutation",
+        "persistence-readback",
+        "reload-reentry",
+        "negative-authorization",
+        "desktop-browser",
+        "mobile-browser",
+        "safe-failure",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": true,
+      "cleanup_policy": "exact-run",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-events-eventid-builder",
+      "route": "/app/events/[eventId]/builder",
+      "persona": "operator",
+      "auth_mode": "role-specific",
+      "criticality": "critical",
+      "action_class": "mutation-capable",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "mutation",
+        "persistence-readback",
+        "reload-reentry",
+        "negative-authorization",
+        "desktop-browser",
+        "mobile-browser",
+        "safe-failure",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": true,
+      "cleanup_policy": "exact-run",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-events-eventid-change-control",
+      "route": "/app/events/[eventId]/change-control",
+      "persona": "operator",
+      "auth_mode": "role-specific",
+      "criticality": "critical",
+      "action_class": "mutation-capable",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "mutation",
+        "persistence-readback",
+        "reload-reentry",
+        "negative-authorization",
+        "desktop-browser",
+        "mobile-browser",
+        "safe-failure",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": true,
+      "cleanup_policy": "exact-run",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-events-eventid-communications",
+      "route": "/app/events/[eventId]/communications",
+      "persona": "operator",
+      "auth_mode": "role-specific",
+      "criticality": "critical",
+      "action_class": "mutation-capable",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "mutation",
+        "persistence-readback",
+        "reload-reentry",
+        "negative-authorization",
+        "desktop-browser",
+        "mobile-browser",
+        "safe-failure",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": true,
+      "cleanup_policy": "exact-run",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-events-eventid-crew",
+      "route": "/app/events/[eventId]/crew",
+      "persona": "operator",
+      "auth_mode": "role-specific",
+      "criticality": "critical",
+      "action_class": "mutation-capable",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "mutation",
+        "persistence-readback",
+        "reload-reentry",
+        "negative-authorization",
+        "desktop-browser",
+        "mobile-browser",
+        "safe-failure",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": true,
+      "cleanup_policy": "exact-run",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-events-eventid-inbox",
+      "route": "/app/events/[eventId]/inbox",
+      "persona": "operator",
+      "auth_mode": "role-specific",
+      "criticality": "critical",
+      "action_class": "mutation-capable",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "mutation",
+        "persistence-readback",
+        "reload-reentry",
+        "negative-authorization",
+        "desktop-browser",
+        "mobile-browser",
+        "safe-failure",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": true,
+      "cleanup_policy": "exact-run",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-events-eventid-incidents",
+      "route": "/app/events/[eventId]/incidents",
+      "persona": "operator",
+      "auth_mode": "role-specific",
+      "criticality": "critical",
+      "action_class": "mutation-capable",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "mutation",
+        "persistence-readback",
+        "reload-reentry",
+        "negative-authorization",
+        "desktop-browser",
+        "mobile-browser",
+        "safe-failure",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": true,
+      "cleanup_policy": "exact-run",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-events-eventid-overview",
+      "route": "/app/events/[eventId]/overview",
+      "persona": "operator",
+      "auth_mode": "role-specific",
+      "criticality": "critical",
+      "action_class": "read-or-navigation",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "desktop-browser",
+        "mobile-browser",
+        "safe-failure",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": false,
+      "cleanup_policy": "exact-run",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-events-eventid",
+      "route": "/app/events/[eventId]",
+      "persona": "operator",
+      "auth_mode": "role-specific",
+      "criticality": "critical",
+      "action_class": "read-or-navigation",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "desktop-browser",
+        "mobile-browser",
+        "safe-failure",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": false,
+      "cleanup_policy": "exact-run",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-events-eventid-preview",
+      "route": "/app/events/[eventId]/preview",
+      "persona": "operator",
+      "auth_mode": "role-specific",
+      "criticality": "critical",
+      "action_class": "read-or-navigation",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "desktop-browser",
+        "mobile-browser",
+        "safe-failure",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": false,
+      "cleanup_policy": "exact-run",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-events-eventid-producer",
+      "route": "/app/events/[eventId]/producer",
+      "persona": "operator",
+      "auth_mode": "role-specific",
+      "criticality": "critical",
+      "action_class": "read-or-navigation",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "desktop-browser",
+        "mobile-browser",
+        "safe-failure",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": false,
+      "cleanup_policy": "exact-run",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-events-eventid-publish",
+      "route": "/app/events/[eventId]/publish",
+      "persona": "operator",
+      "auth_mode": "role-specific",
+      "criticality": "critical",
+      "action_class": "mutation-capable",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "mutation",
+        "persistence-readback",
+        "reload-reentry",
+        "negative-authorization",
+        "desktop-browser",
+        "mobile-browser",
+        "safe-failure",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": true,
+      "cleanup_policy": "exact-run",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-events-eventid-report",
+      "route": "/app/events/[eventId]/report",
+      "persona": "operator",
+      "auth_mode": "role-specific",
+      "criticality": "critical",
+      "action_class": "read-or-navigation",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "desktop-browser",
+        "mobile-browser",
+        "safe-failure",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": false,
+      "cleanup_policy": "exact-run",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-events-eventid-run-of-show",
+      "route": "/app/events/[eventId]/run-of-show",
+      "persona": "operator",
+      "auth_mode": "role-specific",
+      "criticality": "critical",
+      "action_class": "read-or-navigation",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "desktop-browser",
+        "mobile-browser",
+        "safe-failure",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": false,
+      "cleanup_policy": "exact-run",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-events-eventid-setup",
+      "route": "/app/events/[eventId]/setup",
+      "persona": "operator",
+      "auth_mode": "role-specific",
+      "criticality": "critical",
+      "action_class": "mutation-capable",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "mutation",
+        "persistence-readback",
+        "reload-reentry",
+        "negative-authorization",
+        "desktop-browser",
+        "mobile-browser",
+        "safe-failure",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": true,
+      "cleanup_policy": "exact-run",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-events-eventid-speakers",
+      "route": "/app/events/[eventId]/speakers",
+      "persona": "operator",
+      "auth_mode": "role-specific",
+      "criticality": "critical",
+      "action_class": "mutation-capable",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "mutation",
+        "persistence-readback",
+        "reload-reentry",
+        "negative-authorization",
+        "desktop-browser",
+        "mobile-browser",
+        "safe-failure",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": true,
+      "cleanup_policy": "exact-run",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-events-eventid-sponsors",
+      "route": "/app/events/[eventId]/sponsors",
+      "persona": "operator",
+      "auth_mode": "role-specific",
+      "criticality": "critical",
+      "action_class": "mutation-capable",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "mutation",
+        "persistence-readback",
+        "reload-reentry",
+        "negative-authorization",
+        "desktop-browser",
+        "mobile-browser",
+        "safe-failure",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": true,
+      "cleanup_policy": "exact-run",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-events-eventid-talent",
+      "route": "/app/events/[eventId]/talent",
+      "persona": "operator",
+      "auth_mode": "role-specific",
+      "criticality": "critical",
+      "action_class": "mutation-capable",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "mutation",
+        "persistence-readback",
+        "reload-reentry",
+        "negative-authorization",
+        "desktop-browser",
+        "mobile-browser",
+        "safe-failure",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": true,
+      "cleanup_policy": "exact-run",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-events-eventid-tasks",
+      "route": "/app/events/[eventId]/tasks",
+      "persona": "operator",
+      "auth_mode": "role-specific",
+      "criticality": "critical",
+      "action_class": "mutation-capable",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "mutation",
+        "persistence-readback",
+        "reload-reentry",
+        "negative-authorization",
+        "desktop-browser",
+        "mobile-browser",
+        "safe-failure",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": true,
+      "cleanup_policy": "exact-run",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-events-eventid-timeline",
+      "route": "/app/events/[eventId]/timeline",
+      "persona": "operator",
+      "auth_mode": "role-specific",
+      "criticality": "critical",
+      "action_class": "read-or-navigation",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "desktop-browser",
+        "mobile-browser",
+        "safe-failure",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": false,
+      "cleanup_policy": "exact-run",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-events-eventid-vendors",
+      "route": "/app/events/[eventId]/vendors",
+      "persona": "operator",
+      "auth_mode": "role-specific",
+      "criticality": "critical",
+      "action_class": "mutation-capable",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "mutation",
+        "persistence-readback",
+        "reload-reentry",
+        "negative-authorization",
+        "desktop-browser",
+        "mobile-browser",
+        "safe-failure",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": true,
+      "cleanup_policy": "exact-run",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-events-eventid-venue",
+      "route": "/app/events/[eventId]/venue",
+      "persona": "operator",
+      "auth_mode": "role-specific",
+      "criticality": "critical",
+      "action_class": "read-or-navigation",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "desktop-browser",
+        "mobile-browser",
+        "safe-failure",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": false,
+      "cleanup_policy": "exact-run",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-events-eventid-video-backstage",
+      "route": "/app/events/[eventId]/video/backstage",
+      "persona": "operator",
+      "auth_mode": "role-specific",
+      "criticality": "critical",
+      "action_class": "read-or-navigation",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "desktop-browser",
+        "mobile-browser",
+        "safe-failure",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": false,
+      "cleanup_policy": "exact-run",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-events-eventid-video-green-room",
+      "route": "/app/events/[eventId]/video/green-room",
+      "persona": "operator",
+      "auth_mode": "role-specific",
+      "criticality": "critical",
+      "action_class": "read-or-navigation",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "desktop-browser",
+        "mobile-browser",
+        "safe-failure",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": false,
+      "cleanup_policy": "exact-run",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-events-eventid-video-main-stage",
+      "route": "/app/events/[eventId]/video/main-stage",
+      "persona": "operator",
+      "auth_mode": "role-specific",
+      "criticality": "critical",
+      "action_class": "read-or-navigation",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "desktop-browser",
+        "mobile-browser",
+        "safe-failure",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": false,
+      "cleanup_policy": "exact-run",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-events-eventid-video-health",
+      "route": "/app/events/[eventId]/video-health",
+      "persona": "operator",
+      "auth_mode": "role-specific",
+      "criticality": "critical",
+      "action_class": "read-or-navigation",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "desktop-browser",
+        "mobile-browser",
+        "safe-failure",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": false,
+      "cleanup_policy": "exact-run",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-events-new",
+      "route": "/app/events/new",
+      "persona": "operator",
+      "auth_mode": "role-specific",
+      "criticality": "critical",
+      "action_class": "mutation-capable",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "mutation",
+        "persistence-readback",
+        "reload-reentry",
+        "negative-authorization",
+        "desktop-browser",
+        "mobile-browser",
+        "safe-failure",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": true,
+      "cleanup_policy": "none",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-events",
+      "route": "/app/events",
+      "persona": "operator",
+      "auth_mode": "role-specific",
+      "criticality": "critical",
+      "action_class": "read-or-navigation",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "desktop-browser",
+        "mobile-browser",
+        "safe-failure",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": false,
+      "cleanup_policy": "none",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app",
+      "route": "/app",
+      "persona": "operator",
+      "auth_mode": "role-specific",
+      "criticality": "critical",
+      "action_class": "read-or-navigation",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "desktop-browser",
+        "mobile-browser",
+        "safe-failure",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": false,
+      "cleanup_policy": "none",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-settings",
+      "route": "/app/settings",
+      "persona": "operator",
+      "auth_mode": "role-specific",
+      "criticality": "standard",
+      "action_class": "mutation-capable",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "mutation",
+        "persistence-readback",
+        "reload-reentry",
+        "negative-authorization",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": true,
+      "cleanup_policy": "none",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-templates",
+      "route": "/app/templates",
+      "persona": "operator",
+      "auth_mode": "role-specific",
+      "criticality": "standard",
+      "action_class": "read-or-navigation",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "error"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": false,
+      "cleanup_policy": "none",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-vendors",
+      "route": "/app/vendors",
+      "persona": "operator",
+      "auth_mode": "role-specific",
+      "criticality": "standard",
+      "action_class": "mutation-capable",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "mutation",
+        "persistence-readback",
+        "reload-reentry",
+        "negative-authorization",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": true,
+      "cleanup_policy": "none",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "billing",
+      "route": "/billing",
+      "persona": "operator",
+      "auth_mode": "role-specific",
+      "criticality": "standard",
+      "action_class": "read-or-navigation",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "error"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": false,
+      "cleanup_policy": "none",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "client-clientslug-events-eventid-approvals",
+      "route": "/client/[clientSlug]/events/[eventId]/approvals",
+      "persona": "client",
+      "auth_mode": "role-specific",
+      "criticality": "critical",
+      "action_class": "mutation-capable",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "mutation",
+        "persistence-readback",
+        "reload-reentry",
+        "negative-authorization",
+        "desktop-browser",
+        "mobile-browser",
+        "safe-failure",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": true,
+      "cleanup_policy": "exact-run",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "client-clientslug-events-eventid-assets",
+      "route": "/client/[clientSlug]/events/[eventId]/assets",
+      "persona": "client",
+      "auth_mode": "role-specific",
+      "criticality": "critical",
+      "action_class": "mutation-capable",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "mutation",
+        "persistence-readback",
+        "reload-reentry",
+        "negative-authorization",
+        "desktop-browser",
+        "mobile-browser",
+        "safe-failure",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": true,
+      "cleanup_policy": "exact-run",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "client-clientslug-events-eventid",
+      "route": "/client/[clientSlug]/events/[eventId]",
+      "persona": "client",
+      "auth_mode": "role-specific",
+      "criticality": "critical",
+      "action_class": "read-or-navigation",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "desktop-browser",
+        "mobile-browser",
+        "safe-failure",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": false,
+      "cleanup_policy": "exact-run",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "client-clientslug-events-eventid-run-of-show",
+      "route": "/client/[clientSlug]/events/[eventId]/run-of-show",
+      "persona": "client",
+      "auth_mode": "role-specific",
+      "criticality": "critical",
+      "action_class": "read-or-navigation",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "desktop-browser",
+        "mobile-browser",
+        "safe-failure",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": false,
+      "cleanup_policy": "exact-run",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "client-clientslug-events-eventid-timeline",
+      "route": "/client/[clientSlug]/events/[eventId]/timeline",
+      "persona": "client",
+      "auth_mode": "role-specific",
+      "criticality": "critical",
+      "action_class": "read-or-navigation",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "desktop-browser",
+        "mobile-browser",
+        "safe-failure",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": false,
+      "cleanup_policy": "exact-run",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "client-clientslug",
+      "route": "/client/[clientSlug]",
+      "persona": "client",
+      "auth_mode": "role-specific",
+      "criticality": "standard",
+      "action_class": "read-or-navigation",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "error"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": false,
+      "cleanup_policy": "none",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "crew-events-eventid-call-sheet",
+      "route": "/crew/events/[eventId]/call-sheet",
+      "persona": "crew",
+      "auth_mode": "role-specific",
+      "criticality": "critical",
+      "action_class": "mutation-capable",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "mutation",
+        "persistence-readback",
+        "reload-reentry",
+        "negative-authorization",
+        "desktop-browser",
+        "mobile-browser",
+        "safe-failure",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": true,
+      "cleanup_policy": "exact-run",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "crew-events-eventid",
+      "route": "/crew/events/[eventId]",
+      "persona": "crew",
+      "auth_mode": "role-specific",
+      "criticality": "critical",
+      "action_class": "mutation-capable",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "mutation",
+        "persistence-readback",
+        "reload-reentry",
+        "negative-authorization",
+        "desktop-browser",
+        "mobile-browser",
+        "safe-failure",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": true,
+      "cleanup_policy": "exact-run",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "crew-events-eventid-run-of-show",
+      "route": "/crew/events/[eventId]/run-of-show",
+      "persona": "crew",
+      "auth_mode": "role-specific",
+      "criticality": "critical",
+      "action_class": "mutation-capable",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "mutation",
+        "persistence-readback",
+        "reload-reentry",
+        "negative-authorization",
+        "desktop-browser",
+        "mobile-browser",
+        "safe-failure",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": true,
+      "cleanup_policy": "exact-run",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "crew-events-eventid-tasks",
+      "route": "/crew/events/[eventId]/tasks",
+      "persona": "crew",
+      "auth_mode": "role-specific",
+      "criticality": "critical",
+      "action_class": "mutation-capable",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "mutation",
+        "persistence-readback",
+        "reload-reentry",
+        "negative-authorization",
+        "desktop-browser",
+        "mobile-browser",
+        "safe-failure",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": true,
+      "cleanup_policy": "exact-run",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "crew",
+      "route": "/crew",
+      "persona": "crew",
+      "auth_mode": "role-specific",
+      "criticality": "standard",
+      "action_class": "mutation-capable",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "mutation",
+        "persistence-readback",
+        "reload-reentry",
+        "negative-authorization",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": true,
+      "cleanup_policy": "none",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "events-slug-agenda",
+      "route": "/events/[slug]/agenda",
+      "persona": "operator",
+      "auth_mode": "role-specific",
+      "criticality": "critical",
+      "action_class": "read-or-navigation",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "desktop-browser",
+        "mobile-browser",
+        "safe-failure",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": false,
+      "cleanup_policy": "none",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "events-slug",
+      "route": "/events/[slug]",
+      "persona": "operator",
+      "auth_mode": "role-specific",
+      "criticality": "critical",
+      "action_class": "read-or-navigation",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "desktop-browser",
+        "mobile-browser",
+        "safe-failure",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": false,
+      "cleanup_policy": "none",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "events-slug-register",
+      "route": "/events/[slug]/register",
+      "persona": "operator",
+      "auth_mode": "role-specific",
+      "criticality": "critical",
+      "action_class": "mutation-capable",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "mutation",
+        "persistence-readback",
+        "reload-reentry",
+        "negative-authorization",
+        "desktop-browser",
+        "mobile-browser",
+        "safe-failure",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": true,
+      "cleanup_policy": "none",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "events-slug-speakers",
+      "route": "/events/[slug]/speakers",
+      "persona": "operator",
+      "auth_mode": "role-specific",
+      "criticality": "critical",
+      "action_class": "mutation-capable",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "mutation",
+        "persistence-readback",
+        "reload-reentry",
+        "negative-authorization",
+        "desktop-browser",
+        "mobile-browser",
+        "safe-failure",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": true,
+      "cleanup_policy": "none",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "events-slug-sponsors",
+      "route": "/events/[slug]/sponsors",
+      "persona": "operator",
+      "auth_mode": "role-specific",
+      "criticality": "critical",
+      "action_class": "mutation-capable",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "mutation",
+        "persistence-readback",
+        "reload-reentry",
+        "negative-authorization",
+        "desktop-browser",
+        "mobile-browser",
+        "safe-failure",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": true,
+      "cleanup_policy": "none",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "join",
+      "route": "/join",
+      "persona": "operator",
+      "auth_mode": "role-specific",
+      "criticality": "critical",
+      "action_class": "mutation-capable",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "mutation",
+        "persistence-readback",
+        "reload-reentry",
+        "negative-authorization",
+        "desktop-browser",
+        "mobile-browser",
+        "safe-failure",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": true,
+      "cleanup_policy": "none",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "onboarding",
+      "route": "/onboarding",
+      "persona": "operator",
+      "auth_mode": "role-specific",
+      "criticality": "standard",
+      "action_class": "read-or-navigation",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "error"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": false,
+      "cleanup_policy": "none",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "operator-packet",
+      "route": "/operator-packet",
+      "persona": "operator",
+      "auth_mode": "role-specific",
+      "criticality": "standard",
+      "action_class": "read-or-navigation",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "error"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": false,
+      "cleanup_policy": "none",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "home",
+      "route": "/",
+      "persona": "public",
+      "auth_mode": "public",
+      "criticality": "critical",
+      "action_class": "read-or-navigation",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "desktop-browser",
+        "mobile-browser",
+        "safe-failure"
+      ],
+      "persistence_required": false,
+      "cleanup_policy": "none",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "privacy",
+      "route": "/privacy",
+      "persona": "operator",
+      "auth_mode": "role-specific",
+      "criticality": "standard",
+      "action_class": "read-or-navigation",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "error"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": false,
+      "cleanup_policy": "none",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "production-access-crew",
+      "route": "/production-access/crew",
+      "persona": "crew",
+      "auth_mode": "role-specific",
+      "criticality": "critical",
+      "action_class": "mutation-capable",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "mutation",
+        "persistence-readback",
+        "reload-reentry",
+        "negative-authorization",
+        "desktop-browser",
+        "mobile-browser",
+        "safe-failure",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": true,
+      "cleanup_policy": "none",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "production-access-launchpad",
+      "route": "/production-access/launchpad",
+      "persona": "operator",
+      "auth_mode": "role-specific",
+      "criticality": "critical",
+      "action_class": "mutation-capable",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "mutation",
+        "persistence-readback",
+        "reload-reentry",
+        "negative-authorization",
+        "desktop-browser",
+        "mobile-browser",
+        "safe-failure",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": true,
+      "cleanup_policy": "none",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "production-access-operator",
+      "route": "/production-access/operator",
+      "persona": "operator",
+      "auth_mode": "role-specific",
+      "criticality": "critical",
+      "action_class": "mutation-capable",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "mutation",
+        "persistence-readback",
+        "reload-reentry",
+        "negative-authorization",
+        "desktop-browser",
+        "mobile-browser",
+        "safe-failure",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": true,
+      "cleanup_policy": "none",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "production-access-owner",
+      "route": "/production-access/owner",
+      "persona": "owner",
+      "auth_mode": "role-specific",
+      "criticality": "critical",
+      "action_class": "mutation-capable",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "mutation",
+        "persistence-readback",
+        "reload-reentry",
+        "negative-authorization",
+        "desktop-browser",
+        "mobile-browser",
+        "safe-failure",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": true,
+      "cleanup_policy": "none",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "production-access",
+      "route": "/production-access",
+      "persona": "operator",
+      "auth_mode": "role-specific",
+      "criticality": "critical",
+      "action_class": "mutation-capable",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "mutation",
+        "persistence-readback",
+        "reload-reentry",
+        "negative-authorization",
+        "desktop-browser",
+        "mobile-browser",
+        "safe-failure",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": true,
+      "cleanup_policy": "none",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "production-access-setup-error",
+      "route": "/production-access/setup-error",
+      "persona": "operator",
+      "auth_mode": "role-specific",
+      "criticality": "critical",
+      "action_class": "mutation-capable",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "mutation",
+        "persistence-readback",
+        "reload-reentry",
+        "negative-authorization",
+        "desktop-browser",
+        "mobile-browser",
+        "safe-failure",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": true,
+      "cleanup_policy": "none",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "production-access-special-guest",
+      "route": "/production-access/special-guest",
+      "persona": "special-guest",
+      "auth_mode": "role-specific",
+      "criticality": "critical",
+      "action_class": "mutation-capable",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "mutation",
+        "persistence-readback",
+        "reload-reentry",
+        "negative-authorization",
+        "desktop-browser",
+        "mobile-browser",
+        "safe-failure",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": true,
+      "cleanup_policy": "none",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "request-event",
+      "route": "/request-event",
+      "persona": "operator",
+      "auth_mode": "role-specific",
+      "criticality": "standard",
+      "action_class": "read-or-navigation",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "error"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": false,
+      "cleanup_policy": "none",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "speaker-events-eventid-backstage",
+      "route": "/speaker/events/[eventId]/backstage",
+      "persona": "speaker",
+      "auth_mode": "role-specific",
+      "criticality": "critical",
+      "action_class": "read-or-navigation",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "desktop-browser",
+        "mobile-browser",
+        "safe-failure",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": false,
+      "cleanup_policy": "exact-run",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "speaker-events-eventid-green-room",
+      "route": "/speaker/events/[eventId]/green-room",
+      "persona": "speaker",
+      "auth_mode": "role-specific",
+      "criticality": "critical",
+      "action_class": "read-or-navigation",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "desktop-browser",
+        "mobile-browser",
+        "safe-failure",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": false,
+      "cleanup_policy": "exact-run",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "speaker-events-eventid-onboarding",
+      "route": "/speaker/events/[eventId]/onboarding",
+      "persona": "speaker",
+      "auth_mode": "role-specific",
+      "criticality": "critical",
+      "action_class": "read-or-navigation",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "desktop-browser",
+        "mobile-browser",
+        "safe-failure",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": false,
+      "cleanup_policy": "exact-run",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "speaker-events-eventid",
+      "route": "/speaker/events/[eventId]",
+      "persona": "speaker",
+      "auth_mode": "role-specific",
+      "criticality": "critical",
+      "action_class": "read-or-navigation",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "desktop-browser",
+        "mobile-browser",
+        "safe-failure",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": false,
+      "cleanup_policy": "exact-run",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "speaker-events-eventid-tech-check",
+      "route": "/speaker/events/[eventId]/tech-check",
+      "persona": "speaker",
+      "auth_mode": "role-specific",
+      "criticality": "critical",
+      "action_class": "read-or-navigation",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "desktop-browser",
+        "mobile-browser",
+        "safe-failure",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": false,
+      "cleanup_policy": "exact-run",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "speaker-events-eventid-teleprompter",
+      "route": "/speaker/events/[eventId]/teleprompter",
+      "persona": "speaker",
+      "auth_mode": "role-specific",
+      "criticality": "critical",
+      "action_class": "read-or-navigation",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "desktop-browser",
+        "mobile-browser",
+        "safe-failure",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": false,
+      "cleanup_policy": "exact-run",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "speaker",
+      "route": "/speaker",
+      "persona": "speaker",
+      "auth_mode": "role-specific",
+      "criticality": "standard",
+      "action_class": "read-or-navigation",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "error"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": false,
+      "cleanup_policy": "none",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "sponsor-events-eventid-booth",
+      "route": "/sponsor/events/[eventId]/booth",
+      "persona": "sponsor",
+      "auth_mode": "role-specific",
+      "criticality": "critical",
+      "action_class": "read-or-navigation",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "desktop-browser",
+        "mobile-browser",
+        "safe-failure",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": false,
+      "cleanup_policy": "exact-run",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "sponsor-events-eventid-leads",
+      "route": "/sponsor/events/[eventId]/leads",
+      "persona": "sponsor",
+      "auth_mode": "role-specific",
+      "criticality": "critical",
+      "action_class": "read-or-navigation",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "desktop-browser",
+        "mobile-browser",
+        "safe-failure",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": false,
+      "cleanup_policy": "exact-run",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "sponsor-events-eventid",
+      "route": "/sponsor/events/[eventId]",
+      "persona": "sponsor",
+      "auth_mode": "role-specific",
+      "criticality": "critical",
+      "action_class": "read-or-navigation",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "desktop-browser",
+        "mobile-browser",
+        "safe-failure",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": false,
+      "cleanup_policy": "exact-run",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "sponsor-events-eventid-ready-room",
+      "route": "/sponsor/events/[eventId]/ready-room",
+      "persona": "sponsor",
+      "auth_mode": "role-specific",
+      "criticality": "critical",
+      "action_class": "read-or-navigation",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "desktop-browser",
+        "mobile-browser",
+        "safe-failure",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": false,
+      "cleanup_policy": "exact-run",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "sponsor-events-eventid-report",
+      "route": "/sponsor/events/[eventId]/report",
+      "persona": "sponsor",
+      "auth_mode": "role-specific",
+      "criticality": "critical",
+      "action_class": "read-or-navigation",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "desktop-browser",
+        "mobile-browser",
+        "safe-failure",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": false,
+      "cleanup_policy": "exact-run",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "sponsor-events-eventid-setup",
+      "route": "/sponsor/events/[eventId]/setup",
+      "persona": "sponsor",
+      "auth_mode": "role-specific",
+      "criticality": "critical",
+      "action_class": "mutation-capable",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "mutation",
+        "persistence-readback",
+        "reload-reentry",
+        "negative-authorization",
+        "desktop-browser",
+        "mobile-browser",
+        "safe-failure",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": true,
+      "cleanup_policy": "exact-run",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "sponsor",
+      "route": "/sponsor",
+      "persona": "sponsor",
+      "auth_mode": "role-specific",
+      "criticality": "standard",
+      "action_class": "read-or-navigation",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "error"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": false,
+      "cleanup_policy": "none",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "start-create-event",
+      "route": "/start/create-event",
+      "persona": "operator",
+      "auth_mode": "role-specific",
+      "criticality": "standard",
+      "action_class": "read-or-navigation",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "error"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": false,
+      "cleanup_policy": "none",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "start",
+      "route": "/start",
+      "persona": "operator",
+      "auth_mode": "role-specific",
+      "criticality": "standard",
+      "action_class": "read-or-navigation",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "error"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": false,
+      "cleanup_policy": "none",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "submit-eventcode-speaker",
+      "route": "/submit/[eventCode]/speaker",
+      "persona": "operator",
+      "auth_mode": "role-specific",
+      "criticality": "standard",
+      "action_class": "read-or-navigation",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "error"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": false,
+      "cleanup_policy": "none",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "submit-eventcode-sponsor",
+      "route": "/submit/[eventCode]/sponsor",
+      "persona": "operator",
+      "auth_mode": "role-specific",
+      "criticality": "standard",
+      "action_class": "read-or-navigation",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "error"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": false,
+      "cleanup_policy": "none",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "terms",
+      "route": "/terms",
+      "persona": "operator",
+      "auth_mode": "role-specific",
+      "criticality": "standard",
+      "action_class": "read-or-navigation",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "error"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "cross-role-denial",
+        "cross-event-or-client-isolation"
+      ],
+      "persistence_required": false,
+      "cleanup_policy": "none",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "venue-eventid-breakouts",
+      "route": "/venue/[eventId]/breakouts",
+      "persona": "attendee",
+      "auth_mode": "role-specific",
+      "criticality": "standard",
+      "action_class": "read-or-navigation",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "error"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization"
+      ],
+      "persistence_required": false,
+      "cleanup_policy": "exact-run",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "venue-eventid-expo-boothid",
+      "route": "/venue/[eventId]/expo/[boothId]",
+      "persona": "attendee",
+      "auth_mode": "role-specific",
+      "criticality": "standard",
+      "action_class": "read-or-navigation",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "error"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization"
+      ],
+      "persistence_required": false,
+      "cleanup_policy": "exact-run",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "venue-eventid-expo",
+      "route": "/venue/[eventId]/expo",
+      "persona": "attendee",
+      "auth_mode": "role-specific",
+      "criticality": "standard",
+      "action_class": "read-or-navigation",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "error"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization"
+      ],
+      "persistence_required": false,
+      "cleanup_policy": "exact-run",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "venue-eventid-help",
+      "route": "/venue/[eventId]/help",
+      "persona": "attendee",
+      "auth_mode": "role-specific",
+      "criticality": "standard",
+      "action_class": "read-or-navigation",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "error"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization"
+      ],
+      "persistence_required": false,
+      "cleanup_policy": "exact-run",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "venue-eventid-lobby",
+      "route": "/venue/[eventId]/lobby",
+      "persona": "attendee",
+      "auth_mode": "role-specific",
+      "criticality": "standard",
+      "action_class": "read-or-navigation",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "error"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization"
+      ],
+      "persistence_required": false,
+      "cleanup_policy": "exact-run",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "venue-eventid-networking",
+      "route": "/venue/[eventId]/networking",
+      "persona": "attendee",
+      "auth_mode": "role-specific",
+      "criticality": "standard",
+      "action_class": "read-or-navigation",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "error"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization"
+      ],
+      "persistence_required": false,
+      "cleanup_policy": "exact-run",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "venue-eventid-people",
+      "route": "/venue/[eventId]/people",
+      "persona": "attendee",
+      "auth_mode": "role-specific",
+      "criticality": "standard",
+      "action_class": "read-or-navigation",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "error"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization"
+      ],
+      "persistence_required": false,
+      "cleanup_policy": "exact-run",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "venue-eventid-replay",
+      "route": "/venue/[eventId]/replay",
+      "persona": "attendee",
+      "auth_mode": "role-specific",
+      "criticality": "standard",
+      "action_class": "read-or-navigation",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "error"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization"
+      ],
+      "persistence_required": false,
+      "cleanup_policy": "exact-run",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "venue-eventid-run-of-show",
+      "route": "/venue/[eventId]/run-of-show",
+      "persona": "attendee",
+      "auth_mode": "role-specific",
+      "criticality": "critical",
+      "action_class": "read-or-navigation",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization",
+        "desktop-browser",
+        "mobile-browser",
+        "safe-failure"
+      ],
+      "persistence_required": false,
+      "cleanup_policy": "exact-run",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "venue-eventid-sessions-sessionid",
+      "route": "/venue/[eventId]/sessions/[sessionId]",
+      "persona": "attendee",
+      "auth_mode": "role-specific",
+      "criticality": "standard",
+      "action_class": "read-or-navigation",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "error"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization"
+      ],
+      "persistence_required": false,
+      "cleanup_policy": "exact-run",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "venue-eventid-sessions",
+      "route": "/venue/[eventId]/sessions",
+      "persona": "attendee",
+      "auth_mode": "role-specific",
+      "criticality": "standard",
+      "action_class": "read-or-navigation",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "error"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization"
+      ],
+      "persistence_required": false,
+      "cleanup_policy": "exact-run",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "venue-eventid-stage",
+      "route": "/venue/[eventId]/stage",
+      "persona": "attendee",
+      "auth_mode": "role-specific",
+      "criticality": "standard",
+      "action_class": "read-or-navigation",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "empty",
+        "populated",
+        "error"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization"
+      ],
+      "persistence_required": false,
+      "cleanup_policy": "exact-run",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    }
+  ]
+}

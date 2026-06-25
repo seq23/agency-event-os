@@ -1,3 +1,5 @@
+> **Repo update lifecycle:** Start with [`REPO_UPDATE_LIFECYCLE.md`](REPO_UPDATE_LIFECYCLE.md). The single postdeploy closure command is `npm run release:close-lifecycle`.
+
 # West Peek Live!
 
 West Peek Live! is a multi-client virtual event production platform for agencies.
@@ -164,3 +166,22 @@ Show-day ladder order is now explicit and must be exercised in Tier 4:
 5. Google Meet fallback, proven by valid HTTPS Meet continuity URL or explicit not-applicable disposition; no provider cleanup is required because it is a manual/static continuity link.
 
 Tier 4 must attempt every configured rung and fail only after the full ladder trace is written.
+
+
+## Authenticated Product Usability Governance
+
+This repo adopts `REPO_MASTER_CONTRACT_ADDENDUM_AUTHENTICATED_PRODUCT_USABILITY_2026-06-13.md`. Route, lifecycle, control, hostile fixture, normalization, maintenance, Hallmark, and final-proof artifacts govern release closure.
+
+
+## Autonomous Engineering Lifecycle v5
+
+This repo implements the suite Revision 3 lifecycle: machine-readable route manifest, container validation, bounded strategy-rotating self-heal, mandatory predeploy Hallmark, applicable public/authenticated/role postdeploy audits, exact cleanup, rollback/containment, and final proof reporting.
+
+
+## Canonical West Peek brand authority
+
+- [`WEST_PEEK_BRAND_SYSTEM.md`](WEST_PEEK_BRAND_SYSTEM.md) — locked cross-suite visual system and Hallmark acceptance criteria.
+
+## Baseline ZIP preflight
+
+Before applying a baseline ZIP, use `docs/runbooks/PRE_UPDATER_BASELINE_CHECKLIST.md`. It is the canonical checklist for required root files, safe environment examples, forbidden generated artifacts, ZIP integrity, updater preflight, and localhost-before-push execution.

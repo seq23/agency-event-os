@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any -- boundary adapters normalize legacy/runtime payloads before typed domain use */
 import { LegalFooter } from "@/components/legal/LegalFooter";
 import { submitEventRegistration } from "@/lib/actions/registrationActions";
 import { SectionCard } from "@/components/shared/SectionCard";

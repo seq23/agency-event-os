@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { LegalFooter } from "@/components/legal/LegalFooter";
 import { WestPeekProductionsLogo } from "@/components/brand/WestPeekProductionsLogo";
 import { LaunchpadCard } from "@/components/production/LaunchpadCard";
@@ -18,7 +19,7 @@ export function OperatorLaunchpad() {
               <h1 className="mt-3 text-4xl font-black tracking-tight sm:text-5xl">Everything internal starts here.</h1>
               <p className="mt-4 max-w-3xl text-sm leading-6 text-brand-muted">This is the post-operator-gate command center for owners, producers, VAs, backend testers, and show-day crew. Use the demo event for training when no real client conference is set up yet.</p>
             </div>
-            <a href="/production-access/logout" className="rounded-full border border-brand-black px-5 py-3 text-center text-sm font-bold hover:border-brand-orange hover:text-brand-orange">Log out access</a>
+            <Link href="/production-access/logout" className="rounded-full border border-brand-black px-5 py-3 text-center text-sm font-bold hover:border-brand-orange hover:text-brand-orange">Log out access</Link>
           </div>
         </section>
 
@@ -26,18 +27,18 @@ export function OperatorLaunchpad() {
           <p className="text-xs font-black uppercase tracking-[0.3em] text-brand-orange">No configured events yet?</p>
           <h2 className="mt-2 text-2xl font-black">Recommended Day 1 path</h2>
           <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
-            <a className="rounded-2xl bg-brand-black p-4 text-sm font-bold text-white" href="/app/events/new">Create Event in Admin Workspace</a>
-            <a className="rounded-2xl border border-brand-line p-4 text-sm font-bold" href="/venue/demo/lobby">Preview Demo Venue</a>
-            <a className="rounded-2xl border border-brand-line p-4 text-sm font-bold" href="/operator-packet">Open Operator Packet</a>
-            <a className="rounded-2xl border border-brand-line p-4 text-sm font-bold" href={`/app/events/${demoEventId}/crew`}>Crew Briefing & Instructions</a>\n            <a className="rounded-2xl border border-brand-line p-4 text-sm font-bold" href="/production-access/crew">Test Crew Login</a>
-            <a className="rounded-2xl border border-brand-line p-4 text-sm font-bold" href="/production-access/special-guest">Test Speaker/Sponsor Login</a>
+            <Link className="rounded-2xl bg-brand-black p-4 text-sm font-bold text-white" href="/app/events/new">Create Event in Admin Workspace</Link>
+            <Link className="rounded-2xl border border-brand-line p-4 text-sm font-bold" href="/venue/demo/lobby">Preview Demo Venue</Link>
+            <Link className="rounded-2xl border border-brand-line p-4 text-sm font-bold" href="/operator-packet">Open Operator Packet</Link>
+            <Link className="rounded-2xl border border-brand-line p-4 text-sm font-bold" href={`/app/events/${demoEventId}/crew`}>Crew Briefing & Instructions</Link>\n            <Link className="rounded-2xl border border-brand-line p-4 text-sm font-bold" href="/production-access/crew">Test Crew Login</Link>
+            <Link className="rounded-2xl border border-brand-line p-4 text-sm font-bold" href="/production-access/special-guest">Test Speaker/Sponsor Login</Link>
           </div>
           <div className="mt-6 rounded-2xl bg-brand-ash p-5">
             <p className="text-sm font-black">Demo event available: Leadership Reset Webinar</p>
             <div className="mt-3 flex flex-wrap gap-3">
-              <a className="rounded-full bg-white px-4 py-2 text-sm font-bold" href={`/app/events/${demoEventId}/setup`}>Open setup preview</a>
-              <a className="rounded-full bg-white px-4 py-2 text-sm font-bold" href="/venue/demo/lobby">Open guest venue</a>
-              <a className="rounded-full bg-white px-4 py-2 text-sm font-bold" href={`/app/events/${demoEventId}/crew`}>Open crew console</a>
+              <Link className="rounded-full bg-white px-4 py-2 text-sm font-bold" href={`/app/events/${demoEventId}/setup`}>Open setup preview</Link>
+              <Link className="rounded-full bg-white px-4 py-2 text-sm font-bold" href="/venue/demo/lobby">Open guest venue</Link>
+              <Link className="rounded-full bg-white px-4 py-2 text-sm font-bold" href={`/app/events/${demoEventId}/crew`}>Open crew console</Link>
             </div>
           </div>
         </section>

@@ -1,2 +1,3 @@
 import { ClientPortalDashboard } from "@/components/clients/ClientPortal";
-export default function ClientEvent({ params }: { params: { clientSlug: string; eventId: string } }){ return <ClientPortalDashboard clientSlug={params.clientSlug} eventId={params.eventId} />; }
+export default async function ClientEvent({ params }: { params: Promise<{ clientSlug: string; eventId: string }> }) {
+  const resolvedParams = await params; return <ClientPortalDashboard clientSlug={resolvedParams.clientSlug} eventId={resolvedParams.eventId} />; }

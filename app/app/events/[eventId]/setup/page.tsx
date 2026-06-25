@@ -4,14 +4,16 @@ import { BasicsSetupPanel } from "@/components/events/setup/SetupPanels";
 import { EVENT_SETUP_DRAFT_COOKIE_NAME, decodeEventSetupDraftCookie, getEventSetupDraftById, getEventSetupDraftRoleCodes } from "@/services/events/eventDraftStore";
 import { getEventConfigPackage } from "@/services/events/eventConfigRepository";
 
-export default function EventSetupPage({ params, searchParams }: { params: { eventId: string }; searchParams?: { draftId?: string } }) {
-  const config = getEventConfigPackage(params.eventId);
-  const draftFromStore = searchParams?.draftId ? getEventSetupDraftById(searchParams.draftId) : undefined;
-  const draftFromCookie = decodeEventSetupDraftCookie(cookies().get(EVENT_SETUP_DRAFT_COOKIE_NAME)?.value);
-  const draft = draftFromStore || (draftFromCookie?.id === searchParams?.draftId ? draftFromCookie : undefined);
+export default async function EventSetupPage({ params, searchParams }: { params: Promise<{ eventId: string }>; searchParams?: Promise<{ draftId?: string }> }) {
+  const resolvedParams = await params;
+  const resolvedSearchParams = searchParams ? await searchParams : undefined;
+  const config = getEventConfigPackage(resolvedParams.eventId);
+  const draftFromStore = resolvedSearchParams?.draftId ? getEventSetupDraftById(resolvedSearchParams.draftId) : undefined;
+  const draftFromCookie = decodeEventSetupDraftCookie((await cookies()).get(EVENT_SETUP_DRAFT_COOKIE_NAME)?.value);
+  const draft = draftFromStore || (draftFromCookie?.id === resolvedSearchParams?.draftId ? draftFromCookie : undefined);
   const generatedRoleCodes = draft ? getEventSetupDraftRoleCodes(draft.eventCode) : undefined;
   return (
-    <EventSetupShell eventId={params.eventId} active="basics" eyebrow="Setup · Basics" title="Event basics">
+    <EventSetupShell eventId={resolvedParams.eventId} active="basics" eyebrow="Setup · Basics" title="Event basics">
       {draft ? (
         <section className="mb-6 rounded-3xl border border-brand-line bg-white p-5 shadow-sm" data-testid="event-setup-draft-summary">
           <p className="text-xs font-black uppercase tracking-[0.25em] text-brand-orange">Setup draft created</p>
@@ -39,9 +41,9 @@ export default function EventSetupPage({ params, searchParams }: { params: { eve
             </div>
           ) : null}
           <div className="mt-5 flex flex-wrap gap-3">
-            <a className="rounded-full bg-brand-black px-4 py-2 text-sm font-bold text-white" href={`/venue/${params.eventId}/lobby`}>Preview event</a>
-            <a className="rounded-full border border-brand-line px-4 py-2 text-sm font-bold" href={`/app/events/${params.eventId}/preview`}>Review setup preview</a>
-            <a className="rounded-full border border-brand-black px-4 py-2 text-sm font-bold" href={`/app/events/${params.eventId}/run-of-show`}>Open run of show</a>
+            <a className="rounded-full bg-brand-black px-4 py-2 text-sm font-bold text-white" href={`/venue/${resolvedParams.eventId}/lobby`}>Preview event</a>
+            <a className="rounded-full border border-brand-line px-4 py-2 text-sm font-bold" href={`/app/events/${resolvedParams.eventId}/preview`}>Review setup preview</a>
+            <a className="rounded-full border border-brand-black px-4 py-2 text-sm font-bold" href={`/app/events/${resolvedParams.eventId}/run-of-show`}>Open run of show</a>
             <a className="rounded-full border border-brand-line px-4 py-2 text-sm font-bold" href="/production-access/launchpad">Back to operator launchpad</a>
           </div>
 
@@ -50,14 +52,14 @@ export default function EventSetupPage({ params, searchParams }: { params: { eve
             <h3 className="mt-2 text-xl font-black text-brand-black">Operate this event, not the demo event.</h3>
             <p className="mt-2 text-sm leading-6 text-brand-muted">Every link below is scoped to this event code so operators do not accidentally jump back to event-summit during client setup, rehearsal, or show day.</p>
             <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-              <a className="rounded-2xl bg-white p-4 text-sm font-bold shadow-sm" href={`/events/${params.eventId}`}>Public Event Page</a>
-              <a className="rounded-2xl bg-white p-4 text-sm font-bold shadow-sm" href={`/events/${params.eventId}/register`}>Registration Page</a>
-              <a className="rounded-2xl bg-white p-4 text-sm font-bold shadow-sm" href={`/venue/${params.eventId}/lobby`}>Venue Lobby</a>
-              <a className="rounded-2xl bg-white p-4 text-sm font-bold shadow-sm" href={`/app/events/${params.eventId}/run-of-show`}>Run of Show</a>
-              <a className="rounded-2xl bg-white p-4 text-sm font-bold shadow-sm" href={`/app/events/${params.eventId}/crew`}>Crew Briefing & Instructions</a>
-              <a className="rounded-2xl bg-white p-4 text-sm font-bold shadow-sm" href={`/app/events/${params.eventId}/access`}>Role Access & Codes</a>
-              <a className="rounded-2xl bg-white p-4 text-sm font-bold shadow-sm" href={`/app/events/${params.eventId}/approval-queue`}>Producer Approval Queue</a>
-              <a className="rounded-2xl bg-white p-4 text-sm font-bold shadow-sm" href={`/admin/testing/${params.eventId}`}>Testing Console</a>
+              <a className="rounded-2xl bg-white p-4 text-sm font-bold shadow-sm" href={`/events/${resolvedParams.eventId}`}>Public Event Page</a>
+              <a className="rounded-2xl bg-white p-4 text-sm font-bold shadow-sm" href={`/events/${resolvedParams.eventId}/register`}>Registration Page</a>
+              <a className="rounded-2xl bg-white p-4 text-sm font-bold shadow-sm" href={`/venue/${resolvedParams.eventId}/lobby`}>Venue Lobby</a>
+              <a className="rounded-2xl bg-white p-4 text-sm font-bold shadow-sm" href={`/app/events/${resolvedParams.eventId}/run-of-show`}>Run of Show</a>
+              <a className="rounded-2xl bg-white p-4 text-sm font-bold shadow-sm" href={`/app/events/${resolvedParams.eventId}/crew`}>Crew Briefing & Instructions</a>
+              <a className="rounded-2xl bg-white p-4 text-sm font-bold shadow-sm" href={`/app/events/${resolvedParams.eventId}/access`}>Role Access & Codes</a>
+              <a className="rounded-2xl bg-white p-4 text-sm font-bold shadow-sm" href={`/app/events/${resolvedParams.eventId}/approval-queue`}>Producer Approval Queue</a>
+              <a className="rounded-2xl bg-white p-4 text-sm font-bold shadow-sm" href={`/admin/testing/${resolvedParams.eventId}`}>Testing Console</a>
             </div>
           </div>
         </section>

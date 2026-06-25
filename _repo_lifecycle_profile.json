@@ -1,0 +1,52 @@
+{
+  "schema_version": "3.0",
+  "repo": "agency-event-os",
+  "browser_surface": true,
+  "authentication_profile": "public+authenticated+role",
+  "container_prepush": "npm run release:prepush:container",
+  "local_prepush": "npm run release:prepush:local",
+  "prepush_router": "npm run release:prepush",
+  "local_browser_proof": "npm run release:local-visual-proof",
+  "postpush": "npm run release:postpush",
+  "live_proof": "npm run release:live-proof",
+  "populated_click_audits": [
+    "npm run postdeploy:public-click-audit",
+    "npm run postdeploy:authenticated-click-audit",
+    "npm run postdeploy:role-click-audit"
+  ],
+  "cleanup": "npm run release:cleanup",
+  "postcleanup_integrity": "npm run postcleanup:integrity",
+  "report": "npm run release:report",
+  "close_lifecycle": "npm run release:close-lifecycle",
+  "evidence_root": "~/repo-validation-evidence/<repo>/<run-id>/",
+  "canonical_tiers": [
+    "tier1",
+    "tier2",
+    "tier3a",
+    "tier3b",
+    "tier4a",
+    "tier4b",
+    "tier4c"
+  ],
+  "journey_inventory": "RUNTIME_ACTION_INVENTORY.json",
+  "hallmark_route_state_contract": "_hallmark_route_state_contract.json",
+  "completion_requirements": [
+    "tier1_source_pass",
+    "tier2_behavior_pass",
+    "tier3a_desktop_pass",
+    "tier3a_mobile_pass",
+    "tier3b_full_stack_pass",
+    "github_actions_pass",
+    "cloudflare_deployment_sha_pass",
+    "public_click_audit_pass",
+    "authenticated_click_audit_pass",
+    "role_click_audit_pass",
+    "deployed_mutation_readback_pass",
+    "cross_role_denial_pass",
+    "cross_event_client_isolation_pass",
+    "live_provider_applicable_lanes_pass",
+    "cleanup_pass",
+    "postcleanup_integrity_pass",
+    "hallmark_expert_approval_pass"
+  ]
+}

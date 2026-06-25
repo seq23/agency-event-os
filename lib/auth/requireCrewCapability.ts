@@ -7,7 +7,7 @@ export async function requireCrewCapability(action: string, eventId?: string) {
   const env = getEnv();
   const names = getV5AccessCookieNames(env);
   const secret = getV5AccessCookieSecret(env);
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
 
   const ownerPayload = await readV5AccessCookie(cookieStore.get(names.ownerCookieName)?.value, secret);
   if (ownerPayload?.kind === "owner") return ownerPayload;

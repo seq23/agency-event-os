@@ -7,6 +7,7 @@ const systemChromium = process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH || "/usr/
 const executablePath = fs.existsSync(systemChromium) ? systemChromium : undefined;
 const disableVideo = process.env.PLAYWRIGHT_DISABLE_VIDEO === "1" || process.env.PLAYWRIGHT_DISABLE_VIDEO === "true";
 const headed = process.env.PLAYWRIGHT_HEADED === "1" || process.env.PLAYWRIGHT_HEADED === "true";
+const evidenceMode = process.env.PLAYWRIGHT_EVIDENCE_MODE === "1" || process.env.PLAYWRIGHT_EVIDENCE_MODE === "true";
 const retries = Number.parseInt(process.env.PLAYWRIGHT_RETRIES || (process.env.CI ? "1" : "0"), 10);
 const isLocalBaseURL = baseURL.includes("127.0.0.1") || baseURL.includes("localhost");
 const deployedRun = process.env.PLAYWRIGHT_DEPLOYED === "1" || !isLocalBaseURL;
@@ -15,14 +16,25 @@ const shouldStartLocalServer = !deployedRun && !skipWebServer;
 const localRuntimePath = process.env.AGENCY_EVENT_OS_RUNTIME_STORE_PATH || ".runtime-data/local-playwright-runtime.json";
 const day1Defaults = envRegistry.demoDefaults as Record<string, string | undefined>;
 
+function isPlaceholderEnvValue(value: string | undefined) {
+  if (!value) return true;
+  const normalized = value.trim();
+  return !normalized || normalized === "REPLACE_WITH_LOCAL_SECRET" || normalized === "REPLACE_WITH_LOCAL_CODE" || normalized.startsWith("REPLACE_WITH_") || normalized === "<32+ character internal cookie secret>";
+}
+
 function readLocalEnvValue(key: string) {
   if (!fs.existsSync(".env.local")) return undefined;
   const line = fs.readFileSync(".env.local", "utf8").split(/\r?\n/).find((entry) => entry.trim().startsWith(`${key}=`));
   if (!line) return undefined;
-  return line.slice(line.indexOf("=") + 1).trim().replace(/^[\"']|[\"']$/g, "");
+  const value = line.slice(line.indexOf("=") + 1).trim().replace(/^[\"']|[\"']$/g, "");
+  return isPlaceholderEnvValue(value) ? undefined : value;
 }
 
-const day1Default = (key: string, fallback = "") => process.env[key] || readLocalEnvValue(key) || day1Defaults[key] || fallback;
+const day1Default = (key: string, fallback = ""): string => {
+  const runtime = process.env[key];
+  if (runtime && !isPlaceholderEnvValue(runtime)) return runtime;
+  return readLocalEnvValue(key) || day1Defaults[key] || fallback;
+};
 
 const chromiumArgs = [
   "--no-sandbox",
@@ -62,6 +74,7 @@ const localE2EEnv = {
   AUTH_SESSION_COOKIE_NAME: process.env.AUTH_SESSION_COOKIE_NAME || "agency_event_os_session",
   V5_CREW_COOKIE_NAME: process.env.V5_CREW_COOKIE_NAME || "wpl_crew_access",
   V5_OPERATOR_COOKIE_NAME: process.env.V5_OPERATOR_COOKIE_NAME || "wpl_operator_access",
+  V5_OWNER_COOKIE_NAME: process.env.V5_OWNER_COOKIE_NAME || "wpl_owner_access",
   V5_SPECIAL_GUEST_COOKIE_NAME: process.env.V5_SPECIAL_GUEST_COOKIE_NAME || "wpl_guest_access",
   EVENT_DEMO_SPEAKER_CODE: day1Default("EVENT_DEMO_SPEAKER_CODE"),
   EVENT_DEMO_SPONSOR_CODE: day1Default("EVENT_DEMO_SPONSOR_CODE"),
@@ -100,21 +113,26 @@ export default defineConfig({
     : undefined,
   use: {
     baseURL,
-    trace: "retain-on-failure",
-    screenshot: "only-on-failure",
-    video: disableVideo ? "off" : "on-first-retry",
+    trace: evidenceMode ? "on" : "retain-on-failure",
+    screenshot: evidenceMode ? "on" : "only-on-failure",
+    video: disableVideo ? "off" : (evidenceMode ? "on" : "on-first-retry"),
     ignoreHTTPSErrors: true,
   },
   projects: [
     {
-      name: "chromium",
+      name: "desktop-chromium",
       use: {
         ...devices["Desktop Chrome"],
         headless: headed ? false : undefined,
-        launchOptions: {
-          executablePath,
-          args: chromiumArgs,
-        },
+        launchOptions: { executablePath, args: chromiumArgs },
+      },
+    },
+    {
+      name: "mobile-chromium",
+      use: {
+        ...devices["Pixel 5"],
+        headless: headed ? false : undefined,
+        launchOptions: { executablePath, args: chromiumArgs },
       },
     },
   ],

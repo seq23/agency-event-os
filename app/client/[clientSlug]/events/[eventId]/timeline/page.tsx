@@ -1,2 +1,3 @@
 import { ClientPortalDashboard } from "@/components/clients/ClientPortal";
-export default function ClientTimeline({ params }: { params: { clientSlug: string; eventId: string } }){ return <ClientPortalDashboard clientSlug={params.clientSlug} eventId={params.eventId} />; }
+export default async function ClientTimeline({ params }: { params: Promise<{ clientSlug: string; eventId: string }> }) {
+  const resolvedParams = await params; return <ClientPortalDashboard clientSlug={resolvedParams.clientSlug} eventId={resolvedParams.eventId} />; }

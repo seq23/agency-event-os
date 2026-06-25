@@ -23,9 +23,9 @@ function decodePayload(value: string): AuthCookiePayload | null {
   }
 }
 
-export function getAuthCookiePayload(): AuthCookiePayload | null {
+export async function getAuthCookiePayload(): Promise<AuthCookiePayload | null> {
   try {
-    const value = cookies().get(getAuthCookieName())?.value;
+    const value = (await cookies()).get(getAuthCookieName())?.value;
     if (!value) return null;
     return decodePayload(value);
   } catch {
@@ -33,8 +33,8 @@ export function getAuthCookiePayload(): AuthCookiePayload | null {
   }
 }
 
-export function setAuthCookie(payload: AuthCookiePayload) {
-  cookies().set(getAuthCookieName(), encodePayload(payload), {
+export async function setAuthCookie(payload: AuthCookiePayload) {
+  (await cookies()).set(getAuthCookieName(), encodePayload(payload), {
     httpOnly: true,
     sameSite: "lax",
     secure: process.env.NODE_ENV === "production",
@@ -43,8 +43,8 @@ export function setAuthCookie(payload: AuthCookiePayload) {
   });
 }
 
-export function clearAuthCookie() {
-  cookies().delete(getAuthCookieName());
+export async function clearAuthCookie() {
+  (await cookies()).delete(getAuthCookieName());
 }
 
 export const authCookieTestUtils = {

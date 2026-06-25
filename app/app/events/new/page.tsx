@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 async function startEventSetup(formData: FormData) {
   "use server";
   const draft = createEventSetupDraft(formData);
-  cookies().set(EVENT_SETUP_DRAFT_COOKIE_NAME, encodeEventSetupDraftCookie(draft), {
+  (await cookies()).set(EVENT_SETUP_DRAFT_COOKIE_NAME, encodeEventSetupDraftCookie(draft), {
     httpOnly: true,
     sameSite: "lax",
     secure: process.env.NODE_ENV === "production",

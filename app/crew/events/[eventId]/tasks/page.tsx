@@ -1,9 +1,10 @@
 import { CrewInstructionShell } from "@/components/crew/CrewInstructionShell";
 import { crewTasks } from "@/lib/crew/crewBriefing";
 
-export default function CrewTasksPage({ params }: { params: { eventId: string } }) {
+export default async function CrewTasksPage({ params }: { params: Promise<{ eventId: string }> }) {
+  const resolvedParams = await params;
   return (
-    <CrewInstructionShell eventId={params.eventId} active="tasks" eyebrow="Crew Tasks" title="Crew task list">
+    <CrewInstructionShell eventId={resolvedParams.eventId} active="tasks" eyebrow="Crew Tasks" title="Crew task list">
       <section className="rounded-3xl bg-white p-6 shadow-sm" data-testid="crew-task-list">
         <h2 className="text-2xl font-black tracking-tight">Execution checklist</h2>
         <div className="mt-5 space-y-3">

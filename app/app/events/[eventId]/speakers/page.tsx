@@ -1,2 +1,3 @@
 import { SpeakerManager } from "@/components/speakers/SpeakerManager";
-export default function SpeakersPage({ params }: { params: { eventId: string } }){ return <SpeakerManager eventId={params.eventId} />; }
+export default async function SpeakersPage({ params }: { params: Promise<{ eventId: string }> }) {
+  const resolvedParams = await params; return <SpeakerManager eventId={resolvedParams.eventId} />; }

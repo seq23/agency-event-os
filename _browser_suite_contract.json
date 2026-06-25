@@ -1,0 +1,23 @@
+{
+  "schema_version": "2.0",
+  "repo": "agency-event-os",
+  "browser_suite": {
+    "command": "npm run release:local-visual-proof",
+    "projects": [
+      "desktop-chromium",
+      "mobile-chromium"
+    ],
+    "required_failed": 0,
+    "registered_skips": [],
+    "required_before_push": true,
+    "evidence_required": [
+      "screenshots",
+      "traces",
+      "summary.json"
+    ],
+    "count_policy": "runtime_collected_must_be_recorded_and_nonzero",
+    "expected_skipped_policy": "registered_only",
+    "evidence_mode_env": "PLAYWRIGHT_EVIDENCE_MODE=1",
+    "headed_local_default": true
+  }
+}

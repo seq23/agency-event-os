@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { LegalFooter } from "@/components/legal/LegalFooter";
 import { WestPeekLiveWordmark } from "@/components/brand/WestPeekLiveWordmark";
 import { WestPeekProductionsLogo } from "@/components/brand/WestPeekProductionsLogo";
@@ -14,11 +15,11 @@ export default function HomePage() {
           A virtual event production operating system for agencies and production teams running branded online events, combining attendee venues, production command centers, guest portals, run-of-show control, video fallback, access gates, and post-event reporting.
         </p>
         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-          <a href="/join" className="rounded-full bg-brand-black px-5 py-3 text-center text-sm font-bold text-white hover:bg-brand-charcoal">Join an Event</a>
-          <a href="/production-access" className="rounded-full border border-brand-black px-5 py-3 text-center text-sm font-bold text-brand-black hover:border-brand-orange hover:text-brand-orange">Production Access</a>
-          <a href="/request-event" className="rounded-full border border-brand-black px-5 py-3 text-center text-sm font-bold text-brand-black hover:border-brand-orange hover:text-brand-orange">Plan an Event</a>
+          <Link href="/join" className="rounded-full bg-brand-black px-5 py-3 text-center text-sm font-bold text-white hover:bg-brand-charcoal">Join an Event</Link>
+          <Link href="/production-access" className="rounded-full border border-brand-black px-5 py-3 text-center text-sm font-bold text-brand-black hover:border-brand-orange hover:text-brand-orange">Production Access</Link>
+          <Link href="/request-event" className="rounded-full border border-brand-black px-5 py-3 text-center text-sm font-bold text-brand-black hover:border-brand-orange hover:text-brand-orange">Plan an Event</Link>
         </div>
-        <a href="/venue/demo/lobby" className="mt-5 inline-flex text-sm font-bold text-brand-muted underline-offset-4 hover:text-brand-orange hover:underline">Preview demo venue →</a>
+        <Link href="/venue/demo/lobby" className="mt-5 inline-flex text-sm font-bold text-brand-muted underline-offset-4 hover:text-brand-orange hover:underline">Preview demo venue →</Link>
       </section>
       </main>
       <LegalFooter variant="standard" />

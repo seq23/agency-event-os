@@ -15,7 +15,8 @@ const fields = [
   ["supportLevel", "Support level", "Full production, day-of support, platform only"],
 ] as const;
 
-export default function RequestEventPage({ searchParams }: { searchParams?: { status?: string } }) {
+export default async function RequestEventPage({ searchParams }: { searchParams?: Promise<{ status?: string }> }) {
+  const resolvedSearchParams = searchParams ? await searchParams : undefined;
   return (
     <main className="min-h-screen bg-brand-ash px-5 py-10 text-brand-black sm:px-8 lg:px-12">
       <section className="mx-auto max-w-3xl rounded-[2rem] border border-brand-line bg-white p-6 shadow-brand sm:p-10">
@@ -23,8 +24,8 @@ export default function RequestEventPage({ searchParams }: { searchParams?: { st
         <p className="mt-6 text-xs font-black uppercase tracking-[0.35em] text-brand-orange">Plan an Event</p>
         <h1 className="mt-3 text-4xl font-black tracking-tight">Request Event production support.</h1>
         <p className="mt-4 text-sm leading-6 text-brand-muted">This is the public planning front door. It does not create an admin account, unlock the producer workspace, or expose self-serve billing. We use it to scope your event before opening production operations.</p>
-        {searchParams?.status === "received" ? <p className="mt-5 rounded-2xl bg-emerald-50 p-4 text-sm font-bold text-emerald-800">Request received. West Peek Live can follow up with a production plan.</p> : null}
-        {searchParams?.status === "missing" ? <p className="mt-5 rounded-2xl bg-amber-50 p-4 text-sm font-bold text-amber-800">Name and a valid email are required.</p> : null}
+        {resolvedSearchParams?.status === "received" ? <p className="mt-5 rounded-2xl bg-emerald-50 p-4 text-sm font-bold text-emerald-800">Request received. West Peek Live can follow up with a production plan.</p> : null}
+        {resolvedSearchParams?.status === "missing" ? <p className="mt-5 rounded-2xl bg-amber-50 p-4 text-sm font-bold text-amber-800">Name and a valid email are required.</p> : null}
         <form action={requestEventProduction} className="mt-8 grid gap-5">
           {fields.map(([name, label, placeholder]) => (
             <div key={name}>

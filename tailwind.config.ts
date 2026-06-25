@@ -17,8 +17,8 @@ const config: Config = {
           ash: "#f5f3ef",
           line: "#e7e3dc",
           muted: "#73706a",
-          orange: "#ff6a00",
-          orangeSoft: "#fff0e5",
+          orange: "#f05a1a",
+          orangeSoft: "#fff1e9",
         },
       },
       boxShadow: {

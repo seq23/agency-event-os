@@ -4,8 +4,9 @@ import { VenuePageShell } from "@/components/venue/VenuePageShell";
 import { getRuntimeStore } from "@/services/runtime/runtimeStoreFactory";
 import type { VirtualVenuePerson } from "@/types/virtualVenue";
 
-export default async function PeoplePage({ params }: { params: { eventId: string } }) {
-  const model = buildVirtualVenueModel(params.eventId);
+export default async function PeoplePage({ params }: { params: Promise<{ eventId: string }> }) {
+  const resolvedParams = await params;
+  const model = buildVirtualVenueModel(resolvedParams.eventId);
   const registeredProfiles = await getRuntimeStore().listAttendeeProfiles(model.eventId, 100).catch(() => []);
   const registeredPeople: VirtualVenuePerson[] = registeredProfiles
     .filter((profile) => profile.networkingOptIn)

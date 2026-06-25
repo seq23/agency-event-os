@@ -90,3 +90,5 @@ After applying this ZIP locally with the v3 updater, run the Tier 4 provider pro
 ```bash
 npm run env:run -- -- bash -lc 'set -a; . ./.env.local; set +a; export POSTDEPLOY_BASE_URL=https://west-peek-live.seq-taylor.workers.dev PLAYWRIGHT_BASE_URL=https://west-peek-live.seq-taylor.workers.dev SMOKE_BASE_URL=https://west-peek-live.seq-taylor.workers.dev TIER4_LIVE_PROVIDER_OPERATIONAL_PROOF=1 TIER4_CONTROLLED_RTMP_BROADCASTER=1 TIER4_CLOUDFLARE_STREAM_CONTROLLED_BROADCASTER=1 TIER4_RESEND_SEND_APPROVED=1 STREAMYARD_REAL_PROVIDER_SMOKE=1 STREAMYARD_OPERATOR_CONFIRMED_BROADCAST=1 TIER4_STREAMYARD_LIVE_EVIDENCE_PATH=reports/tier4/streamyard-livekit-evidence.json TIER4_EMAIL_TEST_TO="${TIER4_EMAIL_TEST_TO:-${EMAIL_REPLY_TO:-}}"; npm run tier4:auto-controlled-livekit-proof'
 ```
+
+- `SECURITY_DEPENDENCY_REMEDIATION_2026-06-13.md` — targeted high/critical dependency remediation, compatibility migration, and proof boundary.

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { getRuntimeData } from "@/lib/runtime/getRuntimeData";
 import { calculateEventReadiness } from "@/lib/readiness/calculateEventReadiness";
 import { ReadinessScore } from "@/components/shared/ReadinessScore";
@@ -34,18 +35,18 @@ export function AgencyDashboard() {
         <h2 className="mt-2 text-2xl font-black tracking-tight text-slate-950">Production Console</h2>
         <p className="mt-2 text-sm leading-6 text-slate-600">If no real client conference is configured yet, start here. The app is not pretending there is a real client event; the demo venue is intentional training and sales theatre powered by the same venue components as real events.</p>
         <div className="mt-5 flex flex-wrap gap-3">
-          <a href="/app/events/new" className="rounded-full bg-slate-950 px-5 py-3 text-sm font-bold text-white">Create First Event</a>
-          <a href="/venue/demo/lobby" className="rounded-full border border-slate-300 px-5 py-3 text-sm font-bold">Preview Demo Venue</a>
-          <a href="/operator-packet" className="rounded-full border border-slate-300 px-5 py-3 text-sm font-bold">Open Operator Packet</a>
-          <a href="/production-access/crew" className="rounded-full border border-slate-300 px-5 py-3 text-sm font-bold">Test Crew Login</a>
-          <a href="/production-access/special-guest" className="rounded-full border border-slate-300 px-5 py-3 text-sm font-bold">Test Speaker/Sponsor Login</a>
+          <Link href="/app/events/new" className="rounded-full bg-slate-950 px-5 py-3 text-sm font-bold text-white">Create First Event</Link>
+          <Link href="/venue/demo/lobby" className="rounded-full border border-slate-300 px-5 py-3 text-sm font-bold">Preview Demo Venue</Link>
+          <Link href="/operator-packet" className="rounded-full border border-slate-300 px-5 py-3 text-sm font-bold">Open Operator Packet</Link>
+          <Link href="/production-access/crew" className="rounded-full border border-slate-300 px-5 py-3 text-sm font-bold">Test Crew Login</Link>
+          <Link href="/production-access/special-guest" className="rounded-full border border-slate-300 px-5 py-3 text-sm font-bold">Test Speaker/Sponsor Login</Link>
         </div>
         <div className="mt-5 rounded-2xl bg-slate-50 p-4 text-sm text-slate-600">
           <p className="font-bold text-slate-950">Demo event available: Leadership Reset Webinar</p>
           <div className="mt-3 flex flex-wrap gap-3">
-            <a href="/app/events/event-summit/setup" className="font-bold underline">Open setup preview</a>
-            <a href="/venue/demo/lobby" className="font-bold underline">Open guest venue</a>
-            <a href="/app/events/event-summit/crew" className="font-bold underline">Open crew console</a>
+            <Link href="/app/events/event-summit/setup" className="font-bold underline">Open setup preview</Link>
+            <Link href="/venue/demo/lobby" className="font-bold underline">Open guest venue</Link>
+            <Link href="/app/events/event-summit/crew" className="font-bold underline">Open crew console</Link>
           </div>
         </div>
       </div>
@@ -64,7 +65,7 @@ export function AgencyDashboard() {
               const client = data.clients.find((item) => item.id === event.clientId);
               const eventReadiness = calculateEventReadiness(data, event.id);
               return (
-                <a key={event.id} href={`/app/events/${event.id}/overview`} className="block rounded-2xl border border-slate-200 p-4 hover:bg-slate-50">
+                <Link key={event.id} href={`/app/events/${event.id}/overview`} className="block rounded-2xl border border-slate-200 p-4 hover:bg-slate-50">
                   <div className="flex items-start justify-between gap-4">
                     <div>
                       <h3 className="font-semibold text-slate-950">{event.name}</h3>
@@ -73,7 +74,7 @@ export function AgencyDashboard() {
                     <StatusBadge status={event.status} />
                   </div>
                   <div className="mt-3 text-sm text-slate-600">Readiness: {eventReadiness.overallScore}% · {eventReadiness.categories.filter((c) => c.status !== "ready").length} categories need attention</div>
-                </a>
+                </Link>
               );
             })}
           </div>
@@ -97,10 +98,10 @@ export function AgencyDashboard() {
         <SectionCard title="Pending approvals">
           <div className="space-y-2">
             {pendingApprovals.map((approval) => (
-              <a key={approval.id} href={`/app/events/${approval.eventId}/approvals`} className="block rounded-xl bg-slate-50 p-3 text-sm">
+              <Link key={approval.id} href={`/app/events/${approval.eventId}/approvals`} className="block rounded-xl bg-slate-50 p-3 text-sm">
                 <p className="font-medium text-slate-950">{approval.title}</p>
                 <p className="text-slate-500">Due {approval.dueAt}</p>
-              </a>
+              </Link>
             ))}
           </div>
         </SectionCard>
@@ -117,10 +118,10 @@ export function AgencyDashboard() {
         <SectionCard title="Reports due">
           <div className="space-y-2">
             {reportsDue.map((event) => (
-              <a key={event.id} href={`/app/events/${event.id}/report`} className="block rounded-xl bg-slate-50 p-3 text-sm">
+              <Link key={event.id} href={`/app/events/${event.id}/report`} className="block rounded-xl bg-slate-50 p-3 text-sm">
                 <p className="font-medium">{event.name}</p>
                 <p className="text-slate-500">Client report ready</p>
-              </a>
+              </Link>
             ))}
           </div>
         </SectionCard>

@@ -28,7 +28,7 @@ export async function loginWithPassword(formData: FormData) {
 
   if (error || !data.session) redirect(`/login?error=invalid_login&next=${encodeURIComponent(next)}`);
 
-  setAuthCookie({
+  await setAuthCookie({
     accessToken: data.session.access_token,
     refreshToken: data.session.refresh_token,
     expiresAt: data.session.expires_at,
@@ -72,6 +72,6 @@ export async function requestPasswordReset(formData: FormData) {
 }
 
 export async function logout() {
-  clearAuthCookie();
+  await clearAuthCookie();
   redirect("/login");
 }

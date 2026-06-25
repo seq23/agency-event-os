@@ -1,6 +1,7 @@
 import { ManageEventTabs } from "@/components/events/ManageEventTabs";
 import { EventCommunicationsDashboard } from "@/components/communications/EventCommunicationsDashboard";
 
-export default function EventCommunicationsPage({ params }: { params: { eventId: string } }) {
-  return <div className="space-y-6"><ManageEventTabs eventId={params.eventId} /><EventCommunicationsDashboard eventId={params.eventId} /></div>;
+export default async function EventCommunicationsPage({ params }: { params: Promise<{ eventId: string }> }) {
+  const resolvedParams = await params;
+  return <div className="space-y-6"><ManageEventTabs eventId={resolvedParams.eventId} /><EventCommunicationsDashboard eventId={resolvedParams.eventId} /></div>;
 }

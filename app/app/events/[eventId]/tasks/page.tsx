@@ -1,5 +1,6 @@
 import { TaskBoard } from "@/components/tasks/TaskBoard";
 
-export default function TasksRoute({ params }: { params: { eventId: string } }) {
-  return <TaskBoard eventId={params.eventId} />;
+export default async function TasksRoute({ params }: { params: Promise<{ eventId: string }> }) {
+  const resolvedParams = await params;
+  return <TaskBoard eventId={resolvedParams.eventId} />;
 }

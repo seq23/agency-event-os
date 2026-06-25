@@ -20,7 +20,7 @@ function getLocalPlaywrightGauntletUser(sessionAccessToken?: string): Permission
 }
 
 export async function getCurrentUser(): Promise<PermissionUser | null> {
-  const session = getAuthCookiePayload();
+  const session = await getAuthCookiePayload();
   const localGauntletUser = getLocalPlaywrightGauntletUser(session?.accessToken);
   if (localGauntletUser) return localGauntletUser;
 

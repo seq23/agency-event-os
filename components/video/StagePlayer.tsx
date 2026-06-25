@@ -28,7 +28,7 @@ function attendeeOverlayMessage(state: PublicStageStreamState) {
   return "Refreshing the live stream. Please stay on this page...";
 }
 
-export function StagePlayer({ initialState, eventId, stageId = "main-stage", viewerRole = "attendee", displayName = "Attendee", profileId }: StagePlayerProps) {
+export function StagePlayer({ initialState, eventId, stageId = "main-stage", viewerRole = "attendee", displayName = "Attendee" }: StagePlayerProps) {
   const [state, setState] = useState(initialState);
   const [isPending, startTransition] = useTransition();
   const backendViewer = isBackendViewer(viewerRole);

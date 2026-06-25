@@ -21,7 +21,6 @@ function category(key: ReadinessCategory["key"], label: string, score: number, m
 
 export function calculateEventReadiness(data: MockData, eventId: string): EventReadiness {
   const event = data.events.find((item) => item.id === eventId);
-  const tasks = data.tasks.filter((task) => task.eventId === eventId);
   const approvals = data.approvals.filter((approval) => approval.eventId === eventId);
   const ros = data.runOfShowSegments.filter((segment) => segment.eventId === eventId);
   const speakers = data.speakers.filter((speaker) => speaker.eventId === eventId);
@@ -31,7 +30,6 @@ export function calculateEventReadiness(data: MockData, eventId: string): EventR
   const vendors = data.vendorAssignments.filter((assignment) => assignment.eventId === eventId);
   const videoRooms = data.videoRooms.filter((room) => room.eventId === eventId);
 
-  const blockedTasks = tasks.filter((task) => ["blocked", "waiting_on_client", "waiting_on_speaker", "waiting_on_sponsor", "waiting_on_vendor"].includes(task.status));
   const openApprovals = approvals.filter((approval) => !["approved", "locked"].includes(approval.status));
   const unreadyRos = ros.filter((segment) => segment.readinessStatus !== "ready");
   const unreadySpeakers = speakers.filter((speaker) => speaker.readinessStatus !== "ready");

@@ -32,7 +32,7 @@ export function renderEmailWorkflowHtml(payload: EmailWorkflowPayload) {
   return `
     <div style="font-family:Arial,sans-serif;line-height:1.55;color:#050505;background:#ffffff;">
       <div style="border:1px solid #e7e3dc;border-radius:24px;padding:24px;max-width:640px;">
-        <p style="font-size:12px;letter-spacing:0.22em;text-transform:uppercase;color:#ff6a00;font-weight:800;margin:0 0 12px;">West Peek Live!</p>
+        <p style="font-size:12px;letter-spacing:0.22em;text-transform:uppercase;color:#f05a1a;font-weight:800;margin:0 0 12px;">West Peek Live!</p>
         <p>${greeting}</p>
         <p>${summary}</p>
         ${due}

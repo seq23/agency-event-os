@@ -6,7 +6,7 @@ export async function requireOperatorAccessForRequest() {
   const env = getEnv();
   const { operatorCookieName, ownerCookieName } = getV5AccessCookieNames(env);
   const secret = getV5AccessCookieSecret(env);
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const owner = await readV5AccessCookie(cookieStore.get(ownerCookieName)?.value, secret);
   if (owner?.kind === "owner") {
     return { ok: true as const, payload: owner, actorRole: "owner" as const };

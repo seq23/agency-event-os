@@ -25,13 +25,14 @@ async function enterOwner(formData: FormData) {
     expiresAt: Date.now() + 1000 * 60 * 60 * 12,
   }, getV5AccessCookieSecret(env));
 
-  cookies().set(ownerCookieName, cookie, getV5CookieOptions(60 * 60 * 12));
+  (await cookies()).set(ownerCookieName, cookie, getV5CookieOptions(60 * 60 * 12));
 
   const safeNext = next.startsWith("/") && !next.startsWith("//") ? next : "/app";
   redirect(safeNext);
 }
 
-export default function OwnerAccessPage({ searchParams }: { searchParams?: { error?: string; next?: string } }) {
+export default async function OwnerAccessPage({ searchParams }: { searchParams?: Promise<{ error?: string; next?: string }> }) {
+  const resolvedSearchParams = searchParams ? await searchParams : undefined;
   return (
     <>
       <main className="min-h-screen bg-brand-ash px-5 py-10 text-brand-black sm:px-8 lg:px-12">
@@ -43,15 +44,15 @@ export default function OwnerAccessPage({ searchParams }: { searchParams?: { err
             Use this only for owner-level show control, billing, settings, admin testing, and full event workspace access.
             Operator, crew, speaker, sponsor, client, and VIP access do not grant this authority.
           </p>
-          <form action="/api/production-access/owner" method="post" className="mt-6 space-y-5">
-            <input type="hidden" name="next" value={searchParams?.next || "/app"} />
+          <form action={enterOwner} className="mt-6 space-y-5">
+            <input type="hidden" name="next" value={resolvedSearchParams?.next || "/app"} />
             <div>
               <label htmlFor="owner-password" className="text-sm font-black">Owner master password <span className="text-brand-orange">*</span></label>
               <input id="owner-password" name="password" required type="password" className="mt-2 min-h-12 w-full rounded-full border border-brand-line px-5 text-sm" />
             </div>
             <button className="w-full rounded-full bg-brand-black px-6 py-3 text-sm font-bold text-white">Enter owner workspace</button>
           </form>
-          {searchParams?.error ? <p className="mt-4 rounded-2xl bg-amber-50 p-4 text-sm font-bold text-amber-800">Owner password did not match.</p> : null}
+          {resolvedSearchParams?.error ? <p className="mt-4 rounded-2xl bg-amber-50 p-4 text-sm font-bold text-amber-800">Owner password did not match.</p> : null}
         </section>
       </main>
       <LegalFooter variant="compact" />

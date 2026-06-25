@@ -1,2 +1,3 @@
 import { SponsorManager } from "@/components/sponsors/SponsorManager";
-export default function SponsorsPage({ params }: { params: { eventId: string } }){ return <SponsorManager eventId={params.eventId} />; }
+export default async function SponsorsPage({ params }: { params: Promise<{ eventId: string }> }) {
+  const resolvedParams = await params; return <SponsorManager eventId={resolvedParams.eventId} />; }

@@ -6,7 +6,7 @@ export async function requireLiveEventControlAccessForRequest(eventId?: string) 
   const env = getEnv();
   const names = getV5AccessCookieNames(env);
   const secret = getV5AccessCookieSecret(env);
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const [operator, owner, crew] = await Promise.all([
     readV5AccessCookie(cookieStore.get(names.operatorCookieName)?.value, secret),
     readV5AccessCookie(cookieStore.get(names.ownerCookieName)?.value, secret),

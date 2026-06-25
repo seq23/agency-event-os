@@ -1,192 +1,36 @@
 # Tier Validation Model — agency-event-os
 
-Status: ACTIVE
-Date: 2026-06-12
-Scope: repo-wide validation, deployment, provider proof, completion language
+Authority: `Repo_and_Project_Instructions_Master_Operating_Contract_v5.3.md`.
 
-## Source authority alignment
+## Canonical tiers
 
-Enforcement basis:
+### Tier 1 — Static/source/contract proof
+Structure, types, lint, source security, route and environment contracts. It does not prove runtime behavior.
 
-- Repo work must be correct, recoverable, and honestly validated, not route/file/screenshot theater.
-- Runtime contexts are distinct proof layers: local, Playwright self-spawn, test process, CI, deployed runtime, smoke target, and provider dashboard state.
-- Provider/webhook debugging starts with environment/signature parity, not guesses.
-- Level 5/6 repos require role matrix, journey matrix, provider contract matrix, Master Gauntlet, postdeploy proof, and no demo fallback.
-- Test harnesses are production-adjacent infrastructure and must not silently skip provider lanes.
-- COMPLETE is blocked if runtime context parity, real provider proof, created-entity lifecycle, role enforcement, explicit smoke URL, no-generated-artifacts, or Master Gauntlet proof is missing.
+### Tier 2 — Local behavioral and integration proof
+Unit and integration behavior, API contracts, authorization logic, persistence adapters, serialization, and failure mapping without browser dependence.
 
-## Tier model
+### Tier 3A — Controlled local browser proof
+Desktop and mobile browser journeys using deterministic fixtures or mocked external providers.
 
-### Tier 1 — Static / source / contract proof
+### Tier 3B — Provider-independent full-stack local browser proof
+Real local application routes, real local authentication, and production-shaped persistence. Mutations require readback, reload/re-entry, cross-context observation, and negative authorization.
 
-Tier 1 may run before deploy and before live provider credentials are present.
-It proves only static/source contracts: repo identity, docs, env registries, no-secret checks, validator admission, schema/domain checks, and source-level guardrails.
+### Tier 4A — Deployed safe-runtime proof
+GitHub Actions, deployed commit identity, Cloudflare runtime, public/authenticated/role click audits, deployed authorization, mutation/readback, and isolation.
 
-Tier 1 must never be described as deployment proof, browser proof, or real-provider proof.
+### Tier 4B — Real-provider operational proof
+StreamYard, LiveKit, Cloudflare Stream, Daily, Zoom, Google Meet fallback, production Supabase, transactional delivery, attendee consumption, revoke/restore, and exact cleanup / teardown. LiveKit ingress cleanup is mandatory evidence, not an optional note.
 
-### Tier 2 — Local runtime / browser / self-spawn proof
+### Tier 4C — Human/expert approval
+Route- and state-complete Hallmark review, brand review, and operational signoff. Screenshots do not prove approval.
 
-Tier 2 includes Tier 1 plus local build/typecheck/unit/integration and local browser proof.
-For browser repos, local headed Playwright and self-spawn/server parity are expected where feasible.
+## Truth boundaries
 
-Tier 2 must never be described as deployed proof or real-provider proof.
+- Route rendering is not journey completion.
+- Local mocks do not prove production providers.
+- Documentation presence does not prove execution.
+- Every mutation requires state change, persistence readback, reload/re-entry, and negative authorization.
+- Completion is forbidden while a required row is UNPROVEN or BLOCKED.
 
-### Tier 3 — Deployed postdeploy critical proof / safe provider boundary
-
-Tier 3 includes Tier 1 and Tier 2 plus deployed runtime proof against an explicit non-local deployed URL.
-
-Tier 3 proves:
-
-- fresh deployed runtime responds at the supplied base URL
-- public, access, venue, and provider routes fail safely or render usefully
-- critical postdeploy browser lanes run against deployed runtime
-- provider routes do not crash, leak secrets, or dead-end when real credentials are absent or unavailable
-- Cloudflare/OpenNext runtime differences are exposed through deployed smoke
-- protected routes and provider endpoints fail closed when credentials/session context are missing
-
-Tier 3 does **not** prove a real live StreamYard/LiveKit production event, real provider resource creation, real Supabase production persistence, real Daily/Zoom fallback, or real Resend transactional delivery unless those actions are separately run in Tier 4.
-
-### Tier 4 — Final live-provider operational proof
-
-Tier 4 is the final validation tier for this repo.
-
-Tier 4 is intentionally separated from Tier 3 because it may use real credentials, create external provider resources, send provider API calls, require operator evidence, and potentially incur provider-side state or cost.
-
-Tier 4 must prove:
-
-- all Tier 1 checks
-- all Tier 2 checks
-- all Tier 3 deployed postdeploy checks
-- real StreamYard Custom RTMP or controlled real broadcaster feeding LiveKit ingress
-- real LiveKit room/ingress/webhook/media-state evidence
-- real created-event lifecycle proof using production/deployed persistence where configured
-- real Supabase write/readback proof for critical scoped event state
-- real Daily fallback lane where Daily credentials are configured
-- real Zoom SDK/signature readiness lane where Zoom credentials are configured
-- real Resend transactional send proof to an approved test recipient where Resend credentials are configured
-- role-boundary checks around all real provider/private surfaces
-- no provider secret exposure in browser, traces, logs, reports, or evidence bundles
-- cleanup / teardown or explicit retained-resource justification for provider resources
-
-If a provider lane exists and Tier 4 does not run or cannot prove it, Tier 4 must fail or return BLOCKED/UNPROVEN in a way that blocks COMPLETE.
-
-## Repo-specific final-tier burden
-
-Level 6 proof burden because it is multi-role production event infrastructure with auth, event lifecycle, LiveKit/StreamYard/Daily/Zoom/email/Supabase providers, Cloudflare/OpenNext deployment, and protected role portals.
-
-## Commands
-
-Tier 3 deployed-safe gate:
-
-```bash
-npm run validate:everything -- --tier=3
-```
-
-Tier 4 final live-provider gate:
-
-```bash
-npm run validate:everything -- --tier=4
-```
-
-Focused Tier 4 live-provider orchestrator:
-
-```bash
-npm run tier4:live-provider-operational-proof
-```
-
-## Required Tier 3 inputs
-
-- POSTDEPLOY_BASE_URL or SMOKE_BASE_URL
-- PLAYWRIGHT_BASE_URL or NEXT_PUBLIC_APP_URL
-
-## Required Tier 4 inputs
-
-- POSTDEPLOY_BASE_URL or SMOKE_BASE_URL
-- PLAYWRIGHT_BASE_URL
-- TIER4_LIVE_PROVIDER_OPERATIONAL_PROOF=1
-- TIER4_STREAMYARD_LIVE_EVIDENCE_PATH
-- STREAMYARD_REAL_PROVIDER_SMOKE=1
-- STREAMYARD_OPERATOR_CONFIRMED_BROADCAST=1
-- LIVEKIT_*
-- SUPABASE_*
-- DAILY_* / ZOOM_* when fallback lanes run
-- RESEND_API_KEY + TIER4_EMAIL_TEST_TO when email proof runs
-
-## Completion language
-
-Allowed:
-
-- TIER 1 PASSED — STATIC/SOURCE ONLY
-- TIER 2 PASSED — LOCAL BUILD/BROWSER ONLY
-- TIER 3 PASSED — DEPLOYED SAFE POSTDEPLOY PROOF ONLY
-- TIER 4 PASSED — REAL LIVE PROVIDER OPERATIONAL PROOF
-- BLOCKED — TIER 4 LIVE PROVIDER EVIDENCE REQUIRED
-- PARTIAL — STATIC/LOCAL/POSTDEPLOY PASSED, LIVE PROVIDER FINAL TIER UNPROVEN
-
-Forbidden:
-
-- COMPLETE from Tier 1
-- COMPLETE from Tier 2
-- COMPLETE from Tier 3 when real provider proof is required
-- COMPLETE from mocked provider tests
-- COMPLETE from postdeploy smoke without Tier 4 provider proof
-- COMPLETE when any Tier 4 provider lane is UNPROVEN
-
-## Tier 3 vs Tier 4 boundary
-
-Tier 3 answers: “Did the deployed app survive and fail safely?”
-
-Tier 4 answers: “Did the actual provider-backed live event operation work with real credentials and evidence?”
-
-Do not collapse these tiers. The separation prevents normal postdeploy validation from becoming bloated while preserving a hard final gate for true production proof.
-
-## LiveKit Twirp URL Contract — 2026-06-12
-
-- Validator: `npm run validate:livekit-twirp-url-contract`
-- Included in: `npm run validate` through `validate:deploy-parity`
-- Purpose: prevent both deployed app code and Tier 4 proof harnesses from using a `wss://` LiveKit client URL for server-side Twirp `fetch()` calls.
-- Required trace: Tier 4 controlled proof reports classify failures as harness/env/provider/deployed-app failures and retain sanitized phase trace.
-
-
-## Tier 4 cleanup / teardown requirement
-
-Tier 4 is not complete until live-provider resources have either been deleted or retained with an explicit reason. For the StreamYard → LiveKit lane, this means LiveKit ingress cleanup is a required contract lane.
-
-Default controlled Tier 4 behavior:
-
-- create/observe LiveKit ingress
-- run controlled RTMP proof
-- send deployed app webhook/state proof
-- delete the generated LiveKit ingress with `Ingress/DeleteIngress`
-- record `cleanupStatus: deleted`, `cleanupAttempted: true`, and `cleanupDeleted: true`
-
-Retained provider resources are allowed only with `TIER4_CONTROLLED_RTMP_RETAIN_INGRESS=1` plus `TIER4_CONTROLLED_RTMP_RETAIN_REASON`. Silent retention is not Tier 4 complete.
-
-## Tier 4 Expanded Provider Ladder Data Trace — 2026-06-12
-
-Tier 4 is not only StreamYard/LiveKit. The live-provider proof must trace the full production fallback ladder:
-
-1. LiveKit-only deployed app ingress creation and cleanup via `Ingress/DeleteIngress`.
-2. StreamYard-compatible controlled RTMP path through LiveKit ingress, with cleanup.
-3. Daily fallback room creation, token issuance, and mandatory room deletion.
-4. Zoom fallback authorization proof through the deployed signature route; no provider resource is created, so cleanup status must be `not_required_stateless_signature`.
-5. Google Meet manual continuity proof through `GOOGLE_MEET_MANAGED_FALLBACK_URL` or `GOOGLE_MEET_EMERGENCY_URL`; if intentionally out of scope, `TIER4_GOOGLE_MEET_NOT_APPLICABLE_REASON` must be explicit.
-
-A Tier 4 report that omits Daily, Zoom, or Google Meet is incomplete for this product promise. Cleanup must be machine-readable, not narrative-only.
-
-
-## Tier 4 fallback ladder expansion — 2026-06-12
-
-Show-day ladder order is now explicit and must be exercised in Tier 4:
-
-1. StreamYard-compatible Custom RTMP path into LiveKit, proven by controlled ffmpeg RTMP broadcaster. StreamYard itself remains a manual/operator provider because automated StreamYard API access is enterprise-only.
-2. LiveKit + Cloudflare Stream Live fallback, proven through the Cloudflare Stream Live Inputs API, controlled RTMP media push, and live input cleanup.
-3. Daily real fallback provider, proven by room create, meeting token create, and room delete cleanup. Daily API keys are normalized so pasted `Bearer ...` values do not create `Bearer Bearer ...` authentication failures; a 401 after normalization is a real Daily key/domain/provider auth failure.
-4. Zoom fallback, proven by denied unauthenticated access and authorized SDK signature generation; no provider cleanup is required because the proof is stateless.
-5. Google Meet fallback, proven by valid HTTPS Meet continuity URL or explicit not-applicable disposition; no provider cleanup is required because it is a manual/static continuity link.
-
-Tier 4 must attempt every configured rung and fail only after the full ladder trace is written.
-
-## Tier 4 End-User Outcome Spine: Attendee Live Consumption
-
-Live provider proof is incomplete unless the attendee consumption path is proven. For this repo, Tier 4 must prove: controlled RTMP media into LiveKit, attendee live-stage entry, attendee live token when permitted, live access revocation, live access re-permission, backend owner/showrunner/crew logs, and no attendee/public exposure of provider secrets.
+Machine-readable authority: `_canonical_tier_profile.json`.

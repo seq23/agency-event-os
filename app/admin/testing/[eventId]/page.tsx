@@ -1,5 +1,6 @@
 import { TestingConsole } from "@/components/testing/TestingConsole";
 
-export default function EventTestingConsolePage({ params }: { params: { eventId: string } }) {
-  return <TestingConsole eventId={params.eventId} />;
+export default async function EventTestingConsolePage({ params }: { params: Promise<{ eventId: string }> }) {
+  const resolvedParams = await params;
+  return <TestingConsole eventId={resolvedParams.eventId} />;
 }

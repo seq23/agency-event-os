@@ -1,2 +1,3 @@
 import { TalentReadinessDashboard } from "@/components/production/TalentReadinessDashboard";
-export default function TalentPage({ params }: { params: { eventId: string } }) { return <TalentReadinessDashboard eventId={params.eventId} />; }
+export default async function TalentPage({ params }: { params: Promise<{ eventId: string }> }) {
+  const resolvedParams = await params; return <TalentReadinessDashboard eventId={resolvedParams.eventId} />; }

@@ -90,7 +90,7 @@ export async function LiveKitRoomShell({ eventId, roomId, roomType, role, title,
             </dl>
 
             <div className="mt-5 rounded-2xl bg-slate-950/70 p-4 text-sm">
-              <p className="font-semibold text-cyan-100">Permissions</p>
+              <p className="font-semibold text-white/80">Permissions</p>
               <ul className="mt-2 space-y-1 text-slate-300">
                 <li>Audio: {permissions.canPublishAudio ? "publish" : "listen only"}</li>
                 <li>Video: {permissions.canPublishVideo ? "publish" : "view only"}</li>

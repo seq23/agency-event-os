@@ -1,10 +1,11 @@
 import { LiveKitRoomShell } from "@/components/video/LiveKitRoomShell";
 
-export default function BackstageRoomPage({ params }: { params: { eventId: string } }) {
+export default async function BackstageRoomPage({ params }: { params: Promise<{ eventId: string }> }) {
+  const resolvedParams = await params;
   return (
     <LiveKitRoomShell
-      eventId={params.eventId}
-      roomId={`${params.eventId}-backstage`}
+      eventId={resolvedParams.eventId}
+      roomId={`${resolvedParams.eventId}-backstage`}
       roomType="backstage"
       role="producer"
       title="Backstage"

@@ -1,5 +1,6 @@
 import { EventOverview } from "@/components/events/EventOverview";
 
-export default function EventBuilderPage({ params }: { params: { eventId: string } }) {
-  return <EventOverview eventId={params.eventId} />;
+export default async function EventBuilderPage({ params }: { params: Promise<{ eventId: string }> }) {
+  const resolvedParams = await params;
+  return <EventOverview eventId={resolvedParams.eventId} />;
 }

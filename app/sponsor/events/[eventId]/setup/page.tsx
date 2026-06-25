@@ -1,2 +1,3 @@
 import { SponsorSetupWizard } from "@/components/sponsors/SponsorSetupWizard";
-export default function SponsorSetupPage({ params }: { params: { eventId: string } }) { return <SponsorSetupWizard eventId={params.eventId} />; }
+export default async function SponsorSetupPage({ params }: { params: Promise<{ eventId: string }> }) {
+  const resolvedParams = await params; return <SponsorSetupWizard eventId={resolvedParams.eventId} />; }

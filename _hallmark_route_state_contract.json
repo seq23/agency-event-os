@@ -1,0 +1,1688 @@
+{
+  "schema_version": "1.0",
+  "repo": "agency-event-os",
+  "authority": "expert review required; screenshots alone are not approval",
+  "viewports": [
+    "desktop",
+    "mobile"
+  ],
+  "states": [
+    "empty",
+    "populated",
+    "loading",
+    "error",
+    "success",
+    "disabled",
+    "pending"
+  ],
+  "personas": [
+    "admin",
+    "attendee",
+    "client",
+    "crew",
+    "operator",
+    "owner",
+    "public",
+    "speaker",
+    "special-guest",
+    "sponsor"
+  ],
+  "routes": [
+    {
+      "id": "accept-invite",
+      "path": "/accept-invite",
+      "persona": "public",
+      "required_states": [
+        "empty",
+        "populated",
+        "error"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "forgot-password",
+      "path": "/forgot-password",
+      "persona": "public",
+      "required_states": [
+        "empty",
+        "populated",
+        "error"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "login",
+      "path": "/login",
+      "persona": "public",
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "signup",
+      "path": "/signup",
+      "persona": "public",
+      "required_states": [
+        "empty",
+        "populated",
+        "error"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "admin-testing-eventid-livekit-room",
+      "path": "/admin/testing/[eventId]/livekit-room",
+      "persona": "admin",
+      "required_states": [
+        "empty",
+        "populated",
+        "error"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "admin-testing-eventid",
+      "path": "/admin/testing/[eventId]",
+      "persona": "admin",
+      "required_states": [
+        "empty",
+        "populated",
+        "error"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "admin-testing",
+      "path": "/admin/testing",
+      "persona": "admin",
+      "required_states": [
+        "empty",
+        "populated",
+        "error"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-assets",
+      "path": "/app/assets",
+      "persona": "operator",
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-clients-clientid",
+      "path": "/app/clients/[clientId]",
+      "persona": "operator",
+      "required_states": [
+        "empty",
+        "populated",
+        "error"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-clients",
+      "path": "/app/clients",
+      "persona": "operator",
+      "required_states": [
+        "empty",
+        "populated",
+        "error"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-contractors",
+      "path": "/app/contractors",
+      "persona": "operator",
+      "required_states": [
+        "empty",
+        "populated",
+        "error"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-email",
+      "path": "/app/email",
+      "persona": "operator",
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-events-eventid-access",
+      "path": "/app/events/[eventId]/access",
+      "persona": "operator",
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-events-eventid-agenda",
+      "path": "/app/events/[eventId]/agenda",
+      "persona": "operator",
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-events-eventid-analytics",
+      "path": "/app/events/[eventId]/analytics",
+      "persona": "operator",
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-events-eventid-approval-queue",
+      "path": "/app/events/[eventId]/approval-queue",
+      "persona": "operator",
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-events-eventid-approvals",
+      "path": "/app/events/[eventId]/approvals",
+      "persona": "operator",
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-events-eventid-assets",
+      "path": "/app/events/[eventId]/assets",
+      "persona": "operator",
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-events-eventid-attendee-flow",
+      "path": "/app/events/[eventId]/attendee-flow",
+      "persona": "operator",
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-events-eventid-branding",
+      "path": "/app/events/[eventId]/branding",
+      "persona": "operator",
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-events-eventid-builder",
+      "path": "/app/events/[eventId]/builder",
+      "persona": "operator",
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-events-eventid-change-control",
+      "path": "/app/events/[eventId]/change-control",
+      "persona": "operator",
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-events-eventid-communications",
+      "path": "/app/events/[eventId]/communications",
+      "persona": "operator",
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-events-eventid-crew",
+      "path": "/app/events/[eventId]/crew",
+      "persona": "operator",
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-events-eventid-inbox",
+      "path": "/app/events/[eventId]/inbox",
+      "persona": "operator",
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-events-eventid-incidents",
+      "path": "/app/events/[eventId]/incidents",
+      "persona": "operator",
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-events-eventid-overview",
+      "path": "/app/events/[eventId]/overview",
+      "persona": "operator",
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-events-eventid",
+      "path": "/app/events/[eventId]",
+      "persona": "operator",
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-events-eventid-preview",
+      "path": "/app/events/[eventId]/preview",
+      "persona": "operator",
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-events-eventid-producer",
+      "path": "/app/events/[eventId]/producer",
+      "persona": "operator",
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-events-eventid-publish",
+      "path": "/app/events/[eventId]/publish",
+      "persona": "operator",
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-events-eventid-report",
+      "path": "/app/events/[eventId]/report",
+      "persona": "operator",
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-events-eventid-run-of-show",
+      "path": "/app/events/[eventId]/run-of-show",
+      "persona": "operator",
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-events-eventid-setup",
+      "path": "/app/events/[eventId]/setup",
+      "persona": "operator",
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-events-eventid-speakers",
+      "path": "/app/events/[eventId]/speakers",
+      "persona": "operator",
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-events-eventid-sponsors",
+      "path": "/app/events/[eventId]/sponsors",
+      "persona": "operator",
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-events-eventid-talent",
+      "path": "/app/events/[eventId]/talent",
+      "persona": "operator",
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-events-eventid-tasks",
+      "path": "/app/events/[eventId]/tasks",
+      "persona": "operator",
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-events-eventid-timeline",
+      "path": "/app/events/[eventId]/timeline",
+      "persona": "operator",
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-events-eventid-vendors",
+      "path": "/app/events/[eventId]/vendors",
+      "persona": "operator",
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-events-eventid-venue",
+      "path": "/app/events/[eventId]/venue",
+      "persona": "operator",
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-events-eventid-video-backstage",
+      "path": "/app/events/[eventId]/video/backstage",
+      "persona": "operator",
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-events-eventid-video-green-room",
+      "path": "/app/events/[eventId]/video/green-room",
+      "persona": "operator",
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-events-eventid-video-main-stage",
+      "path": "/app/events/[eventId]/video/main-stage",
+      "persona": "operator",
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-events-eventid-video-health",
+      "path": "/app/events/[eventId]/video-health",
+      "persona": "operator",
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-events-new",
+      "path": "/app/events/new",
+      "persona": "operator",
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-events",
+      "path": "/app/events",
+      "persona": "operator",
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app",
+      "path": "/app",
+      "persona": "operator",
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-settings",
+      "path": "/app/settings",
+      "persona": "operator",
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-templates",
+      "path": "/app/templates",
+      "persona": "operator",
+      "required_states": [
+        "empty",
+        "populated",
+        "error"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "app-vendors",
+      "path": "/app/vendors",
+      "persona": "operator",
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "billing",
+      "path": "/billing",
+      "persona": "operator",
+      "required_states": [
+        "empty",
+        "populated",
+        "error"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "client-clientslug-events-eventid-approvals",
+      "path": "/client/[clientSlug]/events/[eventId]/approvals",
+      "persona": "client",
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "client-clientslug-events-eventid-assets",
+      "path": "/client/[clientSlug]/events/[eventId]/assets",
+      "persona": "client",
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "client-clientslug-events-eventid",
+      "path": "/client/[clientSlug]/events/[eventId]",
+      "persona": "client",
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "client-clientslug-events-eventid-run-of-show",
+      "path": "/client/[clientSlug]/events/[eventId]/run-of-show",
+      "persona": "client",
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "client-clientslug-events-eventid-timeline",
+      "path": "/client/[clientSlug]/events/[eventId]/timeline",
+      "persona": "client",
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "client-clientslug",
+      "path": "/client/[clientSlug]",
+      "persona": "client",
+      "required_states": [
+        "empty",
+        "populated",
+        "error"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "crew-events-eventid-call-sheet",
+      "path": "/crew/events/[eventId]/call-sheet",
+      "persona": "crew",
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "crew-events-eventid",
+      "path": "/crew/events/[eventId]",
+      "persona": "crew",
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "crew-events-eventid-run-of-show",
+      "path": "/crew/events/[eventId]/run-of-show",
+      "persona": "crew",
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "crew-events-eventid-tasks",
+      "path": "/crew/events/[eventId]/tasks",
+      "persona": "crew",
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "crew",
+      "path": "/crew",
+      "persona": "crew",
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "events-slug-agenda",
+      "path": "/events/[slug]/agenda",
+      "persona": "operator",
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "events-slug",
+      "path": "/events/[slug]",
+      "persona": "operator",
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "events-slug-register",
+      "path": "/events/[slug]/register",
+      "persona": "operator",
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "events-slug-speakers",
+      "path": "/events/[slug]/speakers",
+      "persona": "operator",
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "events-slug-sponsors",
+      "path": "/events/[slug]/sponsors",
+      "persona": "operator",
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "join",
+      "path": "/join",
+      "persona": "operator",
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "onboarding",
+      "path": "/onboarding",
+      "persona": "operator",
+      "required_states": [
+        "empty",
+        "populated",
+        "error"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "operator-packet",
+      "path": "/operator-packet",
+      "persona": "operator",
+      "required_states": [
+        "empty",
+        "populated",
+        "error"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "home",
+      "path": "/",
+      "persona": "public",
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "privacy",
+      "path": "/privacy",
+      "persona": "operator",
+      "required_states": [
+        "empty",
+        "populated",
+        "error"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "production-access-crew",
+      "path": "/production-access/crew",
+      "persona": "crew",
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "production-access-launchpad",
+      "path": "/production-access/launchpad",
+      "persona": "operator",
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "production-access-operator",
+      "path": "/production-access/operator",
+      "persona": "operator",
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "production-access-owner",
+      "path": "/production-access/owner",
+      "persona": "owner",
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "production-access",
+      "path": "/production-access",
+      "persona": "operator",
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "production-access-setup-error",
+      "path": "/production-access/setup-error",
+      "persona": "operator",
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "production-access-special-guest",
+      "path": "/production-access/special-guest",
+      "persona": "special-guest",
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "request-event",
+      "path": "/request-event",
+      "persona": "operator",
+      "required_states": [
+        "empty",
+        "populated",
+        "error"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "speaker-events-eventid-backstage",
+      "path": "/speaker/events/[eventId]/backstage",
+      "persona": "speaker",
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "speaker-events-eventid-green-room",
+      "path": "/speaker/events/[eventId]/green-room",
+      "persona": "speaker",
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "speaker-events-eventid-onboarding",
+      "path": "/speaker/events/[eventId]/onboarding",
+      "persona": "speaker",
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "speaker-events-eventid",
+      "path": "/speaker/events/[eventId]",
+      "persona": "speaker",
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "speaker-events-eventid-tech-check",
+      "path": "/speaker/events/[eventId]/tech-check",
+      "persona": "speaker",
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "speaker-events-eventid-teleprompter",
+      "path": "/speaker/events/[eventId]/teleprompter",
+      "persona": "speaker",
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "speaker",
+      "path": "/speaker",
+      "persona": "speaker",
+      "required_states": [
+        "empty",
+        "populated",
+        "error"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "sponsor-events-eventid-booth",
+      "path": "/sponsor/events/[eventId]/booth",
+      "persona": "sponsor",
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "sponsor-events-eventid-leads",
+      "path": "/sponsor/events/[eventId]/leads",
+      "persona": "sponsor",
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "sponsor-events-eventid",
+      "path": "/sponsor/events/[eventId]",
+      "persona": "sponsor",
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "sponsor-events-eventid-ready-room",
+      "path": "/sponsor/events/[eventId]/ready-room",
+      "persona": "sponsor",
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "sponsor-events-eventid-report",
+      "path": "/sponsor/events/[eventId]/report",
+      "persona": "sponsor",
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "sponsor-events-eventid-setup",
+      "path": "/sponsor/events/[eventId]/setup",
+      "persona": "sponsor",
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "sponsor",
+      "path": "/sponsor",
+      "persona": "sponsor",
+      "required_states": [
+        "empty",
+        "populated",
+        "error"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "start-create-event",
+      "path": "/start/create-event",
+      "persona": "operator",
+      "required_states": [
+        "empty",
+        "populated",
+        "error"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "start",
+      "path": "/start",
+      "persona": "operator",
+      "required_states": [
+        "empty",
+        "populated",
+        "error"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "submit-eventcode-speaker",
+      "path": "/submit/[eventCode]/speaker",
+      "persona": "operator",
+      "required_states": [
+        "empty",
+        "populated",
+        "error"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "submit-eventcode-sponsor",
+      "path": "/submit/[eventCode]/sponsor",
+      "persona": "operator",
+      "required_states": [
+        "empty",
+        "populated",
+        "error"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "terms",
+      "path": "/terms",
+      "persona": "operator",
+      "required_states": [
+        "empty",
+        "populated",
+        "error"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "venue-eventid-breakouts",
+      "path": "/venue/[eventId]/breakouts",
+      "persona": "attendee",
+      "required_states": [
+        "empty",
+        "populated",
+        "error"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "venue-eventid-expo-boothid",
+      "path": "/venue/[eventId]/expo/[boothId]",
+      "persona": "attendee",
+      "required_states": [
+        "empty",
+        "populated",
+        "error"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "venue-eventid-expo",
+      "path": "/venue/[eventId]/expo",
+      "persona": "attendee",
+      "required_states": [
+        "empty",
+        "populated",
+        "error"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "venue-eventid-help",
+      "path": "/venue/[eventId]/help",
+      "persona": "attendee",
+      "required_states": [
+        "empty",
+        "populated",
+        "error"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "venue-eventid-lobby",
+      "path": "/venue/[eventId]/lobby",
+      "persona": "attendee",
+      "required_states": [
+        "empty",
+        "populated",
+        "error"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "venue-eventid-networking",
+      "path": "/venue/[eventId]/networking",
+      "persona": "attendee",
+      "required_states": [
+        "empty",
+        "populated",
+        "error"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "venue-eventid-people",
+      "path": "/venue/[eventId]/people",
+      "persona": "attendee",
+      "required_states": [
+        "empty",
+        "populated",
+        "error"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "venue-eventid-replay",
+      "path": "/venue/[eventId]/replay",
+      "persona": "attendee",
+      "required_states": [
+        "empty",
+        "populated",
+        "error"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "venue-eventid-run-of-show",
+      "path": "/venue/[eventId]/run-of-show",
+      "persona": "attendee",
+      "required_states": [
+        "empty",
+        "populated",
+        "loading",
+        "error",
+        "success",
+        "disabled",
+        "pending"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "venue-eventid-sessions-sessionid",
+      "path": "/venue/[eventId]/sessions/[sessionId]",
+      "persona": "attendee",
+      "required_states": [
+        "empty",
+        "populated",
+        "error"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "venue-eventid-sessions",
+      "path": "/venue/[eventId]/sessions",
+      "persona": "attendee",
+      "required_states": [
+        "empty",
+        "populated",
+        "error"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "venue-eventid-stage",
+      "path": "/venue/[eventId]/stage",
+      "persona": "attendee",
+      "required_states": [
+        "empty",
+        "populated",
+        "error"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    }
+  ]
+}

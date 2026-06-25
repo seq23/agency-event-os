@@ -35,6 +35,6 @@ export async function grantOwnerOverrideIfMatched(input: {
     route: input.route,
   });
 
-  cookies().set(ownerCookieName, cookie, getV5CookieOptions(60 * 60 * 12));
+  (await cookies()).set(ownerCookieName, cookie, getV5CookieOptions(60 * 60 * 12));
   redirect(safeRedirectTarget(input.next || "/app"));
 }

@@ -14,7 +14,7 @@ export async function authorizeVideoTokenRequest(input: { role: VideoParticipant
   const env = getEnv();
   const { operatorCookieName, specialGuestCookieName, crewCookieName } = getV5AccessCookieNames(env);
   const secret = getV5AccessCookieSecret(env);
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const [operator, specialGuest, crew] = await Promise.all([
     readV5AccessCookie(cookieStore.get(operatorCookieName)?.value, secret),
     readV5AccessCookie(cookieStore.get(specialGuestCookieName)?.value, secret),

@@ -3,5 +3,5 @@
   <desc id="desc">West Peek WP monogram.</desc>
   <rect width="160" height="160" rx="44" fill="#050505"/>
   <text x="80" y="96" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="52" font-weight="900" letter-spacing="-6" fill="#ffffff">WP</text>
-  <circle cx="124" cy="36" r="10" fill="#ff6a00"/>
+  <circle cx="124" cy="36" r="10" fill="#f05a1a"/>
 </svg>

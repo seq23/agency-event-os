@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any -- boundary adapters normalize legacy/runtime payloads before typed domain use */
 "use server";
 
 import { revalidatePath } from "next/cache";

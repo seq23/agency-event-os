@@ -23,20 +23,21 @@ function base(overrides: Partial<StageStreamState> = {}): StageStreamState {
 }
 
 describe("stage stream failover decision model", () => {
-  it("moves StreamYard feed loss to LiveKit plus Cloudflare Stream before Daily", () => {
+  it("moves StreamYard feed loss directly to Daily while preserving producer context", () => {
     const next = evaluateStageFallbackDecision(base(), "ingress_ended");
     expect(next.failurePlane).toBe("STREAMYARD_FEED");
-    expect(next.activeStreamSource).toBe("CLOUDFLARE_STREAM");
-    expect(next.producerStudioSource).toBe("CLOUDFLARE_STREAM");
-    expect(next.fallbackRecommendation).toContain("Cloudflare Stream");
+    expect(next.activeStreamSource).toBe("DAILY");
+    expect(next.producerStudioSource).toBe("STREAMYARD");
+    expect(next.fallbackRecommendation).toContain("Daily");
   });
 
-  it("keeps attendees provider-neutral while the backend moves through embedded fallbacks", () => {
-    const cloudflare = evaluateStageFallbackDecision(base(), "ingress_ended");
+  it("keeps attendees provider-neutral while the backend moves through embedded fallbacks: LiveKit plus Cloudflare Stream before Daily", () => {
+    const cloudflare = evaluateStageFallbackDecision(base(), "livekit_room_unreachable");
     const daily = evaluateStageFallbackDecision(cloudflare, "cloudflare_stream_failed");
     const zoom = evaluateStageFallbackDecision(daily, "daily_failed");
     const meet = evaluateStageFallbackDecision(zoom, "zoom_failed");
     expect(cloudflare.activeStreamSource).toBe("CLOUDFLARE_STREAM");
+    expect(cloudflare.producerStudioSource).toBe("STREAMYARD");
     expect(daily.activeStreamSource).toBe("DAILY");
     expect(zoom.activeStreamSource).toBe("ZOOM");
     expect(meet.activeStreamSource).toBe("GOOGLE_MEET");

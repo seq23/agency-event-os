@@ -1,2 +1,3 @@
 import { SponsorReadyRoom } from "@/components/sponsors/SponsorReadyRoom";
-export default function SponsorReadyRoomPage({ params }: { params: { eventId: string } }) { return <SponsorReadyRoom eventId={params.eventId} />; }
+export default async function SponsorReadyRoomPage({ params }: { params: Promise<{ eventId: string }> }) {
+  const resolvedParams = await params; return <SponsorReadyRoom eventId={resolvedParams.eventId} />; }

@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import fs from 'node:fs';
 import path from 'node:path';
+import {verifyWorkerTarget} from './read-wrangler-config.mjs';
 const root=process.cwd();
 const file=path.join(root,'.github/workflows/deploy-cloudflare-worker.yml');
 const failures=[];
@@ -18,15 +19,21 @@ const required=[
   'test -f .open-next/worker.js',
   'npm run cf:deploy -- --keep-vars',
   'npm run postdeploy:smoke',
-  'timeout --signal=TERM'
+  'timeout --signal=TERM',
+  'node scripts/read-wrangler-config.mjs'
 ];
 for(const token of required) if(!s.includes(token)) failures.push(`Cloudflare workflow missing: ${token}`);
 if(/npm run deploy:production:safe/.test(s)) failures.push('Workflow must not call the unbounded composite deploy:production:safe command.');
 if(/\bcontinue-on-error:\s*true\b/.test(s)) failures.push('Deployment workflow may not hide failures with continue-on-error.');
-const wrangler=JSON.parse(fs.readFileSync(path.join(root,'wrangler.jsonc'),'utf8'));
-if(wrangler.name!=='west-peek-live') failures.push(`Unexpected Cloudflare Worker name: ${wrangler.name}`);
-if(wrangler.main!=='.open-next/worker.js') failures.push(`Unexpected Cloudflare Worker entrypoint: ${wrangler.main}`);
-const report={schema_version:'1.0',workflow:'.github/workflows/deploy-cloudflare-worker.yml',worker:wrangler.name,failures,verdict:failures.length?'FAIL':'PASS'};
+let wrangler={};
+try{
+  const target=verifyWorkerTarget(root);
+  wrangler=target.config;
+  failures.push(...target.failures);
+}catch(error){
+  failures.push(error.message);
+}
+const report={schema_version:'1.0',workflow:'.github/workflows/deploy-cloudflare-worker.yml',worker:wrangler.name??null,failures,verdict:failures.length?'FAIL':'PASS'};
 fs.mkdirSync(path.join(root,'reports'),{recursive:true});
 fs.writeFileSync(path.join(root,'reports','cloudflare-workflow-contract.json'),JSON.stringify(report,null,2)+'\n');
 if(failures.length){console.error(failures.join('\n'));process.exit(1)}

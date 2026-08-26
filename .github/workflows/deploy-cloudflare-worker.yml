@@ -12,7 +12,7 @@ concurrency:
 
 jobs:
   deploy:
-    name: Optional manual Cloudflare deploy
+    name: Manual Cloudflare deploy
     runs-on: ubuntu-latest
     timeout-minutes: 45
 
@@ -26,46 +26,66 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
-      - name: Check Cloudflare secrets
-        id: secrets
+      - name: Require Cloudflare credentials
         shell: bash
         run: |
-          if [ -z "${CLOUDFLARE_API_TOKEN:-}" ] || [ -z "${CLOUDFLARE_ACCOUNT_ID:-}" ]; then
-            echo "ready=false" >> "$GITHUB_OUTPUT"
-            echo "Cloudflare deploy skipped: CLOUDFLARE_API_TOKEN or CLOUDFLARE_ACCOUNT_ID is not configured."
-          else
-            echo "ready=true" >> "$GITHUB_OUTPUT"
+          set -Eeuo pipefail
+          missing=0
+          if [ -z "${CLOUDFLARE_API_TOKEN:-}" ]; then
+            echo "Missing repository secret CLOUDFLARE_API_TOKEN" >&2
+            missing=1
           fi
+          if [ -z "${CLOUDFLARE_ACCOUNT_ID:-}" ]; then
+            echo "Missing repository secret CLOUDFLARE_ACCOUNT_ID" >&2
+            missing=1
+          fi
+          if [ "$missing" -ne 0 ]; then
+            echo "Configure the secrets before dispatching this workflow; a silent skip would report a deploy that never happened." >&2
+            exit 1
+          fi
+          echo "Cloudflare credentials present."
 
-      - name: Setup Node 22
-        if: steps.secrets.outputs.ready == 'true'
-        uses: actions/setup-node@v4
+      - name: Setup Node
+        uses: actions/setup-node@v5
         with:
-          node-version: 22
+          node-version-file: .nvmrc
           cache: npm
 
+      - name: Verify Worker deploy target
+        shell: bash
+        run: node scripts/read-wrangler-config.mjs --verify
+
       - name: Install dependencies
-        if: steps.secrets.outputs.ready == 'true'
         run: npm ci --no-audit --no-fund
 
       - name: Validate release prepush
-        if: steps.secrets.outputs.ready == 'true'
         run: timeout --signal=TERM 20m npm run release:prepush:container
 
       - name: Build Cloudflare worker
-        if: steps.secrets.outputs.ready == 'true'
         run: timeout --signal=TERM 15m npm run cf:build:recoverable
 
       - name: Verify worker artifact
-        if: steps.secrets.outputs.ready == 'true'
-        run: test -f .open-next/worker.js
+        run: |
+          set -Eeuo pipefail
+          test -f .open-next/worker.js
+          test -d .open-next/assets
 
       - name: Deploy Cloudflare worker
-        if: steps.secrets.outputs.ready == 'true'
         run: timeout --signal=TERM 5m npm run cf:deploy -- --keep-vars
 
       - name: Postdeploy smoke
-        if: steps.secrets.outputs.ready == 'true'
         run: timeout --signal=TERM 5m npm run postdeploy:smoke
+
+      - name: Deployment summary
+        if: always()
+        shell: bash
+        run: |
+          {
+            echo "## West Peek Live Cloudflare deployment"
+            echo "- Commit: $GITHUB_SHA"
+            echo "- Worker: west-peek-live"
+            echo "- Conclusion: ${{ job.status }}"
+            echo "- Postdeploy target: $POSTDEPLOY_BASE_URL"
+          } >> "$GITHUB_STEP_SUMMARY"

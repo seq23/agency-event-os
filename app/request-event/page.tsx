@@ -24,8 +24,20 @@ export default async function RequestEventPage({ searchParams }: { searchParams?
         <p className="mt-6 text-xs font-black uppercase tracking-[0.35em] text-brand-orange">Plan an Event</p>
         <h1 className="mt-3 text-4xl font-black tracking-tight">Request Event production support.</h1>
         <p className="mt-4 text-sm leading-6 text-brand-muted">This is the public planning front door. It does not create an admin account, unlock the producer workspace, or expose self-serve billing. We use it to scope your event before opening production operations.</p>
+        {/*
+          "received" is reachable only when requestEventProduction confirmed a
+          durable destination — a stored intake row, or a notification the real
+          provider reported as sent. It used to be unconditional, which meant a
+          request that reached nothing still told the visitor it had arrived.
+        */}
         {resolvedSearchParams?.status === "received" ? <p className="mt-5 rounded-2xl bg-emerald-50 p-4 text-sm font-bold text-emerald-800">Request received. West Peek Live can follow up with a production plan.</p> : null}
         {resolvedSearchParams?.status === "missing" ? <p className="mt-5 rounded-2xl bg-amber-50 p-4 text-sm font-bold text-amber-800">Name and a valid email are required.</p> : null}
+        {resolvedSearchParams?.status === "failed" ? (
+          <div className="mt-5 rounded-2xl bg-rose-50 p-4 text-sm font-bold text-rose-800">
+            <p>We could not save your request, so it has not reached us. Nothing was recorded.</p>
+            <p className="mt-2 font-normal">Please email <a className="font-bold underline" href="mailto:scooter@westpeek.ventures?subject=Event%20production%20request">scooter@westpeek.ventures</a> with your event type, target date, expected audience size and speaker count, and we will pick it up from there. Sorry — this one is on us.</p>
+          </div>
+        ) : null}
         <form action={requestEventProduction} className="mt-8 grid gap-5">
           {fields.map(([name, label, placeholder]) => (
             <div key={name}>

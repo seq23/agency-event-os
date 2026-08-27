@@ -1683,6 +1683,26 @@
       ],
       "status": "UNPROVEN",
       "evidence": []
+    },
+    {
+      "id": "how-it-works",
+      "path": "/how-it-works",
+      "persona": "public",
+      "required_states": [
+        "populated"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "pricing",
+      "path": "/pricing",
+      "persona": "public",
+      "required_states": [
+        "populated"
+      ],
+      "status": "UNPROVEN",
+      "evidence": []
     }
   ]
 }

@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "repo": "agency-event-os",
   "generated_from": "config/deployed-route-manifest.json",
-  "route_count": 112,
+  "route_count": 114,
   "rules": {
     "render_is_not_journey_proof": true,
     "mutation_requires_readback": true,
@@ -4695,6 +4695,70 @@
       ],
       "persistence_required": false,
       "cleanup_policy": "exact-run",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "how-it-works",
+      "route": "/how-it-works",
+      "persona": "public",
+      "auth_mode": "public",
+      "criticality": "standard",
+      "action_class": "read-or-navigation",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "populated"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization"
+      ],
+      "persistence_required": false,
+      "cleanup_policy": "none",
+      "tier_mapping": {
+        "source": "tier1",
+        "behavior": "tier2",
+        "browser_fixture": "tier3a",
+        "full_stack": "tier3b",
+        "deployed": "tier4a",
+        "provider": "tier4b",
+        "expert": "tier4c"
+      },
+      "status": "UNPROVEN",
+      "evidence": []
+    },
+    {
+      "id": "pricing",
+      "route": "/pricing",
+      "persona": "public",
+      "auth_mode": "public",
+      "criticality": "standard",
+      "action_class": "read-or-navigation",
+      "visible_actions": [
+        "navigate"
+      ],
+      "required_states": [
+        "populated"
+      ],
+      "required_proof": [
+        "route-render",
+        "identity",
+        "authorization"
+      ],
+      "persistence_required": false,
+      "cleanup_policy": "none",
       "tier_mapping": {
         "source": "tier1",
         "behavior": "tier2",

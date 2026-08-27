@@ -1869,6 +1869,50 @@
       "role": "operator"
     },
     {
+      "id": "how-it-works",
+      "path": "/how-it-works",
+      "authMode": "public",
+      "persona": "public",
+      "criticality": "standard",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/how-it-works"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [],
+      "persistenceRequired": false,
+      "cleanupPolicy": "none",
+      "role": "public"
+    },
+    {
+      "id": "pricing",
+      "path": "/pricing",
+      "authMode": "public",
+      "persona": "public",
+      "criticality": "standard",
+      "viewports": [
+        "desktop",
+        "mobile"
+      ],
+      "expectedIdentity": {
+        "type": "route",
+        "value": "/pricing"
+      },
+      "safeActions": [
+        "navigate"
+      ],
+      "fixtureRequirements": [],
+      "persistenceRequired": false,
+      "cleanupPolicy": "none",
+      "role": "public"
+    },
+    {
       "id": "speaker-events-eventid-backstage",
       "path": "/speaker/events/[eventId]/backstage",
       "authMode": "role-specific",

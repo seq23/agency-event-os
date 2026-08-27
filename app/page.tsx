@@ -19,7 +19,11 @@ export default function HomePage() {
           <Link href="/production-access" className="rounded-full border border-brand-black px-5 py-3 text-center text-sm font-bold text-brand-black hover:border-brand-orange hover:text-brand-orange">Production Access</Link>
           <Link href="/request-event" className="rounded-full border border-brand-black px-5 py-3 text-center text-sm font-bold text-brand-black hover:border-brand-orange hover:text-brand-orange">Plan an Event</Link>
         </div>
-        <Link href="/venue/demo/lobby" className="mt-5 inline-flex text-sm font-bold text-brand-muted underline-offset-4 hover:text-brand-orange hover:underline">Preview demo venue →</Link>
+        <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2">
+          <Link href="/how-it-works" className="inline-flex text-sm font-bold text-brand-muted underline-offset-4 hover:text-brand-orange hover:underline">How production works →</Link>
+          <Link href="/pricing" className="inline-flex text-sm font-bold text-brand-muted underline-offset-4 hover:text-brand-orange hover:underline">What it costs →</Link>
+          <Link href="/venue/demo/lobby" className="inline-flex text-sm font-bold text-brand-muted underline-offset-4 hover:text-brand-orange hover:underline">Preview demo venue →</Link>
+        </div>
       </section>
       </main>
       <LegalFooter variant="standard" />

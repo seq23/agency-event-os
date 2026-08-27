@@ -46,7 +46,11 @@ export type AuditAction =
   | "last_minute_change_push_to_live"
   | "last_minute_change_rollback"
   | "request_event_production"
-  | "request_event_notification_failed";
+  | "request_event_notification_failed"
+  // Raised when public intake could not be stored. Before this existed there
+  // was no action for a dropped request, because a dropped request was
+  // indistinguishable from a stored one.
+  | "request_event_persist_failed";
 
 export interface CreateAuditLogInput {
   agencyId: string;

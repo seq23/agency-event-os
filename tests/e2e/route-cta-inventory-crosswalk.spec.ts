@@ -4,7 +4,7 @@ import { expectVisibleRoute, expectLinksStayFirstParty, loginAsOperator } from '
 test.setTimeout(180_000);
 
 const publicRoutes = [
-  '/', '/start', '/start/create-event', '/request-event', '/operator-packet', '/join', '/events/demo', '/events/demo/register', '/events/demo/agenda', '/events/demo/speakers', '/events/demo/sponsors', '/privacy', '/terms'
+  '/', '/start', '/start/create-event', '/request-event', '/how-it-works', '/pricing', '/operator-packet', '/join', '/events/demo', '/events/demo/register', '/events/demo/agenda', '/events/demo/speakers', '/events/demo/sponsors', '/privacy', '/terms'
 ];
 const venueRoutes = ['/venue/demo/lobby', '/venue/demo/stage', '/venue/demo/sessions', '/venue/demo/breakouts', '/venue/demo/networking', '/venue/demo/expo', '/venue/demo/people', '/venue/demo/replay', '/venue/demo/help'];
 const protectedRoutes = ['/production-access', '/production-access/operator', '/production-access/crew', '/production-access/special-guest'];

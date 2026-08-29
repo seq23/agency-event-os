@@ -287,7 +287,7 @@
       "matrixContract": "assigned: owner+tier+proofLayer+blockerPolicy+prerequisites",
       "requiresDeployedBaseUrl": true,
       "failureHandling": "Juniper repairs and reruns. Selected lifecycle stage remains blocked.",
-      "ownerDecisionNeeded": "YES \u2014 provide deployed base URL to execute this Tier 3 proof."
+      "ownerDecisionNeeded": "YES — provide deployed base URL to execute this Tier 3 proof."
     },
     {
       "name": "no plaintext secrets",
@@ -512,7 +512,7 @@
       "category": "deployed safe release gate",
       "severity": "STRONG WARNING",
       "tier": "tier3",
-      "proofLayer": "TIER 3 PASSED \u2014 DEPLOYED SAFE POSTDEPLOY PROOF ONLY",
+      "proofLayer": "TIER 3 PASSED — DEPLOYED SAFE POSTDEPLOY PROOF ONLY",
       "productionRisk": "Repo could be falsely marked COMPLETE without deployed runtime/provider evidence.",
       "whatItProves": "Tier 1 + Tier 2 + explicit deployed URL + postdeploy smoke/E2E + every provider lane evidence for this repo.",
       "whatItDoesNotProve": "Does not replace human business/design signoff.",
@@ -600,7 +600,7 @@
       "matrixContract": "assigned: owner+tier+proofLayer+blockerPolicy+prerequisites",
       "requiresDeployedBaseUrl": true,
       "failureHandling": "Juniper investigates and normally repairs before release; local work may continue when proof is environment-bound.",
-      "ownerDecisionNeeded": "YES \u2014 provide deployed base URL to execute this Tier 3 proof."
+      "ownerDecisionNeeded": "YES — provide deployed base URL to execute this Tier 3 proof."
     },
     {
       "name": "Agency postdeploy critical role/provider",
@@ -617,7 +617,7 @@
       "matrixContract": "assigned: owner+tier+proofLayer+blockerPolicy+prerequisites",
       "requiresDeployedBaseUrl": true,
       "failureHandling": "Juniper investigates and normally repairs before release; local work may continue when proof is environment-bound.",
-      "ownerDecisionNeeded": "YES \u2014 provide deployed base URL to execute this Tier 3 proof."
+      "ownerDecisionNeeded": "YES — provide deployed base URL to execute this Tier 3 proof."
     },
     {
       "name": "LiveKit ingress contract",
@@ -702,7 +702,7 @@
       "failureHandling": "Juniper investigates and normally repairs before release; local work may continue when proof is environment-bound.",
       "ownerDecisionNeeded": "YES when a provider lane is blocked/not applicable or cleanup retention is requested.",
       "owner": "Juniper / Release Operator",
-      "simplificationDisposition": "KEEP \u2014 protects real provider proof boundary and prevents Tier 3 bloat/theater.",
+      "simplificationDisposition": "KEEP — protects real provider proof boundary and prevents Tier 3 bloat/theater.",
       "matrixContract": "Tier 4 final live-provider operational proof; no fake COMPLETE from Tier 3."
     },
     {
@@ -712,7 +712,7 @@
       "category": "tier4 live provider proof",
       "severity": "STRONG WARNING",
       "productionRisk": "core live media promise unproven",
-      "proofLayer": "TIER 4 PASSED \u2014 REAL LIVE PROVIDER OPERATIONAL PROOF",
+      "proofLayer": "TIER 4 PASSED — REAL LIVE PROVIDER OPERATIONAL PROOF",
       "doesNotProve": "future broadcast availability",
       "blockerPolicy": "HARD FAIL FOR COMPLETE WHEN APPLICABLE; does not block local structural validation without live inputs.",
       "owner": "Repo owner / release operator",
@@ -729,7 +729,7 @@
         "TIER4_LIVE_PROVIDER_OPERATIONAL_PROOF",
         "TIER4_STREAMYARD_LIVE_EVIDENCE_PATH"
       ],
-      "ownerDecisionNeeded": "YES \u2014 operator must run controlled StreamYard/LiveKit provider proof.",
+      "ownerDecisionNeeded": "YES — operator must run controlled StreamYard/LiveKit provider proof.",
       "whatItProves": "Selected Tier 4 lane supplies real deployed URL, live-provider credentials/evidence, and runs the named proof command.",
       "whatItDoesNotProve": "Does not prove provider lanes that are skipped, unavailable, or explicitly ruled out of scope by owner acceptance.",
       "failureHandling": "Juniper investigates and normally repairs before release; local work may continue when proof is environment-bound."
@@ -741,7 +741,7 @@
       "category": "tier4 live provider proof",
       "severity": "STRONG WARNING",
       "productionRisk": "core live media promise unproven",
-      "proofLayer": "TIER 4 PASSED \u2014 REAL LIVE PROVIDER OPERATIONAL PROOF",
+      "proofLayer": "TIER 4 PASSED — REAL LIVE PROVIDER OPERATIONAL PROOF",
       "doesNotProve": "future production broadcast without repeated run",
       "blockerPolicy": "HARD FAIL FOR COMPLETE WHEN APPLICABLE; does not block local structural validation without live inputs.",
       "owner": "Repo owner / release operator",
@@ -758,7 +758,7 @@
         "TIER4_LIVE_PROVIDER_OPERATIONAL_PROOF",
         "TIER4_STREAMYARD_LIVE_EVIDENCE_PATH"
       ],
-      "ownerDecisionNeeded": "YES \u2014 operator must run controlled StreamYard/LiveKit provider proof.",
+      "ownerDecisionNeeded": "YES — operator must run controlled StreamYard/LiveKit provider proof.",
       "whatItProves": "Selected Tier 4 lane supplies real deployed URL, live-provider credentials/evidence, and runs the named proof command.",
       "whatItDoesNotProve": "Does not prove provider lanes that are skipped, unavailable, or explicitly ruled out of scope by owner acceptance.",
       "failureHandling": "Juniper investigates and normally repairs before release; local work may continue when proof is environment-bound."
@@ -769,7 +769,7 @@
       "tier": "tier4",
       "severity": "STRONG WARNING",
       "category": "tier4 live-provider operational proof",
-      "proofLayer": "TIER 4 PASSED \u2014 REAL LIVE PROVIDER OPERATIONAL PROOF",
+      "proofLayer": "TIER 4 PASSED — REAL LIVE PROVIDER OPERATIONAL PROOF",
       "requiresDeployedBaseUrl": true,
       "requiredEnvAll": [
         "TIER4_LIVE_PROVIDER_OPERATIONAL_PROOF",
@@ -791,14 +791,14 @@
       "failureHandling": "Juniper investigates and normally repairs before release; local work may continue when proof is environment-bound.",
       "ownerDecisionNeeded": "YES when a provider lane is blocked/not applicable or cleanup retention is requested.",
       "owner": "Juniper / Release Operator",
-      "simplificationDisposition": "KEEP \u2014 protects real provider proof boundary and prevents Tier 3 bloat/theater.",
+      "simplificationDisposition": "KEEP — protects real provider proof boundary and prevents Tier 3 bloat/theater.",
       "matrixContract": "Tier 4 final live-provider operational proof; no fake COMPLETE from Tier 3."
     },
     {
       "tier": "tier4",
       "severity": "STRONG WARNING",
       "category": "tier4 live-provider operational proof",
-      "proofLayer": "TIER 4 PASSED \u2014 REAL LIVE PROVIDER OPERATIONAL PROOF",
+      "proofLayer": "TIER 4 PASSED — REAL LIVE PROVIDER OPERATIONAL PROOF",
       "requiresDeployedBaseUrl": true,
       "blockerPolicy": "HARD FAIL FOR COMPLETE WHEN APPLICABLE; does not block local structural validation without live inputs.",
       "productionRisk": "Real live provider user journeys can be falsely claimed if persistence, fallback, role boundary, email, and provider state are only env-checked.",
@@ -815,7 +815,7 @@
       "tier": "tier4",
       "severity": "STRONG WARNING",
       "category": "tier4 live-provider operational proof",
-      "proofLayer": "TIER 4 PASSED \u2014 REAL LIVE PROVIDER OPERATIONAL PROOF",
+      "proofLayer": "TIER 4 PASSED — REAL LIVE PROVIDER OPERATIONAL PROOF",
       "requiresDeployedBaseUrl": true,
       "blockerPolicy": "HARD FAIL FOR COMPLETE WHEN APPLICABLE; does not block local structural validation without live inputs.",
       "productionRisk": "Real live provider user journeys can be falsely claimed if persistence, fallback, role boundary, email, and provider state are only env-checked.",
@@ -849,7 +849,7 @@
       "failureHandling": "Juniper investigates and normally repairs before release; local work may continue when proof is environment-bound.",
       "ownerDecisionNeeded": "YES when a provider lane is blocked/not applicable or cleanup retention is requested.",
       "owner": "Juniper / Release Operator",
-      "simplificationDisposition": "KEEP \u2014 protects real provider proof boundary and prevents Tier 3 bloat/theater.",
+      "simplificationDisposition": "KEEP — protects real provider proof boundary and prevents Tier 3 bloat/theater.",
       "matrixContract": "Tier 4 final live-provider operational proof; no fake COMPLETE from Tier 3."
     },
     {
@@ -1188,6 +1188,21 @@
       "ownerDecisionNeeded": "NO unless owner-interruption budget applies.",
       "owner": "Juniper / autonomous engineering department",
       "blockerPolicy": "Blocks delivery or push.",
+      "simplificationDisposition": "KEEP"
+    },
+    {
+      "name": "Release self-heal honesty contract",
+      "command": "npm run validate:self-heal-contract",
+      "tier": "tier1",
+      "category": "release lifecycle/self-heal honesty",
+      "severity": "HARD FAIL",
+      "productionRisk": "The release self-heal loop misreports what it repaired, or misclassifies a benign schema failure as an authorization incident, which escalates post-deploy remediation to SEV-1 rollback and can block or misdirect a release.",
+      "proofLayer": "STRUCTURAL / RELEASE LIFECYCLE",
+      "whatItProves": "classify() and the post-deploy severity planner match real authorization signals only (401/403/unauthorized/forbidden/permission denied) and never the substring 'auth' inside routine schema text such as authMode; the self-heal source hash covers git-tracked files only so a gitignored build cache cannot fake 'source changed'; treeHash hard-fails on zero files; a missing CLICK_AUDIT_SUMMARY is a named stop rather than a silent exit 0; every terminal state of the loop names its outcome.",
+      "whatItDoesNotProve": "Does not prove the autofix steps can repair any given defect class, nor that any workflow invokes the loop.",
+      "failureHandling": "Repair and rerun before delivery or push.",
+      "owner": "Repo owner / release operator",
+      "blockerPolicy": "Blocks selected lifecycle stage: the loop's reporting is the only evidence a self-heal pass produced work.",
       "simplificationDisposition": "KEEP"
     }
   ],

@@ -1522,7 +1522,7 @@
       "removalConditions": "Only remove if repo no longer contains live provider operational proof requirements.",
       "owner": "Juniper / Release Operator",
       "blockerPolicy": "HARD FAIL FOR COMPLETE WHEN APPLICABLE; does not block local structural validation without live inputs.",
-      "simplificationDisposition": "KEEP \u2014 separates deployed-safe Tier 3 from real-provider Tier 4.",
+      "simplificationDisposition": "KEEP — separates deployed-safe Tier 3 from real-provider Tier 4.",
       "script": "test:e2e:tier4-real-streamyard-livekit",
       "command": "PLAYWRIGHT_SKIP_WEBSERVER=1 PLAYWRIGHT_DEPLOYED=1 playwright test tests/e2e/real-streamyard-livekit-media.spec.ts --trace on --workers=1"
     },
@@ -1732,7 +1732,7 @@
       "removalConditions": "Only remove if repo no longer contains live provider operational proof requirements.",
       "owner": "Juniper / Release Operator",
       "blockerPolicy": "HARD FAIL FOR COMPLETE WHEN APPLICABLE; does not block local structural validation without live inputs.",
-      "simplificationDisposition": "KEEP \u2014 separates deployed-safe Tier 3 from real-provider Tier 4.",
+      "simplificationDisposition": "KEEP — separates deployed-safe Tier 3 from real-provider Tier 4.",
       "script": "test:everything:tier4:with-env",
       "command": "node scripts/run-with-temp-env.mjs -- npm run test:everything:tier4"
     },
@@ -1858,7 +1858,7 @@
       "removalConditions": "Only remove if repo no longer contains live provider operational proof requirements.",
       "owner": "Juniper / Release Operator",
       "blockerPolicy": "HARD FAIL FOR COMPLETE WHEN APPLICABLE; does not block local structural validation without live inputs.",
-      "simplificationDisposition": "KEEP \u2014 separates deployed-safe Tier 3 from real-provider Tier 4.",
+      "simplificationDisposition": "KEEP — separates deployed-safe Tier 3 from real-provider Tier 4.",
       "script": "tier4:live-provider-operational-proof",
       "command": "node scripts/tier4_live_provider_operational_proof.mjs"
     },
@@ -3499,7 +3499,7 @@
       "removalConditions": "Only remove if repo no longer contains live provider operational proof requirements.",
       "owner": "Juniper / Release Operator",
       "blockerPolicy": "HARD FAIL FOR COMPLETE WHEN APPLICABLE; does not block local structural validation without live inputs.",
-      "simplificationDisposition": "KEEP \u2014 separates deployed-safe Tier 3 from real-provider Tier 4.",
+      "simplificationDisposition": "KEEP — separates deployed-safe Tier 3 from real-provider Tier 4.",
       "script": "validate:tier4-contract",
       "command": "node scripts/validate-tier4-contract.mjs && npm run validate:tier4-hostile-coverage && npm run validate:tier4-cleanup-contract && npm run validate:tier4-provider-ladder-contract && npm run validate:tier4-live-event-fallback-runtime && npm run validate:tier4-attendee-live-consumption-contract"
     },
@@ -4275,6 +4275,27 @@
       "removalConditions": "Retire only after replacement proof is admitted.",
       "owner": "Repo owner / release operator",
       "blockerPolicy": "Blocks delivery or push when selected.",
+      "simplificationDisposition": "KEEP"
+    },
+    {
+      "script": "validate:self-heal-contract",
+      "command": "node scripts/validate-self-heal-contract.mjs",
+      "status": "ACTIVE",
+      "admission": "registered_proof_lane",
+      "parentOrMatrixAuthority": "validate",
+      "category": "release lifecycle/self-heal honesty",
+      "severity": "HARD FAIL",
+      "productionRisk": "The release self-heal loop misreports what it repaired, or misclassifies a benign schema failure as an authorization incident, which escalates post-deploy remediation to SEV-1 rollback and can block or misdirect a release.",
+      "whatItProves": "classify() and the post-deploy severity planner match real authorization signals only (401/403/unauthorized/forbidden/permission denied) and never the substring 'auth' inside routine schema text such as authMode; the self-heal source hash covers git-tracked files only so a gitignored build cache cannot fake 'source changed'; treeHash hard-fails on zero files; a missing CLICK_AUDIT_SUMMARY is a named stop rather than a silent exit 0; every terminal state of the loop names its outcome.",
+      "whatItDoesNotProve": "Does not prove layers outside the command actually executed; the repair capability of the autofix steps remains UNPROVEN.",
+      "failureHandling": "Juniper repairs and reruns. Selected lifecycle stage remains blocked.",
+      "ownerDecisionNeeded": "NO unless owner-interruption budget applies.",
+      "expectedFailureFrequency": "Low; fails only if the self-heal loop's classifier, source hash, or outcome reporting regresses.",
+      "runtimeCost": "Low; static/unit checks plus two short subprocess runs.",
+      "maintenanceCost": "Review whenever release-self-heal.mjs or release-postdeploy-remediate.mjs changes.",
+      "removalConditions": "Retire only after replacement proof is admitted and docs consolidation records the change.",
+      "owner": "Repo owner / release operator",
+      "blockerPolicy": "Blocks selected lifecycle stage: the loop's reporting is the only evidence a self-heal pass produced work.",
       "simplificationDisposition": "KEEP"
     }
   ],

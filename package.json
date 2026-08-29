@@ -80,7 +80,7 @@
     "test:everything": "node scripts/run-test-everything-aggregate.mjs --tier=all",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
-    "validate": "npm run validate:authenticated-usability && npm run test:display-normalization && npm run typecheck && npm run lint && npm run test && npm run validate:v5-hard && npm run validate:v7 && npm run validate:deploy-parity",
+    "validate": "npm run validate:authenticated-usability && npm run test:display-normalization && npm run typecheck && npm run lint && npm run test && npm run validate:self-heal-contract && npm run validate:v5-hard && npm run validate:v7 && npm run validate:deploy-parity",
     "validate:access-boundaries": "node scripts/validate_access_boundary_contract.js",
     "validate:assets": "npm run test -- --run tests/unit/assetRules.test.ts",
     "validate:attendee-live-controls": "node scripts/validate_attendee_live_controls_contract.js",
@@ -246,7 +246,8 @@
     "test:e2e:tier3a": "PLAYWRIGHT_EVIDENCE_MODE=1 PLAYWRIGHT_HEADED=1 playwright test --project=desktop-chromium --project=mobile-chromium",
     "validate:cloudflare-workflow-contract": "node scripts/validate-cloudflare-workflow-contract.mjs",
     "package:baseline:v3.1": "node scripts/package-baseline-v3.1.mjs",
-    "diagnose:quick-apply": "node scripts/diagnose_zip_apply.mjs"
+    "diagnose:quick-apply": "node scripts/diagnose_zip_apply.mjs",
+    "validate:self-heal-contract": "node scripts/validate-self-heal-contract.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "3.9.0",
